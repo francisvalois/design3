@@ -1,0 +1,88 @@
+% !TEX encoding = UTF-8 Unicode
+
+%
+% Exemple de rapport
+% par Pierre Tremblay, Universite Laval
+% modifié par Christian Gagne, Universite Laval
+% modifié par Francis Valois, Université Laval
+% 31/01/2011 - version 1.4
+%
+
+%
+% Modele d'organisation d'un projet LaTeX 
+% rapport/      dossier racine et fichier principal
+% rapport/fig   fichiers des figures
+% rapport/tex   autres fichiers .tex
+%
+
+% ** Preambule **
+%
+% Ajouter les options au besoin :
+%    - "ULlof" pour inclure la liste des figures, requis si "\begin{figure}" utilise
+%    - "ULlot" pour inclure la liste des tableaux, requis si "\begin{table}" utilise
+%
+\documentclass[12pt,ULlof,ULlot]{ULrapport}
+
+% Chargement des packages supplementaires (si absent de la classe)
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[autolanguage]{numprint}
+\usepackage{icomma}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage[absolute]{textpos}
+\usepackage[final]{pdfpages}
+\def\dbar{{\mathchar'26\mkern-12mu d}} 
+%\usepackage[options]{nom_du_package}
+
+% Definition d'une commande pour presenter des cellules multilignes dans un tableau
+\newcommand{\cellulemultiligne}[1]{\begin{tabular}{@{}c@{}}#1\end{tabular}}
+
+
+% Definition de colonnes en mode paragraphe avec alignement ajustable
+% Cette definition requiert le chargement du package "array"
+%    - alignement horizontal, parametre #1 : - \raggedright (aligne a gauche)
+%                                            - \centering (centre)
+%                                            - \raggedleft (aligne a droite)
+%    - alignement vertical, parametre #2 : - p (aligne en haut)
+%                                          - m (centre)
+%                                          - b (aligne en bas)
+%    - largeur, parametre #3 : longueur
+\newcolumntype{Z}[3]{>{#1\hspace{0pt}\arraybackslash}#2{#3}}
+
+% Definitions des parametres de la page titre
+\TitreProjet{Livrable 1 - Robot Kinocto}                         % Titre du projet
+\TitreRapport{Machines Électriques}       % Titre du rapport
+\Destinataire{M. Dominique Grenier, M. Luc Lamontagne et M. Abdelhakim Bendada}         % Nom(s) du destinataire
+\TableauMembres{%                                     % Tableau des membres de l'equipe
+   XXX\,XXX\,XXX  & Émile Arsenault \\\hline 
+   XXX\,XXX\,XXX  & Philippe Bourdages \\\hline
+   XXX\,XXX\,XXX  & Pierre-Luc Buhler \\\hline    
+   XXX\,XXX\,XXX  & Diane Fournier \\\hline
+   XXX\,XXX\,XXX  & Imane Mouhtij \\\hline
+   XXX\,XXX\,XXX  & Olivier Sylvain \\\hline
+   XXX\,XXX\,XXX  & Daniel Thibodeau \\\hline
+   XXX\,XXX\,XXX  & Francis Valois \\\hline
+}
+\DateRemise{11 février 2012}                           % Date de remis
+
+
+% Corps du document
+
+\begin{document}
+
+%   Chapitres
+\input{tex/introduction}
+\input{tex/contexte}
+\input{tex/fonctionnalites}
+\input{tex/use_cases}
+\input{tex/sequences}
+\input{tex/classes}
+\input{tex/prototypes}
+
+\appendix
+\input{tex/annexes}
+
+\end{document}
+% Fin du document
+
