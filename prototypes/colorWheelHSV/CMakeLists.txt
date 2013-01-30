@@ -1,0 +1,5 @@
+project( DisplayImage )
+find_package(OpenCV REQUIRED)
+add_executable(ImageUtils  ImageUtils)
+add_executable(ColorWheelHSV  ColorWheelHSV)
+target_link_libraries( ColorWheelHSV ${OpenCV_LIBS} )
