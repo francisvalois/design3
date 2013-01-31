@@ -1,0 +1,31 @@
+->microcontrôleurs suggérés
+
+Fonction(s):
+
+- gérer l'affichage sur le robot (LCD)
+
+Micro                 prix       fournisseur             communications         internal clock       Mémoire       nb pins GPIO            
+Stellaris LM3s9b92   115,00$   (déjà en ma possession)   UART via USB; SPI/I2C    oui / 16 MHz    Flash - 256KB       65
+Arduino Leonardo      25,06$       Digikey               UART via USB             oui / 16 MHz    Flash - 32KB        14 
+Arduino Uno           28,34$       Digikey               UART via USB             oui / 16 MHz    Flash - 32KB        14 
+Arduino Mini          16,71$       Digikey               UART via USB*            oui / 16 MHz    Flash - 32KB        14
+Stellaris LM4F120XL   14,48$       Digikey               UART via USB             oui / 16 MHz    Flash - 256KB       40
+
+->LCD suggérés
+
+Fonction(s):
+
+- affichage sur le robot
+
+LCD                    caractéristiques                                                    prix
+Topway LMB162ABC      display 16 x 2 char, constraste réglable avec potentiomètre          20,00$
+C-51847NFJ-SLW-ADN    display 20 x 4 char                                                  19,03$
+
+
+
+
+
+
+
+
+* Adapteur doit être acheté séparément
