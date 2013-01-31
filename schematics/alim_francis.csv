@@ -1,0 +1,21 @@
+ref	value
+11.1V	VCC
+C1	100u
+C2	1u
+C3	1000u
+C4	0.1u
+C5	10u
+C6	1u
+D1	5A min
+D2	5A min
+D3	5A min
+F1	5A
+L1	50u
+R1	1K
+R2	1.24K
+R3	23K
+R4	1.24K
+R5	23K
+SW1	SPST
+U1	LT1170
+U2	LM317
