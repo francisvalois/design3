@@ -11,10 +11,6 @@ Mat src;
 Mat srcGray;
 Mat srcHSV;
 
-int thresh_cases = 150;
-int thresh_contour = 150;
-int max_thresh = 255;
-
 Scalar white = Scalar(255, 255, 255);
 
 bool isSudokuFrameVisible(const Mat &hsvPicture);
@@ -22,12 +18,16 @@ Mat segmentGreenFrame(const Mat&);
 Rect getBiggestRectBetween(const Rect &, const Rect &);
 float getHeightRatioBetween(const Rect, const Mat &);
 
-Mat isolateGreenFrame(const Mat &, const Mat &);
+Rect isolateGreenFrame(const Mat &);
 Rect getSmallestRectBetween(const Rect &, const Rect &);
 Mat cropSquare(const Mat &, const Rect &) ;
 
-void thresh_cases_callback(int, void*);
-void drawAllSquare(Mat &, const vector<Rect> &);
+bool findAllSudokuSquares(const Mat &, vector<vector<Point> > &, vector<Rect> &);
+void getSquares(const Mat &, const int, vector<vector<Point> > &, vector<Rect> &);
+void removeInvalidSquares(vector<vector<Point> > &, vector<Rect> &);
+
+void showSudokuSquares(Size, const vector<vector<Point> > &, const vector<Rect> &);
+void drawAllRect(Mat &, const vector<Rect> &);
 void drawAllPolygon(Mat &, const vector<Rect> &, const vector<vector <Point> >);
 
 void showWindowWith(const char*, const Mat &);
@@ -38,16 +38,26 @@ int main(int argc, char** argv) {
     cvtColor(src, srcGray, CV_BGR2GRAY);
     cvtColor(src, srcHSV, CV_BGR2HSV);
 
-    //Affichage de l'image originale
     showWindowWith("Original", src);
   
-    //Methode pour verifier si le sudoku est dans limage et
     if (isSudokuFrameVisible(srcHSV) == true) {
         cout << "The square is big enough and centered" << endl;
         
-        //Isolation du cadre vert du sudoku
-        Mat greenFrame = isolateGreenFrame(src, srcHSV);
-        showWindowWith("Cadre vert isole", greenFrame);
+        Rect greenFrame = isolateGreenFrame(srcHSV);
+        showWindowWith("Green frame isolated", cropSquare(src, greenFrame));
+        cout << "The green frame as been isolated" << endl;
+        
+        vector<vector<Point> > squaresPoly;
+        vector<Rect> squaresRect;
+        if (findAllSudokuSquares(cropSquare(srcGray, greenFrame), squaresPoly, squaresRect)) {
+            showSudokuSquares(greenFrame.size(), squaresPoly, squaresRect);
+            cout << "All the squares have been found" << endl;
+            
+            //Ici, on peux trouver le carré rouge en faisant une segmentation par couleur.
+            //C'est à dire comme j'ai fait pour le cadre vert
+        } else {
+            cout << "Didn't find all the squares" << endl;
+        }
     }
 
     waitKey(0);
@@ -111,7 +121,7 @@ Rect getBiggestRectBetween(const Rect &rect1, const Rect &rect2) {
     return rect2;
 }
 
-Mat isolateGreenFrame(const Mat &picture, const Mat &hsvPicture) {
+Rect isolateGreenFrame(const Mat &hsvPicture) {
     Mat segmentedGreenFrame = segmentGreenFrame(hsvPicture);
     
     //Recuperation des contours
@@ -128,9 +138,7 @@ Mat isolateGreenFrame(const Mat &picture, const Mat &hsvPicture) {
     }
     
     //On ne prend que linterieur du cadre vert
-    Rect smallestRect = getSmallestRectBetween(boundRect[0], boundRect[1]);
-    
-    return cropSquare(picture, smallestRect);
+    return getSmallestRectBetween(boundRect[0], boundRect[1]);
 }
 
 Rect getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
@@ -145,44 +153,78 @@ Mat cropSquare(const Mat &picture, const Rect &frameRect) {
     return picture(frameRect);
 }
 
-void thresh_cases_callback(int, void*) {
-    Mat threshold_output;
+
+/**
+* Isole tous les carrés du jeu de sudoku. Retourne une liste de polygone et une liste de Rect pour
+* traiter ulterieurement les carrés 
+*
+* @return bool Vrai si l'algorithme trouve tous les carrés du jeu de sudoku (47 au total).
+*/
+bool findAllSudokuSquares(const Mat &grayPicture, vector<vector<Point> > &squaresPoly, vector<Rect> &squaresRect) {
+    // La valeur du threshold ne sera pas hardcodé(int 200) dans la version finale. Pour rendre l'algo
+    // plus robuste on pourrais trouver la borne inférieur et supérieur des valeurs du threshold qui nous donnent
+    // 47 carrés et au final faire (borneSup - borneInf) / 2 
+    
+    getSquares(grayPicture, 200, squaresPoly, squaresRect);
+    removeInvalidSquares(squaresPoly, squaresRect);
+    
+    if (squaresRect.size() == 47) {
+        return true;
+    }
+    
+    return false;
+}
+
+void getSquares(const Mat &grayPicture, const int thresholdValue, vector<vector<Point> > &squaresPoly, vector<Rect> &squaresRect) {
+    Mat segmentedSudoku;
+    threshold(grayPicture, segmentedSudoku, thresholdValue, 150, THRESH_BINARY);
+    
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
-
-    threshold( srcGray, threshold_output, thresh_cases, 150, THRESH_BINARY );
-
-    findContours(threshold_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-    vector<vector<Point> > contours_poly(contours.size());
-    vector<Rect> boundRect(contours.size());
-
-    for(int i = 0; i < contours.size(); i++) { 
-        approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
-        boundRect[i] = boundingRect(Mat(contours_poly[i]));
-    }
-
-    Mat drawing = Mat::zeros(threshold_output.size(), CV_8UC3);
-
-    drawAllSquare(drawing, boundRect);
-    drawAllPolygon(drawing, boundRect, contours_poly);
+    findContours(segmentedSudoku, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+   
+    squaresPoly.resize(contours.size());
+    squaresRect.resize(contours.size());
     
-    showWindowWith("Squares", drawing);
-}
-
-void drawAllPolygon(Mat &drawing, const vector<Rect> &boundRect, const vector<vector<Point> > contours_poly) {
-    for(int i = 0; i < boundRect.size(); i++) {
-        if(boundRect[i].area() > 1500 && boundRect[i].area() < 10000) {
-            drawContours(drawing, contours_poly, i, white, 1, 8, vector<Vec4i>(), 0, Point());
-        }
+    for(int i = 0; i < contours.size(); i++) { 
+        approxPolyDP(Mat(contours[i]), squaresPoly[i], 3, true);
+        squaresRect[i] = boundingRect(Mat(squaresPoly[i]));
     }
 }
 
-void drawAllSquare(Mat &drawing, const vector<Rect> &boundRect) {
-    for(int i = 0; i < boundRect.size(); i++) {
-        if(boundRect[i].area() > 1500 && boundRect[i].area() < 10000) {
-            rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), white, 1, 4, 0);
+void removeInvalidSquares(vector<vector<Point> > &squaresPoly, vector<Rect> &squaresRect) {
+    vector<vector<Point> > validPoly;
+    vector<Rect> validRect;
+    
+    for(int i = 0; i < squaresRect.size(); i++) {
+        if(squaresRect[i].area() > 1500 && squaresRect[i].area() < 10000) {
+            validRect.push_back(squaresRect[i]);
+            validPoly.push_back(squaresPoly[i]);
         }
+    }
+    
+    squaresPoly = validPoly;
+    squaresRect = validRect;
+}
+
+void showSudokuSquares(Size pictureSize, const vector<vector<Point> > &squaresPoly, const vector<Rect> &squaresRect) {
+    Mat drawing = Mat::zeros(pictureSize, CV_8UC3);
+
+    //drawAllRect(drawing, squaresRect);
+    drawAllPolygon(drawing, squaresRect, squaresPoly);
+    
+    showWindowWith("Squares found", drawing);
+}
+
+void drawAllPolygon(Mat &drawing, const vector<Rect> &squaresRect, const vector<vector<Point> > squaresPoly) {
+    for(int i = 0; i < squaresRect.size(); i++) {
+        drawContours(drawing, squaresPoly, i, white, 1, 8, vector<Vec4i>(), 0, Point());
+    }
+}
+
+void drawAllRect(Mat &drawing, const vector<Rect> &squaresRect) {
+    for(int i = 0; i < squaresRect.size(); i++) {
+        rectangle(drawing, squaresRect[i].tl(), squaresRect[i].br(), white, 1, 4, 0);
     }
 }
 
@@ -190,15 +232,3 @@ void showWindowWith(const char* name, const Mat &mat) {
     namedWindow(name, CV_WINDOW_AUTOSIZE);
     imshow(name, mat);
 }
-
-
-/*
-// Methodes pour dessiner les contours et les Rect... utilise pour debu
-for(int i = 0; i < boundRect.size(); i++) {
-    drawContours(drawing, contours_poly, i, white, 1, 8, vector<Vec4i>(), 0, Point());
-}
-Mat drawing = Mat::zeros(segmentedGreenFrame.size(), CV_8UC3);
-for(int i = 0; i < boundRect.size(); i++) {
-    rectangle(drawing, boundRect[i].tl(), boundRect[i].br(), white, 1, 4, 0);
-}
-*/
