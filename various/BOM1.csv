@@ -1,0 +1,10 @@
+Bill of Material for ,,,
+On 2/1/2013 at 10:52:50 AM,,,
+,,,
+Comment,Quantity,Components,
+,,,
+Cap,5,"C1, C2, C3, C4, C5",Capacitor
+D Schottky,1,D1,Schottky Diode
+Inductor,1,L1,Inductor
+LM2676S-5.0,1,U1,SIMPLE SWITCHER High Efficiency 3A Step-Down Voltage Regulator
+VSRC,1,V1,Voltage Source
