@@ -5,7 +5,8 @@ Fonction(s):
 - gérer l'affichage sur le robot (LCD)
 
 Micro                 prix       fournisseur             communications         internal clock       Mémoire       nb pins GPIO            
-Stellaris LM3s9b92   115,00$   (déjà en ma possession)   UART via USB; SPI/I2C    oui / 16 MHz    Flash - 256KB       65
+Stellaris LM3s9b92   115,00$       Digikey             UART via USB; SPI/I2C      oui / 16 MHz    Flash - 256KB       65
+                      87,62$       Newark      
 Arduino Leonardo      25,06$       Digikey               UART via USB             oui / 16 MHz    Flash - 32KB        14 
 Arduino Uno           28,34$       Digikey               UART via USB             oui / 16 MHz    Flash - 32KB        14 
 Arduino Mini          16,71$       Digikey               UART via USB*            oui / 16 MHz    Flash - 32KB        14
