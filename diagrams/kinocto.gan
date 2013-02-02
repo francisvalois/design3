@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Untitled Gantt Project" company="" webLink="http://" view-date="2013-02-04" view-index="0" gantt-divider-location="417" resource-divider-location="300" version="2.0">
+    <description/>
+    <view zooming-state="default:0" id="gantt-chart"/>
+    <view id="resource-table">
+        <field id="0" name="Name" width="71" order="0"/>
+        <field id="1" name="Default role" width="28" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <calendar id="1" name="default">
+                <default-week sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+                <only-show-weekends value="false"/>
+                <overriden-day-types/>
+                <days/>
+            </calendar>
+        </day-types>
+    </calendars>
+    <tasks>
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" name="Vision numérique" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="20" name="Détecter les obstacles" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="21" name="Lire le cube" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="1" name="Communication" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="12" name="Recevoir le signal de l'antenne" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="13" name="Communiquer entre le robot et la station de base" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="15" name="Communiquer entre le Mac mini et le microcontôleur" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="16" name="Commander les moteurs" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="17" name="Transmettre les images de la caméra vers le Mac mini" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="18" name="Contrôler la position de la caméra" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="19" name="Contrôler le crayon" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="2" name="Déplacement" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="22" name="Se déplacer" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="23" name="Déplacer le crayon" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="3" name="Traitement numérique" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="24" name="Contrôler le robot pour le dessin" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="25" name="Décoder le signal d'antenne" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="26" name="Choisir le cube selon le signal d'antenne" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="27" name="Résoudre le sudocube" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="4" name="Alimentation" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="29" name="Utiliser une pile rechargeable" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="30" name="Alimenter les moteurs" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="31" name="Alimenter l'ordinateur" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="32" name="Alimenter les différents périphériques" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="5" name="Affichage" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="34" name="Afficher le cube résolu" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="35" name="Allumer la DEL lorsque tâche complétée" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="36" name="Afficher la trajectoire optimale calculée" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="37" name="Afficher la position réelle" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="38" name="Afficher le message de fin" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="39" name="Afficher sur le LCD" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="33" name="Localisation" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="40" name="Localiser les obstacles" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="41" name="Localiser le robot" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="7" name="Documentation" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="43" name="DPF" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="44" name="Diagramme de classes" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="45" name="Diagramme de contexte" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="46" name="Diagramme des cas d'utilisation" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="48" name="Diagramme de séquences" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="49" name="Description des prototypes" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="50" name="Diagramme des fonctionalités" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="51" name="Diagramme physique" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="52" name="Registre de risques" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="53" name="Plan de tests" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="54" name="Plan d'intégration" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="58" name="Rapport" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="8" name="Gestion" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+            <task id="42" name="diagramme de Gantt" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="55" name="tableau des tâches hebdomadaires" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="9" name="Réunions" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        <task id="10" name="Livrables" color="#8cb6ce" meeting="false" start="2013-02-11" duration="50" complete="0" expand="true">
+            <task id="56" name="Livrable 1" color="#8cb6ce" meeting="true" start="2013-02-11" duration="1" complete="0" expand="true"/>
+            <task id="57" name="Livrable 2" color="#8cb6ce" meeting="true" start="2013-03-08" duration="1" complete="0" expand="true"/>
+            <task id="59" name="Livrable 3" color="#8cb6ce" meeting="true" start="2013-04-05" duration="1" complete="0" expand="true"/>
+            <task id="60" name="Livrable 4" color="#8cb6ce" meeting="true" start="2013-04-19" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="11" name="Intégration" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        <task id="65" name="Concours" color="#8cb6ce" meeting="true" start="2013-04-18" duration="1" complete="0" expand="true"/>
+        <task id="67" name="Reprise" color="#8cb6ce" meeting="true" start="2013-04-25" duration="1" complete="0" expand="true"/>
+    </tasks>
+    <resources>
+        <resource id="0" name="Diane Fournier" function="SoftwareDevelopment:2" contacts="diane.fournier.3@ulaval.ca" phone=""/>
+        <resource id="1" name="Imane Mouhtij" function="SoftwareDevelopment:2" contacts="imane.mouhtij.1@ulaval.ca" phone=""/>
+        <resource id="2" name="Daniel Thibodeau" function="SoftwareDevelopment:2" contacts="daniel.thibodeau.3@ulaval.ca" phone=""/>
+        <resource id="3" name="Émile Arsenault" function="SoftwareDevelopment:2" contacts="emile.arsenault.1@ulaval.ca" phone=""/>
+        <resource id="4" name="Francis Valois" function="Default:1" contacts="francis.valois.1@ulaval.ca" phone=""/>
+        <resource id="5" name="Pierre-Luc Buhler" function="SoftwareDevelopment:2" contacts="pierre-luc.buhler.1@ulaval.ca" phone=""/>
+        <resource id="6" name="Oliver Sylvain" function="SoftwareDevelopment:2" contacts="oliviersylvain@gmail.com" phone=""/>
+        <resource id="7" name="Philippe Bourdages" function="SoftwareDevelopment:2" contacts="philppe.bourdages@gmail.com" phone=""/>
+    </resources>
+    <allocations/>
+    <vacations/>
+    <taskdisplaycolumns>
+        <displaycolumn property-id="tpd2" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd7" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd8" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd6" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd10" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd9" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd1" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd0" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd3" order="0" width="190" visible="true"/>
+        <displaycolumn property-id="tpd4" order="1" width="115" visible="true"/>
+        <displaycolumn property-id="tpd5" order="2" width="91" visible="true"/>
+    </taskdisplaycolumns>
+    <previous/>
+    <roles roleset-name="Default"/>
+    <roles roleset-name="SoftwareDevelopment"/>
+</project>
