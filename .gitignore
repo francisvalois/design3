@@ -34,5 +34,7 @@
 *.*~
 .DS_Store
 *.fls
-
+bin
+devel
+install
 
