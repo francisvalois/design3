@@ -1,10 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="Untitled Gantt Project" company="" webLink="http://" view-date="2013-02-04" view-index="0" gantt-divider-location="417" resource-divider-location="300" version="2.0">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2013-01-30" view-index="0" gantt-divider-location="291" resource-divider-location="300" version="2.0" locale="en_US">
     <description/>
-    <view zooming-state="default:0" id="gantt-chart"/>
+    <view zooming-state="default:0" id="gantt-chart">
+        <field id="tpd3" name="Name" width="70" order="0"/>
+        <field id="tpd4" name="Begin date" width="5" order="1"/>
+        <field id="tpd5" name="End date" width="23" order="2"/>
+    </view>
     <view id="resource-table">
-        <field id="0" name="Name" width="71" order="0"/>
-        <field id="1" name="Default role" width="28" order="1"/>
+        <field id="0" name="Name" width="57" order="0"/>
+        <field id="1" name="Default role" width="42" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -19,7 +22,7 @@
             </calendar>
         </day-types>
     </calendars>
-    <tasks>
+    <tasks empty-milestones="false">
         <taskproperties>
             <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
             <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
@@ -79,8 +82,9 @@
             <task id="45" name="Diagramme de contexte" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
             <task id="46" name="Diagramme des cas d'utilisation" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
             <task id="48" name="Diagramme de séquences" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="49" name="Description des prototypes" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="50" name="Diagramme des fonctionalités" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="50" name="Diagramme des fonctionalités" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
+                <task id="49" name="Description des prototypes" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            </task>
             <task id="51" name="Diagramme physique" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
             <task id="52" name="Registre de risques" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
             <task id="53" name="Plan de tests" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
@@ -105,9 +109,9 @@
     <resources>
         <resource id="0" name="Diane Fournier" function="SoftwareDevelopment:2" contacts="diane.fournier.3@ulaval.ca" phone=""/>
         <resource id="1" name="Imane Mouhtij" function="SoftwareDevelopment:2" contacts="imane.mouhtij.1@ulaval.ca" phone=""/>
-        <resource id="2" name="Daniel Thibodeau" function="SoftwareDevelopment:2" contacts="daniel.thibodeau.3@ulaval.ca" phone=""/>
+        <resource id="2" name="Daniel Thibodeau" function="Default:1" contacts="daniel.thibodeau.3@ulaval.ca" phone=""/>
         <resource id="3" name="Émile Arsenault" function="SoftwareDevelopment:2" contacts="emile.arsenault.1@ulaval.ca" phone=""/>
-        <resource id="4" name="Francis Valois" function="Default:1" contacts="francis.valois.1@ulaval.ca" phone=""/>
+        <resource id="4" name="Francis Valois" function="SoftwareDevelopment:2" contacts="francis.valois.1@ulaval.ca" phone=""/>
         <resource id="5" name="Pierre-Luc Buhler" function="SoftwareDevelopment:2" contacts="pierre-luc.buhler.1@ulaval.ca" phone=""/>
         <resource id="6" name="Oliver Sylvain" function="SoftwareDevelopment:2" contacts="oliviersylvain@gmail.com" phone=""/>
         <resource id="7" name="Philippe Bourdages" function="SoftwareDevelopment:2" contacts="philppe.bourdages@gmail.com" phone=""/>
@@ -120,12 +124,13 @@
         <displaycolumn property-id="tpd8" order="-1" width="75" visible="false"/>
         <displaycolumn property-id="tpd6" order="-1" width="75" visible="false"/>
         <displaycolumn property-id="tpd10" order="-1" width="75" visible="false"/>
+        <displaycolumn property-id="tpd11" order="-1" width="75" visible="false"/>
         <displaycolumn property-id="tpd9" order="-1" width="75" visible="false"/>
         <displaycolumn property-id="tpd1" order="-1" width="75" visible="false"/>
         <displaycolumn property-id="tpd0" order="-1" width="75" visible="false"/>
-        <displaycolumn property-id="tpd3" order="0" width="190" visible="true"/>
-        <displaycolumn property-id="tpd4" order="1" width="115" visible="true"/>
-        <displaycolumn property-id="tpd5" order="2" width="91" visible="true"/>
+        <displaycolumn property-id="tpd3" order="0" width="193" visible="true"/>
+        <displaycolumn property-id="tpd4" order="1" width="15" visible="true"/>
+        <displaycolumn property-id="tpd5" order="2" width="64" visible="true"/>
     </taskdisplaycolumns>
     <previous/>
     <roles roleset-name="Default"/>
