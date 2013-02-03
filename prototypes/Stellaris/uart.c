@@ -2,7 +2,7 @@
 
 void uartInit()
 {
-    //La version lâche.
+    //La version lÃ¢che.
 	//
     // Initialize the UART.
     //
@@ -57,7 +57,7 @@ char uartLireOctet()
 {
 	while(UART0_FR_R & UART_FR_RXFE)
 	{
-		//attend un charact�re
+		//attend un charactère
 	}
 	
 	return UART0_DR_R;
@@ -67,7 +67,7 @@ void uartEcrireOctet(char octet)
 {
 	while(UART0_FR_R & UART_FR_TXFF)
 	{
-		//attend que la transmit FIFO se lib�re
+		//attend que la transmit FIFO se libère
 	}
 	
 	UART0_DR_R = octet;

@@ -39,7 +39,7 @@
 #define ECRAN_RS 0x01 //PA0  reset
 #define ECRAN_RW 0x02 //PA1  read/write
 #define ECRAN_EN 0x04 //PA2  enable
-#define ECRAN_BF 0x08 //PA3  busy flag, connecter à la pin D7 de l'écran
+#define ECRAN_BF 0x08 //PA3  busy flag, connecter Ã  la pin D7 de l'Ã©cran
 
 
 
