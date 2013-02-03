@@ -5,3 +5,7 @@ Notes pour DPF_alternatif
 -Vérifier si des critères chiffrables peuvent être incorporer
 -Vérifier les exigences
 -Vérifier si les corrélations sont Ok
+
+-------------------------------------------------
+
+- Dans communication, ma logique
