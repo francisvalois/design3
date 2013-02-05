@@ -72,7 +72,7 @@ Locator</string>
    <object class="com.horstmann.violet.ImplicitParameterNode" id="LifelineNode3">
     <void property="name">
      <void property="text">
-      <string>Wheels</string>
+      <string>Motor</string>
      </void>
     </void>
    </object>
@@ -410,46 +410,19 @@ Decoder</string>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.CallNode">
-    <void property="implicitParameter">
-     <object idref="LifelineNode0"/>
-    </void>
-   </object>
+   <object idref="ActivationBarNode7"/>
    <object class="java.awt.geom.Point2D$Double" id="Point2D$Double15">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double15"/>
-      <double>60.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double15"/>
-      <double>606.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>60.0</double>
-     <double>606.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object idref="ActivationBarNode7"/>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double16">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double16"/>
       <double>361.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double16"/>
+      <object idref="Point2D$Double15"/>
       <double>428.0</double>
      </void>
     </void>
@@ -507,7 +480,7 @@ Decoder</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>executeMoves(List:Move)</string>
+     <string>executeMoves(List:Move):Position</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -516,7 +489,7 @@ Decoder</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>decode() : LoopGoals</string>
+     <string>decode() : AntennaParam</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>

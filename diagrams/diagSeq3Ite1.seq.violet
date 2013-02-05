@@ -30,11 +30,11 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double0"/>
-      <double>406.0</double>
+      <double>392.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>406.0</double>
+     <double>392.0</double>
      <double>0.0</double>
     </void>
    </object>
@@ -100,7 +100,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double2"/>
-      <double>438.0</double>
+      <double>424.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -111,7 +111,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>438.0</double>
+     <double>424.0</double>
      <double>158.0</double>
     </void>
    </object>
@@ -162,7 +162,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>446.0</double>
+      <double>432.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -173,7 +173,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>446.0</double>
+     <double>432.0</double>
      <double>187.0</double>
     </void>
    </object>
@@ -199,7 +199,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>showTrajectory(List:Move)</string>
+     <string>tracePlannedTrajectory(List:Move)</string>
     </void>
    </object>
    <object idref="ActivationBarNode2"/>

@@ -27,7 +27,7 @@
    <object class="com.horstmann.violet.ImplicitParameterNode" id="LifelineNode1">
     <void property="name">
      <void property="text">
-      <string>Wheels</string>
+      <string>Motor</string>
      </void>
     </void>
    </object>
@@ -36,11 +36,11 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>263.0</double>
+      <double>262.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>263.0</double>
+     <double>262.0</double>
      <double>0.0</double>
     </void>
    </object>
@@ -81,11 +81,11 @@ Reader</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double3"/>
-      <double>580.0</double>
+      <double>555.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>580.0</double>
+     <double>555.0</double>
      <double>0.0</double>
     </void>
    </object>
@@ -200,7 +200,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double5"/>
-      <double>295.0</double>
+      <double>294.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -211,7 +211,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>295.0</double>
+     <double>294.0</double>
      <double>104.0</double>
     </void>
    </object>
@@ -246,11 +246,11 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>483.0</double>
+      <double>464.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>483.0</double>
+     <double>464.0</double>
      <double>0.0</double>
     </void>
    </object>
@@ -262,7 +262,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double8"/>
-      <double>515.0</double>
+      <double>496.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -273,7 +273,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>515.0</double>
+     <double>496.0</double>
      <double>212.0</double>
     </void>
    </object>
@@ -285,7 +285,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double9"/>
-      <double>523.0</double>
+      <double>504.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -296,7 +296,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>523.0</double>
+     <double>504.0</double>
      <double>241.0</double>
     </void>
    </object>
@@ -308,7 +308,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double10"/>
-      <double>612.0</double>
+      <double>587.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -319,7 +319,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>612.0</double>
+     <double>587.0</double>
      <double>315.0</double>
     </void>
    </object>
@@ -331,7 +331,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double11"/>
-      <double>612.0</double>
+      <double>587.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -342,7 +342,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>612.0</double>
+     <double>587.0</double>
      <double>369.0</double>
     </void>
    </object>
@@ -354,11 +354,11 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double12"/>
-      <double>725.0</double>
+      <double>634.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>725.0</double>
+     <double>634.0</double>
      <double>0.0</double>
     </void>
    </object>
@@ -370,7 +370,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double13"/>
-      <double>757.0</double>
+      <double>666.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -381,7 +381,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>757.0</double>
+     <double>666.0</double>
      <double>423.0</double>
     </void>
    </object>
@@ -393,7 +393,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double14"/>
-      <double>515.0</double>
+      <double>496.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -404,7 +404,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>515.0</double>
+     <double>496.0</double>
      <double>477.0</double>
     </void>
    </object>
@@ -416,7 +416,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double15"/>
-      <double>523.0</double>
+      <double>504.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -427,7 +427,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>523.0</double>
+     <double>504.0</double>
      <double>506.0</double>
     </void>
    </object>
@@ -435,7 +435,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>move(Move)</string>
+     <string>executeMoves(List:Move)</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -462,7 +462,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>showNewRobotPosition(Position)</string>
+     <string>traceRealTrajectory(Position)</string>
     </void>
    </object>
    <object idref="ActivationBarNode3"/>
