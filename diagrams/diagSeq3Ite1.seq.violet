@@ -56,6 +56,13 @@ Station</string>
     </void>
     <void method="addChild">
      <object class="com.horstmann.violet.CallNode" id="ActivationBarNode2">
+      <void method="addChild">
+       <object class="com.horstmann.violet.CallNode" id="ActivationBarNode3">
+        <void property="implicitParameter">
+         <object idref="LifelineNode1"/>
+        </void>
+       </object>
+      </void>
       <void property="implicitParameter">
        <object idref="LifelineNode1"/>
       </void>
@@ -148,10 +155,33 @@ Station</string>
     </void>
    </object>
   </void>
+  <void method="addNode">
+   <object idref="ActivationBarNode3"/>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double5">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double5"/>
+      <double>446.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double5"/>
+      <double>187.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>446.0</double>
+     <double>187.0</double>
+    </void>
+   </object>
+  </void>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>showTrajectory(List:Move)</string>
+     <string>sendTrajectory(List:Move)</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -165,6 +195,15 @@ Station</string>
    </object>
    <object idref="ActivationBarNode0"/>
    <object idref="ActivationBarNode1"/>
+  </void>
+  <void method="connect">
+   <object class="com.horstmann.violet.CallEdge">
+    <void property="middleLabel">
+     <string>showTrajectory(List:Move)</string>
+    </void>
+   </object>
+   <object idref="ActivationBarNode2"/>
+   <object idref="ActivationBarNode3"/>
   </void>
  </object>
 </java>

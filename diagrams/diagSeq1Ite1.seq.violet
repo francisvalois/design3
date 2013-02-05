@@ -287,7 +287,7 @@
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>startLoopMessage()</string>
+     <string>sendStartLoopMessage()</string>
     </void>
    </object>
    <object idref="ActivationBarNode1"/>
