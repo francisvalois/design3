@@ -6,5 +6,69 @@
 % modifié par Francis Valois, Université Laval
 % 31/01/2011 - version 1.0 - Création du document
 
-\chapter{Description des cas d’utilisation}
+\chapter{Description des cas d'utilisation}
 \label{s:utilisation}
+Cette section contient un résumé de chaque cas d'utilisation et est divisée en trois sous sections: les cas d'utilisation en lien à l'usager, à la station de base et au robot. 
+Voir le diagramme des cas d'utilisation en annexe \ref{use_cases_diagram}.
+\section{Cas d'utilisation en lien avec l'usager}
+\subsection{Lancer le signal de départ}
+\subsection{Entrer les coordonnées initiales du robot}
+\subsection{Observer le mesage de confirmation du lancement de la tâche}
+\subsection{Observer le message de succès ou d'erreur}
+\subsection{Observer le temps pour effectuer la tâche}
+\subsection{Observer la solution du sudocube, ainsi que le chiffre dans le carré rouge}
+\subsection{Observer la trajectoire prévue du robot}
+\section{Cas d'utilisation en lien avec la station de base}
+\subsection{Transmettre le message de lancement de la tâche}
+La station doit transmettre par connexion sans fil un message indiquant de lancer une nouvelle tâche au robot.
+\subsection{Recevoir et afficher  le message de confirmation du lancement de la tâche}
+Le station doit être capable de recevoir à l'aide d'une connexion sans-fil un message provenant du robot, confirmant que la tâche sera lancée et afficher un message de confirmation pour l'usager.
+\subsection{Recevoir la trajectoire calculée par le robot}
+La station de base doit être capable de recevoir par connexion sans-fil un message du robot contenant la trajectoire que le robot prévois emprunter et de l'enregistrer.
+\subsection{Afficher la trajectoire prévue et réelle du robot}
+Le trajectoire reçu par le robot doit être affiché à l'écran. De plus, à l'aide de données contenant la position du robot transmis fréquemment par ce dernier à la station de base, la station peut afficher, en comparaison à la trajectoire prévue, la trajectoire réelle du robot.
+\subsection{Recevoir la solution du sudocube}
+La station de base doit être capable de recevoir et d'enregistrer la solution du sudocube transmis par le robot.
+\subsection{Afficher la solution du sudocube et le chiffre dans le carré rouge}
+La station de base doit être capable d'afficher une image du sudobcube résolu et indiquer à l'écran le chiffre qui se trouve dans la case rouge du sudocube.
+\subsection{Recevoir le signal de fin de tâche}
+La station de base doit être capable de recevoir le message de fin de tâche transmis par le robot.
+\subsection{Afficher le temps d'exécution de la tâche}
+La station de base doit être en mesure d'afficher à l'écran le temps d'exécution de la tâche.
+\subsection{Afficher le message confirmant que la tâche a été complété avec succès ou a échoué}
+La station de base doit afficher un message à l'écran confirmant que la tâche a été complété avec succès ou un message d'échec si cette dernière a pris de plus de 10 minutes pour s'exécuter.
+\section{Cas d'utilisation en lien avec le robot}
+\subsection{Confirmer la réception du signal de départ}
+Le robot reçoit et décode le message transmis par connexion sans-fil à partir de la station de base qui indique au robot de lancer l'exécution d'une nouvelle tâche. Celui-ci doit ensuite transmettre un message de confirmation (encore par connexion sans-fil) à la station de base.
+\subsection{Se localiser}
+Le robot doit en tout temps être capable de déterminer sa position et son orientation, ce qu'il lui permet de connaître l'emplacement relatif à sa position de l'antenne et des sudocubes. De plus, il doit transmettre ces données à la station de base de façon régulière.
+\subsection{Décoder la transmission de l'antenne}
+Le robot doit se déplacer au dessus de l'antenne et capter le signal transmis celle-ci et le décoder pour trouver les paramètres indiquant le sudocube ciblé et l'orientation et la taille du chiffre à dessiner. 
+\subsection{Confirmer les informations de l'antenne}
+Si le message de l'antenne a pu être décodé avec succès, le robot transmet les paramètres trouvés, suite au décodage du signal de l'antenne, à la station de base.
+\subsection{Afficher les informations de l'antenne}
+Les paramètres trouvés sont affichés sur un écran LCD installé sur le robot.
+\subsection{Détecter les obstacles}
+Le robot doit être en mesure de détecter la position des deux obstacles disposés entre les deux zones principales du terrain, ainsi que les limites (murs) du terrain.
+\subsection{Déterminer le chemin optimal}
+En connaissant la position des obstacles, le robot doit calculer la trajectoire optimale qu'il doit emprunter pour ce rendre d'un point à un autre (ou d'une zone du terrain à une autre).
+\subsection{Transmettre la trajectoire à la station de base}
+Le robot doit transmettre à la station de base la chemin optimal que prévoit emprunter le robot pour passer d'une zone du terrain à une autre.
+\subsection{Se déplacer vers le bon sudocube en évitant les obstacles}
+En suivant la trajectoire optimale, le robot doit pouvoir se déplacer de la zone "locale" à la zone "visiteur" et s'orienter vers le sudocube indiqué par le signal de l'antenne décodé tout en évitant les obstacles.
+\subsection{Prendre une image du bon sudocube}
+Le robot prend, à l'aide de sa caméra, une image du sudocube indiqué par les paramètres décodés. L'image est alors enregistrée sur le disque dure du Mac Mini du robot.
+\subsection{Résoudre le sudocube et identifier le chiffre dan le carré rouge}
+Le robot doit effectuer des traitements sur l'image du sudocube pour le modéliser et ensuite le résoudre. Il identifie également l'emplacement de la case rouge à l'intérieur du sudocube et donc le chiffre qui s'y trouve.
+\subsection{Transmettre les informations du sudocube résolu à la station de base}
+Le robot doit transmettre, par connexion sans-fil, le sudocube résolu et le chiffre prélevé dans la case rouge à la station de base.
+\subsection{Se déplacer vers l'aire de dessin}
+En suivant une trajectoire optimale, le robot doit se déplacer et atteindre l'air de dessin tout en évitant les obstacles.
+\subsection{Dessiner, en suivant les consignes, le chiffre prélevé dans le carré rouge}
+Le robot doit descendre le préhenseur du crayon une foit dans l'air de dessin et se déplacer de façon à dessiner le chiffre trouvé dans la case rouge du sudocube tout en suivant les dimensions exigées et les paramètres décodés.
+\subsection{Confirmer la fin de la tâche}
+Une fois la tâche terminée, le robot doit transmettre par connexion sans-fil une message à la station de base confirmant que la tâche a été complété avec succès.
+\subsection{Sortir de la zone de dessin et allumer la LED à la fin de la tâche}
+Une fois le message de fin de tâche transmis, le robot doit sortir de l'air de dessin et allumer une LED qui est installée sur le robot.
+\subsection{Lancer une nouvelle tâche s'il reste du temps}
+Si le temps alloué pour la compétition (10 minutes) n'est pas écoulé, le robot doit commencer une nouvelle tâche.
