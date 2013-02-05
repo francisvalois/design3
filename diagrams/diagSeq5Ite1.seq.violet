@@ -577,7 +577,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>findPathBetween(robot:Position, startDrawing:Position):List:Move</string>
+     <string>findPathBetween(robot:Position, drawingStart:Position):List:Move</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -586,7 +586,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>move(startDrawing:List:Move)</string>
+     <string>executeMoves(drawingStart:List:Move)</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -604,7 +604,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>getDirectionsFor(LoopGoal):startDrawing:Position, drawing List:Move</string>
+     <string>getDirectionsFor(LoopGoal):drawingStart:Position, drawing List:Move</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -613,7 +613,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>move(drawing:List:Move)</string>
+     <string>executeMoves(drawing:List:Move)</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -640,7 +640,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>move(List:Move)</string>
+     <string>executeMoves(List:Move)</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
