@@ -3,7 +3,8 @@
 PKG = 'microcontroller'
 import roslib; roslib.load_manifest(PKG)
 
-
+import serial
+import io
 import rospy
 import sys
 from microcontroller.srv import *
@@ -39,6 +40,33 @@ def handleExecuteMove(req):
     print req.angle
     print "and distance of \r"
     print req.distance
+
+    commande="00000000"
+    if(req.angle!=0):
+        angle_abs = int(abs(req.angle))
+        if(req.angle > 0): #Si angle positif
+            if(abs(req.angle) > 99): #Si un angle de plus de 2 digits
+            	commande="TP"+str(angle_abs)
+            else:
+        	print(angle_abs)
+                commande="TP0"+str(angle_abs)
+        else: 
+            if(abs(req.angle) > 99):
+            	commande="TN"+str(angle_abs)
+            else:
+                commande="TN0"+str(angle_abs)
+        commande+="000"
+    print(commande)
+    ser = serial.Serial()
+    ser.port = ('/dev/ttyUSB0')
+    ser.baudrate = 115200
+    ser.parity = serial.PARITY_EVEN
+    ser.stopbits = 1
+    ser.timeout = 2
+    ser.open()
+
+    ser.write(commande)
+    ser.close()
     
     return ExecuteMoveResponse()
 
