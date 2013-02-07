@@ -1,7 +1,11 @@
 Notes pour DPF_alternatif
 
--Si on met le contrôle du crayon dans communication, on doit y mettre le contrôle du moteur et toutes les données gérées par le ucontroller
--Ok pour ajout de ''Localisation", peut-on l'intégrer à la vision en soi
--Vérifier si des critères chiffrables peuvent être incorporer
--Vérifier les exigences
--Vérifier si les corrélations sont Ok
+-Si on met le contrÃ´le du crayon dans communication, on doit y mettre le contrÃ´le du moteur et toutes les donnÃ©es gÃ©rÃ©es par le ucontroller
+-Ok pour ajout de ''Localisation", peut-on l'intÃ©grer Ã  la vision en soi
+-VÃ©rifier si des critÃ¨res chiffrables peuvent Ãªtre incorporer
+-VÃ©rifier les exigences
+-VÃ©rifier si les corrÃ©lations sont Ok
+
+-------------------------------------------------
+
+- Dans communication, ma logique
