@@ -32,18 +32,12 @@
 *.tdo
 
 *.*~
+*~$*.*
 .DS_Store
 *.fls
 bin
 devel
 install
 build
-
-
+Thumbs.db 
 *.fls
-
-*.fls
-
-meeting/~$GestionHedbo_Semaine2.xlsx
-
-various/~$DPF.xlsx
