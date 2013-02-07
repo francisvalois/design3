@@ -29,7 +29,7 @@ int main(int, char**)
         imshow("pic", frame);
 
 		int keyPressed = waitKey(30);
-		if (keyPressed == 13) {
+		if (keyPressed == 13 | keyPressed == 10) {
 			counter++;
 			std::string result;
 			std::stringstream sstm;
