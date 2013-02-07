@@ -19,7 +19,7 @@ done
 
 #Récupération de l'addresse ip local
 echo "-----RÉCUPÉRATION DE L'ADRESSE IP"
-ipAddress=$(ifconfig wlan0 | grep 'inet adr:' | cut -d: -f2 | awk '{ print $1}')
+ipAddress=$(ifconfig wlan0 | grep 'inet ' | awk '{ print $2}')
 echo $ipAddress
 
 #L'adresse ip est envoyé sur pastebin
