@@ -41,3 +41,4 @@ install
 build
 Thumbs.db 
 *.fls
+*.swp
