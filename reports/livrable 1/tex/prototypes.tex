@@ -8,3 +8,15 @@
 
 \chapter{Description des prototypes}
 \label{s:prototypes}
+\begin{enumerate}
+
+\item préhenseur \\
+
+Comme dispositif pour le traçage des dessins par le robot, nous opterons pour la solution la plus simple et robuste qui soit. Afin d’éviter d’augmenter inutilement la charge de travail du microcontrôleur, nous avons décidé d’éviter d’utiliser des solutions complexes qui pourraient exiger la production d’un signal particulier par le microcontrôleur. Le signal de sortie que devra produire le celui-ci sera simplement un signal binaire : « 1» lorsque le crayon devra être en mode traçage et « 0 » lorsque le crayon sera soulevé et donc en mode « attente ». Pour maintenir le crayon en position « attente » durant la durée du trajet, nous utiliserons un système de maintien magnétique qui gardera le crayon en position relevé lorsqu’il recevra le signal « 1 » logique. Pour abaisser le crayon et ainsi entrer en mode traçage, nous utiliserons un ressort à faible constante de rappel qui entrera en jeu lorsque le système de maintien magnétique relâchera le crayon « 0 » logique. Il est bien important que la constante de rappel du ressort soit faible pour ne pas briser la mine lors du contact de celle-ci avec la surface de traçage. La constante de rappelle du ressort devra également être inférieur à la force exercée par le système de maintien magnétique qui ramènera le crayon en mode attente une fois le dessin terminé.
+
+\item Récepteur et décodeur du siganl manchester \\
+
+Pour le récepteur du signal d’antenne, nous utiliserons un « tone decoder » qui est utilisé dans de nombreuses applications qui nécessitent la reconnaissance de certaines tonalités bien précises. Comme nous avons besoins de détecter une série tonalités identique qui se suit et forme un code, ce genre de dispositif nous convient parfaitement. Le « tone decoder » recevra le signal émis par l’antenne et détectera si le la tonalité inaudible est émise ou non. Lorsque la fréquence (ou tonalité) sera reçue par le récepteur, celui-ci présentera zéro volt en sortie et à l’opposé, lorsque le récepteur ne détectera pas la fréquence ciblée, il présentera 5V à sa sortie. Il exécutera ces opérations d’une façon suffisamment rapide pour que le segment binaire reçu soit exactement le même que celui transmis, mais complètement opposé étant donné la configuration logique du « tone decoder ».  Ce message sera ensuite inversé par l’unité de traitement suivante et traité pour que le robot exécute la tâche adéquate. L’avantage de cette approche est que le « tone decoder » est un circuit intégré très robuste aux perturbations magnétiques de son environnement, il est peu énergivore et très compact.
+
+
+\end{enumerate}
