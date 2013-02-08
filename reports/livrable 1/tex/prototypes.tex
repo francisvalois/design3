@@ -37,4 +37,8 @@ En ce qui a trait au système d'alimentation de l'électronique embarquée, l'al
 \section{Connexion sans fil}\label{s:sansfil}
 La communication sans-fil permet l’échange d’information entre le mac-mini et la station de base.  La vérification de cette fonctionnalité est donc très importante.
 On fait le premier test validant la connexion sans fil du mac-mini au réseau de l’université. Ce test est réussi et la connexion fonctionne automatiquement après l’ajout d’un script dans le fichier rc.local.
-Ensuite, on fait un autre test qui vérifie de la communication sans fil entre le mac-mini et la station de base. On envoie un ‘Ping ‘ de la station de base au mac-mini, ce dernier reçoit bien une réponse. Le contraire fonctionne aussi, quand on effectue un ‘Ping’ du mac-mini à la station de base. Ces tests sont faits sur linux avec les adresses IP fourni par le réseau de l’université Laval.
+Ensuite, on fait un autre test qui vérifie de la communication sans fil entre le mac-mini et la station de base. On envoie un ‘Ping ‘ de la station de base au mac-mini, ce dernier reçoit bien une réponse. Le contraire fonctionne aussi, quand on effectue un ‘Ping’ du mac-mini à la station de base. Ces tests sont faits sur linux avec les adresses IP fourni par le réseau de l’université.
+
+\section{Calcul et affichage de la trajectoire}\label{s:traj}
+Afin de trouver une trajectoire correcte, rapide et qui évite tous les obstacles, il faut trouver le chemin le plus court entre deux nœuds et évaluer si un chemin existe entre ces deux derniers.  Pour atteindre ces objectifs, on va utiliser le path-planning  avec l’algorithme A* qui est simple et répond à tous nos besoins.\\
+Pour l’affichage de la trajectoire en temps réel, le robot transmet sa position(x,y) sous forme de message à la station de base (au minimum toutes les  15 secondes entre chaque position) en utilisant la connexion Wifi.
