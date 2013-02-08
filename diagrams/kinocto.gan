@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Untitled Gantt Project" company="" webLink="http://" view-date="2013-01-29" view-index="0" gantt-divider-location="446" resource-divider-location="420" version="2.0">
     <description/>
-    <view zooming-state="default:2" id="gantt-chart"/>
+    <view zooming-state="default:3" id="gantt-chart"/>
     <view id="resource-table">
-        <field id="0" name="Name" width="42" order="0"/>
-        <field id="1" name="Default role" width="31" order="1"/>
-        <field id="tpc0" name="" width="26" order="2"/>
+        <field id="0" name="Name" width="35" order="0"/>
+        <field id="1" name="Default role" width="32" order="1"/>
+        <field id="tpc0" name="" width="31" order="2"/>
     </view>
     <!-- -->
     <calendars>
@@ -14,7 +14,7 @@
             <day-type id="1"/>
             <calendar id="1" name="default">
                 <default-week sun="0" mon="0" tue="0" wed="0" thu="0" fri="0" sat="0"/>
-                <only-show-weekends value="false"/>
+                <only-show-weekends value="true"/>
                 <overriden-day-types/>
                 <days/>
             </calendar>
@@ -33,137 +33,211 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="0" name="Vision numérique" color="#8cb6ce" meeting="false" start="2013-01-31" duration="3" complete="0" expand="true">
-            <task id="20" name="Détecter les obstacles" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="21" name="Lire le cube" color="#8cb6ce" meeting="false" start="2013-01-31" duration="1" complete="0" expand="true">
-                <task id="120" name="Installer OpenCV" color="#8cb6ce" meeting="false" start="2013-01-31" duration="1" complete="0" expand="true"/>
+        <task id="0" name="Vision numérique" color="#8cb6ce" meeting="false" start="2013-01-29" duration="26" complete="51" expand="true">
+            <task id="189" name="Recherche sur la Kinect / Librairies" color="#8cb6ce" meeting="false" start="2013-01-29" duration="8" complete="100" expand="true">
+                <depend id="197" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="68" name="Localiser le robot" color="#8cb6ce" meeting="false" start="2013-01-31" duration="1" complete="0" expand="true">
-                <task id="121" name="Tester la Kinect" color="#8cb6ce" meeting="false" start="2013-01-31" duration="1" complete="0" expand="true"/>
+            <task id="197" name="Prototypage de la Kinect" color="#8cb6ce" meeting="false" start="2013-02-06" duration="3" complete="100" expand="true"/>
+            <task id="20" name="Détecter les obstacles" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true"/>
+            <task id="21" name="Lire le cube" color="#8cb6ce" meeting="false" start="2013-02-11" duration="13" complete="0" expand="true">
+                <depend id="27" type="2" difference="0" hardness="Strong"/>
+                <task id="307" name="Développer l'algorithme de lecture du cube" color="#8cb6ce" meeting="false" start="2013-02-11" duration="12" complete="0" expand="true">
+                    <depend id="312" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="312" name="Tester l'algorithme de lecture du cube" color="#8cb6ce" meeting="false" start="2013-02-23" duration="1" complete="0" expand="true"/>
+            </task>
+            <task id="68" name="Localiser le robot" color="#8cb6ce" meeting="false" start="2013-02-05" duration="19" complete="66" expand="true">
+                <depend id="37" type="2" difference="0" hardness="Strong"/>
+                <task id="121" name="Tester la Kinect" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="100" expand="true"/>
+                <task id="291" name="Concevoir l'algorithme de localisation du robot" color="#8cb6ce" meeting="false" start="2013-02-11" duration="12" complete="0" expand="true">
+                    <depend id="327" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="327" name="Tester l'algorithme de localisation du robot" color="#8cb6ce" meeting="false" start="2013-02-23" duration="1" complete="0" expand="true"/>
             </task>
         </task>
-        <task id="1" name="Communication" color="#8cb6ce" meeting="false" start="2013-01-29" duration="11" complete="31" expand="true">
-            <task id="12" name="Recevoir le signal de l'antenne" color="#8cb6ce" meeting="false" start="2013-01-31" duration="3" complete="0" expand="true">
-                <task id="112" name="Concevoir un circuit de réception du signal" color="#8cb6ce" meeting="false" start="2013-01-31" duration="1" complete="0" expand="true">
+        <task id="1" name="Communication" color="#8cb6ce" meeting="false" start="2013-01-29" duration="34" complete="44" expand="true">
+            <task id="187" name="Choix du microcontrôleur" color="#8cb6ce" meeting="false" start="2013-01-29" duration="7" complete="100" expand="true"/>
+            <task id="12" name="Recevoir le signal de l'antenne" color="#8cb6ce" meeting="false" start="2013-01-29" duration="23" complete="77" expand="false">
+                <task id="112" name="Concevoir un circuit de réception du signal" color="#8cb6ce" meeting="false" start="2013-01-29" duration="7" complete="100" expand="true">
                     <depend id="113" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="113" name="Implémenter le circuit de réception" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="0" expand="true">
+                <task id="113" name="Implémenter le circuit de réception" color="#8cb6ce" meeting="false" start="2013-02-05" duration="15" complete="0" expand="true">
                     <depend id="114" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="114" name="Tester la communication avec le microcontrôleur" color="#8cb6ce" meeting="false" start="2013-02-02" duration="1" complete="0" expand="true"/>
+                <task id="114" name="Tester la communication avec le microcontrôleur" color="#8cb6ce" meeting="false" start="2013-02-20" duration="1" complete="0" expand="true">
+                    <depend id="26" type="2" difference="0" hardness="Strong"/>
+                </task>
             </task>
-            <task id="13" name="Communiquer entre le robot et la station de base" color="#8cb6ce" meeting="false" start="2013-01-31" duration="1" complete="0" expand="true">
-                <task id="117" name="Tester la communication WiFi" color="#8cb6ce" meeting="false" start="2013-01-31" duration="1" complete="0" expand="true"/>
+            <task id="13" name="Communiquer entre le robot et la station de base" color="#8cb6ce" meeting="false" start="2013-02-11" duration="21" complete="0" expand="true">
+                <task id="117" name="Tester la communication WiFi" color="#8cb6ce" meeting="false" start="2013-02-11" duration="21" complete="0" expand="true"/>
             </task>
-            <task id="15" name="Communiquer entre le Mac mini et le microcontôleur" color="#8cb6ce" meeting="false" start="2013-01-29" duration="9" complete="71" expand="true">
+            <task id="15" name="Communiquer entre le Mac mini et le microcontôleur" color="#8cb6ce" meeting="false" start="2013-01-29" duration="26" complete="71" expand="true">
+                <depend id="26" type="2" difference="0" hardness="Strong"/>
                 <task id="77" name="Tester le port UART sur le microcontrôleur" color="#8cb6ce" meeting="false" start="2013-01-29" duration="5" complete="100" expand="true">
                     <depend id="104" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="78" name="Coder un terminal série avec bits de parité sur le Mac mini" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true">
+                <task id="78" name="Coder un terminal série avec bits de parité sur le Mac mini" color="#8cb6ce" meeting="false" start="2013-02-11" duration="12" complete="0" expand="true">
                     <depend id="104" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="104" name="Tester la communication entre Mac mini et microcontrôleur" color="#8cb6ce" meeting="false" start="2013-02-06" duration="1" complete="0" expand="true"/>
+                <task id="104" name="Tester la communication entre Mac mini et microcontrôleur" color="#8cb6ce" meeting="false" start="2013-02-23" duration="1" complete="0" expand="true"/>
             </task>
-            <task id="16" name="Commander les moteurs" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="0" expand="true">
-                <task id="79" name="Tester le pwm sur le microcontrôler" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true">
+            <task id="16" name="Commander les moteurs" color="#8cb6ce" meeting="false" start="2013-02-11" duration="10" complete="0" expand="true">
+                <task id="79" name="Tester le pwm sur le microcontrôler" color="#8cb6ce" meeting="false" start="2013-02-11" duration="5" complete="0" expand="true">
                     <depend id="81" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="80" name="Tester l'encodeur à quadrature sur le microcontrôleur" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true">
+                <task id="80" name="Tester l'encodeur à quadrature sur le microcontrôleur" color="#8cb6ce" meeting="false" start="2013-02-11" duration="5" complete="0" expand="true">
                     <depend id="81" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="81" name="Faire l'identification des moteurs" color="#8cb6ce" meeting="false" start="2013-02-06" duration="1" complete="0" expand="true">
+                <task id="325" name="Tester des solutions pour les 2 QEI manquants" color="#8cb6ce" meeting="false" start="2013-02-11" duration="5" complete="0" expand="true"/>
+                <task id="81" name="Faire l'identification des moteurs" color="#8cb6ce" meeting="false" start="2013-02-16" duration="1" complete="0" expand="true">
                     <depend id="82" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="82" name="Concevoir l'asservissement des moteurs" color="#8cb6ce" meeting="false" start="2013-02-07" duration="1" complete="0" expand="true">
+                <task id="82" name="Concevoir l'asservissement des moteurs" color="#8cb6ce" meeting="false" start="2013-02-17" duration="3" complete="0" expand="true">
                     <depend id="102" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="102" name="Tester l'asservissement" color="#8cb6ce" meeting="false" start="2013-02-08" duration="1" complete="0" expand="true"/>
+                <task id="102" name="Tester l'asservissement" color="#8cb6ce" meeting="false" start="2013-02-20" duration="1" complete="0" expand="true">
+                    <depend id="24" type="2" difference="0" hardness="Strong"/>
+                </task>
             </task>
-            <task id="17" name="Transmettre les images de la caméra vers le Mac mini" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true">
-                <task id="98" name="Tester la caméra" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true"/>
+            <task id="17" name="Transmettre les images de la caméra vers le Mac mini" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true">
+                <task id="98" name="Tester la caméra" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true"/>
             </task>
-            <task id="18" name="Contrôler la position de la caméra" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true"/>
-            <task id="19" name="Contrôler le préhenseur du crayon" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true">
-                <task id="105" name="Concevoir le préhenseur" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true"/>
-                <task id="106" name="Implémenter le préhenseur" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true"/>
-                <task id="107" name="Concevoir un circuit de contrôle du préhenseur" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true"/>
-                <task id="108" name="Tester le préhenseur" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="0" expand="true"/>
+            <task id="18" name="Contrôler la position de la caméra" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true"/>
+            <task id="19" name="Contrôler le préhenseur du crayon" color="#8cb6ce" meeting="false" start="2013-02-05" duration="8" complete="57" expand="true">
+                <task id="105" name="Concevoir le préhenseur" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="100" expand="true">
+                    <depend id="106" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="106" name="Implémenter le préhenseur" color="#8cb6ce" meeting="false" start="2013-02-09" duration="1" complete="0" expand="true"/>
+                <task id="107" name="Concevoir un circuit de contrôle du préhenseur" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true">
+                    <depend id="108" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="108" name="Tester le préhenseur" color="#8cb6ce" meeting="false" start="2013-02-12" duration="1" complete="0" expand="true"/>
             </task>
         </task>
-        <task id="2" name="Déplacement" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="0" expand="true">
-            <task id="22" name="Se déplacer sans toucher les obstacles" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="0" expand="true">
-                <task id="99" name="Tester les moteurs" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="0" expand="true"/>
+        <task id="2" name="Déplacement" color="#8cb6ce" meeting="false" start="2013-01-29" duration="25" complete="92" expand="true">
+            <task id="22" name="Se déplacer sans toucher les obstacles" color="#8cb6ce" meeting="false" start="2013-01-29" duration="13" complete="100" expand="true">
+                <task id="99" name="Tester les moteurs" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="100" expand="true"/>
+                <task id="190" name="Représentation spaciale de la table dans le logiciel" color="#8cb6ce" meeting="false" start="2013-01-29" duration="13" complete="100" expand="true"/>
+                <task id="193" name="Préparation de l'algorithme de pathfinding" color="#8cb6ce" meeting="false" start="2013-01-29" duration="13" complete="100" expand="true">
+                    <depend id="36" type="2" difference="0" hardness="Strong"/>
+                </task>
+            </task>
+            <task id="253" name="Montage mécanique" color="#8cb6ce" meeting="false" start="2013-02-11" duration="12" complete="0" expand="true"/>
+        </task>
+        <task id="3" name="Traitement numérique" color="#8cb6ce" meeting="false" start="2013-02-01" duration="24" complete="25" expand="true">
+            <task id="24" name="Contrôler le robot pour le dessin" color="#8cb6ce" meeting="false" start="2013-02-21" duration="1" complete="0" expand="true"/>
+            <task id="25" name="Décoder le signal d'antenne" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="100" expand="true">
+                <task id="100" name="Concevoir le circuit de décodage" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="100" expand="true"/>
+                <task id="101" name="Implémenter le circuit de décodage" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="100" expand="true"/>
+            </task>
+            <task id="26" name="Choisir le cube selon le signal d'antenne" color="#8cb6ce" meeting="false" start="2013-02-24" duration="1" complete="0" expand="true"/>
+            <task id="27" name="Résoudre le sudocube" color="#8cb6ce" meeting="false" start="2013-02-24" duration="1" complete="0" expand="true">
+                <depend id="34" type="2" difference="0" hardness="Strong"/>
             </task>
         </task>
-        <task id="3" name="Traitement numérique" color="#8cb6ce" meeting="false" start="2013-02-01" duration="2" complete="0" expand="true">
-            <task id="24" name="Contrôler le robot pour le dessin" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="25" name="Décoder le signal d'antenne" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="0" expand="true">
-                <task id="100" name="Concevoir le circuit de décodage" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="0" expand="true"/>
-                <task id="101" name="Implémenter le circuit de décodage" color="#8cb6ce" meeting="false" start="2013-02-01" duration="1" complete="0" expand="true"/>
+        <task id="4" name="Alimentation" color="#8cb6ce" meeting="false" start="2013-02-01" duration="20" complete="55" expand="true">
+            <task id="29" name="Utiliser une pile rechargeable" color="#8cb6ce" meeting="false" start="2013-02-01" duration="19" complete="52" expand="true">
+                <task id="84" name="Sélectionner et acheter une pile" color="#8cb6ce" meeting="false" start="2013-02-01" duration="2" complete="100" expand="true"/>
+                <task id="85" name="Concevoir un circuit d'alimentation électrique" color="#8cb6ce" meeting="false" start="2013-02-05" duration="7" complete="100" expand="true">
+                    <depend id="199" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="199" name="Implémenter le circuit d'alimentation" color="#8cb6ce" meeting="false" start="2013-02-12" duration="8" complete="0" expand="true">
+                    <depend id="30" type="2" difference="0" hardness="Strong"/>
+                    <depend id="32" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="168" name="Concevoir un support pour la batterie" color="#8cb6ce" meeting="false" start="2013-02-04" duration="8" complete="50" expand="true"/>
             </task>
-            <task id="26" name="Choisir le cube selon le signal d'antenne" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="27" name="Résoudre le sudocube" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="30" name="Alimenter les moteurs" color="#8cb6ce" meeting="false" start="2013-02-20" duration="1" complete="0" expand="true"/>
+            <task id="31" name="Alimenter l'ordinateur (boost 24V)" color="#8cb6ce" meeting="false" start="2013-02-04" duration="4" complete="100" expand="true"/>
+            <task id="32" name="Alimenter les différents périphériques" color="#8cb6ce" meeting="false" start="2013-02-20" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="4" name="Alimentation" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
-            <task id="29" name="Utiliser une pile rechargeable" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
-                <task id="84" name="Sélectionner et acheter une pile" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-                <task id="85" name="Concevoir un système d'alimentation électrique" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        <task id="5" name="Affichage" color="#8cb6ce" meeting="false" start="2013-01-29" duration="28" complete="45" expand="true">
+            <task id="34" name="Afficher le cube résolu" color="#8cb6ce" meeting="false" start="2013-02-25" duration="1" complete="0" expand="true"/>
+            <task id="35" name="Allumer la DEL lorsque tâche complétée" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true">
+                <task id="88" name="Faire un circuit pour la DEL" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true"/>
             </task>
-            <task id="30" name="Alimenter les moteurs" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="31" name="Alimenter l'ordinateur" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="32" name="Alimenter les différents périphériques" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-        </task>
-        <task id="5" name="Affichage" color="#8cb6ce" meeting="false" start="2013-01-29" duration="7" complete="50" expand="true">
-            <task id="34" name="Afficher le cube résolu" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="35" name="Allumer la DEL lorsque tâche complétée" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
-                <task id="88" name="Faire un circuit pour la DEL" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            </task>
-            <task id="36" name="Afficher la trajectoire optimale calculée" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="37" name="Afficher la position réelle" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="38" name="Afficher le message de fin" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="36" name="Afficher la trajectoire optimale calculée" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true"/>
+            <task id="37" name="Afficher la position réelle" color="#8cb6ce" meeting="false" start="2013-02-24" duration="1" complete="0" expand="true"/>
+            <task id="38" name="Afficher le message de fin" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true"/>
             <task id="39" name="Afficher sur le LCD" color="#8cb6ce" meeting="false" start="2013-01-29" duration="5" complete="100" expand="true">
                 <task id="86" name="Tester le LCD" color="#8cb6ce" meeting="false" start="2013-01-29" duration="5" complete="100" expand="true"/>
             </task>
         </task>
-        <task id="7" name="Documentation" color="#8cb6ce" meeting="false" start="2013-01-26" duration="15" complete="51" expand="true">
-            <task id="43" name="DPF" color="#8cb6ce" meeting="false" start="2013-01-31" duration="6" complete="50" expand="true">
-                <task id="118" name="DPF itération 1" color="#8cb6ce" meeting="false" start="2013-01-31" duration="1" complete="0" expand="true"/>
+        <task id="7" name="Documentation" color="#8cb6ce" meeting="false" start="2013-01-26" duration="25" complete="72" expand="true">
+            <task id="43" name="DPF" color="#8cb6ce" meeting="false" start="2013-01-31" duration="6" complete="100" expand="true">
+                <task id="118" name="DPF itération 1" color="#8cb6ce" meeting="false" start="2013-01-31" duration="5" complete="100" expand="true">
+                    <depend id="119" type="2" difference="0" hardness="Strong"/>
+                </task>
                 <task id="119" name="DPF itération 2" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="100" expand="true"/>
             </task>
-            <task id="44" name="Diagramme de classes" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
-                <task id="89" name="Diagramme de classes itération 1" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-                <task id="90" name="Diagramme de classe itération 2" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="44" name="Diagramme de classes" color="#8cb6ce" meeting="false" start="2013-01-29" duration="12" complete="100" expand="true">
+                <task id="89" name="Diagramme de classes itération 1" color="#8cb6ce" meeting="false" start="2013-01-29" duration="7" complete="100" expand="true">
+                    <depend id="90" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="90" name="Diagramme de classe itération 2" color="#8cb6ce" meeting="false" start="2013-02-05" duration="5" complete="100" expand="true"/>
             </task>
-            <task id="45" name="Diagramme de contexte" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="46" name="Diagramme des cas d'utilisation" color="#8cb6ce" meeting="false" start="2013-01-26" duration="4" complete="50" expand="true">
-                <task id="151" name="Use Case itération 1" color="#8cb6ce" meeting="false" start="2013-01-26" duration="1" complete="100" expand="true"/>
-                <task id="152" name="Use Case itération 2" color="#8cb6ce" meeting="false" start="2013-01-29" duration="1" complete="0" expand="true"/>
+            <task id="45" name="Diagramme de contexte" color="#8cb6ce" meeting="false" start="2013-01-28" duration="12" complete="100" expand="true">
+                <task id="180" name="Diagramme de contexte itération 1" color="#8cb6ce" meeting="false" start="2013-01-28" duration="8" complete="100" expand="true">
+                    <depend id="181" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="181" name="Diagramme de contexte itération 2" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="100" expand="true"/>
             </task>
-            <task id="48" name="Diagramme de séquences" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="50" name="Diagramme des fonctionalités" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true">
-                <task id="91" name="Diagramme des fonctionalités itération 1" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-                <task id="92" name="Diagramme des fonctionalités itération 2" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+            <task id="46" name="Diagramme des cas d'utilisation" color="#8cb6ce" meeting="false" start="2013-01-26" duration="15" complete="100" expand="true">
+                <task id="151" name="Use Case itération 1" color="#8cb6ce" meeting="false" start="2013-01-26" duration="11" complete="100" expand="true">
+                    <depend id="152" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="152" name="Use Case itération 2" color="#8cb6ce" meeting="false" start="2013-02-06" duration="4" complete="100" expand="true"/>
             </task>
-            <task id="49" name="Description des prototypes" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="51" name="Diagramme physique" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="52" name="Registre de risques" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="53" name="Plan de tests" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="54" name="Plan d'intégration" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
-            <task id="58" name="Rapport" color="#8cb6ce" meeting="false" start="2013-01-29" duration="12" complete="91" expand="true">
+            <task id="48" name="Diagramme de séquences" color="#8cb6ce" meeting="false" start="2013-02-05" duration="1" complete="100" expand="true"/>
+            <task id="50" name="Diagramme des fonctionalités" color="#8cb6ce" meeting="false" start="2013-02-11" duration="2" complete="0" expand="true">
+                <task id="91" name="Diagramme des fonctionalités itération 1" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true">
+                    <depend id="92" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="92" name="Diagramme des fonctionalités itération 2" color="#8cb6ce" meeting="false" start="2013-02-12" duration="1" complete="0" expand="true"/>
+            </task>
+            <task id="49" name="Description des prototypes" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="100" expand="true">
+                <task id="211" name="Prototype - alimentation" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="100" expand="true"/>
+                <task id="213" name="Prototype - microcontrôleur" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="100" expand="true"/>
+                <task id="216" name="Prototype - antenne" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="100" expand="true"/>
+                <task id="218" name="Prototype - préhenseur" color="#8cb6ce" meeting="false" start="2013-02-05" duration="4" complete="100" expand="true"/>
+            </task>
+            <task id="51" name="Diagramme physique" color="#8cb6ce" meeting="false" start="2013-02-11" duration="9" complete="0" expand="true">
+                <task id="317" name="Diagramme physique itération 1" color="#8cb6ce" meeting="false" start="2013-02-11" duration="9" complete="0" expand="true"/>
+            </task>
+            <task id="52" name="Registre de risques" color="#8cb6ce" meeting="false" start="2013-02-11" duration="9" complete="0" expand="true">
+                <task id="321" name="Registre de risques itération 1" color="#8cb6ce" meeting="false" start="2013-02-11" duration="9" complete="0" expand="true"/>
+            </task>
+            <task id="53" name="Plan de tests" color="#8cb6ce" meeting="false" start="2013-02-11" duration="9" complete="0" expand="true">
+                <task id="323" name="Plan de tests itération 1" color="#8cb6ce" meeting="false" start="2013-02-11" duration="9" complete="0" expand="true"/>
+            </task>
+            <task id="54" name="Plan d'intégration" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true">
+                <depend id="11" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="58" name="Rapport1" color="#8cb6ce" meeting="false" start="2013-01-29" duration="13" complete="100" expand="true">
                 <task id="128" name="Ecrire les textes pour le livrable 1" color="#8cb6ce" meeting="false" start="2013-01-29" duration="11" complete="100" expand="true">
                     <depend id="129" type="2" difference="0" hardness="Strong"/>
+                    <depend id="255" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="129" name="Réviser le rapport 1" color="#8cb6ce" meeting="false" start="2013-02-09" duration="1" complete="0" expand="true"/>
+                <task id="303" name="Réviser les diagrammes" color="#8cb6ce" meeting="false" start="2013-02-07" duration="1" complete="100" expand="true">
+                    <depend id="255" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="255" name="Assemblage du rapport 1" color="#8cb6ce" meeting="false" start="2013-02-09" duration="2" complete="100" expand="true"/>
+                <task id="129" name="Réviser le rapport 1" color="#8cb6ce" meeting="false" start="2013-02-09" duration="2" complete="100" expand="true"/>
+            </task>
+            <task id="247" name="Présentations orales" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true">
+                <task id="248" name="Présentation livrable 2" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true">
+                    <task id="250" name="Gabarit powerpoint pour présentations" color="#8cb6ce" meeting="false" start="2013-02-11" duration="1" complete="0" expand="true"/>
+                </task>
             </task>
         </task>
-        <task id="8" name="Gestion" color="#8cb6ce" meeting="false" start="2013-01-29" duration="11" complete="62" expand="true">
-            <task id="42" name="diagramme de Gantt" color="#8cb6ce" meeting="false" start="2013-02-04" duration="5" complete="75" expand="true">
-                <task id="122" name="Gantt itération 1" color="#8cb6ce" meeting="false" start="2013-02-04" duration="5" complete="75" expand="true"/>
+        <task id="8" name="Gestion" color="#8cb6ce" meeting="false" start="2013-01-29" duration="15" complete="25" expand="true">
+            <task id="42" name="diagramme de Gantt" color="#8cb6ce" meeting="false" start="2013-02-04" duration="5" complete="100" expand="true">
+                <task id="122" name="Gantt itération 1" color="#8cb6ce" meeting="false" start="2013-02-04" duration="5" complete="100" expand="true"/>
             </task>
-            <task id="55" name="tableaux des tâches hebdomadaires" color="#8cb6ce" meeting="false" start="2013-01-29" duration="1" complete="0" expand="true">
-                <task id="161" name="semaine 1" color="#8cb6ce" meeting="false" start="2013-01-29" duration="1" complete="0" expand="true"/>
-                <task id="162" name="semaine 2" color="#8cb6ce" meeting="false" start="2013-01-29" duration="1" complete="0" expand="true"/>
-                <task id="163" name="semaine 3" color="#8cb6ce" meeting="false" start="2013-01-29" duration="1" complete="0" expand="true"/>
+            <task id="55" name="tableaux des tâches hebdomadaires" color="#8cb6ce" meeting="false" start="2013-01-29" duration="15" complete="0" expand="true">
+                <task id="161" name="semaine 1" color="#8cb6ce" meeting="true" start="2013-01-29" duration="1" complete="0" expand="true"/>
+                <task id="162" name="semaine 2" color="#8cb6ce" meeting="true" start="2013-02-05" duration="1" complete="0" expand="true"/>
+                <task id="163" name="semaine 3" color="#8cb6ce" meeting="true" start="2013-02-12" duration="1" complete="0" expand="true"/>
             </task>
         </task>
         <task id="9" name="Réunions" color="#8cb6ce" meeting="false" start="2013-01-25" duration="8" complete="0" expand="true">
@@ -177,7 +251,7 @@
             <task id="59" name="Livrable 3" color="#8cb6ce" meeting="true" start="2013-04-05" duration="1" complete="0" expand="true"/>
             <task id="60" name="Livrable 4" color="#8cb6ce" meeting="true" start="2013-04-19" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="11" name="Intégration" color="#8cb6ce" meeting="false" start="2013-02-04" duration="1" complete="0" expand="true"/>
+        <task id="11" name="Intégration" color="#8cb6ce" meeting="false" start="2013-02-12" duration="1" complete="0" expand="true"/>
         <task id="65" name="Concours" color="#8cb6ce" meeting="true" start="2013-04-18" duration="1" complete="0" expand="true"/>
         <task id="67" name="Reprise" color="#8cb6ce" meeting="true" start="2013-04-25" duration="1" complete="0" expand="true"/>
     </tasks>
@@ -215,20 +289,63 @@
         <allocation task-id="128" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
         <allocation task-id="122" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="10.0"/>
         <allocation task-id="151" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="15.0"/>
+        <allocation task-id="187" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="2.0"/>
+        <allocation task-id="213" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
+        <allocation task-id="129" resource-id="0" function="SoftwareDevelopment:2" responsible="false" load="10.0"/>
+        <allocation task-id="78" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
+        <allocation task-id="104" resource-id="0" function="SoftwareDevelopment:2" responsible="false" load="5.0"/>
+        <allocation task-id="325" resource-id="0" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
         <allocation task-id="119" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="10.0"/>
         <allocation task-id="128" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="5.0"/>
-        <allocation task-id="119" resource-id="2" function="Default:1" responsible="false" load="10.0"/>
+        <allocation task-id="89" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="3.0"/>
+        <allocation task-id="189" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="3.0"/>
+        <allocation task-id="197" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="4.0"/>
+        <allocation task-id="121" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="4.0"/>
+        <allocation task-id="119" resource-id="2" function="Default:1" responsible="false" load="11.0"/>
         <allocation task-id="128" resource-id="2" function="Default:1" responsible="false" load="5.0"/>
+        <allocation task-id="99" resource-id="2" function="Default:1" responsible="true" load="10.0"/>
+        <allocation task-id="105" resource-id="2" function="Default:1" responsible="true" load="3.0"/>
+        <allocation task-id="168" resource-id="2" function="Default:1" responsible="true" load="2.0"/>
+        <allocation task-id="85" resource-id="2" function="Default:1" responsible="true" load="2.0"/>
+        <allocation task-id="199" resource-id="2" function="Default:1" responsible="true" load="2.0"/>
+        <allocation task-id="129" resource-id="2" function="Default:1" responsible="false" load="25.0"/>
+        <allocation task-id="211" resource-id="2" function="Default:1" responsible="true" load="4.0"/>
+        <allocation task-id="92" resource-id="2" function="Default:1" responsible="true" load="4.0"/>
+        <allocation task-id="91" resource-id="2" function="Default:1" responsible="true" load="4.0"/>
         <allocation task-id="119" resource-id="3" function="SoftwareDevelopment:2" responsible="false" load="10.0"/>
+        <allocation task-id="112" resource-id="3" function="SoftwareDevelopment:2" responsible="false" load="2.0"/>
+        <allocation task-id="85" resource-id="3" function="SoftwareDevelopment:2" responsible="false" load="2.0"/>
+        <allocation task-id="84" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="17.0"/>
+        <allocation task-id="180" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="2.0"/>
+        <allocation task-id="216" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="4.0"/>
+        <allocation task-id="218" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="4.0"/>
+        <allocation task-id="31" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="4.0"/>
         <allocation task-id="119" resource-id="4" function="SoftwareDevelopment:2" responsible="false" load="10.0"/>
         <allocation task-id="128" resource-id="4" function="SoftwareDevelopment:2" responsible="false" load="5.0"/>
+        <allocation task-id="112" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="2.0"/>
+        <allocation task-id="85" resource-id="4" function="SoftwareDevelopment:2" responsible="false" load="2.0"/>
+        <allocation task-id="99" resource-id="4" function="SoftwareDevelopment:2" responsible="false" load="10.0"/>
+        <allocation task-id="129" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="16.0"/>
+        <allocation task-id="250" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="1.0"/>
+        <allocation task-id="253" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="1.0"/>
+        <allocation task-id="255" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="25.0"/>
         <allocation task-id="119" resource-id="5" function="SoftwareDevelopment:2" responsible="false" load="10.0"/>
         <allocation task-id="128" resource-id="5" function="SoftwareDevelopment:2" responsible="false" load="5.0"/>
         <allocation task-id="152" resource-id="5" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
+        <allocation task-id="181" resource-id="5" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
+        <allocation task-id="118" resource-id="5" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
+        <allocation task-id="78" resource-id="5" function="SoftwareDevelopment:2" responsible="false" load="5.0"/>
+        <allocation task-id="104" resource-id="5" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
+        <allocation task-id="303" resource-id="5" function="SoftwareDevelopment:2" responsible="true" load="5.0"/>
+        <allocation task-id="325" resource-id="5" function="SoftwareDevelopment:2" responsible="false" load="5.0"/>
         <allocation task-id="119" resource-id="6" function="SoftwareDevelopment:2" responsible="false" load="10.0"/>
         <allocation task-id="128" resource-id="6" function="SoftwareDevelopment:2" responsible="false" load="5.0"/>
+        <allocation task-id="190" resource-id="6" function="SoftwareDevelopment:2" responsible="true" load="1.0"/>
+        <allocation task-id="193" resource-id="6" function="SoftwareDevelopment:2" responsible="true" load="3.0"/>
+        <allocation task-id="90" resource-id="6" function="SoftwareDevelopment:2" responsible="true" load="3.0"/>
         <allocation task-id="119" resource-id="7" function="SoftwareDevelopment:2" responsible="false" load="10.0"/>
         <allocation task-id="128" resource-id="7" function="SoftwareDevelopment:2" responsible="false" load="5.0"/>
+        <allocation task-id="48" resource-id="7" function="SoftwareDevelopment:2" responsible="true" load="8.0"/>
     </allocations>
     <vacations/>
     <taskdisplaycolumns>
