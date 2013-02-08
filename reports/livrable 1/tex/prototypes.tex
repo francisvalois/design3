@@ -42,3 +42,14 @@ Ultérieurement nous utiliserons une api en c++ ou en python pour communiquer.
 \section{Calcul et affichage de la trajectoire}\label{s:traj}
 Afin de trouver une trajectoire correcte, rapide et qui évite tous les obstacles, il faut trouver le chemin le plus court entre deux nœuds et évaluer si un chemin existe entre ces deux derniers.  Pour atteindre ces objectifs, on va utiliser le path-planning  avec l’algorithme A* qui est simple et répond à tous nos besoins.\\
 Pour l’affichage de la trajectoire en temps réel, le robot transmet sa position(x,y) sous forme de message à la station de base (au minimum toutes les  15 secondes entre chaque position) en utilisant la connexion Wifi.
+
+\section{Lecture des informations d'un sudocube avec la caméra}
+Pour réaliser ce prototype, OpenCV fut utilisé ainsi que quelques photos des sudocubes de l’environnement de travail du robot. Le langage de programmation C++ fut employé afin de garantir un temps de traitement relativement faible. Les opérations sur les images exigeant beaucoup de cycles processeur. De plus, l'accès à un plus grand nombre d'exemples de code OpenCV en C++(versus en python) a aussi motivé le choix de ce langage.
+
+L'algorithme testé dans ce prototype commence par effectuer une segmentation par couleur verte sur la photo afin d'isoler le cadre du sudocube. Puis, un algorithme de détection des contours est appliqué. OpenCV retourne après cette opération deux polygones rectangulaires que l'on peut utiliser pour vérifier l'existence du cadre vert dans l'image. On s'assure que le cadre remplit une bonne partie de l'image en calculant l'aire de celui-ci. Cela permet de garantir qu'il y a assez de détails pour lire correctement les cases du sudocube. Puis, l'image originale est convertie en tons de gris pour appliquer encore une fois un algorithme de détection des contours. Cela permet de récupérer les polygones de toutes les cases du sudocube. Il y a quelques polygones qui ne sont pas des cases. On les élimine en calculant leur aire et en ne gardant que ceux qui sont suffisamment grands.
+
+Afin de garantir la lecture de toutes les cases du sudocube, on pourrait ajouter une détection automatique du “threshold” de l'algorithme de détection des contours en vérifiant le nombre de polygones trouvés. Il faut en trouver 47 très exactement.
+
+Pour assurer une bonne lecture des caractères, on pourrait effectuer un réalignement du cadre vert.
+
+Ce qui reste à faire : effectuer une segmentation sur la couleur rouge en mode HSV afin d'identifier la case rouge et créer un algorithme d'OCR pour lire les chiffres dans les cases.
