@@ -1,0 +1,344 @@
+MPX,Microsoft Project for Windows,4.0,ANSI
+10,$,1,2,",",.
+11,2,0,1,8.00,40.00,$10.00/h,$15.00/h,1,0
+12,1,0,480,/,:,am,pm,20,20
+20,Standard,1,1,1,1,1,1,1
+25,1,08:00 am,12:00 pm,01:00 pm,05:00 pm
+25,2,08:00 am,12:00 pm,01:00 pm,05:00 pm
+25,3,08:00 am,12:00 pm,01:00 pm,05:00 pm
+25,4,08:00 am,12:00 pm,01:00 pm,05:00 pm
+25,5,08:00 am,12:00 pm,01:00 pm,05:00 pm
+25,6,08:00 am,12:00 pm,01:00 pm,05:00 pm
+25,7,08:00 am,12:00 pm,01:00 pm,05:00 pm
+30,Project1,,,Standard,25/01/2013,25/04/2013,0,08/02/2013,,$0.00,$0.00,$0.00,0h,0h,0h,0%,0d,0d,0d,0%,,,,,0d,0d
+40,Name,Text1,Email Address,ID,Unique ID
+41,1,5,11,40,49
+50,Diane Fournier,microcontrôleur,diane.fournier.3@ulaval.ca,1,1
+50,Imane Mouhtij,vision - Kinect,imane.mouhtij.1@ulaval.ca,2,2
+50,Daniel Thibodeau,"alimentation, circuits de contrôle",daniel.thibodeau.3@ulaval.ca,3,3
+50,Émile Arsenault,"alimentation, circuits de contrôle",emile.arsenault.1@ulaval.ca,4,4
+50,Francis Valois,"alimentation, circuits de contrôle",francis.valois.1@ulaval.ca,5,5
+50,Pierre-Luc Buhler,microcontrôleur,pierre-luc.buhler.1@ulaval.ca,6,6
+50,Olivier Sylvain,"vision, traitement de données",oliviersylvain@gmail.com,7,7
+50,Philippe Bourdages,"vision, traitement de données",philppe.bourdages@gmail.com,8,8
+60,Name,WBS,Outline Level,Duration,Actual Duration,Remaining Duration,% Complete,Start,Finish,Predecessors,Fixed,Milestone,ID,Constraint Type,Priority,Unique ID,Outline Number,Summary
+61,1,2,3,40,42,43,44,50,51,70,80,81,90,91,95,98,99,120
+70,,0,0,91d,,,,25/01/2013,25/04/2013,,No,,0,As Soon As Possible,,0,0
+70,Vision numérique,1,1,39d,9.36d,29.64d,24%,29/01/2013,08/03/2013,,No,No,1,As Soon As Possible,Medium,470,1,Yes
+70,Prototypage,1.1,2,13d,5.2d,7.8d,40%,29/01/2013,10/02/2013,,No,No,2,As Soon As Possible,Medium,337,1.1,Yes
+70,Kinect,1.1.1,3,11d,0d,11d,0%,29/01/2013,08/02/2013,,No,No,3,As Soon As Possible,Medium,338,1.1.1,Yes
+70,Recherche sur la Kinect / Librairies,1.1.1.1,4,8d,8d,0d,100%,29/01/2013,05/02/2013,,No,No,4,As Soon As Possible,Medium,339,1.1.1.1
+75,2,0.14,8d,,1.12d,,,,,29/01/2013,05/02/2013,,2
+76,,0,0,NA,NA
+70,Tester la Kinect,1.1.1.2,4,4d,4d,0d,100%,05/02/2013,08/02/2013,,No,No,5,As Soon As Possible,Medium,340,1.1.1.2
+75,2,0.15,4d,,0.6d,,,,,05/02/2013,08/02/2013,,2
+76,,0,0,NA,NA
+70,OpenCV,1.1.2,3,8d,8d,0d,100%,29/01/2013,05/02/2013,,No,No,6,As Soon As Possible,Medium,351,1.1.2
+75,2,0.3,8d,,2.4d,,,,,29/01/2013,05/02/2013,,2
+76,,0,0,NA,NA
+70,ROS + support,1.1.3,3,13d,0d,13d,0%,29/01/2013,10/02/2013,,No,No,7,As Soon As Possible,Medium,431,1.1.3
+75,8,0.75,13d,,0d,,,,,29/01/2013,10/02/2013,,8
+76,,0,0,NA,NA
+70,Détecter les obstacles,1.2,2,25d,0d,25d,0%,12/02/2013,08/03/2013,,No,No,8,As Soon As Possible,Medium,20,1.2,Yes
+70,Développer l'algorithme de localisation des obstacles,1.2.1,3,16d,0d,16d,0%,12/02/2013,27/02/2013,,No,No,9,As Soon As Possible,Medium,343,1.2.1
+75,2,0.5,16d,,0d,,,,,12/02/2013,27/02/2013,,2
+76,,0,0,NA,NA
+70,Tester l'algortihme de détection des obstacles,1.2.2,3,9d,0d,9d,0%,28/02/2013,08/03/2013,9,No,No,10,As Soon As Possible,Medium,353,1.2.2
+75,2,0.5,9d,,0d,,,,,28/02/2013,08/03/2013,,2
+76,,0,0,NA,NA
+70,Lire le cube,1.3,2,23d,0d,23d,0%,13/02/2013,07/03/2013,,No,No,11,As Soon As Possible,Medium,21,1.3,Yes
+70,Développer l'algorithme de lecture du cube,1.3.1,3,10d,0d,10d,0%,13/02/2013,22/02/2013,,No,No,12,As Soon As Possible,Medium,307,1.3.1
+75,7,0.25,10d,,0d,,,,,13/02/2013,22/02/2013,,7
+76,,0,0,NA,NA
+70,Tester l'algorithme de lecture du cube,1.3.2,3,13d,0d,13d,0%,23/02/2013,07/03/2013,12,No,No,13,As Soon As Possible,Medium,312,1.3.2
+70,Localiser le robot,1.4,2,24d,15.84d,8.16d,66%,12/02/2013,07/03/2013,,No,No,14,As Soon As Possible,Medium,68,1.4,Yes
+70,Développer l'algorithme de localisation du robot,1.4.1,3,15d,0d,15d,0%,12/02/2013,26/02/2013,,No,No,15,As Soon As Possible,Medium,352,1.4.1
+75,8,0.25,15d,,0d,,,,,12/02/2013,26/02/2013,,8
+76,,0,0,NA,NA
+70,Tester l'algorithme de localisation du robot,1.4.2,3,9d,0d,9d,0%,27/02/2013,07/03/2013,15,No,No,16,As Soon As Possible,Medium,327,1.4.2
+75,8,0.5,9d,,0d,,,,,27/02/2013,07/03/2013,,8
+76,,0,0,NA,NA
+70,Communication,2,1,37d,15.91d,21.09d,43%,29/01/2013,06/03/2013,,No,No,17,As Soon As Possible,Medium,1,2,Yes
+70,Choix du microcontrôleur,2.1,2,7d,7d,0d,100%,29/01/2013,04/02/2013,,No,No,18,As Soon As Possible,Medium,187,2.1
+75,1,0.14,7d,,0.98d,,,,,29/01/2013,04/02/2013,,1
+76,,0,0,NA,NA
+70,Prototypage,2.2,2,8d,8d,0d,100%,29/01/2013,05/02/2013,,No,No,19,As Soon As Possible,Medium,344,2.2,Yes
+70,Microcontrôleur,2.2.1,3,8d,8d,0d,100%,29/01/2013,05/02/2013,,No,No,20,As Soon As Possible,Medium,345,2.2.1
+75,1,0.14,8d,,1.12d,,,,,29/01/2013,05/02/2013,,1
+76,,0,0,NA,NA
+70,Mac mini - connection WiFi,2.2.2,3,8d,8d,0d,100%,29/01/2013,05/02/2013,,No,No,21,As Soon As Possible,Medium,350,2.2.2
+75,2,0.14,8d,,1.12d,,,,,29/01/2013,05/02/2013,,2
+76,,0,0,NA,NA
+70,Recevoir le signal de l'antenne,2.3,2,30d,23.1d,6.9d,77%,29/01/2013,27/02/2013,,No,No,22,As Soon As Possible,Medium,12,2.3,Yes
+70,Concevoir un circuit de réception du signal,2.3.1,3,7d,7d,0d,100%,29/01/2013,04/02/2013,,No,No,23,As Soon As Possible,Medium,112,2.3.1
+75,4,0.14,7d,,0.98d,,,,,29/01/2013,04/02/2013,,4
+76,,0,0,NA,NA
+75,5,0.14,7d,,0.98d,,,,,29/01/2013,04/02/2013,,5
+76,,0,0,NA,NA
+70,Implémenter le circuit de réception,2.3.2,3,15d,0d,15d,0%,05/02/2013,19/02/2013,23,No,No,24,As Soon As Possible,Medium,113,2.3.2
+75,4,0.14,15d,,0d,,,,,05/02/2013,19/02/2013,,4
+76,,0,0,NA,NA
+70,Tester la communication avec le microcontrôleur,2.3.3,3,8d,0d,8d,0%,20/02/2013,27/02/2013,24,No,No,25,As Soon As Possible,Medium,114,2.3.3
+75,1,0.25,8d,,0d,,,,,20/02/2013,27/02/2013,,1
+76,,0,0,NA,NA
+75,6,0.25,8d,,0d,,,,,20/02/2013,27/02/2013,,6
+76,,0,0,NA,NA
+70,Communiquer entre le robot et la station de base,2.4,2,21d,0d,21d,0%,11/02/2013,03/03/2013,,No,No,26,As Soon As Possible,Medium,13,2.4,Yes
+70,Tester la communication WiFi,2.4.1,3,21d,0d,21d,0%,11/02/2013,03/03/2013,,No,No,27,As Soon As Possible,Medium,117,2.4.1
+75,2,0.14,21d,,0d,,,,,11/02/2013,03/03/2013,,2
+76,,0,0,NA,NA
+70,Communiquer entre le Mac mini et le microcontôleur,2.5,2,26d,6.76d,19.24d,26%,29/01/2013,23/02/2013,,No,No,28,As Soon As Possible,Medium,15,2.5,Yes
+70,Prototypage,2.5.1,3,5d,0d,5d,0%,29/01/2013,02/02/2013,,No,No,29,As Soon As Possible,Medium,347,2.5.1,Yes
+70,Tester le port UART sur le microcontrôleur,2.5.1.1,4,5d,5d,0d,100%,29/01/2013,02/02/2013,,No,No,30,As Soon As Possible,Medium,77,2.5.1.1
+75,1,0.14,5d,,0.7d,,,,,29/01/2013,02/02/2013,,1
+76,,0,0,NA,NA
+70,Coder un terminal série avec bits de parité sur le Mac mini,2.5.2,3,12d,0d,12d,0%,11/02/2013,22/02/2013,,No,No,31,As Soon As Possible,Medium,78,2.5.2
+75,1,0.05,12d,,0d,,,,,11/02/2013,22/02/2013,,1
+76,,0,0,NA,NA
+75,6,0.05,12d,,0d,,,,,11/02/2013,22/02/2013,,6
+76,,0,0,NA,NA
+70,Tester la communication entre Mac mini et microcontrôleur,2.5.3,3,1d,0d,1d,0%,23/02/2013,23/02/2013,"30,31",No,No,32,As Soon As Possible,Medium,104,2.5.3
+75,1,0.05,1d,,0d,,,,,23/02/2013,23/02/2013,,1
+76,,0,0,NA,NA
+75,6,0.05,1d,,0d,,,,,23/02/2013,23/02/2013,,6
+76,,0,0,NA,NA
+70,Commander les moteurs,2.6,2,24d,0d,24d,0%,11/02/2013,06/03/2013,,No,No,33,As Soon As Possible,Medium,16,2.6,Yes
+70,Tester le pwm sur le microcontrôler,2.6.1,3,5d,0d,5d,0%,11/02/2013,15/02/2013,,No,No,34,As Soon As Possible,Medium,79,2.6.1
+75,1,0.25,5d,,0d,,,,,11/02/2013,15/02/2013,,1
+76,,0,0,NA,NA
+75,6,0.25,5d,,0d,,,,,11/02/2013,15/02/2013,,6
+76,,0,0,NA,NA
+70,Tester l'encodeur à quadrature sur le microcontrôleur,2.6.2,3,5d,0d,5d,0%,11/02/2013,15/02/2013,,No,No,35,As Soon As Possible,Medium,80,2.6.2
+75,1,0.25,5d,,0d,,,,,11/02/2013,15/02/2013,,1
+76,,0,0,NA,NA
+75,6,0.25,5d,,0d,,,,,11/02/2013,15/02/2013,,6
+76,,0,0,NA,NA
+70,Tester des solutions pour les 2 QEI manquants,2.6.3,3,5d,0d,5d,0%,11/02/2013,15/02/2013,,No,No,36,As Soon As Possible,Medium,325,2.6.3
+75,1,0.05,5d,,0d,,,,,11/02/2013,15/02/2013,,1
+76,,0,0,NA,NA
+75,6,0.05,5d,,0d,,,,,11/02/2013,15/02/2013,,6
+76,,0,0,NA,NA
+70,Faire l'identification des moteurs,2.6.4,3,1d,0d,1d,0%,16/02/2013,16/02/2013,"34,35",No,No,37,As Soon As Possible,Medium,81,2.6.4
+75,3,0.25,1d,,0d,,,,,16/02/2013,16/02/2013,,3
+76,,0,0,NA,NA
+75,5,0.25,1d,,0d,,,,,16/02/2013,16/02/2013,,5
+76,,0,0,NA,NA
+70,Concevoir l'asservissement des moteurs,2.6.5,3,10d,0d,10d,0%,17/02/2013,26/02/2013,37,No,No,38,As Soon As Possible,Medium,82,2.6.5
+75,5,0.25,10d,,0d,,,,,17/02/2013,26/02/2013,,5
+76,,0,0,NA,NA
+75,3,0.25,10d,,0d,,,,,17/02/2013,26/02/2013,,3
+76,,0,0,NA,NA
+75,4,0.25,10d,,0d,,,,,17/02/2013,26/02/2013,,4
+76,,0,0,NA,NA
+70,Tester l'asservissement,2.6.6,3,8d,0d,8d,0%,27/02/2013,06/03/2013,38,No,No,39,As Soon As Possible,Medium,102,2.6.6
+75,3,0.25,8d,,0d,,,,,27/02/2013,06/03/2013,,3
+76,,0,0,NA,NA
+75,4,0.25,8d,,0d,,,,,27/02/2013,06/03/2013,,4
+76,,0,0,NA,NA
+75,5,0.25,8d,,0d,,,,,27/02/2013,06/03/2013,,5
+76,,0,0,NA,NA
+70,Transmettre les images de la caméra vers le Mac mini,2.7,2,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,40,As Soon As Possible,Medium,17,2.7,Yes
+70,Prototypage,2.7.1,3,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,41,As Soon As Possible,Medium,348,2.7.1,Yes
+70,Tester la caméra,2.7.1.1,4,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,42,As Soon As Possible,Medium,98,2.7.1.1
+75,2,0.05,1d,,0d,,,,,11/02/2013,11/02/2013,,2
+76,,0,0,NA,NA
+70,Contrôler la position de la caméra,2.8,2,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,43,As Soon As Possible,Medium,18,2.8
+70,Contrôler le préhenseur du crayon,2.9,2,8d,4.56d,3.44d,57%,05/02/2013,12/02/2013,,No,No,44,As Soon As Possible,Medium,19,2.9,Yes
+70,Concevoir le préhenseur,2.9.1,3,4d,4d,0d,100%,05/02/2013,08/02/2013,,No,No,45,As Soon As Possible,Medium,105,2.9.1
+75,3,0.14,4d,,0.56d,,,,,05/02/2013,08/02/2013,,3
+76,,0,0,NA,NA
+70,Implémenter le préhenseur,2.9.2,3,1d,0d,1d,0%,09/02/2013,09/02/2013,45,No,No,46,As Soon As Possible,Medium,106,2.9.2
+70,Concevoir un circuit de contrôle du préhenseur,2.9.3,3,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,47,As Soon As Possible,Medium,107,2.9.3
+70,Tester le préhenseur,2.9.4,3,1d,0d,1d,0%,12/02/2013,12/02/2013,47,No,No,48,As Soon As Possible,Medium,108,2.9.4
+70,Déplacement,3,1,25d,23d,2d,92%,29/01/2013,22/02/2013,,No,No,49,As Soon As Possible,Medium,2,3,Yes
+70,Se déplacer sans toucher les obstacles,3.1,2,13d,13d,0d,100%,29/01/2013,10/02/2013,,No,No,50,As Soon As Possible,Medium,22,3.1,Yes
+70,Tester les moteurs,3.1.1,3,4d,4d,0d,100%,29/01/2013,01/02/2013,,No,No,51,As Soon As Possible,Medium,99,3.1.1
+75,3,0.28,4d,,1.12d,,,,,29/01/2013,01/02/2013,,3
+76,,0,0,NA,NA
+75,5,0.1,4d,,0.4d,,,,,29/01/2013,01/02/2013,,5
+76,,0,0,NA,NA
+70,Représentation spaciale de la table dans le logiciel,3.1.2,3,13d,13d,0d,100%,29/01/2013,10/02/2013,,No,No,52,As Soon As Possible,Medium,190,3.1.2
+75,7,0.25,13d,,3.25d,,,,,29/01/2013,10/02/2013,,7
+76,,0,0,NA,NA
+70,Préparation de l'algorithme de pathfinding,3.1.3,3,13d,13d,0d,100%,29/01/2013,10/02/2013,,No,No,53,As Soon As Possible,Medium,193,3.1.3
+75,7,0.5,13d,,6.5d,,,,,29/01/2013,10/02/2013,,7
+76,,0,0,NA,NA
+70,Montage mécanique,3.2,2,12d,0d,12d,0%,11/02/2013,22/02/2013,,No,No,54,As Soon As Possible,Medium,253,3.2
+75,5,0.25,12d,,0d,,,,,11/02/2013,22/02/2013,,5
+76,,0,0,NA,NA
+70,Traitement numérique,4,1,36d,7.2d,28.8d,20%,01/02/2013,08/03/2013,,No,No,55,As Soon As Possible,Medium,3,4,Yes
+70,Contrôler le robot pour le dessin,4.1,2,1d,0d,1d,0%,07/03/2013,07/03/2013,39,No,No,56,As Soon As Possible,Medium,24,4.1
+70,Décoder le signal d'antenne,4.2,2,1d,1d,0d,100%,01/02/2013,01/02/2013,,No,No,57,As Soon As Possible,Medium,25,4.2,Yes
+70,Concevoir le circuit de décodage,4.2.1,3,1d,1d,0d,100%,01/02/2013,01/02/2013,,No,No,58,As Soon As Possible,Medium,100,4.2.1
+70,Implémenter le circuit de décodage,4.2.2,3,1d,1d,0d,100%,01/02/2013,01/02/2013,,No,No,59,As Soon As Possible,Medium,101,4.2.2
+70,Choisir le cube selon le signal d'antenne,4.3,2,1d,0d,1d,0%,28/02/2013,28/02/2013,"28,25",No,No,60,As Soon As Possible,Medium,26,4.3
+70,Résoudre le sudocube,4.4,2,1d,0d,1d,0%,08/03/2013,08/03/2013,11,No,No,61,As Soon As Possible,Medium,27,4.4,Yes
+70,Coder l'algorithme de résolution,4.4.1,3,1d,0d,1d,0%,08/03/2013,08/03/2013,,No,No,62,As Soon As Possible,Medium,429,4.4.1
+75,7,0.25,1d,,0d,,,,,08/03/2013,08/03/2013,,7
+76,,0,0,NA,NA
+70,Alimentation,5,1,20d,11d,9d,55%,01/02/2013,20/02/2013,,No,No,63,As Soon As Possible,Medium,4,5,Yes
+70,Utiliser une pile rechargeable,5.1,2,19d,9.88d,9.12d,52%,01/02/2013,19/02/2013,,No,No,64,As Soon As Possible,Medium,29,5.1,Yes
+70,Sélectionner et acheter une pile,5.1.1,3,2d,2d,0d,100%,01/02/2013,02/02/2013,,No,No,65,As Soon As Possible,Medium,84,5.1.1
+75,4,0.17,2d,,0.34d,,,,,01/02/2013,02/02/2013,,4
+76,,0,0,NA,NA
+70,Concevoir un circuit d'alimentation électrique,5.1.2,3,7d,7d,0d,100%,05/02/2013,11/02/2013,,No,No,66,As Soon As Possible,Medium,85,5.1.2
+75,3,0.14,7d,,0.98d,,,,,05/02/2013,11/02/2013,,3
+76,,0,0,NA,NA
+75,4,0.14,7d,,0.98d,,,,,05/02/2013,11/02/2013,,4
+76,,0,0,NA,NA
+75,5,0.14,7d,,0.98d,,,,,05/02/2013,11/02/2013,,5
+76,,0,0,NA,NA
+70,Implémenter le circuit d'alimentation,5.1.3,3,8d,0d,8d,0%,12/02/2013,19/02/2013,66,No,No,67,As Soon As Possible,Medium,199,5.1.3
+75,3,0.02,8d,,0d,,,,,12/02/2013,19/02/2013,,3
+76,,0,0,NA,NA
+70,Concevoir un support pour la batterie,5.1.4,3,8d,4d,4d,50%,04/02/2013,11/02/2013,,No,No,68,As Soon As Possible,Medium,168,5.1.4
+75,3,0.18,8d,,0.72d,,,,,04/02/2013,11/02/2013,,3
+76,,0,0,NA,NA
+70,Alimenter les moteurs,5.2,2,1d,0d,1d,0%,20/02/2013,20/02/2013,67,No,No,69,As Soon As Possible,Medium,30,5.2
+70,Alimenter l'ordinateur (boost 24V),5.3,2,4d,4d,0d,100%,04/02/2013,07/02/2013,,No,No,70,As Soon As Possible,Medium,31,5.3
+75,4,0.04,4d,,0.16d,,,,,04/02/2013,07/02/2013,,4
+76,,0,0,NA,NA
+70,Alimenter les différents périphériques,5.4,2,1d,0d,1d,0%,20/02/2013,20/02/2013,67,No,No,71,As Soon As Possible,Medium,32,5.4
+70,Affichage,6,1,40d,19.2d,20.8d,48%,29/01/2013,09/03/2013,,No,No,72,As Soon As Possible,Medium,5,6,Yes
+70,Afficher le cube résolu,6.1,2,1d,0d,1d,0%,09/03/2013,09/03/2013,61,No,No,73,As Soon As Possible,Medium,34,6.1
+70,Allumer la DEL lorsque tâche complétée,6.2,2,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,74,As Soon As Possible,Medium,35,6.2,Yes
+70,Faire un circuit pour la DEL,6.2.1,3,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,75,As Soon As Possible,Medium,88,6.2.1
+70,Afficher la trajectoire optimale calculée,6.3,2,1d,0d,1d,0%,11/02/2013,11/02/2013,53,No,No,76,As Soon As Possible,Medium,36,6.3
+70,Afficher la position réelle,6.4,2,1d,0d,1d,0%,08/03/2013,08/03/2013,14,No,No,77,As Soon As Possible,Medium,37,6.4
+70,Afficher le message de fin,6.5,2,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,78,As Soon As Possible,Medium,38,6.5
+70,Afficher sur le LCD,6.6,2,5d,4.15d,0.85d,83%,29/01/2013,02/02/2013,,No,No,79,As Soon As Possible,Medium,39,6.6,Yes
+70,Prototypage,6.6.1,3,5d,0d,5d,0%,29/01/2013,02/02/2013,,No,No,80,As Soon As Possible,Medium,349,6.6.1,Yes
+70,Tester le LCD,6.6.1.1,4,5d,5d,0d,100%,29/01/2013,02/02/2013,,No,No,81,As Soon As Possible,Medium,86,6.6.1.1
+75,1,0.05,5d,,0.25d,,,,,29/01/2013,02/02/2013,,1
+76,,0,0,NA,NA
+70,Documentation,7,1,32d,23.04d,8.96d,72%,26/01/2013,26/02/2013,,No,No,82,As Soon As Possible,Medium,7,7,Yes
+70,DPF,7.1,2,6d,6d,0d,100%,31/01/2013,05/02/2013,,No,No,83,As Soon As Possible,Medium,43,7.1,Yes
+70,DPF itération 1,7.1.1,3,5d,5d,0d,100%,31/01/2013,04/02/2013,,No,No,84,As Soon As Possible,Medium,118,7.1.1
+75,6,0.25,5d,,1.25d,,,,,31/01/2013,04/02/2013,,6
+76,,0,0,NA,NA
+70,DPF itération 2,7.1.2,3,1d,1d,0d,100%,05/02/2013,05/02/2013,84,No,No,85,As Soon As Possible,Medium,119,7.1.2
+75,1,0.25,1d,,0.25d,,,,,05/02/2013,05/02/2013,,1
+76,,0,0,NA,NA
+75,2,0.1,1d,,0.1d,,,,,05/02/2013,05/02/2013,,2
+76,,0,0,NA,NA
+75,3,0.25,1d,,0.25d,,,,,05/02/2013,05/02/2013,,3
+76,,0,0,NA,NA
+75,4,0.1,1d,,0.1d,,,,,05/02/2013,05/02/2013,,4
+76,,0,0,NA,NA
+75,5,0.1,1d,,0.1d,,,,,05/02/2013,05/02/2013,,5
+76,,0,0,NA,NA
+75,6,0.1,1d,,0.1d,,,,,05/02/2013,05/02/2013,,6
+76,,0,0,NA,NA
+75,7,0.1,1d,,0.1d,,,,,05/02/2013,05/02/2013,,7
+76,,0,0,NA,NA
+75,8,0.1,1d,,0.1d,,,,,05/02/2013,05/02/2013,,8
+76,,0,0,NA,NA
+70,Diagramme de classes,7.2,2,12d,12d,0d,100%,29/01/2013,09/02/2013,,No,No,86,As Soon As Possible,Medium,44,7.2,Yes
+70,Diagramme de classes itération 1,7.2.1,3,7d,7d,0d,100%,29/01/2013,04/02/2013,,No,No,87,As Soon As Possible,Medium,89,7.2.1
+75,2,0.14,7d,,0.98d,,,,,29/01/2013,04/02/2013,,2
+76,,0,0,NA,NA
+70,Diagramme de classe itération 2,7.2.2,3,5d,5d,0d,100%,05/02/2013,09/02/2013,87,No,No,88,As Soon As Possible,Medium,90,7.2.2
+75,7,0.09,5d,,0.45d,,,,,05/02/2013,09/02/2013,,7
+76,,0,0,NA,NA
+70,Diagramme de contexte,7.3,2,12d,12d,0d,100%,28/01/2013,08/02/2013,,No,No,89,As Soon As Possible,Medium,45,7.3,Yes
+70,Diagramme de contexte itération 1,7.3.1,3,8d,8d,0d,100%,28/01/2013,04/02/2013,,No,No,90,As Soon As Possible,Medium,180,7.3.1
+75,4,0.14,8d,,1.12d,,,,,28/01/2013,04/02/2013,,4
+76,,0,0,NA,NA
+70,Diagramme de contexte itération 2,7.3.2,3,4d,4d,0d,100%,05/02/2013,08/02/2013,90,No,No,91,As Soon As Possible,Medium,181,7.3.2
+75,6,0.15,4d,,0.6d,,,,,05/02/2013,08/02/2013,,6
+76,,0,0,NA,NA
+70,Diagramme des cas d'utilisation,7.4,2,15d,15d,0d,100%,26/01/2013,09/02/2013,,No,No,92,As Soon As Possible,Medium,46,7.4,Yes
+70,Use Case itération 1,7.4.1,3,11d,11d,0d,100%,26/01/2013,05/02/2013,,No,No,93,As Soon As Possible,Medium,151,7.4.1
+75,1,0.15,11d,,1.65d,,,,,26/01/2013,05/02/2013,,1
+76,,0,0,NA,NA
+70,Use Case itération 2,7.4.2,3,4d,4d,0d,100%,06/02/2013,09/02/2013,93,No,No,94,As Soon As Possible,Medium,152,7.4.2
+75,6,0.15,4d,,0.6d,,,,,06/02/2013,09/02/2013,,6
+76,,0,0,NA,NA
+70,Diagramme de séquences,7.5,2,1d,1d,0d,100%,05/02/2013,05/02/2013,,No,No,95,As Soon As Possible,Medium,48,7.5
+75,8,0.09,1d,,0.09d,,,,,05/02/2013,05/02/2013,,8
+76,,0,0,NA,NA
+70,Diagramme des fonctionalités,7.6,2,15d,0d,15d,0%,12/02/2013,26/02/2013,,No,No,96,As Soon As Possible,Medium,50,7.6,Yes
+70,Diagramme des fonctionalités itération 1,7.6.1,3,8d,0d,8d,0%,12/02/2013,19/02/2013,,No,No,97,As Soon As Possible,Medium,91,7.6.1
+75,3,0.1,8d,,0d,,,,,12/02/2013,19/02/2013,,3
+76,,0,0,NA,NA
+70,Diagramme des fonctionalités itération 2,7.6.2,3,7d,0d,7d,0%,20/02/2013,26/02/2013,97,No,No,98,As Soon As Possible,Medium,92,7.6.2
+75,3,0.1,7d,,0d,,,,,20/02/2013,26/02/2013,,3
+76,,0,0,NA,NA
+70,Description des prototypes,7.7,2,4d,4d,0d,100%,05/02/2013,08/02/2013,,No,No,99,As Soon As Possible,Medium,49,7.7,Yes
+70,Prototype - alimentation,7.7.1,3,4d,4d,0d,100%,05/02/2013,08/02/2013,,No,No,100,As Soon As Possible,Medium,211,7.7.1
+75,3,0.1,4d,,0.4d,,,,,05/02/2013,08/02/2013,,3
+76,,0,0,NA,NA
+70,Prototype - microcontrôleur,7.7.2,3,4d,4d,0d,100%,05/02/2013,08/02/2013,,No,No,101,As Soon As Possible,Medium,213,7.7.2
+75,1,0.15,4d,,0.6d,,,,,05/02/2013,08/02/2013,,1
+76,,0,0,NA,NA
+70,Prototype - antenne,7.7.3,3,4d,4d,0d,100%,05/02/2013,08/02/2013,,No,No,102,As Soon As Possible,Medium,216,7.7.3
+75,4,0.15,4d,,0.6d,,,,,05/02/2013,08/02/2013,,4
+76,,0,0,NA,NA
+70,Prototype - préhenseur,7.7.4,3,4d,4d,0d,100%,05/02/2013,08/02/2013,,No,No,103,As Soon As Possible,Medium,218,7.7.4
+75,4,0.15,4d,,0.6d,,,,,05/02/2013,08/02/2013,,4
+76,,0,0,NA,NA
+70,Diagramme physique,7.8,2,9d,0d,9d,0%,11/02/2013,19/02/2013,,No,No,104,As Soon As Possible,Medium,51,7.8,Yes
+70,Diagramme physique itération 1,7.8.1,3,9d,0d,9d,0%,11/02/2013,19/02/2013,,No,No,105,As Soon As Possible,Medium,317,7.8.1
+70,Registre de risques,7.9,2,9d,0d,9d,0%,11/02/2013,19/02/2013,,No,No,106,As Soon As Possible,Medium,52,7.9,Yes
+70,Registre de risques itération 1,7.9.1,3,9d,0d,9d,0%,11/02/2013,19/02/2013,,No,No,107,As Soon As Possible,Medium,321,7.9.1
+70,Plan de tests,7.10,2,9d,0d,9d,0%,11/02/2013,19/02/2013,,No,No,108,As Soon As Possible,Medium,53,7.10,Yes
+70,Plan de tests itération 1,7.10.1,3,9d,0d,9d,0%,11/02/2013,19/02/2013,,No,No,109,As Soon As Possible,Medium,323,7.10.1
+70,Plan d'intégration,7.11,2,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,110,As Soon As Possible,Medium,54,7.11
+70,Rapport1,7.12,2,13d,13d,0d,100%,29/01/2013,10/02/2013,,No,No,111,As Soon As Possible,Medium,58,7.12,Yes
+70,Ecrire les textes pour le livrable 1,7.12.1,3,11d,11d,0d,100%,29/01/2013,08/02/2013,,No,No,112,As Soon As Possible,Medium,128,7.12.1
+75,1,0.1,11d,,1.1d,,,,,29/01/2013,08/02/2013,,1
+76,,0,0,NA,NA
+75,2,0.09,11d,,0.99d,,,,,29/01/2013,08/02/2013,,2
+76,,0,0,NA,NA
+75,3,0.1,11d,,1.1d,,,,,29/01/2013,08/02/2013,,3
+76,,0,0,NA,NA
+75,5,0.1,11d,,1.1d,,,,,29/01/2013,08/02/2013,,5
+76,,0,0,NA,NA
+75,6,0.1,11d,,1.1d,,,,,29/01/2013,08/02/2013,,6
+76,,0,0,NA,NA
+75,7,0.05,11d,,0.55d,,,,,29/01/2013,08/02/2013,,7
+76,,0,0,NA,NA
+75,8,0.05,11d,,0.55d,,,,,29/01/2013,08/02/2013,,8
+76,,0,0,NA,NA
+70,Réviser les diagrammes,7.12.2,3,1d,1d,0d,100%,07/02/2013,07/02/2013,,No,No,113,As Soon As Possible,Medium,303,7.12.2
+75,6,0.1,1d,,0.1d,,,,,07/02/2013,07/02/2013,,6
+76,,0,0,NA,NA
+70,Assemblage du rapport 1,7.12.3,3,2d,2d,0d,100%,09/02/2013,10/02/2013,"112,113",No,No,114,As Soon As Possible,Medium,255,7.12.3
+75,5,0.7,2d,,1.4d,,,,,09/02/2013,10/02/2013,,5
+76,,0,0,NA,NA
+70,Réviser le rapport 1,7.12.4,3,2d,2d,0d,100%,09/02/2013,10/02/2013,112,No,No,115,As Soon As Possible,Medium,129,7.12.4
+75,1,0.1,2d,,0.2d,,,,,09/02/2013,10/02/2013,,1
+76,,0,0,NA,NA
+75,3,0.25,2d,,0.5d,,,,,09/02/2013,10/02/2013,,3
+76,,0,0,NA,NA
+75,5,0.16,2d,,0.32d,,,,,09/02/2013,10/02/2013,,5
+76,,0,0,NA,NA
+70,Présentations orales,7.13,2,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,116,As Soon As Possible,Medium,247,7.13,Yes
+70,Présentation livrable 2,7.13.1,3,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,117,As Soon As Possible,Medium,248,7.13.1,Yes
+70,Gabarit powerpoint pour présentations,7.13.1.1,4,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,No,118,As Soon As Possible,Medium,250,7.13.1.1
+75,5,0.01,1d,,0d,,,,,11/02/2013,11/02/2013,,5
+76,,0,0,NA,NA
+70,Gestion,8,1,15d,2.4d,12.6d,16%,29/01/2013,12/02/2013,,No,No,119,As Soon As Possible,Medium,8,8,Yes
+70,diagramme de Gantt,8.1,2,5d,5d,0d,100%,04/02/2013,08/02/2013,,No,No,120,As Soon As Possible,Medium,42,8.1,Yes
+70,Gantt itération 1,8.1.1,3,2d,2d,0d,100%,04/02/2013,05/02/2013,,No,No,121,As Soon As Possible,Medium,122,8.1.1
+75,1,0.2,2d,,0.4d,,,,,04/02/2013,05/02/2013,,1
+76,,0,0,NA,NA
+70,Gantt itération 2,8.1.2,3,3d,3d,0d,100%,06/02/2013,08/02/2013,121,No,No,122,As Soon As Possible,Medium,469,8.1.2
+75,1,0.74,3d,,2.22d,,,,,06/02/2013,08/02/2013,,1
+76,,0,0,NA,NA
+70,tableaux des tâches hebdomadaires,8.2,2,15d,0d,15d,0%,29/01/2013,12/02/2013,,No,No,123,As Soon As Possible,Medium,55,8.2,Yes
+70,semaine 1,8.2.1,3,1d,0d,1d,0%,29/01/2013,29/01/2013,,No,Yes,124,As Soon As Possible,Medium,161,8.2.1
+70,semaine 2,8.2.2,3,1d,0d,1d,0%,05/02/2013,05/02/2013,,No,Yes,125,As Soon As Possible,Medium,162,8.2.2
+70,semaine 3,8.2.3,3,1d,0d,1d,0%,12/02/2013,12/02/2013,,No,Yes,126,As Soon As Possible,Medium,163,8.2.3
+70,Réunions,9,1,8d,0d,8d,0%,25/01/2013,01/02/2013,,No,No,127,As Soon As Possible,Medium,9,9,Yes
+70,Réunion 1,9.1,2,1d,0d,1d,0%,25/01/2013,25/01/2013,,No,Yes,128,As Soon As Possible,Medium,71,9.1
+70,Réunion 2,9.2,2,1d,0d,1d,0%,29/01/2013,29/01/2013,,No,Yes,129,As Soon As Possible,Medium,72,9.2
+70,Réunion 3,9.3,2,1d,0d,1d,0%,05/02/2013,05/02/2013,,No,Yes,130,As Soon As Possible,Medium,73,9.3
+70,Livrables,10,1,50d,0d,50d,0%,11/02/2013,01/04/2013,,No,No,131,As Soon As Possible,Medium,10,10,Yes
+70,Livrable 1,10.1,2,1d,0d,1d,0%,11/02/2013,11/02/2013,,No,Yes,132,As Soon As Possible,Medium,56,10.1
+70,Livrable 2,10.2,2,1d,0d,1d,0%,08/03/2013,08/03/2013,,No,Yes,133,As Soon As Possible,Medium,57,10.2
+70,Livrable 3,10.3,2,1d,0d,1d,0%,05/04/2013,05/04/2013,,No,Yes,134,As Soon As Possible,Medium,59,10.3
+70,Livrable 4,10.4,2,1d,0d,1d,0%,19/04/2013,19/04/2013,,No,Yes,135,As Soon As Possible,Medium,60,10.4
+70,Intégration,11,1,32d,0d,32d,0%,12/02/2013,15/03/2013,110,No,No,136,As Soon As Possible,Medium,11,11
+70,Concours,12,1,1d,0d,1d,0%,18/04/2013,18/04/2013,,No,Yes,137,As Soon As Possible,Medium,65,12
+70,Reprise,13,1,1d,0d,1d,0%,25/04/2013,25/04/2013,,No,Yes,138,As Soon As Possible,Medium,67,13
