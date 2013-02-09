@@ -354,11 +354,11 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double12"/>
-      <double>634.0</double>
+      <double>644.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>634.0</double>
+     <double>644.0</double>
      <double>0.0</double>
     </void>
    </object>
@@ -370,7 +370,7 @@ Station</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double13"/>
-      <double>666.0</double>
+      <double>676.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -381,7 +381,7 @@ Station</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>666.0</double>
+     <double>676.0</double>
      <double>423.0</double>
     </void>
    </object>

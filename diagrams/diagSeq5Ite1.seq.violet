@@ -36,11 +36,11 @@
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double1"/>
-      <double>534.0</double>
+      <double>533.0</double>
      </void>
     </void>
     <void method="setLocation">
-     <double>534.0</double>
+     <double>533.0</double>
      <double>0.0</double>
     </void>
    </object>
@@ -287,7 +287,7 @@ Gripper</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double7"/>
-      <double>566.0</double>
+      <double>565.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -298,7 +298,7 @@ Gripper</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>566.0</double>
+     <double>565.0</double>
      <double>212.0</double>
     </void>
    </object>
@@ -356,7 +356,7 @@ Gripper</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double10"/>
-      <double>566.0</double>
+      <double>565.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -367,7 +367,7 @@ Gripper</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>566.0</double>
+     <double>565.0</double>
      <double>374.0</double>
     </void>
    </object>
@@ -425,7 +425,7 @@ Gripper</string>
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double13"/>
-      <double>566.0</double>
+      <double>565.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
@@ -436,7 +436,7 @@ Gripper</string>
      </void>
     </void>
     <void method="setLocation">
-     <double>566.0</double>
+     <double>565.0</double>
      <double>590.0</double>
     </void>
    </object>
@@ -550,42 +550,19 @@ Gripper</string>
    </object>
   </void>
   <void method="addNode">
-   <object class="com.horstmann.violet.DiagramLinkNode"/>
+   <object idref="ActivationBarNode15"/>
    <object class="java.awt.geom.Point2D$Double" id="Point2D$Double19">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
       <object idref="Point2D$Double19"/>
-      <double>1107.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double19"/>
-      <double>434.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>1107.0</double>
-     <double>434.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object idref="ActivationBarNode15"/>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double20">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double20"/>
       <double>753.0</double>
      </void>
     </void>
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>y</string>
      <void method="set">
-      <object idref="Point2D$Double20"/>
+      <object idref="Point2D$Double19"/>
       <double>816.0</double>
      </void>
     </void>
@@ -597,11 +574,11 @@ Gripper</string>
   </void>
   <void method="addNode">
    <object idref="LifelineNode5"/>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double21">
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double20">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
      <void method="set">
-      <object idref="Point2D$Double21"/>
+      <object idref="Point2D$Double20"/>
       <double>893.0</double>
      </void>
     </void>
@@ -613,6 +590,29 @@ Gripper</string>
   </void>
   <void method="addNode">
    <object idref="ActivationBarNode5"/>
+   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double21">
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>x</string>
+     <void method="set">
+      <object idref="Point2D$Double21"/>
+      <double>925.0</double>
+     </void>
+    </void>
+    <void class="java.awt.geom.Point2D$Double" method="getField">
+     <string>y</string>
+     <void method="set">
+      <object idref="Point2D$Double21"/>
+      <double>320.0</double>
+     </void>
+    </void>
+    <void method="setLocation">
+     <double>925.0</double>
+     <double>320.0</double>
+    </void>
+   </object>
+  </void>
+  <void method="addNode">
+   <object idref="ActivationBarNode8"/>
    <object class="java.awt.geom.Point2D$Double" id="Point2D$Double22">
     <void class="java.awt.geom.Point2D$Double" method="getField">
      <string>x</string>
@@ -625,29 +625,6 @@ Gripper</string>
      <string>y</string>
      <void method="set">
       <object idref="Point2D$Double22"/>
-      <double>320.0</double>
-     </void>
-    </void>
-    <void method="setLocation">
-     <double>925.0</double>
-     <double>320.0</double>
-    </void>
-   </object>
-  </void>
-  <void method="addNode">
-   <object idref="ActivationBarNode8"/>
-   <object class="java.awt.geom.Point2D$Double" id="Point2D$Double23">
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>x</string>
-     <void method="set">
-      <object idref="Point2D$Double23"/>
-      <double>925.0</double>
-     </void>
-    </void>
-    <void class="java.awt.geom.Point2D$Double" method="getField">
-     <string>y</string>
-     <void method="set">
-      <object idref="Point2D$Double23"/>
       <double>482.0</double>
      </void>
     </void>
@@ -669,7 +646,7 @@ Gripper</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>executeMoves(goToDrawingStart:List:Move)</string>
+     <string>executeMoves(goToDrawingStart:List:Move):Position</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -696,7 +673,7 @@ Gripper</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>executeMoves(drawFigure:List:Move)</string>
+     <string>executeMoves(drawFigure:List:Move):Position</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>
@@ -723,7 +700,7 @@ Gripper</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>executeMoves(List:Move)</string>
+     <string>executeMoves(List:Move):Position</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>

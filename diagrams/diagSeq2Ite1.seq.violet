@@ -498,7 +498,7 @@ Decoder</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>write(LoopGoals)</string>
+     <string>write(AntennaParam)</string>
     </void>
    </object>
    <object idref="ActivationBarNode0"/>

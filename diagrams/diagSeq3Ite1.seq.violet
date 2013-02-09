@@ -199,7 +199,7 @@ Station</string>
   <void method="connect">
    <object class="com.horstmann.violet.CallEdge">
     <void property="middleLabel">
-     <string>tracePlannedTrajectory(List:Move)</string>
+     <string>traceTrajectory(List:Move)</string>
     </void>
    </object>
    <object idref="ActivationBarNode2"/>
