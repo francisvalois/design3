@@ -1,0 +1,23 @@
+#À installer dans le script /home/$username/.bashrc du compte design3 sur le robot
+#Faites ls -la pour voir le fichier .bashrc(caché par défaut)
+
+#Veuillez définir vos path et variables pour votre ordinateur
+username=philippe            #Compte utilisateur ou le projet kinocto à été installé
+port=11311
+rosAppRoot=/home/$username/app             #Racine de l'application kinocto
+rosRoot=/opt/ros/groovy
+
+#Récupération de l'adresse ip locale
+ipAddress=$(ifconfig wlan0 | grep 'inet addr:' | awk '{ print $1}')
+ipAddress=localhost
+
+#Définit les constantes de ros
+source $rosRoot/setup.bash
+
+#Définit les constantes pour l'exécution de kinocto
+export -p ROS_IP=$ipAddress
+export -p ROS_MASTER_URI=http://$ipAddress:$port
+echo $ROS_IP
+echo $ROS_MASTER_URI
+
+source $rosAppRoot/devel/setup.bash

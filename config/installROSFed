@@ -1,0 +1,24 @@
+# Résumé des instructions d'installation de cette page(VERSION FEDORA 16 ET 17) : http://www.ros.org/wiki/groovy/Installation/Fedora
+
+# Install prerequisites:
+sudo yum install boost-devel gtest-devel log4cxx-devel apr-util-devel bzip2-devel python-pip
+sudo ln -s /usr/bin/pip-python /usr/bin/pip
+sudo easy_install wstool
+sudo easy_install rospkg
+sudo easy_install rosdep
+
+# Create build & install directories and init rosdep:
+sudo mkdir -p /opt/ros/groovy/ros_catkin_ws
+cd /opt/ros/groovy
+sudo rosdep init
+sudo rosdep update
+
+# Download and build ROS from source
+cd ros_catkin_ws
+sudo wstool init src -j3 http://packages.ros.org/web/rosinstall/generate/raw/groovy/ros_comm
+sudo rosdep install --from-paths src --ignore-src --rosdistro groovy -y
+sudo ./src/catkin/bin/catkin_make_isolated --install --install-space /opt/ros/groovy -DSETUPTOOLS_ARG_EXTRA="" -DSETUPTOOLS_DEB_LAYOUT=OFF
+cd ..
+
+# Set up your environment to start using ROS (might put this in .bashrc):
+source ./setup.bash

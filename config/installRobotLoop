@@ -1,0 +1,32 @@
+#À installer dans le script /home/design3/.bashrc du compte design3 sur le robot
+#Faites ls -la pour voir le fichier .bashrc(caché par défaut)
+
+#Veuillez définir vos path et variables pour votre ordinateur
+username=philippe            #Compte utilisateur ou le projet kinocto à été installé
+port=11311
+rosAppRoot=/home/design3/app             #Racine de l'application kinocto
+rosRoot=/opt/ros/groovy                  
+
+#Récupère l'adresse ip du macMini
+ipAddress=$(ifconfig wlan0 | grep 'inet ' | awk '{ print $2}')
+#Envoie l'adresse ip du macMini par internet
+#TODO recopier prototype
+
+#Définit les constantes de ros
+source $rosRoot/setup.bash
+
+#Définit les constantes pour l'exécution de kinocto
+export -p ROS_IP=$ipAddress
+export -p ROS_MASTER_URI=http://$ipAddress:$port
+echo $ROS_IP
+echo $ROS_MASTER_URI
+
+source $rosAppRoot/devel/setup.bash
+
+#Part les nodes de ROS
+#TODO Vérifier si les nodes sont actuellement démarré avant de faire cette étape, sinon 
+à chaques ouverture de terminal ça va prendre une éternité
+source /home/design3/design3/projet/devel/setup.bash
+roscore &
+sleep 5
+rosrun kinocto talker  &
