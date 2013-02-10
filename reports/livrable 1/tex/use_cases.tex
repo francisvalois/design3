@@ -11,14 +11,14 @@
 Cette section contient un résumé de chacun des différents cas d'utilisation. Elle est divisée en trois parties: soit les cas d'utilisation en lien avec l'usager, ceux en lien avec la station de base et finalement ceux en lien au robot. Le diagramme des cas d'utilisation est présenté à la section \ref{use_cases}.
 \section{Cas d'utilisation en lien avec l'usager}
 \subsection{Lancer le signal de départ}
-À l'aide d'une Graphical user interface ou interface graphique pour utilisateur (GUI) installée sur la station de base, l'utilisateur clique sur un bouton qui dicte au robot de lancer son exécution (signal de départ transmis au robot pour commencer à effectuer une tâche).
+À l'aide d'une Graphical user interface ou interface graphique pour utilisateur (GUI) installée sur la station de base, l'utilisateur clique sur un bouton qui lance l'exécution de la séquence (signal de départ transmis au robot pour commencer à effectuer une tâche).
 \subsection{Entrer les coordonnées initiales du robot}
-Avant d'envoyer le signal de départ au robot, l'utilisateur doit pouvoir entrer, dans le GUI de la station de base, les coordonnées de la position de départ du robot par rapport au terrain de jeu.
+Avant d'envoyer le signal de départ au robot, l'utilisateur doit pouvoir entrer les coordonnées de la position de départ du robot par rapport au terrain de jeu sur la station de base.
 \section{Cas d'utilisations en lien avec la station de base}
 \subsection{Localiser le robot}
 À l'aide de la Kinect, la station de base doit être en mesure de trouver la position du robot sur le terrain de jeu.
 \subsection{Détecter les obstacles}
-Au moyen de la Kinect, la station de base doit détecter la position des deux obstacles disposés entre les deux zones principales du terrain de jeu, ainsi que les limites (murs) du terrain.
+Au moyen de la Kinect, la station de base doit détecter la position des deux obstacles disposés entre les deux zones principales du terrain de jeu ainsi que les limites (murs) du terrain.
 \subsection{Afficher la solution du sudocube}
 La station de base doit afficher une image du sudocube résolu et indiquer à l'écran le chiffre qui se trouve dans la case rouge du cube.
 \subsection{Afficher le message de confirmation du lancement de la tâche}
@@ -35,10 +35,10 @@ La station de base doit afficher un message sur l'écran confirmant que la tâch
 La station de base doit afficher sur l'écran le temps d'exécution de la tâche.
 \section{Cas d'utilisation en lien avec le robot}
 \subsection{Déterminer le chemin optimal entre un point A et un point B tout en évitant les obstacles}
-Avec la configuration et la position des obstacles, le robot doit calculer la trajectoire optimale pour se rendre d'un point à un autre.
+Avec la configuration et la position des obstacles, le robot doit calculer la trajectoire optimale pour se rendre d'un point à l'autre.
 \subsection{Se déplacer d'un point A au point B}
 Le robot doit se déplacer sur le terrain de jeu d'un point A vers un point B avec un contrôle automatisé des roues.
-\subsection{Indiquer son adresse IP locale pour que la station de base puisse communiquer avec le robot}
+\subsection{Indiquer son adresse IP locale pour que la station de base communique avec le robot}
 Le robot doit être capable d'indiquer son adresse IP locale à la station de base pour que celle-ci établisse une connexion sans fil entre eux.
 \subsection{Extraire les informations d'un sudocube à partir d'une photo}
 À l'aide de la caméra embarquée, il doit prendre une photo et extraire le sudocube à partir de l'image obtenue.
@@ -55,9 +55,9 @@ Si le temps alloué pour la compétition (10 minutes) n'est pas écoulé, le rob
 \subsection{Se localiser}
 Le robot doit déterminer sa position et son orientation en temps réel à l'aide de la webcam et des données reçues de la station de base. De plus, il doit transmettre ces données à la station de base de façon régulière.
 \subsection{Décoder la transmission de l'antenne}
-Le robot doit se déplacer au-dessus de l'antenne et capter le signal transmit par celle-ci. Il doit ensuite le décoder pour trouver les paramètres indiquant le sudocube à résoudre ainsi que l'orientation et la taille du chiffre à dessiner dans la zone de dessin.
+Le robot doit se déplacer au-dessus de l'antenne et capter le signal transmis par celle-ci. Il doit ensuite le décoder afin de trouver les paramètres indiquant le sudocube à résoudre ainsi que l'orientation et la taille du chiffre à dessiner dans la zone de dessin.
 \subsection{Dessiner le chiffre du carré rouge en suivant les consignes}
-Une fois dans l'aire de dessin, le robot doit utiliser un préhenseur afin de poser la mine du crayon sur la table. Il doit ensuite se déplacer de façon à dessiner le chiffre obtenu dans la case rouge du sudocube, tout en suivant les dimensions exigées et les paramètres décodés. 
+Une fois dans l'aire de dessin, le robot doit utiliser un préhenseur afin de poser la mine du crayon sur la table. Il doit ensuite se déplacer de façon à dessiner le chiffre obtenu dans la case rouge du sudocube, tout en suivant les dimensions et le sens exigés. 
 \subsection{Afficher des informations sur l'écran LCD}
 Les paramètres trouvés lors du décodage du signal de l'antenne doivent être affichés sur un écran LCD installé sur le robot.
 \section{Diagramme des cas d'utilisation}
