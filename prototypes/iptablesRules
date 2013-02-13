@@ -1,0 +1,3 @@
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 11311 -j ACCEPT
+-A OUTPUT -m state --state NEW -m tcp -p tcp --dport 11311 -j ACCEPT
+
