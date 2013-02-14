@@ -42,3 +42,4 @@ build
 Thumbs.db 
 *.fls
 *.swp
+.metadata
