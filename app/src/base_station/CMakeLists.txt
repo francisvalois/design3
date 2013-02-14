@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(kinocto)
+project(base_station)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-find_package(OpenCV REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and scripts declared therein get installed
@@ -19,22 +18,24 @@ find_package(OpenCV REQUIRED)
 #######################################
 
 ## Generate messages in the 'msg' folder
- add_message_files(
-   FILES
-   Num.msg
- )
+# add_message_files(
+#   FILES
+#   Message1.msg
+#   Message2.msg
+# )
 
 ## Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   AddTwoInts.srv
- )
+# add_service_files(
+#   FILES
+#   Service1.srv
+#   Service2.srv
+# )
 
 ## Generate added messages and services with any dependencies listed here
- generate_messages(
-   DEPENDENCIES
-   std_msgs
- )
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs
+# )
 
 ###################################################
 ## Declare things to be passed to other projects ##
@@ -45,8 +46,8 @@ find_package(OpenCV REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
    INCLUDE_DIRS include
-#  LIBRARIES beginner_tutorials
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+#  LIBRARIES base_station
+#  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -60,18 +61,18 @@ include_directories(include
 )
 
 ## Declare a cpp library
-# add_library(beginner_tutorials
-#   src/${PROJECT_NAME}/beginner_tutorials.cpp
+# add_library(base_station
+#   src/${PROJECT_NAME}/base_station.cpp
 # )
 
 ## Declare a cpp executable
-# add_executable(beginner_tutorials_node src/beginner_tutorials_node.cpp)
+# add_executable(base_station_node src/base_station_node.cpp)
 
 ## Add dependencies to the executable
-# add_dependencies(beginner_tutorials_node ${PROJECT_NAME})
+# add_dependencies(base_station_node ${PROJECT_NAME})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(beginner_tutorials_node
+# target_link_libraries(base_station_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -87,7 +88,7 @@ include_directories(include
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS beginner_tutorials beginner_tutorials_node
+# install(TARGETS base_station base_station_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -112,36 +113,10 @@ include_directories(include
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_beginner_tutorials.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_base_station.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-#############################
-## Les fichiers à compiler ##
-## Chaques add_executable est un node en principe...
-#############################
-
-include_directories(include ${catkin_INCLUDE_DIRS})
-set(PROJ_SOURCES "src/SudocubeExtractor.cpp" "src/CameraImageSource.cpp")
-
-#file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
-#file(GLOB_RECURSE PROJ_HEADERS inc/${PROJ_NAME}/*.h)
-
-#Node de la station de base
-add_executable(BaseStation src/BaseStation.cpp)
-target_link_libraries(BaseStation ${catkin_LIBRARIES})
-
-#Node pour le robot kinocto
-add_executable(Kinocto src/Kinocto.cpp)
-target_link_libraries(Kinocto ${catkin_LIBRARIES})
-
-#Tests pour l'extracteur de sudocube
-add_executable(SudocubeExtractor ${PROJ_SOURCES})
-target_link_libraries(SudocubeExtractor ${catkin_LIBRARIES} ${OpenCV_LIBS})
-
-
-
