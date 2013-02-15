@@ -1,0 +1,86 @@
+
+// programme d'acquisition QEI pour indentification des moteurs
+
+
+#include "inc/lm3s9b92.h"
+#include "inc/hw_ints.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "driverlib/debug.h"
+#include "driverlib/gpio.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/rom.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/uart.h"
+#include "driverlib/qei.h"
+
+#include "uart.h"
+#include "timer.h"
+#include "commandes.h"
+
+// index pour les commandes reçues sur le UART
+volatile unsigned int CommandeRecue = 0;
+volatile unsigned int CommandeLue = 0;
+
+// index pour l'envoi des données sur le UART
+volatile unsigned int DonneeRecue = 0;
+volatile unsigned int DonneeEnvoi = 0;
+
+// buffers pour la réception des commandes et l'entreposage des données
+char bufferCommande[20];
+volatile unsigned long bufferVitesses[40];
+volatile unsigned long bufferPositions[40];
+
+// timer permet d'enregistrer les données toutes les microsecondes
+void timerInterrupt()
+{
+	IntMasterDisable(); //disable les interuptions
+	bufferPositions[DonneeRecue % sizeof(bufferPositions)] = QEIPositionGet(QEI0_BASE);
+    bufferVitesses[DonneeRecue % sizeof(bufferVitesses)] = ROM_QEIVelocityGet(QEI0_BASE);
+    DonneeRecue++;
+	TIMER0_ICR_R |= TIMER_ICR_TATOCINT; //reset le flag d'interruption
+	TIMER0_TAILR_R = 16000; //on remet la valeur du timer pour qu'il reshoot à 1 us.
+	IntMasterEnable();
+}
+
+// interrupt générée par la réception d'une commande
+void uartInterrupt()
+{
+
+    unsigned long ulStatus;
+	ulStatus = UARTIntStatus(UART0_BASE, true);
+	UARTIntClear(UART0_BASE, ulStatus);
+	while(UARTCharsAvail(UART0_BASE))
+	{
+		bufferCommande[CommandeRecue++ % sizeof(bufferCommande)] = UARTCharGetNonBlocking(UART0_BASE);
+	} 
+}
+
+int main()
+{
+	SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_QEI0);
+
+    //QEI
+    GPIOPinConfigure(GPIO_PC4_PHA0);
+    GPIOPinConfigure(GPIO_PC6_PHB0);
+	GPIOPinTypeQEI(GPIO_PORTC_BASE, GPIO_PIN_4);  //Ph A
+    GPIOPinTypeQEI(GPIO_PORTC_BASE, GPIO_PIN_6);  //Ph B
+    QEIDisable(QEI0_BASE);
+	QEIConfigure(QEI0_BASE, (QEI_CONFIG_CAPTURE_A_B | QEI_CONFIG_NO_RESET|
+	QEI_CONFIG_QUADRATURE | QEI_CONFIG_NO_SWAP), 6399);
+	QEIEnable(QEI0_BASE);
+	QEIPositionSet(QEI0_BASE,0);
+	ROM_QEIVelocityDisable(QEI0_BASE);
+	ROM_QEIVelocityConfigure (QEI0_BASE, QEI_VELDIV_1, 10000);
+	ROM_QEIVelocityEnable(QEI0_BASE);
+
+	uartInit();
+	timerInit();
+	IntMasterEnable();
+	while(1)
+	{
+
+	}
+}

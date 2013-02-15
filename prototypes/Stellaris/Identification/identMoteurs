@@ -1,0 +1,41 @@
+
+// programme d'acquisition QEI pour indentification des moteurs
+
+
+#include "inc/lm3s9b92.h"
+#include "inc/hw_ints.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_types.h"
+#include "driverlib/debug.h"
+#include "driverlib/gpio.h"
+#include "driverlib/interrupt.h"
+#include "driverlib/rom.h"
+#include "driverlib/sysctl.h"
+#include "driverlib/uart.h"
+#include "driverlib/qei.h"
+
+
+// timer qui permet d'avoir une base de temps pour les données, en microseconde
+volatile unsigned int timerValue=0;
+
+// index pour les commandes reçues sur le UART
+volatile unsigned int CommandeRecue = 0;
+volatile unsigned int CommandeLue = 0;
+
+// index pour l'envoi des données sur le UART
+volatile unsigned int DonneeRecue = 0;
+volatile unsigned int DonneeEnvoi = 0;
+
+// buffers pour la réception des commandes et l'entreposage des données
+char bufferCommande[20];
+int bufferDonnees[20];
+
+// timer permet de compter les microsecondes
+void timerInterrupt()
+{
+	IntMasterDisable(); //disable les interuptions
+	timerValue++;
+	TIMER0_ICR_R |= TIMER_ICR_TATOCINT; //reset le flag d'interruption
+	TIMER0_TAILR_R = 16000; //on remet la valeur du timer pour qu'il reshoot à 1 us.
+	IntMasterEnable();
+}
