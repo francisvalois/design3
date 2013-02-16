@@ -277,9 +277,9 @@ void callTheShizzle(int no) {
 
 	int point_size = 15;
 	int erode_size = 1;
-	Mat element = getStructuringElement(MORPH_RECT, Size(2 * point_size + 1, 2 * point_size + 1), Point(point_size, point_size));
 	Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(2 * erode_size + 1, 2 * erode_size + 1), Point(erode_size, erode_size));
 	erode(segmentedGreen, segmentedGreen, element2);
+	Mat element = getStructuringElement(MORPH_RECT, Size(2 * point_size + 1, 2 * point_size + 1), Point(point_size, point_size));
 	dilate(segmentedGreen, segmentedGreen, element);
 
 	//sprintf(file, "%s/seg/%d.png", pathOuput, no);
@@ -325,17 +325,18 @@ void callTheShizzle(int no) {
 	vector<vector<Point> > squaresPoly;
 	vector<Rect> squaresRect;
 	Mat graySquare = srcGray(squareRect);
+	graySquare = graySquare/1.05; // Afin de diminuer l'intensité de certaines images (comme celles de 12 à 17)
+	showWindowWith("test double", graySquare);
 	bool isExtracted = false;
 	////////////////////////////////////////////////////////////////////////////////
 	for (int erode_size = 0; erode_size <= 3 && isExtracted == false; erode_size++) {
-		for (int thresh = 150; thresh <= 210 && isExtracted == false; thresh++) {
+		for (int thresh = 165; thresh <= 210 && isExtracted == false; thresh++) {
 			Mat segmentedSudocube;
 			threshold(graySquare, segmentedSudocube, thresh, 500, THRESH_BINARY);
 
-			//if (graySquare.cols < 825) {
+			//On erode ici pour épaisir les lignes noir
 			Mat element2 = getStructuringElement(MORPH_RECT, Size(2 * erode_size + 1, 2 * erode_size + 1), Point(erode_size, erode_size));
 			erode(segmentedSudocube, segmentedSudocube, element2);
-			//}
 
 			sprintf(file, "%s/sudocube/%d.png", pathOuput, no);
 			saveImage(segmentedSudocube, file);
@@ -360,19 +361,27 @@ void callTheShizzle(int no) {
 	}
 
 	for (uint squareNo = 0; squareNo < squaresRect.size(); squareNo++) {
-		sprintf(file, "%s/square/%d_%d.png", pathOuput, no, squareNo + 1);
-		Mat square = graySquare(squaresRect[squareNo]);
-		saveImage(square, file);
+		//sprintf(file, "%s/square/%d_%d.png", pathOuput, no, squareNo + 1);
+		//Mat square = graySquare(squaresRect[squareNo]);
+		//saveImage(square, file);
 	}
-
-	////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////b///////////////////////////////////////////
 
 }
 
 int main(int argc, char** argv) {
+
+	double t = (double)getTickCount();
+
 	int nb_pict = 42;
 	for (int i = 1; i <= nb_pict; i++) {
 		callTheShizzle(i);
 	}
+
+	t = ((double)getTickCount() - t)/getTickFrequency();
+	cout << "Times passed in seconds: " << t << endl;
+
+
+
 	return 0;
 }
