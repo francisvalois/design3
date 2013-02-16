@@ -210,8 +210,7 @@ void removeInvalidSquares(vector<vector<Point> > &squaresPoly, vector<Rect> &squ
 	vector<Rect> validRect;
 
 	for (uint i = 0; i < squaresRect.size(); i++) {
-		cout << squaresRect[i].area() << endl;
-		if (squaresRect[i].area() > 10000 && squaresRect[i].area() < 200000) {
+		if (squaresRect[i].area() > 7000 && squaresRect[i].area() < 200000) {
 			validRect.push_back(squaresRect[i]);
 			validPoly.push_back(squaresPoly[i]);
 		}
@@ -228,7 +227,7 @@ Mat showSudokuSquares(Size pictureSize, const vector<vector<Point> > &squaresPol
 	//drawAllPolygon(drawing, squaresRect, squaresPoly);
 
 	showWindowWith("Squares found", drawing);
-	waitKey(0);
+	//(0);
 	return drawing;
 }
 
@@ -268,13 +267,10 @@ void callTheShizzle(int no) {
 	Mat srcGray;
 	Mat srcHSV;
 
-	//getPerspectiveTransform(src, warp);
-	//showWindowWith("warped", warp);file
-
 	cvtColor(src, srcGray, CV_BGR2GRAY);
 	cvtColor(src, srcHSV, CV_BGR2HSV);
-	sprintf(file, "%s/hsv/%d.png", pathOuput, no);
-	saveImage(srcHSV, file);
+	//sprintf(file, "%s/hsv/%d.png", pathOuput, no);
+	//saveImage(srcHSV, file);
 
 	Mat segmentedGreen;
 	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedGreen);
@@ -286,8 +282,8 @@ void callTheShizzle(int no) {
 	erode(segmentedGreen, segmentedGreen, element2);
 	dilate(segmentedGreen, segmentedGreen, element);
 
-	sprintf(file, "%s/seg/%d.png", pathOuput, no);
-	saveImage(segmentedGreen, file);
+	//sprintf(file, "%s/seg/%d.png", pathOuput, no);
+	//saveImage(segmentedGreen, file);
 
 	//Recuperation des contours
 	vector<vector<Point> > contours;
@@ -309,8 +305,8 @@ void callTheShizzle(int no) {
 	for (uint i = 0; i < boundRect.size(); i++) {
 		rectangle(box, boundRect[i].tl(), boundRect[i].br(), white, 2, 8, 0);
 	}
-	sprintf(file, "%s/box/%d.png", pathOuput, no);
-	saveImage(box, file);
+	//sprintf(file, "%s/box/%d.png", pathOuput, no);
+	//saveImage(box, file);
 
 	Mat croppedSquare = Mat::zeros(Size(1, 1), CV_8UC3);
 	Rect squareRect;
@@ -323,22 +319,58 @@ void callTheShizzle(int no) {
 	}
 
 	croppedSquare = src(squareRect);
-	sprintf(file, "%s/crop/%d.png", pathOuput, no);
-	saveImage(croppedSquare, file);
+	//sprintf(file, "%s/crop/%d.png", pathOuput, no);
+	//saveImage(croppedSquare, file);
 
 	vector<vector<Point> > squaresPoly;
 	vector<Rect> squaresRect;
 	Mat graySquare = srcGray(squareRect);
-	findAllSudokuSquares(graySquare, squaresPoly, squaresRect);
+	bool isExtracted = false;
+	////////////////////////////////////////////////////////////////////////////////
+	for (int erode_size = 0; erode_size <= 3 && isExtracted == false; erode_size++) {
+		for (int thresh = 150; thresh <= 210 && isExtracted == false; thresh++) {
+			Mat segmentedSudocube;
+			threshold(graySquare, segmentedSudocube, thresh, 500, THRESH_BINARY);
+
+			//if (graySquare.cols < 825) {
+			Mat element2 = getStructuringElement(MORPH_RECT, Size(2 * erode_size + 1, 2 * erode_size + 1), Point(erode_size, erode_size));
+			erode(segmentedSudocube, segmentedSudocube, element2);
+			//}
+
+			sprintf(file, "%s/sudocube/%d.png", pathOuput, no);
+			saveImage(segmentedSudocube, file);
+
+			findContours(segmentedSudocube, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+			squaresPoly.resize(contours.size());
+			squaresRect.resize(contours.size());
+
+			for (uint i = 0; i < contours.size(); i++) {
+				approxPolyDP(Mat(contours[i]), squaresPoly[i], 10, true);
+				squaresRect[i] = boundingRect(Mat(squaresPoly[i]));
+			}
+
+			removeInvalidSquares(squaresPoly, squaresRect);
+
+			if (squaresRect.size() == 47) {
+				cout << "Threshold no " << no << ":" << thresh << endl;
+				isExtracted = true;
+			}
+		}
+	}
+
 	for (uint squareNo = 0; squareNo < squaresRect.size(); squareNo++) {
-		sprintf(file, "%s/square/%d_%d.png", pathOuput, no, squareNo);
+		sprintf(file, "%s/square/%d_%d.png", pathOuput, no, squareNo + 1);
 		Mat square = graySquare(squaresRect[squareNo]);
 		saveImage(square, file);
 	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////
+
 }
 
 int main(int argc, char** argv) {
-	int nb_pict = 1;
+	int nb_pict = 42;
 	for (int i = 1; i <= nb_pict; i++) {
 		callTheShizzle(i);
 	}
