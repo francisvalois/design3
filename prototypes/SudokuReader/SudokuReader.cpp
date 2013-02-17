@@ -11,8 +11,19 @@ Mat src;
 Mat srcGray;
 Mat srcHSV;
 
-Scalar white = Scalar(0, 0, 255);
+Scalar white = Scalar(255, 255, 255);
+Scalar gray = Scalar(190, 190, 190);
+Scalar black = Scalar(0, 0, 0);
+
 int theshold = 150;
+
+const int trainSamples = 20;
+const int classes = 8;
+const int sizex = 25;
+const int sizey = 30;
+const int ImageSize = sizex * sizey;
+char pathToImages[] = "../../numbers";
+char output[] = "output";
 
 int frameAreaSize = 300000;
 
@@ -31,7 +42,7 @@ void removeInvalidSquares(vector<vector<Point> > &, vector<Rect> &);
 
 Mat showSudokuSquares(Size, const vector<vector<Point> > &, const vector<Rect> &);
 void drawAllRect(Mat &, const vector<Rect> &);
-void drawAllPolygon(Mat &, const vector<Rect> &, const vector<vector<Point> >);
+void drawAllPolygon(Mat &, const vector<vector<Point> >);
 
 void showWindowWith(const char*, const Mat &);
 
@@ -210,7 +221,7 @@ void removeInvalidSquares(vector<vector<Point> > &squaresPoly, vector<Rect> &squ
 	vector<Rect> validRect;
 
 	for (uint i = 0; i < squaresRect.size(); i++) {
-		if (squaresRect[i].area() > 7000 && squaresRect[i].area() < 200000) {
+		if (squaresRect[i].area() > 5000 && squaresRect[i].area() < 160000) {
 			validRect.push_back(squaresRect[i]);
 			validPoly.push_back(squaresPoly[i]);
 		}
@@ -226,8 +237,6 @@ Mat showSudokuSquares(Size pictureSize, const vector<vector<Point> > &squaresPol
 	drawAllRect(drawing, squaresRect);
 	//drawAllPolygon(drawing, squaresRect, squaresPoly);
 
-	showWindowWith("Squares found", drawing);
-	//(0);
 	return drawing;
 }
 
@@ -256,9 +265,55 @@ void saveImage(Mat &pict, char* filename) {
 	imwrite(filename, pict, compression_params);
 }
 
+void drawAllPolygon(Mat &drawing, const vector<Point> squarePoly) {
+	for (uint i = 0; i < squarePoly.size(); i++) {
+		drawContours(drawing, squarePoly, i, white, 1, 8, vector<Vec4i>(), 0, Point());
+	}
+}
+
+void PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &mask) {
+	Mat blurredImage;
+	GaussianBlur(inImage, blurredImage, Size(5, 5), 1, 1);
+
+	Mat thresholdImage;
+	adaptiveThreshold(blurredImage, thresholdImage, 255, 1, 1, 11, 2);
+	thresholdImage.setTo(black, mask);
+
+	int elemSize2 = 3;
+	Mat element2 = getStructuringElement(MORPH_RECT, Size(2 * elemSize2 + 1, 2 * elemSize2 + 1), Point(elemSize2, elemSize2));
+	dilate(thresholdImage, thresholdImage, element2);
+
+	showWindowWith("thresholded", thresholdImage);
+
+	Mat contourImage;
+	thresholdImage.copyTo(contourImage);
+
+	vector<vector<Point> > contours;
+	findContours(contourImage, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
+
+	vector<Rect> rects(0);
+	vector<vector<Point> > poly(contours.size());
+	for (uint i = 0; i < contours.size(); i++) {
+		approxPolyDP(Mat(contours[i]), poly[i], 10, true);
+		Rect rect = boundingRect(Mat(poly[i]));
+		cout << rect.area() << endl;
+		if (rect.area() > 250 && rect.area() < 2500) {
+			rects.push_back(rect);
+		}
+	}
+
+	Mat regionOfInterest = Mat::zeros(Size(sizex, sizey), CV_8UC3);
+	if (rects.size() > 0) {
+		regionOfInterest = thresholdImage(rects[0]);
+	} else {
+		cout << "No bounding box found" << endl;
+	}
+	resize(regionOfInterest, outImage, Size(sizex, sizey));
+}
+
 void callTheShizzle(int no) {
 	char pathIm[] = "../../sudocubes/";
-	char pathOuput[] = "output";
+	//char pathOuput[] = "output";
 	char file[255];
 	sprintf(file, "%s%d.png", pathIm, no);
 
@@ -325,21 +380,21 @@ void callTheShizzle(int no) {
 	vector<vector<Point> > squaresPoly;
 	vector<Rect> squaresRect;
 	Mat graySquare = srcGray(squareRect);
-	graySquare = graySquare/1.05; // Afin de diminuer l'intensité de certaines images (comme celles de 12 à 17)
+	graySquare = graySquare / 1.05; // Afin de diminuer l'intensité de certaines images (comme celles de 12 à 17)
 	showWindowWith("test double", graySquare);
 	bool isExtracted = false;
 	////////////////////////////////////////////////////////////////////////////////
 	for (int erode_size = 0; erode_size <= 3 && isExtracted == false; erode_size++) {
-		for (int thresh = 165; thresh <= 210 && isExtracted == false; thresh++) {
+		for (int thresh = 150; thresh <= 210 && isExtracted == false; thresh++) {
 			Mat segmentedSudocube;
 			threshold(graySquare, segmentedSudocube, thresh, 500, THRESH_BINARY);
 
-			//On erode ici pour épaisir les lignes noir
+			//On erode ici pour épaisir les lignes noires
 			Mat element2 = getStructuringElement(MORPH_RECT, Size(2 * erode_size + 1, 2 * erode_size + 1), Point(erode_size, erode_size));
 			erode(segmentedSudocube, segmentedSudocube, element2);
 
-			sprintf(file, "%s/sudocube/%d.png", pathOuput, no);
-			saveImage(segmentedSudocube, file);
+			//sprintf(file, "%s/sudocube/%d.png", pathOuput, no);
+			//saveImage(segmentedSudocube, file);
 
 			findContours(segmentedSudocube, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
@@ -361,8 +416,21 @@ void callTheShizzle(int no) {
 	}
 
 	for (uint squareNo = 0; squareNo < squaresRect.size(); squareNo++) {
+		Mat mask = Mat::zeros(graySquare.size(), CV_8UC1);
+		fillConvexPoly(mask, squaresPoly[squareNo], white);
+		Mat inversedMask = 255 - mask;
+
+		Mat squareMasked = Mat::ones(graySquare.size(), CV_8UC3);
+		graySquare.copyTo(squareMasked, mask);
+		squareMasked.setTo(black, inversedMask);
+
+		Mat square = squareMasked(squaresRect[squareNo]);
+		Mat out;
+		PreProcessNumber(squareMasked, out, sizex, sizey, inversedMask);
+		showWindowWith("out", out);
+		waitKey(0);
+
 		//sprintf(file, "%s/square/%d_%d.png", pathOuput, no, squareNo + 1);
-		//Mat square = graySquare(squaresRect[squareNo]);
 		//saveImage(square, file);
 	}
 	/////////////////////////////////////////////////b///////////////////////////////////////////
@@ -371,17 +439,15 @@ void callTheShizzle(int no) {
 
 int main(int argc, char** argv) {
 
-	double t = (double)getTickCount();
+	double t = (double) getTickCount();
 
 	int nb_pict = 42;
 	for (int i = 1; i <= nb_pict; i++) {
 		callTheShizzle(i);
 	}
 
-	t = ((double)getTickCount() - t)/getTickFrequency();
+	t = ((double) getTickCount() - t) / getTickFrequency();
 	cout << "Times passed in seconds: " << t << endl;
-
-
 
 	return 0;
 }
