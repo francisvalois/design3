@@ -46,39 +46,6 @@ void drawAllPolygon(Mat &, const vector<vector<Point> >);
 
 void showWindowWith(const char*, const Mat &);
 
-//int main(int argc, char** argv) {
-//src = imread(argv[1], 1);
-
-//src = imread("1-sat.png", 1);
-//cvtColor(src, srcGray, CV_BGR2GRAY);
-//cvtColor(src, srcHSV, CV_BGR2HSV);
-
-//showWindowWith("HSV", srcHSV);
-//Rect greenFrame = isolateGreenFrame(srcHSV);
-
-/*Mat src2 = imread("sudoku5.png", 1);
- cvtColor(src2, srcGray, CV_BGR2GRAY);
- cvtColor(src2, srcHSV, CV_BGR2HSV);
- Rect greenFrame = isolateGreenFrame(srcHSV);*/
-
-//showWindowWith("Original", src);
-//    if (isSudokuFrameVisible(srcHSV) == true) {
-//cout << "The square is big enough and centered" << endl;
-//Rect greenFrame = isolateGreenFrame(srcHSV);
-//showWindowWith("Green frame isolated", cropSquare(src, greenFrame));
-//cout << "The green frame as been isolated" << endl;
-/*vector<vector<Point> > squaresPoly;
- vector<Rect> squaresRect;
- if (findAllSudokuSquares(cropSquare(srcGray, greenFrame), squaresPoly, squaresRect)) {
- showSudokuSquares(greenFrame.size(), squaresPoly, squaresRect);
- cout << "All the squares have been found" << endl;
- } else {
- cout << "Didn't find all the squares" << endl;
- }*/
-//   }
-//	waitKey(0);
-//	return (0);
-//}
 /**
  * Sert a verifier si le carre du sudoku 3d est suffisament visible dans lecran.
  * Grosso modo on verifie seulement si le cadre vert fait faut moin
@@ -271,7 +238,7 @@ void drawAllPolygon(Mat &drawing, const vector<Point> squarePoly) {
 	}
 }
 
-void PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &mask) {
+bool PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &mask) {
 	Mat blurredImage;
 	GaussianBlur(inImage, blurredImage, Size(5, 5), 1, 1);
 
@@ -279,11 +246,13 @@ void PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &ma
 	adaptiveThreshold(blurredImage, thresholdImage, 255, 1, 1, 11, 2);
 	thresholdImage.setTo(black, mask);
 
-	int elemSize2 = 3;
-	Mat element2 = getStructuringElement(MORPH_RECT, Size(2 * elemSize2 + 1, 2 * elemSize2 + 1), Point(elemSize2, elemSize2));
-	dilate(thresholdImage, thresholdImage, element2);
+	int dilateSize = 3;
+	Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * dilateSize + 1, 2 * dilateSize + 1), Point(dilateSize, dilateSize));
+	dilate(thresholdImage, thresholdImage, dilateElem);
 
-	showWindowWith("thresholded", thresholdImage);
+	/*int erodeSize = 1;
+	 Mat erodeElem = getStructuringElement(MORPH_RECT, Size(2 * erodeSize + 1, 2 * erodeSize + 1), Point(erodeSize, erodeSize));
+	 erode(thresholdImage, thresholdImage, erodeElem);*/
 
 	Mat contourImage;
 	thresholdImage.copyTo(contourImage);
@@ -296,7 +265,6 @@ void PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &ma
 	for (uint i = 0; i < contours.size(); i++) {
 		approxPolyDP(Mat(contours[i]), poly[i], 10, true);
 		Rect rect = boundingRect(Mat(poly[i]));
-		cout << rect.area() << endl;
 		if (rect.area() > 250 && rect.area() < 2500) {
 			rects.push_back(rect);
 		}
@@ -305,149 +273,148 @@ void PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &ma
 	Mat regionOfInterest = Mat::zeros(Size(sizex, sizey), CV_8UC3);
 	if (rects.size() > 0) {
 		regionOfInterest = thresholdImage(rects[0]);
-	} else {
-		cout << "No bounding box found" << endl;
+		resize(regionOfInterest, outImage, Size(sizex, sizey));
+		return true;
 	}
-	resize(regionOfInterest, outImage, Size(sizex, sizey));
+
+	return false;
 }
 
-void callTheShizzle(int no) {
-	char pathIm[] = "../../sudocubes/";
-	//char pathOuput[] = "output";
-	char file[255];
-	sprintf(file, "%s%d.png", pathIm, no);
+void callTheShizzle(int sudocubeNo) {
+	char pathToOuput[] = "output";
 
-	Mat src = imread(file);
-	Mat warp;
+	char pathToSudocubes[] = "../../sudocubes/";
+	char filename[255];
+	sprintf(filename, "%s%d.png", pathToSudocubes, sudocubeNo);
+	Mat src = imread(filename);
+
 	Mat srcGray;
-	Mat srcHSV;
-
 	cvtColor(src, srcGray, CV_BGR2GRAY);
+
+	Mat srcHSV;
 	cvtColor(src, srcHSV, CV_BGR2HSV);
-	//sprintf(file, "%s/hsv/%d.png", pathOuput, no);
-	//saveImage(srcHSV, file);
+	//sprintf(filename, "%s/hsv/%d.png", pathToOuput, sudocubeNo);
+	//saveImage(srcHSV, filename);
 
-	Mat segmentedGreen;
-	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedGreen);
+	Mat segmentedFrame;
+	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
 
-	int point_size = 15;
-	int erode_size = 1;
-	Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(2 * erode_size + 1, 2 * erode_size + 1), Point(erode_size, erode_size));
-	erode(segmentedGreen, segmentedGreen, element2);
-	Mat element = getStructuringElement(MORPH_RECT, Size(2 * point_size + 1, 2 * point_size + 1), Point(point_size, point_size));
-	dilate(segmentedGreen, segmentedGreen, element);
+	int erodeFramesize = 1;
+	Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(2 * erodeFramesize + 1, 2 * erodeFramesize + 1), Point(erodeFramesize, erodeFramesize));
+	erode(segmentedFrame, segmentedFrame, element2);
 
-	//sprintf(file, "%s/seg/%d.png", pathOuput, no);
-	//saveImage(segmentedGreen, file);
+	int dilateFrameSize = 15;
+	Mat element = getStructuringElement(MORPH_RECT, Size(2 * dilateFrameSize + 1, 2 * dilateFrameSize + 1), Point(dilateFrameSize, dilateFrameSize));
+	dilate(segmentedFrame, segmentedFrame, element);
+	//sprintf(filename, "%s/frameSeg/%d.png", pathToOuput, sudocubeNo);
+	//saveImage(segmentedFrame, filename);
 
 	//Recuperation des contours
-	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
-	findContours(segmentedGreen, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	vector<vector<Point> > frameContours;
+	vector<Vec4i> frameHierarchy;
+	findContours(segmentedFrame, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 	//Recuperation des polygones et des Rect
-	vector<vector<Point> > contours_poly(contours.size());
-	vector<Rect> boundRect(0);
-	for (uint i = 0; i < contours.size(); i++) {
-		approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
-		Rect rect = boundingRect(Mat(contours_poly[i]));
+	vector<vector<Point> > frameContoursPoly(frameContours.size());
+	vector<Rect> frameBoundingRect(0);
+	for (uint i = 0; i < frameContours.size(); i++) {
+		approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
+		Rect rect = boundingRect(Mat(frameContoursPoly[i]));
 		if (rect.area() > frameAreaSize) {
-			boundRect.push_back(rect);
+			frameBoundingRect.push_back(rect);
 		}
 	}
 
-	Mat box = Mat::zeros(segmentedGreen.size(), CV_8UC3);
-	for (uint i = 0; i < boundRect.size(); i++) {
-		rectangle(box, boundRect[i].tl(), boundRect[i].br(), white, 2, 8, 0);
-	}
-	//sprintf(file, "%s/box/%d.png", pathOuput, no);
-	//saveImage(box, file);
+	/*Mat box = Mat::zeros(segmentedFrame.size(), CV_8UC3); //TODO Utile seulement au débug
+	for (uint i = 0; i < frameBoundingRect.size(); i++) {
+		rectangle(box, frameBoundingRect[i].tl(), frameBoundingRect[i].br(), white, 2, 8, 0);
+	}*/
+	//sprintf(filename, "%s/frameBox/%d.png", pathToOuput, sudocubeNo);
+	//saveImage(box, filename);
 
-	Mat croppedSquare = Mat::zeros(Size(1, 1), CV_8UC3);
 	Rect squareRect;
-	if (boundRect.size() == 1) {
-		squareRect = boundRect[0];
-	} else if (boundRect.size() == 2) {
-		squareRect = getSmallestRectBetween(boundRect[0], boundRect[1]);
+	if (frameBoundingRect.size() == 0) {
+		cout << "Found too many potential frames for sudocube no " << sudocubeNo << endl; // TODO Gestion d'exception...
+		return;
+	} else if (frameBoundingRect.size() == 1) {
+		squareRect = frameBoundingRect[0];
+	} else if (frameBoundingRect.size() == 2) {
+		squareRect = getSmallestRectBetween(frameBoundingRect[0], frameBoundingRect[1]);
 	} else {
-		cout << "too much squares for no " << no << endl;
+		cout << "Found too many potential frames for sudocube no " << sudocubeNo << endl; // TODO Gestion d'exception...
+		return;
 	}
-
-	croppedSquare = src(squareRect);
-	//sprintf(file, "%s/crop/%d.png", pathOuput, no);
-	//saveImage(croppedSquare, file);
 
 	vector<vector<Point> > squaresPoly;
 	vector<Rect> squaresRect;
-	Mat graySquare = srcGray(squareRect);
-	graySquare = graySquare / 1.05; // Afin de diminuer l'intensité de certaines images (comme celles de 12 à 17)
-	showWindowWith("test double", graySquare);
+	Mat frameCroppedGray = srcGray(squareRect) / 1.05; // Diminution de la luminosité de 5% //TODO Corriger sur la caméra direct
+	//sprintf(filename, "%s/frameCropped/%d.png", pathToOuput, sudocubeNo);
+	//saveImage(frameCroppedGray, filename);
+
+	//Extraction de toutes les cases
 	bool isExtracted = false;
-	////////////////////////////////////////////////////////////////////////////////
 	for (int erode_size = 0; erode_size <= 3 && isExtracted == false; erode_size++) {
 		for (int thresh = 150; thresh <= 210 && isExtracted == false; thresh++) {
-			Mat segmentedSudocube;
-			threshold(graySquare, segmentedSudocube, thresh, 500, THRESH_BINARY);
+			Mat thresholdedSudocube;
+			threshold(frameCroppedGray, thresholdedSudocube, thresh, 500, THRESH_BINARY);
 
-			//On erode ici pour épaisir les lignes noires
 			Mat element2 = getStructuringElement(MORPH_RECT, Size(2 * erode_size + 1, 2 * erode_size + 1), Point(erode_size, erode_size));
-			erode(segmentedSudocube, segmentedSudocube, element2);
+			erode(thresholdedSudocube, thresholdedSudocube, element2);
+			//sprintf(filename, "%s/sudocubeThresh/%d.png", pathToOuput, sudocubeNo);
+			//saveImage(thresholdedSudocube, filename);
 
-			//sprintf(file, "%s/sudocube/%d.png", pathOuput, no);
-			//saveImage(segmentedSudocube, file);
+			findContours(thresholdedSudocube, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-			findContours(segmentedSudocube, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-			squaresPoly.resize(contours.size());
-			squaresRect.resize(contours.size());
-
-			for (uint i = 0; i < contours.size(); i++) {
-				approxPolyDP(Mat(contours[i]), squaresPoly[i], 10, true);
+			squaresPoly.resize(frameContours.size());
+			squaresRect.resize(frameContours.size());
+			for (uint i = 0; i < frameContours.size(); i++) {
+				approxPolyDP(Mat(frameContours[i]), squaresPoly[i], 10, true);
 				squaresRect[i] = boundingRect(Mat(squaresPoly[i]));
 			}
 
 			removeInvalidSquares(squaresPoly, squaresRect);
 
 			if (squaresRect.size() == 47) {
-				cout << "Threshold no " << no << ":" << thresh << endl;
 				isExtracted = true;
 			}
 		}
 	}
 
+	//Extraction de tous les chiffres des cases
+	vector<Mat> numbers;
 	for (uint squareNo = 0; squareNo < squaresRect.size(); squareNo++) {
-		Mat mask = Mat::zeros(graySquare.size(), CV_8UC1);
-		fillConvexPoly(mask, squaresPoly[squareNo], white);
-		Mat inversedMask = 255 - mask;
+		Mat squareMask = Mat::zeros(frameCroppedGray.size(), CV_8UC1);
+		fillConvexPoly(squareMask, squaresPoly[squareNo], white);
 
-		Mat squareMasked = Mat::ones(graySquare.size(), CV_8UC3);
-		graySquare.copyTo(squareMasked, mask);
-		squareMasked.setTo(black, inversedMask);
+		Mat squareMasked = Mat::ones(frameCroppedGray.size(), CV_8UC3);
+		frameCroppedGray.copyTo(squareMasked, squareMask);
 
-		Mat square = squareMasked(squaresRect[squareNo]);
-		Mat out;
-		PreProcessNumber(squareMasked, out, sizex, sizey, inversedMask);
-		showWindowWith("out", out);
-		waitKey(0);
+		Mat squareInversedMask = 255 - squareMask;
+		Mat number;
+		bool foundNumber = PreProcessNumber(squareMasked, number, sizex, sizey, squareInversedMask);
 
-		//sprintf(file, "%s/square/%d_%d.png", pathOuput, no, squareNo + 1);
-		//saveImage(square, file);
+		if (foundNumber == true) {
+			numbers.push_back(number);
+			//sprintf(filename, "%s/number/%d_%d.png", pathToOuput, sudocubeNo, squareNo + 1);
+			//saveImage(number, filename);
+		}
+
 	}
-	/////////////////////////////////////////////////b///////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////
 
 }
 
 int main(int argc, char** argv) {
-
+	int nb_pict = 42;
 	double t = (double) getTickCount();
 
-	int nb_pict = 42;
 	for (int i = 1; i <= nb_pict; i++) {
 		callTheShizzle(i);
 	}
-
 	t = ((double) getTickCount() - t) / getTickFrequency();
 	cout << "Times passed in seconds: " << t << endl;
+
+
 
 	return 0;
 }
