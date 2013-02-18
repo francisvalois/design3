@@ -15,13 +15,26 @@ int counter = 0;
 void saveImage(Mat&, string&);
 
 
+void printAttrValue(const char* name, float value) {
+	cout << name << ":" << value << endl;
+}
+
 int main(int, char**)
 {
-    VideoCapture cap(0);
+    VideoCapture cap(1);
+
+    cap.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
+    cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1200);
+
+    cap.set(CV_CAP_PROP_BRIGHTNESS, 0.509803);
+    cap.set(CV_CAP_PROP_CONTRAST, 0.196078);
+    cap.set(CV_CAP_PROP_SATURATION, 0.176470);
+    cap.set(CV_CAP_PROP_GAIN, 0);
+
     if(!cap.isOpened())
         return -1;
 
-    namedWindow("pic",1);
+    namedWindow("pic", CV_WINDOW_KEEPRATIO);
     for(;;)
     {
         Mat frame;
@@ -29,11 +42,11 @@ int main(int, char**)
         imshow("pic", frame);
 
 		int keyPressed = waitKey(30);
-		if (keyPressed == 13 | keyPressed == 10) {
+		if (keyPressed == 13 || keyPressed == 10) {
 			counter++;
 			std::string result;
 			std::stringstream sstm;
-			sstm << "no" << counter << "pict.jpeg";
+			sstm << counter << ".png";
 			result = sstm.str();
 			saveImage(frame, result);
 		} else if (keyPressed != 13 && keyPressed >= 0) {
@@ -47,8 +60,8 @@ int main(int, char**)
 
 void saveImage(Mat &pict, string &filename) {
     vector<int> compression_params;
-    compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
-    compression_params.push_back(100);
+    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+    compression_params.push_back(9);
 
     imwrite(filename, pict, compression_params);
 
