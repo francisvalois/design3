@@ -1,2 +1,4 @@
 contrib/
 Debug/
+.cproject
+.project
