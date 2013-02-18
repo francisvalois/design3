@@ -3,159 +3,133 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 #include <stdio.h>
+#include <stdlib.h>
 
 using namespace cv;
 using namespace std;
 
-const int train_samples = 2;
-const int classes = 10;
-const int sizex = 25;
-const int sizey = 30;
-const int ImageSize = sizex * sizey;
-char pathToImages[] = "images";
+const int TRAIN_SAMPLES = 20;
+const int CLASSES = 8;
+const int NUMBER_WIDTH = 25;
+const int NUMBER_HEIGHT = 30;
+const int NUMBER_IMAGE_SIZE = NUMBER_WIDTH * NUMBER_HEIGHT;
+char PATH_TO_NUMBERS[] = "../../numbers";
+char OUTPUT[] = "output";
 
-void PreProcessImage(Mat *inImage, Mat *outImage, int sizex, int sizey);
-void LearnFromImages(CvMat* trainData, CvMat* trainClasses);
-void RunSelfTest(KNearest& knn2);
-
-void AnalyseImage(KNearest knearest);
+void learnFromImages(CvMat* trainData, CvMat* trainClasses);
+bool isTrainedDataValid(KNearest& knn2);
+void saveImage(Mat &pict, char* filename);
+void saveData(CvMat *pict, char* filename);
+int getNumber(KNearest knearest, Mat image);
 
 int main(int argc, char** argv) {
+	CvMat* trainData = cvCreateMat(CLASSES * TRAIN_SAMPLES, NUMBER_IMAGE_SIZE, CV_32FC1);
+	CvMat* trainClasses = cvCreateMat(CLASSES * TRAIN_SAMPLES, 1, CV_32FC1);
 
- CvMat* trainData = cvCreateMat(classes * train_samples, ImageSize, CV_32FC1);
- CvMat* trainClasses = cvCreateMat(classes * train_samples, 1, CV_32FC1);
+	namedWindow("single", CV_WINDOW_AUTOSIZE);
+	namedWindow("all", CV_WINDOW_AUTOSIZE);
 
- namedWindow("single", CV_WINDOW_AUTOSIZE);
- namedWindow("all", CV_WINDOW_AUTOSIZE);
+	learnFromImages(trainData, trainClasses);
+	KNearest knearest(trainData, trainClasses);
 
- LearnFromImages(trainData, trainClasses);
- KNearest knearest(trainData, trainClasses);
- RunSelfTest(knearest);
- AnalyseImage(knearest);
+	bool isValidData = isTrainedDataValid(knearest);
+	if (isValidData == false) {
+		cout << "The trained data are wrong" << endl;
+	}
 
- return 0;
+	Mat number = imread("../SudokuReader/output/number/40_22.png");
 
- }
+	int detectedNumber = getNumber(knearest, number);
+	cout << detectedNumber << endl;
+
+	return 0;
+
+}
 
 void showWindowWith2(const char* name, const Mat &mat) {
 	namedWindow(name, CV_WINDOW_AUTOSIZE);
 	imshow(name, mat);
 }
 
-void LearnFromImages(CvMat* trainData, CvMat* trainClasses) {
-	Mat img;
-	char file[255];
-	for (int i = 0; i < classes; i++) { //Pour tous les chiffres de 0 à 9
-		for (int j = 0; j < train_samples; j++) { //Pour tous les échantillions d'un chiffre
-			sprintf(file, "%s/%d_%d.png", pathToImages, i, j+1);
-			img = imread(file, 1);
-			if (!img.data) {
-				cout << "File " << file << " not found\n";
+void saveImage(Mat &pict, char* filename) {
+	vector<int> compression_params;
+	compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+	compression_params.push_back(9);
+
+	imwrite(filename, pict, compression_params);
+}
+
+void saveData(CvMat *pict, char* filename) {
+	cvSaveImage(filename, pict);
+}
+
+void learnFromImages(CvMat* trainData, CvMat* trainClasses) {
+	char filename[255];
+	for (int i = 0; i < CLASSES; i++) {
+		int classNo = i + 1;
+
+		for (int j = 0; j < TRAIN_SAMPLES; j++) {
+			int trainNo = j + 1;
+
+			sprintf(filename, "%s/%d/%d-%d.png", PATH_TO_NUMBERS, classNo, classNo, trainNo);
+			Mat number = imread(filename, 1);
+
+			if (!number.data) {
+				cout << "File " << filename << " not found\n";
 				exit(1);
 			}
-			Mat outfile;
-			PreProcessImage(&img, &outfile, sizex, sizey);
-			for (int n = 0; n < ImageSize; n++) { //Recopie toutes les pixels
-				trainData->data.fl[i*ImageSize*2 + j*ImageSize + n] = outfile.data[n];
+
+			for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
+				trainData->data.fl[i * NUMBER_IMAGE_SIZE * TRAIN_SAMPLES + j * NUMBER_IMAGE_SIZE + n] = number.data[n];
 			}
-
-			trainClasses->data.fl[i*train_samples+j] = i;
-		}
-	}
-}
-
-void PreProcessImage(Mat *inImage, Mat *outImage, int sizex, int sizey) {
-	Mat grayImage, blurredImage, thresholdImage, contourImage, regionOfInterest;
-
-	vector<vector<Point> > contours;
-
-	cvtColor(*inImage, grayImage, COLOR_BGR2GRAY);
-
-	GaussianBlur(grayImage, blurredImage, Size(5, 5), 2, 2);
-	adaptiveThreshold(blurredImage, thresholdImage, 255, 1, 1, 11, 2);
-
-	thresholdImage.copyTo(contourImage);
-
-	findContours(contourImage, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
-
-	int idx = 0;
-	size_t area = 0;
-	for (size_t i = 0; i < contours.size(); i++) {
-		if (area < contours[i].size()) {
-			idx = i;
-			area = contours[i].size();
+			trainClasses->data.fl[i * TRAIN_SAMPLES + j] = i + 1;
 		}
 	}
 
-	Rect rec = boundingRect(contours[idx]);
-	regionOfInterest = thresholdImage(rec);
-	resize(regionOfInterest, *outImage, Size(sizex, sizey));
+	sprintf(filename, "traindata.png");
+	saveData(trainData, filename);
+
+	sprintf(filename, "trainclasses.png");
+	saveData(trainClasses, filename);
 }
 
-void RunSelfTest(KNearest& knn2) {
-	Mat img;
-	CvMat* sample2 = cvCreateMat(1, ImageSize, CV_32FC1);
-	char file[255];
+bool isTrainedDataValid(KNearest& knn2) {
+	bool isValidData = true;
+	CvMat* sample2 = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 
-	for (int i = 0; i < 10;i++) {
-		for (int j = 1; j <= train_samples; j++) {
-			sprintf(file, "%s/%d_%d.png", pathToImages, i, j); // Il s'agit du caractère que l'on recherche
-			img = imread(file, 1);
-			Mat stagedImage;
-			PreProcessImage(&img, &stagedImage, sizex, sizey);
-			for (int n = 0; n < ImageSize; n++) {
-				sample2->data.fl[n] = stagedImage.data[n];
+	for (int i = 1; i <= CLASSES; i++) {
+		for (int j = 1; j < TRAIN_SAMPLES; j++) {
+			char file[255];
+			sprintf(file, "%s/%d/%d-%d.png", PATH_TO_NUMBERS, i, i, j);
+			Mat testedNumber = imread(file, 1);
+
+			for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
+				sample2->data.fl[n] = testedNumber.data[n];
 			}
 			float detectedClass = knn2.find_nearest(sample2, 1);
 			if (i != (int) ((detectedClass))) {
-				cout << "Incorrect. Le vrai chiffre est " << i << " mais on as détecté " << (int) ((detectedClass));
-				exit(1);
+				isValidData = false;
 			}
-			cout << "Correct = " << (int) ((detectedClass)) << "\n";
-			imshow("single", img);
-			waitKey(10);
 		}
 	}
 
+	return isValidData;
 }
 
-void AnalyseImage(KNearest knearest) {
-	CvMat* sample2 = cvCreateMat(1, ImageSize, CV_32FC1);
+int getNumber(KNearest knearest, Mat image) {
+	int number = -1;
 
-	Mat image, gray, blur, thresh;
+	CvMat* sample2 = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 
-	vector<vector<Point> > contours;
-	image = imread("images/pitrain.png", 1);
-
-	cvtColor(image, gray, COLOR_BGR2GRAY);
-	GaussianBlur(gray, blur, Size(5, 5), 2, 2);
-	adaptiveThreshold(blur, thresh, 255, 1, 1, 11, 2);
-	findContours(thresh, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
-
-	for (size_t i = 0; i < contours.size(); i++) {
-		vector<Point> cnt = contours[i];
-		if (contourArea(cnt) > 50) {
-			Rect rec = boundingRect(cnt);
-			if (rec.height > 28) {
-				Mat roi = image(rec);
-				Mat stagedImage;
-				PreProcessImage(&roi, &stagedImage, sizex, sizey);
-
-				for (int n = 0; n < ImageSize; n++) {
-					sample2->data.fl[n] = stagedImage.data[n];
-				}
-
-				float result = knearest.find_nearest(sample2, 1);
-				rectangle(image, Point(rec.x, rec.y),
-						Point(rec.x + rec.width, rec.y + rec.height),
-						Scalar(0, 0, 255), 2);
-
-				imshow("all", image);
-				cout << result << "\n";
-
-				imshow("single", stagedImage);
-				waitKey(0);
-			}
-		}
+	for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
+		sample2->data.fl[n] = image.data[n];
 	}
+	float detectedClass = knearest.find_nearest(sample2, 1);
+	int detectedNumber = (int) ((detectedClass));
+
+	if (detectedNumber >= 1 || detectedNumber <= 8) {
+		number = detectedNumber;
+	}
+
+	return number;
 }
