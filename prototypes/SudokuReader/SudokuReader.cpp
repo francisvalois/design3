@@ -1,5 +1,6 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/ml/ml.hpp"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,127 +8,47 @@
 using namespace cv;
 using namespace std;
 
+const char* OUTPUT_PATH = "output";
+const char* PATH_SUDOCUBES = "../../sudocubes/";
+char PATH_TO_NUMBERS[] = "../../numbers";
+
+
+const int FRAME_AREA_MIN = 300000;
+const int FRAME_ERODE_SIZE = 1;
+const int FRAME_DILATE_SIZE = 15;
+
+const int SQUARE_THRESHOLD_MIN = 150;
+const int SQUARE_THRESHOLD_MAX = 210;
+
+const int NUMBER_AREA_MAX = 2500;
+const int NUMBER_AREA_MIN = 250;
+const int NUMBER_DILATE_SIZE = 3;
+const int TRAIN_SAMPLES = 20;
+const int CLASSES = 8;
+const int NUMBER_WIDTH = 25;
+const int NUMBER_HEIGHT = 30;
+const int NUMBER_IMAGE_SIZE = NUMBER_WIDTH * NUMBER_HEIGHT;
+
 Mat src;
 Mat srcGray;
 Mat srcHSV;
 
 Scalar white = Scalar(255, 255, 255);
-Scalar gray = Scalar(190, 190, 190);
 Scalar black = Scalar(0, 0, 0);
 
-int theshold = 150;
+CvMat* trainData;
+CvMat* trainClasses;
+KNearest* knearest;
 
-const int trainSamples = 20;
-const int classes = 8;
-const int sizex = 25;
-const int sizey = 30;
-const int ImageSize = sizex * sizey;
-char pathToImages[] = "../../numbers";
-char output[] = "output";
-
-int frameAreaSize = 300000;
-
-bool isSudokuFrameVisible(const Mat &hsvPicture);
-void segmentGreenFrame(const Mat&, Mat&);
-Rect getBiggestRectBetween(const Rect &, const Rect &);
-float getHeightRatioBetween(const Rect, const Mat &);
-
-Rect isolateGreenFrame(const Mat &);
 Rect getSmallestRectBetween(const Rect &, const Rect &);
-Mat cropSquare(const Mat &, const Rect &);
-
-bool findAllSudokuSquares(Mat &, vector<vector<Point> > &, vector<Rect> &);
-void getSquares(Mat &, const int, vector<vector<Point> > &, vector<Rect> &);
 void removeInvalidSquares(vector<vector<Point> > &, vector<Rect> &);
-
-Mat showSudokuSquares(Size, const vector<vector<Point> > &, const vector<Rect> &);
-void drawAllRect(Mat &, const vector<Rect> &);
-void drawAllPolygon(Mat &, const vector<vector<Point> >);
-
 void showWindowWith(const char*, const Mat &);
-
-/**
- * Sert a verifier si le carre du sudoku 3d est suffisament visible dans lecran.
- * Grosso modo on verifie seulement si le cadre vert fait faut moin
- *
- * @param hsvPicture Une image convertie en couleur HSV
- */
-bool isSudokuFrameVisible(const Mat &hsvPicture) {
-	Mat srcHSV;
-	cvtColor(src, srcHSV, CV_BGR2HSV);
-
-	Mat greenFrameSegmented;
-	segmentGreenFrame(hsvPicture, greenFrameSegmented);
-
-	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
-	findContours(greenFrameSegmented, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-	//Si aucun carre a ete trouve ou trop de carres(on ne peux identifier correctement les carres si plus de 2)
-	if (contours.size() != 2) {
-		return false;
-	}
-
-	//Recuperation des polygones des carres et des boundingBox
-	vector<vector<Point> > contours_poly(contours.size());
-	vector<Rect> boundRect(contours.size());
-	for (uint i = 0; i < contours.size(); i++) {
-		approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
-		boundRect[i] = boundingRect(Mat(contours_poly[i]));
-	}
-
-	//Le ratio de la hauteur entre limage et le cadre vert doit etre le plus proche de 1
-	//sinon le sudoku ne peux etre lu
-	Rect biggestRect = getBiggestRectBetween(boundRect[0], boundRect[1]);
-	float heightRatio = getHeightRatioBetween(biggestRect, hsvPicture);
-	if (heightRatio > 0.85f) {
-		return true;
-	}
-
-	return false;
-}
-
-void segmentGreenFrame(const Mat &hsvPicture, Mat &segmentedGreen) {
-	inRange(hsvPicture, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedGreen);
-
-	//showWindowWith("segmentedGreen2", segmentedGreen);
-}
-
-float getHeightRatioBetween(const Rect frameRect, const Mat &picture) {
-	return (float) frameRect.size().height / (float) picture.size().height;
-}
-
-Rect getBiggestRectBetween(const Rect &rect1, const Rect &rect2) {
-	if (rect1.area() > rect2.area()) {
-		return rect1;
-	}
-
-	return rect2;
-}
-
-Rect isolateGreenFrame(const Mat &hsvPicture) {
-	Mat segmentedGreenFrame;
-	segmentGreenFrame(hsvPicture, segmentedGreenFrame);
-
-	//Recuperation des contours
-	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
-	findContours(segmentedGreenFrame, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-	//Recuperation des polygones et des Rect
-	vector<vector<Point> > contours_poly(contours.size());
-	vector<Rect> boundRect(contours.size());
-	for (uint i = 0; i < contours.size(); i++) {
-		approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
-		boundRect[i] = boundingRect(Mat(contours_poly[i]));
-	}
-
-	drawAllRect(src, boundRect);
-
-	//On ne prend que linterieur du cadre vert
-	return boundRect[0];
-	//return getSmallestRectBetween(boundRect[0], boundRect[1]);
-}
+void saveImage(Mat &pict, char* filename);
+void initNumberReader();
+void learnFromImages(CvMat* trainData, CvMat* trainClasses);
+bool isTrainedDataValid();
+bool PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &squareMask);
+void testOneSudocube(int sudocubeNo);
 
 Rect getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
 	if (rect1.area() < rect2.area()) {
@@ -135,52 +56,6 @@ Rect getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
 	}
 
 	return rect2;
-}
-
-Mat cropSquare(const Mat &picture, const Rect &frameRect) {
-	return picture(frameRect);
-}
-
-/**
- * Isole tous les carrés du jeu de sudoku. Retourne une liste de polygone et une liste de Rect pour
- * traiter ulterieurement les carrés
- *
- * @return bool Vrai si l'algorithme trouve tous les carrés du jeu de sudoku (47 au total).
- */
-bool findAllSudokuSquares(Mat &grayPicture, vector<vector<Point> > &squaresPoly, vector<Rect> &squaresRect) {
-	getSquares(grayPicture, 175, squaresPoly, squaresRect);
-	removeInvalidSquares(squaresPoly, squaresRect);
-
-	//showSudokuSquares(grayPicture.size(), squaresPoly, squaresRect);
-
-	if (squaresRect.size() == 47) {
-		return true;
-	}
-
-	return false;
-}
-
-void getSquares(Mat &grayPicture, const int thresholdValue, vector<vector<Point> > &squaresPoly, vector<Rect> &squaresRect) {
-	Mat segmentedSudoku;
-	threshold(grayPicture, segmentedSudoku, thresholdValue, 500, THRESH_BINARY);
-
-	int erode_size = 1;
-	Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(2 * erode_size + 1, 2 * erode_size + 1), Point(erode_size, erode_size));
-	dilate(segmentedSudoku, segmentedSudoku, element2);
-
-	showWindowWith("segmented", segmentedSudoku);
-
-	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
-	findContours(segmentedSudoku, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-	squaresPoly.resize(contours.size());
-	squaresRect.resize(contours.size());
-
-	for (uint i = 0; i < contours.size(); i++) {
-		approxPolyDP(Mat(contours[i]), squaresPoly[i], 10, true);
-		squaresRect[i] = boundingRect(Mat(squaresPoly[i]));
-	}
 }
 
 void removeInvalidSquares(vector<vector<Point> > &squaresPoly, vector<Rect> &squaresRect) {
@@ -198,27 +73,6 @@ void removeInvalidSquares(vector<vector<Point> > &squaresPoly, vector<Rect> &squ
 	squaresRect = validRect;
 }
 
-Mat showSudokuSquares(Size pictureSize, const vector<vector<Point> > &squaresPoly, const vector<Rect> &squaresRect) {
-	Mat drawing = Mat::zeros(pictureSize, CV_8UC3);
-
-	drawAllRect(drawing, squaresRect);
-	//drawAllPolygon(drawing, squaresRect, squaresPoly);
-
-	return drawing;
-}
-
-void drawAllPolygon(Mat &drawing, const vector<Rect> &squaresRect, const vector<vector<Point> > squaresPoly) {
-	for (uint i = 0; i < squaresRect.size(); i++) {
-		drawContours(drawing, squaresPoly, i, white, 1, 8, vector<Vec4i>(), 0, Point());
-	}
-}
-
-void drawAllRect(Mat &drawing, const vector<Rect> &squaresRect) {
-	for (uint i = 0; i < squaresRect.size(); i++) {
-		rectangle(drawing, squaresRect[i].tl(), squaresRect[i].br(), white, 1, 4, 0);
-	}
-}
-
 void showWindowWith(const char* name, const Mat &mat) {
 	namedWindow(name, CV_WINDOW_KEEPRATIO);
 	imshow(name, mat);
@@ -232,30 +86,20 @@ void saveImage(Mat &pict, char* filename) {
 	imwrite(filename, pict, compression_params);
 }
 
-void drawAllPolygon(Mat &drawing, const vector<Point> squarePoly) {
-	for (uint i = 0; i < squarePoly.size(); i++) {
-		drawContours(drawing, squarePoly, i, white, 1, 8, vector<Vec4i>(), 0, Point());
-	}
-}
+bool PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &squareMask) {
+	Mat blurredSquare;
+	GaussianBlur(inImage, blurredSquare, Size(5, 5), 1, 1);
 
-bool PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &mask) {
-	Mat blurredImage;
-	GaussianBlur(inImage, blurredImage, Size(5, 5), 1, 1);
+	Mat thresholdedSquare;
+	adaptiveThreshold(blurredSquare, thresholdedSquare, 255, 1, 1, 11, 2);
+	thresholdedSquare.setTo(black, squareMask);
 
-	Mat thresholdImage;
-	adaptiveThreshold(blurredImage, thresholdImage, 255, 1, 1, 11, 2);
-	thresholdImage.setTo(black, mask);
-
-	int dilateSize = 3;
-	Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * dilateSize + 1, 2 * dilateSize + 1), Point(dilateSize, dilateSize));
-	dilate(thresholdImage, thresholdImage, dilateElem);
-
-	/*int erodeSize = 1;
-	 Mat erodeElem = getStructuringElement(MORPH_RECT, Size(2 * erodeSize + 1, 2 * erodeSize + 1), Point(erodeSize, erodeSize));
-	 erode(thresholdImage, thresholdImage, erodeElem);*/
+	Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * NUMBER_DILATE_SIZE + 1, 2 * NUMBER_DILATE_SIZE + 1),
+			Point(NUMBER_DILATE_SIZE, NUMBER_DILATE_SIZE));
+	dilate(thresholdedSquare, thresholdedSquare, dilateElem);
 
 	Mat contourImage;
-	thresholdImage.copyTo(contourImage);
+	thresholdedSquare.copyTo(contourImage);
 
 	vector<vector<Point> > contours;
 	findContours(contourImage, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
@@ -265,48 +109,126 @@ bool PreProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &ma
 	for (uint i = 0; i < contours.size(); i++) {
 		approxPolyDP(Mat(contours[i]), poly[i], 10, true);
 		Rect rect = boundingRect(Mat(poly[i]));
-		if (rect.area() > 250 && rect.area() < 2500) {
+
+		if (rect.area() > NUMBER_AREA_MIN && rect.area() < NUMBER_AREA_MAX) {
 			rects.push_back(rect);
 		}
 	}
 
-	Mat regionOfInterest = Mat::zeros(Size(sizex, sizey), CV_8UC3);
+	Mat ROI = Mat::zeros(Size(sizex, sizey), CV_8UC3);
 	if (rects.size() > 0) {
-		regionOfInterest = thresholdImage(rects[0]);
-		resize(regionOfInterest, outImage, Size(sizex, sizey));
+		ROI = thresholdedSquare(rects[0]);
+		resize(ROI, outImage, Size(sizex, sizey));
 		return true;
 	}
 
 	return false;
 }
 
-void callTheShizzle(int sudocubeNo) {
-	char pathToOuput[] = "output";
+void initNumberReader() {
+	trainData = cvCreateMat(CLASSES * TRAIN_SAMPLES, NUMBER_IMAGE_SIZE, CV_32FC1);
+	trainClasses = cvCreateMat(CLASSES * TRAIN_SAMPLES, 1, CV_32FC1);
+	learnFromImages(trainData, trainClasses);
+	knearest = new KNearest(trainData, trainClasses);
 
-	char pathToSudocubes[] = "../../sudocubes/";
+	bool isValidData = isTrainedDataValid();
+	if (isValidData == false) {
+		cout << "The trained data for the numbers are wrong" << endl;
+	}
+}
+
+void learnFromImages(CvMat* trainData, CvMat* trainClasses) {
 	char filename[255];
-	sprintf(filename, "%s%d.png", pathToSudocubes, sudocubeNo);
-	Mat src = imread(filename);
+	for (int i = 0; i < CLASSES; i++) {
+		int classNo = i + 1;
+
+		for (int j = 0; j < TRAIN_SAMPLES; j++) {
+			int trainNo = j + 1;
+
+			sprintf(filename, "%s/%d/%d-%d.png", PATH_TO_NUMBERS, classNo, classNo, trainNo);
+			Mat number = imread(filename, 1);
+			cvtColor(number, number, COLOR_BGR2GRAY);
+
+			if (!number.data) {
+				cout << "File " << filename << " not found\n";
+				exit(1);
+			}
+
+			for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
+				trainData->data.fl[i * NUMBER_IMAGE_SIZE * TRAIN_SAMPLES + j * NUMBER_IMAGE_SIZE + n] = number.data[n];
+			}
+			trainClasses->data.fl[i * TRAIN_SAMPLES + j] = classNo;
+		}
+	}
+}
+
+bool isTrainedDataValid() {
+	bool isValidData = true;
+	CvMat* sample2 = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
+
+	for (int i = 1; i <= CLASSES; i++) {
+		for (int j = 1; j < TRAIN_SAMPLES; j++) {
+			char file[255];
+			sprintf(file, "%s/%d/%d-%d.png", PATH_TO_NUMBERS, i, i, j);
+			Mat testedNumber = imread(file, 1);
+			cvtColor(testedNumber, testedNumber, COLOR_BGR2GRAY);
+
+			for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
+				sample2->data.fl[n] = testedNumber.data[n];
+			}
+			float detectedClass = knearest->find_nearest(sample2, 1);
+			int number = (int) ((detectedClass));
+
+			if (i != number) {
+				isValidData = false;
+			}
+		}
+	}
+
+	return isValidData;
+}
+
+int getNumber(Mat image) {
+	int number = -1;
+
+	CvMat* sample2 = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
+
+	for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
+		sample2->data.fl[n] = image.data[n];
+	}
+
+	float detectedClass = knearest->find_nearest(sample2, 1);
+	int detectedNumber = (int) ((detectedClass));
+
+	if (detectedNumber >= 1 || detectedNumber <= 8) {
+		number = detectedNumber;
+	}
+
+	return number;
+}
+
+void extractNumbers(int sudocubeNo, Mat & src) {
+	showWindowWith("src", src);
 
 	Mat srcGray;
 	cvtColor(src, srcGray, CV_BGR2GRAY);
 
 	Mat srcHSV;
 	cvtColor(src, srcHSV, CV_BGR2HSV);
-	//sprintf(filename, "%s/hsv/%d.png", pathToOuput, sudocubeNo);
+	//sprintf(filename, "%s/hsv/%d.png", OUTPUT_PATH, sudocubeNo);
 	//saveImage(srcHSV, filename);
 
 	Mat segmentedFrame;
 	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
 
-	int erodeFramesize = 1;
-	Mat element2 = getStructuringElement(MORPH_ELLIPSE, Size(2 * erodeFramesize + 1, 2 * erodeFramesize + 1), Point(erodeFramesize, erodeFramesize));
-	erode(segmentedFrame, segmentedFrame, element2);
+	Mat frameErodeElem = getStructuringElement(MORPH_ELLIPSE, Size(2 * FRAME_ERODE_SIZE + 1, 2 * FRAME_ERODE_SIZE + 1),
+			Point(FRAME_ERODE_SIZE, FRAME_ERODE_SIZE));
+	erode(segmentedFrame, segmentedFrame, frameErodeElem);
 
-	int dilateFrameSize = 15;
-	Mat element = getStructuringElement(MORPH_RECT, Size(2 * dilateFrameSize + 1, 2 * dilateFrameSize + 1), Point(dilateFrameSize, dilateFrameSize));
-	dilate(segmentedFrame, segmentedFrame, element);
-	//sprintf(filename, "%s/frameSeg/%d.png", pathToOuput, sudocubeNo);
+	Mat frameDilateElem = getStructuringElement(MORPH_RECT, Size(2 * FRAME_DILATE_SIZE + 1, 2 * FRAME_DILATE_SIZE + 1),
+			Point(FRAME_DILATE_SIZE, FRAME_DILATE_SIZE));
+	dilate(segmentedFrame, segmentedFrame, frameDilateElem);
+	//sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
 	//saveImage(segmentedFrame, filename);
 
 	//Recuperation des contours
@@ -320,18 +242,17 @@ void callTheShizzle(int sudocubeNo) {
 	for (uint i = 0; i < frameContours.size(); i++) {
 		approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
 		Rect rect = boundingRect(Mat(frameContoursPoly[i]));
-		if (rect.area() > frameAreaSize) {
+		if (rect.area() > FRAME_AREA_MIN) {
 			frameBoundingRect.push_back(rect);
 		}
 	}
 
-	/*Mat box = Mat::zeros(segmentedFrame.size(), CV_8UC3); //TODO Utile seulement au débug
-	for (uint i = 0; i < frameBoundingRect.size(); i++) {
-		rectangle(box, frameBoundingRect[i].tl(), frameBoundingRect[i].br(), white, 2, 8, 0);
-	}*/
-	//sprintf(filename, "%s/frameBox/%d.png", pathToOuput, sudocubeNo);
+	/*Mat box = Mat::zeros(segmentedFrame.size(), CV_8UC3); //TODO Pas utile à la fin
+	 for (uint i = 0; i < frameBoundingRect.size(); i++) {
+	 rectangle(box, frameBoundingRect[i].tl(), frameBoundingRect[i].br(), white, 2, 8, 0);
+	 }*/
+	//sprintf(filename, "%s/frameBox/%d.png", OUTPUT_PATH, sudocubeNo);
 	//saveImage(box, filename);
-
 	Rect squareRect;
 	if (frameBoundingRect.size() == 0) {
 		cout << "Found too many potential frames for sudocube no " << sudocubeNo << endl; // TODO Gestion d'exception...
@@ -348,19 +269,19 @@ void callTheShizzle(int sudocubeNo) {
 	vector<vector<Point> > squaresPoly;
 	vector<Rect> squaresRect;
 	Mat frameCroppedGray = srcGray(squareRect) / 1.05; // Diminution de la luminosité de 5% //TODO Corriger sur la caméra direct
-	//sprintf(filename, "%s/frameCropped/%d.png", pathToOuput, sudocubeNo);
+	//sprintf(filename, "%s/frameCropped/%d.png", OUTPUT_PATH, sudocubeNo);
 	//saveImage(frameCroppedGray, filename);
 
 	//Extraction de toutes les cases
 	bool isExtracted = false;
-	for (int erode_size = 0; erode_size <= 3 && isExtracted == false; erode_size++) {
-		for (int thresh = 150; thresh <= 210 && isExtracted == false; thresh++) {
+	for (int erodeSize = 0; erodeSize <= 3 && isExtracted == false; erodeSize++) {
+		for (int thresh = SQUARE_THRESHOLD_MIN; thresh <= SQUARE_THRESHOLD_MAX && isExtracted == false; thresh++) {
 			Mat thresholdedSudocube;
 			threshold(frameCroppedGray, thresholdedSudocube, thresh, 500, THRESH_BINARY);
 
-			Mat element2 = getStructuringElement(MORPH_RECT, Size(2 * erode_size + 1, 2 * erode_size + 1), Point(erode_size, erode_size));
-			erode(thresholdedSudocube, thresholdedSudocube, element2);
-			//sprintf(filename, "%s/sudocubeThresh/%d.png", pathToOuput, sudocubeNo);
+			Mat sudocubeErodeEle = getStructuringElement(MORPH_RECT, Size(2 * erodeSize + 1, 2 * erodeSize + 1), Point(erodeSize, erodeSize));
+			erode(thresholdedSudocube, thresholdedSudocube, sudocubeErodeEle);
+			//sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
 			//saveImage(thresholdedSudocube, filename);
 
 			findContours(thresholdedSudocube, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
@@ -380,6 +301,11 @@ void callTheShizzle(int sudocubeNo) {
 		}
 	}
 
+	if (isExtracted == false) {
+		cout << "Could not extract all the square for sudocube no " << sudocubeNo << endl;
+		return;
+	}
+
 	//Extraction de tous les chiffres des cases
 	vector<Mat> numbers;
 	for (uint squareNo = 0; squareNo < squaresRect.size(); squareNo++) {
@@ -391,30 +317,51 @@ void callTheShizzle(int sudocubeNo) {
 
 		Mat squareInversedMask = 255 - squareMask;
 		Mat number;
-		bool foundNumber = PreProcessNumber(squareMasked, number, sizex, sizey, squareInversedMask);
+		bool foundNumber = PreProcessNumber(squareMasked, number, NUMBER_WIDTH, NUMBER_HEIGHT, squareInversedMask);
 
 		if (foundNumber == true) {
 			numbers.push_back(number);
-			//sprintf(filename, "%s/number/%d_%d.png", pathToOuput, sudocubeNo, squareNo + 1);
+			showWindowWith("number", number);
+
+			int numberFound = getNumber(number);
+
+			cout << "Found : " << numberFound << endl;
+
+			waitKey(0);
+
+			//sprintf(filename, "%s/number/%d_%d.png", OUTPUT_PATH, sudocubeNo, squareNo + 1);
 			//saveImage(number, filename);
 		}
-
 	}
-	////////////////////////////////////////////////////////////////////////////////////////////
 
+	waitKey(0);
 }
 
-int main(int argc, char** argv) {
-	int nb_pict = 42;
+void loopOverTestExamples() {
+	int nbPict = 42;
 	double t = (double) getTickCount();
+	char filename[255];
 
-	for (int i = 1; i <= nb_pict; i++) {
-		callTheShizzle(i);
+	for (int i = 1; i <= nbPict; i++) {
+		sprintf(filename, "%s%d.png", PATH_SUDOCUBES, i);
+		Mat src = imread(filename);
+		extractNumbers(i, src);
 	}
 	t = ((double) getTickCount() - t) / getTickFrequency();
 	cout << "Times passed in seconds: " << t << endl;
 
+}
 
+void testOneSudocube(int sudocubeNo) {
+	char filename[255];
+	sprintf(filename, "%s%d.png", PATH_SUDOCUBES, sudocubeNo);
+	Mat src = imread(filename);
+	extractNumbers(sudocubeNo, src);
+}
+
+int main(int argc, char** argv) {
+	initNumberReader();
+	testOneSudocube(42);
 
 	return 0;
 }
