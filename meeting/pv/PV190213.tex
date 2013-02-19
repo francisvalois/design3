@@ -1,0 +1,151 @@
+% !TEX encoding = UTF-8 Unicode
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%                                                             %%%%%%%%%%%%%
+%%%%%%%%%%%%%   Exemple de procès-verbal                                  %%%%%%%%%%%%%
+%%%%%%%%%%%%%   par Pierre Tremblay, Université Laval                     %%%%%%%%%%%%%
+%%%%%%%%%%%%%   2007/12/07 - version 1.3                                  %%%%%%%%%%%%%
+%%%%%%%%%%%%%                                                             %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%--------------------------------------------------------------------------------------
+%------------------------------------- preambule --------------------------------------
+%--------------------------------------------------------------------------------------
+\documentclass[12pt]{ULojpv}
+%**************************************************************************************
+% Chargement des packages supplementaires
+%
+\usepackage[utf8]{inputenc}
+\usepackage{pifont}
+%**************************************************************************************
+%**************************************************************************************
+% Definitions des parametres de l'en-tete
+%
+\Cours{GEL--3014 Design III }            % Nom du cours
+\NumeroEquipe{05}                                     % Numero de l'equipe
+\NomEquipe{les pierres à feu}                               % Nom de l'equipe
+\Objet{Procès-verbal}                                 % Nom du document
+\SujetRencontre{Mise à jour des tâches pour le livrable 2}             % Sujet de la rencontre
+\DateRencontre{2013/02/19}                            % Date de la rencontre
+\LocalRencontre{Cafétéria}                            % Local de la rencontre
+\HeureRencontre{08h30}                                % Heure de la rencontre
+%**************************************************************************************
+%--------------------------------------------------------------------------------------
+%--------------------------------- corps du document ----------------------------------
+%--------------------------------------------------------------------------------------
+\begin{document}
+\entete
+\begin{enumerate}
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Ouverture de la réunion}
+
+Heure: 08h30
+
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Nomination ou confirmation du président et du secrétaire}
+
+\begin{tabular}{@{}ll}
+   Président: Daniel Thibodeau
+   & Secrétaire: Francis Valois
+\end{tabular}
+
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Adoption de l'ordre du jour}
+
+L'ordre du jour proposé est adopté à l'unanimité.
+
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Lecture et adoption du procès-verbal de la réunion du 12 février 2013}
+
+Le procès-verbal proposé est adopté à l'unanimité.
+
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Affaires découlant du procès-verbal}
+
+\begin{enumerate}
+
+\item \textbf{Revue côté électrique}
+
+L'ensemble des tâches du côté électrique ont été effectuées. Il faut créer un circuit pour la DEL ainsi qu'un schéma de connections pour le microcontrôleur. Les portions du robot devront être installées d'ici jeudi le 21 février. Émile Arsenault est en charge de cette tâche.
+
+\item \textbf{Revue côté logiciel}
+\begin{itemize}
+
+\item La résolution du sudo cube est en partie complétée et le système nécessite beaucoup d'investissement en temps d'ici la semaine prochaine. Olivier est seul pour cette tâche.
+
+\item Le décodage des caractères à la caméra est fiable à 92\%. Ce degré devrait être amélioré au cours de différents tests. Les modules de communications sont fonctionnels et un protocole pour l'envoi de l'adresse IP a été effectué. Philippe Bourdages est en charge de cette tâche.
+
+\item Imane a des problèmes importants pour l'utilisation de la Kinect et les tâches n'ont pas été effectuées dans les délais prescrits. Des problèmes avec OpenCV sont à l'origine du retard. Francis Valois sera en support pour la semaine et ce, jusqu'à la finition de la tâche.
+
+\end{itemize}
+
+\item\textbf{Revue côté informatique}
+
+\begin{itemize}
+\item Pierre-Luc a procédé à la prise de mesure pour l'identification du moteur dans les délais prescrits.
+\item Diane a avancé l'écriture du module de contrôle des moteurs. Le tout devrait être près d'ici jeudi le 21 février.
+\item Pierre-Luc et Daniel procéderont à l'asservissement des moteurs et au contrôle de ceux-ci cette semaine. Si le temps le permet, un modèle simulink pourrait aider à valider le moteur et à améliorer le contrôle.
+\end{itemize}
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+
+
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Divers}
+
+Aucun élément à discuter.
+\\
+
+%--------------------------------------------------------------------------------------
+
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Date, heure, lieu et objectif de la prochaine réunion}
+
+\begin{tabular}{@{}lll}
+   Date: 2013/02/26
+   & Heure: 08h30
+   &  Lieu: Bibliothèque VCH
+\end{tabular}
+\par
+Description de l'objectif ou des objectifs.
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Fermeture de la réunion}
+
+Heure: 10h00
+
+
+%--------------------------------------------------------------------------------------
+% nouveau point
+\item \textbf{Étaient présents}
+
+\begin{dinglist}{"33}
+   \item Daniel Thibodeau
+   \item Pierre-Luc Buhler
+   \item Francis Valois
+   \item Diane Fournier
+   \item Imane Mouhtij
+\end{dinglist}
+
+\end{enumerate}
+\end{enumerate}
+
+\end{document}
+%--------------------------------------------------------------------------------------
+%---------------------------------- fin du document -----------------------------------
+%--------------------------------------------------------------------------------------
