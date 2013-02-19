@@ -40,7 +40,9 @@ bool Case::isSolved() {
 
 void Case::removePossibility(int value) {
 	if(value >= 1 && value <= 8) {
-		possibilities.remove(value);
+		if(possibilities.size() > 1) {
+			possibilities.remove(value);
+		}
 	}
 }
 
