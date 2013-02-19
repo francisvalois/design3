@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 		cout << "The trained data are wrong" << endl;
 	}
 
-	Mat number = imread("../SudokuReader/output/number/40_22.png");
+	Mat number = imread("../SudokuReader/output/number/5_46.png");
 
 	int detectedNumber = getNumber(knearest, number);
 	cout << detectedNumber << endl;
