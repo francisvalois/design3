@@ -19,7 +19,7 @@ public:
 
 
 	//STRATEGIES
-	bool lastRemainingCellInABox(Sudokube);
+	bool lastRemainingCellInARegion(Sudokube&);
 	bool simpleConstraintPropagation(Sudokube&);
 
 private:

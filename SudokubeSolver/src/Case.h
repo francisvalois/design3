@@ -9,7 +9,7 @@
 #define CASE_H_
 
 #include <iostream>
-#include <list>
+#include <vector>
 
 using namespace std;
 
@@ -20,13 +20,14 @@ public:
 
 	int numberOfPossibilitiesRemaining();
 	void setValue(int);
-	list<int> getPossibilities();
+	vector<int> getPossibilities();
 	void removePossibility(int);
 	bool isSolved();
+	bool contains(int);
 	int getValue();
 
 private:
-	list<int> possibilities;
+	vector<int> possibilities;
 };
 
 #endif /* CASE_H_ */

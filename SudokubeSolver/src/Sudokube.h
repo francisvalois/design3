@@ -9,6 +9,7 @@
 #define SUDOKUBE_H_
 
 #include "Case.h"
+#include <vector>
 
 class Sudokube {
 public:
@@ -24,8 +25,9 @@ public:
 	int* getRedCase();
 
 	void removePossibility(int,int,int,int);
-	list<int> getPossibilities(int,int,int);
+	vector<int> getPossibilities(int,int,int);
 	void removePossibilitiesFromConstraint(int,int,int);
+	bool checkLastRemainingCellInARegion(int,int,int);
 
 	void print();
 
@@ -34,9 +36,11 @@ private:
 	int redCase[3];
 
 	bool indexesOk(int,int,int);
-	void removeColumnPossibilities(int,int,int);
-	void removeLinePossibilities(int,int,int);
-	void removeRegionPossibilities(int,int,int);
+
+	vector<Case*> getSameLineOfCase(int,int,int);
+	vector<Case*> getSameColumnOfCase(int,int,int);
+	vector<Case*> getSameRegionOfCase(int,int,int);
+
 };
 
 #endif /* SUDOKUBE_H_ */

@@ -23,27 +23,26 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 	if(simpleConstraintPropagation(sudokube)) {
 		solve(sudokube);
 		return;
-	} //else if(other strategy) {
-//		solve(sudokube);
-//		return;
-//	}
-
+	}else if(lastRemainingCellInARegion(sudokube)) {
+		solve(sudokube);
+		return;
+	}
+	return;
 }
 
-bool SudokubeSolver::lastRemainingCellInABox(Sudokube sudokube) {
+bool SudokubeSolver::lastRemainingCellInARegion(Sudokube &sudokube) {
 	for(int i = 1; i <= 3; i++) {
 		for(int j = 1; j <= 4; j++) {
 			for(int k = 1; k <= 4; k++) {
-
 				if(sudokube.getCaseValue(i,j,k) == 0) {
-
+					if(sudokube.checkLastRemainingCellInARegion(i,j,k)) {
+						return true;
+					}
 				}
 			}
 		}
 	}
-
-
-	return true;
+	return false;
 }
 
 bool SudokubeSolver::simpleConstraintPropagation(Sudokube& sudokube) {
