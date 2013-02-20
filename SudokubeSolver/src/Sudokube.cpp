@@ -45,14 +45,27 @@ bool Sudokube::isSolved() {
 	}
 	return true;
 }
+int Sudokube::remainingCellsToBeSolved() {
+	int remainingCells = 0;
+	for(int i = 0; i < CUBE_FACES; i++) {
+		for(int j = 0; j < CUBE_FACE_HEIGHT; j++) {
+			for(int k = 0; k < CUBE_FACE_LENGTH; k++) {
+				if(!(container[i][j][k]->isSolved())) {
+					remainingCells++;
+				}
+			}
+		}
+	}
+	return remainingCells;
+}
 
-void Sudokube::setCase(int i, int j, int k, int value) {
+void Sudokube::setCaseValue(int i, int j, int k, int value) {
 	if(indexesOk(i,j,k)){
 		container[i-1][j-1][k-1]->setValue(value);
 	}
 }
 
-int Sudokube::getCase(int i, int j, int k) {
+int Sudokube::getCaseValue(int i, int j, int k) {
 	if(indexesOk(i,j,k)){
 		return container[i-1][j-1][k-1]->getValue();
 	}
@@ -78,7 +91,7 @@ void Sudokube::removePossibility(int i, int j, int k, int value) {
 	}
 }
 
-list<int> Sudokube::getPossibilitiesOfCase(int i, int j, int k) {
+list<int> Sudokube::getPossibilities(int i, int j, int k) {
 	list<int> list;
 	if(indexesOk(i,j,k)){
 		list = container[i-1][j-1][k-1]->getPossibilities();
@@ -93,137 +106,6 @@ bool Sudokube::indexesOk(int i, int j, int k) {
 		return true;
 	}
 	return false;
-}
-
-void Sudokube::simpleConstraintPropagation(int i, int j, int k) {
-	if (indexesOk(i,j,k)) {
-		int value = getCase(i,j,k);
-
-		list<Case> line = getLine(i,j,k);
-		for (list<Case>::iterator it=line.begin() ; it != line.end(); ++it) {
-			it->removePossibility(value);
-		}
-
-		list<Case> column = getColumn(i,j,k);
-		for (list<Case>::iterator it=column.begin() ; it != column.end(); ++it) {
-			it->removePossibility(value);
-		}
-
-		list<Case> region = getRegion(i,j,k);
-		for (list<Case>::iterator it=region.begin() ; it != region.end(); ++it) {
-			it->removePossibility(value);
-		}
-	}
-}
-
-list<Case> Sudokube::getColumn(int i, int j, int k) {
-	list<Case> column;
-	Case* temp;
-	int x;
-	int z;
-	temp = container[i-1][j-1][0];
-	column.push_front(*temp);
-	temp = container[i-1][j-1][1];
-	column.push_front(*temp);
-	temp = container[i-1][j-1][2];
-	column.push_front(*temp);
-	temp = container[i-1][j-1][3];
-	if (i == 1) {
-		x = 1;
-		z = j-1;
-	}else if (i == 2) {
-		x = 2;
-		z = j-1;
-	} else { //i == 3
-		x = 1;
-		z = 4-j;
-	}
-	temp = container[x][0][z];
-	column.push_front(*temp);
-	temp = container[x][1][z];
-	column.push_front(*temp);
-	temp = container[x][2][z];
-	column.push_front(*temp);
-	temp = container[x][3][z];
-	column.push_front(*temp);
-
-	return column;
-}
-
-list<Case> Sudokube::getLine(int i, int j, int k) {
-	list<Case> line;
-	Case* temp;
-	int x;
-	int y;
-	temp = container[i-1][0][k-1];
-	line.push_front(*temp);
-	temp = container[i-1][1][k-1];
-	line.push_front(*temp);
-	temp = container[i-1][2][k-1];
-	line.push_front(*temp);
-	temp = container[i-1][3][k-1];
-	if (i == 1) {
-		x = 2;
-		y = 4-k;
-	}else if (i == 2) {
-		x = 0;
-		y = k-1;
-	} else { //i == 3
-		x = 1;
-		y = k-1;
-	}
-	temp = container[x][y][0];
-	line.push_front(*temp);
-	temp = container[x][y][1];
-	line.push_front(*temp);
-	temp = container[x][y][2];
-	line.push_front(*temp);
-	temp = container[x][y][3];
-	line.push_front(*temp);
-
-	return line;
-}
-
-list<Case> Sudokube::getRegion(int i, int j, int k) {
-	list<Case> region;
-	Case* temp;
-	if(j <= 2) {
-		temp = container[i-1][0][0];
-		region.push_front(*temp);
-		temp = container[i-1][0][1];
-		region.push_front(*temp);
-		temp = container[i-1][0][2];
-		region.push_front(*temp);
-		temp = container[i-1][0][3];
-		region.push_front(*temp);
-		temp = container[i-1][1][0];
-		region.push_front(*temp);
-		temp = container[i-1][1][1];
-		region.push_front(*temp);
-		temp = container[i-1][1][2];
-		region.push_front(*temp);
-		temp = container[i-1][1][3];
-		region.push_front(*temp);
-	}else {
-		temp = container[i-1][2][0];
-		region.push_front(*temp);
-		temp = container[i-1][2][1];
-		region.push_front(*temp);
-		temp = container[i-1][2][2];
-		region.push_front(*temp);
-		temp = container[i-1][2][3];
-		region.push_front(*temp);
-		temp = container[i-1][3][0];
-		region.push_front(*temp);
-		temp = container[i-1][3][1];
-		region.push_front(*temp);
-		temp = container[i-1][3][2];
-		region.push_front(*temp);
-		temp = container[i-1][3][3];
-		region.push_front(*temp);
-	}
-
-	return region;
 }
 
 void Sudokube::print() {
@@ -244,5 +126,84 @@ void Sudokube::print() {
 		cout << container[1][2][x]->getValue() << " ";
 		cout << container[1][3][x]->getValue() << " ";
 		cout << endl;
+	}
+}
+
+void Sudokube::removePossibilitiesFromConstraint(int i, int j, int k) {
+	if(indexesOk(i,j,k) && container[i-1][j-1][k-1]->isSolved()) {
+		removeColumnPossibilities(i,j,k);
+		removeLinePossibilities(i,j,k);
+		removeRegionPossibilities(i,j,k);
+	}
+}
+
+void Sudokube::removeColumnPossibilities(int i, int j, int k) {
+	int value = container[i-1][j-1][k-1]->getValue();
+	int x;
+	int z;
+	container[i-1][j-1][0]->removePossibility(value);
+	container[i-1][j-1][1]->removePossibility(value);
+	container[i-1][j-1][2]->removePossibility(value);
+	container[i-1][j-1][3]->removePossibility(value);
+	if (i == 1) {
+		x = 1;
+		z = j-1;
+	}else if (i == 2) {
+		x = 2;
+		z = j-1;
+	} else { //i == 3
+		x = 1;
+		z = 4-j;
+	}
+	container[x][0][z]->removePossibility(value);
+	container[x][1][z]->removePossibility(value);
+	container[x][2][z]->removePossibility(value);
+	container[x][3][z]->removePossibility(value);
+}
+
+void Sudokube::removeLinePossibilities(int i, int j, int k) {
+	int value = container[i-1][j-1][k-1]->getValue();
+	int x;
+	int y;
+	container[i-1][0][k-1]->removePossibility(value);
+	container[i-1][1][k-1]->removePossibility(value);
+	container[i-1][2][k-1]->removePossibility(value);
+	container[i-1][3][k-1]->removePossibility(value);
+	if (i == 1) {
+		x = 2;
+		y = 4-k;
+	}else if (i == 2) {
+		x = 0;
+		y = k-1;
+	} else { //i == 3
+		x = 1;
+		y = k-1;
+	}
+	container[x][y][0]->removePossibility(value);
+	container[x][y][1]->removePossibility(value);
+	container[x][y][2]->removePossibility(value);
+	container[x][y][3]->removePossibility(value);
+}
+
+void Sudokube::removeRegionPossibilities(int i, int j, int k) {
+	int value = container[i-1][j-1][k-1]->getValue();
+	if(j <= 2) {
+		container[i-1][0][0]->removePossibility(value);
+		container[i-1][0][1]->removePossibility(value);
+		container[i-1][0][2]->removePossibility(value);
+		container[i-1][0][3]->removePossibility(value);
+		container[i-1][1][0]->removePossibility(value);
+		container[i-1][1][1]->removePossibility(value);
+		container[i-1][1][2]->removePossibility(value);
+		container[i-1][1][3]->removePossibility(value);
+	}else {
+		container[i-1][2][0]->removePossibility(value);
+		container[i-1][2][1]->removePossibility(value);
+		container[i-1][2][2]->removePossibility(value);
+		container[i-1][2][3]->removePossibility(value);
+		container[i-1][3][0]->removePossibility(value);
+		container[i-1][3][1]->removePossibility(value);
+		container[i-1][3][2]->removePossibility(value);
+		container[i-1][3][3]->removePossibility(value);
 	}
 }

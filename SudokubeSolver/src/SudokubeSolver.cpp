@@ -15,15 +15,19 @@ SudokubeSolver::~SudokubeSolver() {
 
 }
 
-Sudokube SudokubeSolver::solve(Sudokube sudokube) {
+void SudokubeSolver::solve(Sudokube& sudokube) {
 	if(sudokube.isSolved()) {
-		return sudokube;
+		return;
 	}
 
-	if(lastRemainingCellInABox(sudokube)) {
-		return solve(sudokube);
-	}
-	return sudokube;
+	if(simpleConstraintPropagation(sudokube)) {
+		solve(sudokube);
+		return;
+	} //else if(other strategy) {
+//		solve(sudokube);
+//		return;
+//	}
+
 }
 
 bool SudokubeSolver::lastRemainingCellInABox(Sudokube sudokube) {
@@ -31,7 +35,7 @@ bool SudokubeSolver::lastRemainingCellInABox(Sudokube sudokube) {
 		for(int j = 1; j <= 4; j++) {
 			for(int k = 1; k <= 4; k++) {
 
-				if(sudokube.getCase(i,j,k) == 0) {
+				if(sudokube.getCaseValue(i,j,k) == 0) {
 
 				}
 			}
@@ -42,53 +46,19 @@ bool SudokubeSolver::lastRemainingCellInABox(Sudokube sudokube) {
 	return true;
 }
 
-bool simpleConstraintPropagation(Sudokube sudokube) {
+bool SudokubeSolver::simpleConstraintPropagation(Sudokube& sudokube) {
+	int remainingCellsToBeSolved = sudokube.remainingCellsToBeSolved();
 	for(int i = 1; i <= 3; i++) {
 		for(int j = 1; j <= 4; j++) {
 			for(int k = 1; k <= 4; k++) {
-
-				if(sudokube.getCase(i,j,k) != 0) {
-					sudokube.simpleConstraintPropagation(i,j,k);
+				if(sudokube.getCaseValue(i,j,k) != 0) {
+					sudokube.removePossibilitiesFromConstraint(i,j,k);
 				}
 			}
 		}
 	}
-	return true;
+	if (remainingCellsToBeSolved > sudokube.remainingCellsToBeSolved()) {
+		return true;
+	}
+	return false;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//Sudokube SudokubeSolver::removeInitialPossibilities(Sudokube sudokube) {
-//	return sudokube;
-//}
-//
-//Sudokube SudokubeSolver::findCase(Sudokube sudokube) {
-//	for(int i = 1; i <= 3; i++) {
-//		for(int j = 1; j <= 4; j++) {
-//			for(int k = 1; k <= 4; k++) {
-//				if(sudokube.getCase(i,j,k) == 0) {
-//
-//				}
-//			}
-//		}
-//	}
-//
-//
-//	if(!sudokube.isSolved()) {
-//		return findCase(sudokube);
-//	}
-//	return sudokube;
-//}
-

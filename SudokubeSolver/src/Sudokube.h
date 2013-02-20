@@ -16,22 +16,27 @@ public:
 	virtual ~Sudokube();
 
 	bool isSolved();
-	void setCase(int,int,int,int);
-	int getCase(int,int,int);
-	void removePossibility(int,int,int,int);
-	list<int> getPossibilitiesOfCase(int,int,int);
+	int remainingCellsToBeSolved();
+
+	void setCaseValue(int,int,int,int);
+	int getCaseValue(int,int,int);
 	void setRedCase(int,int,int);
 	int* getRedCase();
-	void simpleConstraintPropagation(int,int,int);
-	list<Case> getLine(int,int,int);
-	list<Case> getColumn(int,int,int);
-	list<Case> getRegion(int,int,int);
+
+	void removePossibility(int,int,int,int);
+	list<int> getPossibilities(int,int,int);
+	void removePossibilitiesFromConstraint(int,int,int);
+
 	void print();
 
 private:
 	Case* container[3][4][4];
-	bool indexesOk(int,int,int);
 	int redCase[3];
+
+	bool indexesOk(int,int,int);
+	void removeColumnPossibilities(int,int,int);
+	void removeLinePossibilities(int,int,int);
+	void removeRegionPossibilities(int,int,int);
 };
 
 #endif /* SUDOKUBE_H_ */

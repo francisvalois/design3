@@ -15,11 +15,12 @@ public:
 	SudokubeSolver();
 	virtual ~SudokubeSolver();
 
-	Sudokube solve(Sudokube);
+	void solve(Sudokube&);
 
 
 	//STRATEGIES
 	bool lastRemainingCellInABox(Sudokube);
+	bool simpleConstraintPropagation(Sudokube&);
 
 private:
 	Sudokube sudokube;
