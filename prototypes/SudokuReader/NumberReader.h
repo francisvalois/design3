@@ -4,6 +4,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/ml/ml.hpp"
+#include "opencv2/legacy/legacy.hpp"
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,12 +23,12 @@ public:
 
 	NumberReader();
 	virtual ~NumberReader();
-	int getNumber(cv::Mat image);
+	int searchANumber(cv::Mat image);
 
 private:
 	CvMat* trainData;
 	CvMat* trainClasses;
-	cv::KNearest* knearest;
+	cv::KNearest knearest;
 
 	void learnFromImages(CvMat* trainData, CvMat* trainClasses);
 	bool isTrainedDataValid();

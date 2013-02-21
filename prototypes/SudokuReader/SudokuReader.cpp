@@ -78,7 +78,7 @@ bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int 
 
 	Mat ROI = Mat::zeros(Size(sizex, sizey), CV_8UC3);
 	if (rects.empty() == false) {
-		ROI = thresholdedSquare(rects[0]);
+		ROI = thresholdedSquare(rects[0]); //TODO Correct?
 		resize(ROI, outImage, Size(sizex, sizey));
 		return true;
 	}
@@ -87,15 +87,11 @@ bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int 
 }
 
 void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
-	//showWindowWith("src", src);
-
 	Mat srcGray;
 	cvtColor(src, srcGray, CV_BGR2GRAY);
 
 	Mat srcHSV;
 	cvtColor(src, srcHSV, CV_BGR2HSV);
-	//sprintf(filename, "%s/hsv/%d.png", OUTPUT_PATH, sudocubeNo);
-	//saveImage(srcHSV, filename);
 
 	Mat segmentedFrame;
 	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
@@ -134,14 +130,14 @@ void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
 	//saveImage(box, filename);
 	Rect squareRect;
 	if (frameBoundingRect.empty()) {
-		cout << "Found too many potential frames for sudocube no " << sudocubeNo << endl; // TODO Gestion d'exception...
+		cout << "Found not enougth frames for sudocube" << endl; // TODO Gestion d'exception...
 		return;
 	} else if (frameBoundingRect.size() == 1) {
 		squareRect = frameBoundingRect[0];
 	} else if (frameBoundingRect.size() == 2) {
 		squareRect = getSmallestRectBetween(frameBoundingRect[0], frameBoundingRect[1]);
 	} else {
-		cout << "Found too many potential frames for sudocube no " << sudocubeNo << endl; // TODO Gestion d'exception...
+		cout << "Found too many potential frames for sudocube" << endl; // TODO Gestion d'exception...
 		return;
 	}
 
@@ -200,41 +196,32 @@ void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
 
 		if (foundNumber == true) {
 			numbers.push_back(number);
-			//showWindowWith("number", number);
-
-			int numberFound = numberReader.getNumber(number);
+			int numberFound = numberReader.searchANumber(number);
 
 			cout << "Found : " << numberFound << endl;
-
-			//waitKey(0);
 			//sprintf(filename, "%s/number/%d_%d.png", OUTPUT_PATH, sudocubeNo, squareNo + 1);
 			//saveImage(number, filename);
 		}
 	}
-
-	//waitKey(0);
 }
 
 void SudokuReader::testAllSudocubes() {
 	int nbPict = 42;
-	double t = (double) getTickCount();
 	char filename[255];
 
 	for (int i = 1; i <= nbPict; i++) {
 		sprintf(filename, "%s%d.png", PATH_SUDOCUBES, i);
-		Mat src = imread(filename);
-		extractNumbers(i, src);
+		Mat sudocube = imread(filename);
+		extractNumbers(i, sudocube);
 	}
-	t = ((double) getTickCount() - t) / getTickFrequency();
-	cout << "Times passed in seconds: " << t << endl;
 
 }
 
 void SudokuReader::testOneSudocube(int sudocubeNo) {
 	char filename[255];
 	sprintf(filename, "%s%d.png", PATH_SUDOCUBES, sudocubeNo);
-	Mat src = imread(filename);
-	extractNumbers(sudocubeNo, src);
+	Mat sudocube = imread(filename);
+	extractNumbers(sudocubeNo, sudocube);
 }
 
 int main(int argc, char** argv) {
