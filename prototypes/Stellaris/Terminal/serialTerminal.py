@@ -18,7 +18,7 @@ def fichierCVS(donnees, nomFichier):
 	f = open(nom, 'w')
 
 	for i in range(len(donnees)):
-		f.write(donnees[i][0].lstrip('0') + ',' + donnees[i][1].lstrip('0') +'\n')
+		f.write(str(donnees[i][0]) + ',' + str(donnees[i][1]) +'\n')
 	
 	f.close()
 
@@ -26,35 +26,29 @@ def formatDonnees(rawData):
 
 	print("{0:d} bytes de donnees lues".format(len(rawData)))
 	nbColonnes = rawData[0] - 48
-	#print(rawData)
-
-	Data = rawData[1:len(rawData) -1]
-	DataString = Data.decode('ascii')
-	#print(DataString)
-
-	dataInt = []
-
-	for i in range(10):
-		dataInt.append(DataString[i*10:i*10 + 10])
-
-	#print(dataInt)
 
 	if (len(rawData) - 2)%4 != 0:
 		return 0
 
 	dataArray = []
 
-	nbLignes = int((len(dataInt))/nbColonnes)
-	#print(nbLignes)
+	Data = rawData[1:len(rawData) -1]
+
+	print(len(Data))
+	print(rawData)
+	print(rawData[0])
+	print(nbColonnes)
+	nbLignes = int((len(Data)/4)/nbColonnes)
+	print(nbLignes)
 
 	for x in range(nbLignes):
-		ligne = []
+		colonne = []
 		for y in range(nbColonnes):
-			ligne.append(dataInt[y*nbLignes + x])
-		print(ligne)
-		dataArray.append(ligne)
-
-	#print(dataArray)
+			s = Data[x + y*nbLignes: x + y*nbLignes + 4]
+			z = int.from_bytes(s, 'big')
+			print(z)
+			colonne.append(z)
+		dataArray.append(colonne)
 
 	return dataArray
 
@@ -87,22 +81,15 @@ def main(argv=None):
 		ser.baudrate = 115200
 		ser.parity = serial.PARITY_EVEN
 		ser.stopbits = 1
-		ser.timeout = 2
 
-		#if not(com[2].isalnum) or int(com[2]) <= 0:
-		#	ser.timeout = 1
-		#else:
-		#	ser.timeout = int(com[2]) + 1
+		if not(com[2].isalnum) or int(com[2]) <= 0:
+			ser.timeout = 1
+		else:
+			ser.timeout = int(com[2]) + 1
 
 		ser.open()
 		ser.write(bytes(commande, encoding = "ascii"))
-		byte = ' '.encode('ascii')
-		donnees = bytearray()
-		while byte != '\n'.encode('ascii'):
-			byte = ser.read(1);
-			donnees = donnees + byte
-
-		#donnees = ser.read(100)
+		donnees = ser.read(42)
 		#donnees = ser.readline()
 
 		dataArray = formatDonnees(donnees)
