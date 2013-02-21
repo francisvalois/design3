@@ -9,7 +9,6 @@ SudokuReader::SudokuReader() {
 }
 
 SudokuReader::~SudokuReader() {
-
 }
 
 Rect SudokuReader::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
@@ -88,7 +87,7 @@ bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int 
 }
 
 void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
-	showWindowWith("src", src);
+	//showWindowWith("src", src);
 
 	Mat srcGray;
 	cvtColor(src, srcGray, CV_BGR2GRAY);
@@ -201,19 +200,19 @@ void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
 
 		if (foundNumber == true) {
 			numbers.push_back(number);
-			showWindowWith("number", number);
+			//showWindowWith("number", number);
 
 			int numberFound = numberReader.getNumber(number);
 
 			cout << "Found : " << numberFound << endl;
 
-			waitKey(0);
+			//waitKey(0);
 			//sprintf(filename, "%s/number/%d_%d.png", OUTPUT_PATH, sudocubeNo, squareNo + 1);
 			//saveImage(number, filename);
 		}
 	}
 
-	waitKey(0);
+	//waitKey(0);
 }
 
 void SudokuReader::testAllSudocubes() {

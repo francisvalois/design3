@@ -1,6 +1,8 @@
 rm -r bin
+rm -r Debug
 mkdir bin
 cd bin
 cmake ./../
 make
-./SudokuReader ./../sudoku.png
+cp SudokuReader ../SudokuReader
+./../SudokuReader

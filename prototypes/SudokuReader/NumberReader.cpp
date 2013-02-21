@@ -17,8 +17,8 @@ NumberReader::NumberReader() {
 
 NumberReader::~NumberReader() {
 	delete knearest;
-	delete trainData;
-	delete trainClasses;
+	cvReleaseMat(&trainData);
+	cvReleaseMat(&trainClasses);
 }
 
 void NumberReader::learnFromImages(CvMat* trainData, CvMat* trainClasses) {
@@ -68,13 +68,13 @@ bool NumberReader::isTrainedDataValid() {
 			}
 		}
 	}
+	cvReleaseMat(&sample2);
 
 	return isValidData;
 }
 
 int NumberReader::getNumber(Mat image) {
 	int number = -1;
-
 	CvMat* sample2 = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 
 	for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
@@ -87,6 +87,8 @@ int NumberReader::getNumber(Mat image) {
 	if (detectedNumber >= 1 || detectedNumber <= 8) {
 		number = detectedNumber;
 	}
+
+	cvReleaseMat(&sample2);
 
 	return number;
 }
