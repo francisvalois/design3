@@ -7,7 +7,7 @@ NumberReader::NumberReader() {
 	trainData = cvCreateMat(CLASSES * TRAIN_SAMPLES, NUMBER_IMAGE_SIZE, CV_32FC1);
 	trainClasses = cvCreateMat(CLASSES * TRAIN_SAMPLES, 1, CV_32FC1);
 	learnFromImages(trainData, trainClasses);
-	knearest = new KNearest(trainData, trainClasses);
+	knearest.train(trainData, trainClasses);
 
 	bool isValidData = isTrainedDataValid();
 	if (isValidData == false) {
@@ -16,7 +16,6 @@ NumberReader::NumberReader() {
 }
 
 NumberReader::~NumberReader() {
-	delete knearest;
 	cvReleaseMat(&trainData);
 	cvReleaseMat(&trainClasses);
 }
@@ -48,8 +47,8 @@ void NumberReader::learnFromImages(CvMat* trainData, CvMat* trainClasses) {
 
 bool NumberReader::isTrainedDataValid() {
 	bool isValidData = true;
-	CvMat* sample2 = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 
+	CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 	for (int i = 1; i <= CLASSES; i++) {
 		for (int j = 1; j < TRAIN_SAMPLES; j++) {
 			char file[255];
@@ -58,9 +57,9 @@ bool NumberReader::isTrainedDataValid() {
 			cvtColor(testedNumber, testedNumber, COLOR_BGR2GRAY);
 
 			for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
-				sample2->data.fl[n] = testedNumber.data[n];
+				sample->data.fl[n] = testedNumber.data[n];
 			}
-			float detectedClass = knearest->find_nearest(sample2, 1);
+			float detectedClass = knearest.find_nearest(sample, 1);
 			int number = (int) ((detectedClass));
 
 			if (i != number) {
@@ -68,27 +67,27 @@ bool NumberReader::isTrainedDataValid() {
 			}
 		}
 	}
-	cvReleaseMat(&sample2);
+	cvReleaseMat(&sample);
 
 	return isValidData;
 }
 
-int NumberReader::getNumber(Mat image) {
+int NumberReader::searchANumber(Mat src) {
 	int number = -1;
-	CvMat* sample2 = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 
+	CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 	for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
-		sample2->data.fl[n] = image.data[n];
+		sample->data.fl[n] = src.data[n];
 	}
 
-	float detectedClass = knearest->find_nearest(sample2, 1);
+	float detectedClass = knearest.find_nearest(sample, 1);
 	int detectedNumber = (int) ((detectedClass));
 
 	if (detectedNumber >= 1 || detectedNumber <= 8) {
 		number = detectedNumber;
 	}
 
-	cvReleaseMat(&sample2);
+	cvReleaseMat(&sample);
 
 	return number;
 }

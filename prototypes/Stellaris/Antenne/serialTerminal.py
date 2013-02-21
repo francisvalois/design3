@@ -3,60 +3,42 @@
 
 import serial
 import io
-import array
 
 # Formattage des fichiers : '$' est le caractère sentinelle pour une colonne, '\n' pour fin de fichier
 
 def fichierCVS(donnees):
 
+	i = 0
+	j = 0
+	x = 0
+	d = []
+	d1 = []
+	for i in range(len(donnees)):
+		if cmp(donnees[i],'$') != 0 and cmp(donnees[i],'\n') != 0:
+			x +=1
+			d1.append(donnees[i])
+		else:
+			d.append(d1)
+			d1 = []
+			j +=1
+
 	#ouverture de fichier sous linux
 	f = open('/home/diane/output.cvs', 'w')
 	#ouverture de fichier sous windows
-	#f = open('C:\Users\diane\Documents\output.cvs')
+	#f = open('C:\')
 
-	for i in xrange(len(donnees[0])):
-		f.write(str[0][i])
-		for j in xrange(1, len(donnees)):
-			f.write(',', str(d[j][i]))
+	l = 0
+	k = 0
+	m = x/j
+	while l < m:
+		f.write(str(d[l][k]))
+		while k < j:
+			l +=1
+			f.write(',', str(d[l][k]))
 		f.write('\n') 
+		k +=1
 	f.close()
 
-def formatDonnees(rawData):
-
-	nbColonnes = int(rawData[0])
-	#if(len(rawData) - 2)%2 == 0:
-	#	m = (len(rawData) - 2)/2
-	#	nbColonnes = 2
-	#	nbLignes = m/4
-	#if(len(rawData) - 3)%3 == 0:
-	#	m = (len(rawData) - 3)/3
-	#	nbColonnes = 3
-	#	nbLignes = m/4
-
-	#if rawData[m] != '$' and m%4 !=0:
-	#	return 0
-	if (len(rawData) - 2)%4 != 0:
-		return 0
-
-	dataArray = []
-	#if nbColonnes == 2:
-		#Data = rawData[0:m] + rawData[m+1:len(rawData)-1]
-	#else:
-	#	Data = rawData[0:m] + rawData[m+1:m*2+1] + rawData[m*2+2:len(rawData)-1]
-
-	Data = rawData[1:len(rawData) -1]
-
-	nbLignes = (len(Data)/4)/nbColonnes 
-
-	for x in xrange(nbLignes):
-		colonne = []
-		for y in xrange(nbColonnes):
-			s = Data[x + y*nbLignes: x + y*nbLignes + 4]
-			z = s.encode('hex')
-			colonne.append(int(z,16))
-		dataArray.append(colonne)
-
-	return dataArray
 
 
 def main(argv=None):
@@ -88,14 +70,10 @@ def main(argv=None):
 
 	ser.open()
 	ser.write(commande)
-	donnees = ser.readlines()
+	donnees = ser.readline()
 	ser.close()
 
-	dataArray = formatDonnees(donnees)
-	if dataArray != 0:
-		fichierCVS(dataArray)
-	else:
-		print("Erreur de formattage des donnees\n")
+	fichierCVS(donnees)
 
 if __name__ == "__main__":
     sys.exit(main())

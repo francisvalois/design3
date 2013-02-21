@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <list>
+#include <cctype>
 
 #include "NumberReader.h"
 
@@ -21,6 +23,8 @@ class SudokuReader {
 
 #define SQUARE_THRESHOLD_MIN 150
 #define SQUARE_THRESHOLD_MAX 210
+#define SQUARE_AREA_MIN 5000
+#define SQUARE_AREA_MAX 160000
 
 #define NUMBER_AREA_MAX 2500
 #define NUMBER_AREA_MIN 250
@@ -30,8 +34,11 @@ public:
 	SudokuReader();
 	virtual ~SudokuReader();
 	void testOneSudocube(int sudocubeNo);
+	void testAllSudocubes();
 
 private:
+	NumberReader numberReader;
+
 	cv::Mat src;
 	cv::Mat srcGray;
 	cv::Mat srcHSV;
@@ -39,15 +46,13 @@ private:
 	cv::Scalar white;
 	cv::Scalar black;
 
-	NumberReader numberReader;
-
 	cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
 	void removeInvalidSquares(std::vector<std::vector<cv::Point> > &, std::vector<cv::Rect> &);
+	bool preProcessNumber(cv::Mat &inImage, cv::Mat &outImage, int sizex, int sizey, cv::Mat &squareMask);
+	void extractNumbers(cv::Mat & src);
+
 	void showWindowWith(const char*, const cv::Mat &);
 	void saveImage(cv::Mat &pict, char* filename);
-	bool preProcessNumber(cv::Mat &inImage, cv::Mat &outImage, int sizex, int sizey, cv::Mat &squareMask);
-	void extractNumbers(int sudocubeNo, cv::Mat & src);
-	void testAllSudocubes();
 };
 
 #endif
