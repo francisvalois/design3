@@ -21,8 +21,8 @@
 //#define attend(t) SysCtlDelay((SysCtlClock()/3)/(1000/t))
 
 
-#define ECRAN_DATA GPIO_PORTE_DATA_R
-#define ECRAN_CTRL GPIO_PORTA_DATA_R
+#define ECRAN_DATA GPIO_PORTD_DATA_R
+#define ECRAN_CTRL GPIO_PORTJ_DATA_R
 //volatile unsigned long ulLoop;
 	
 //bit de data du LCD
@@ -33,14 +33,12 @@
 #define ECRAN_D4 0x10 //PE4
 #define ECRAN_D5 0x20 //PE5
 #define ECRAN_D6 0x40 //PE6
-#define ECRAN_D7 0x80 //PE7
+#define ECRAN_D7 0x80 //PE7 et busy flag
 
 //bit de control du LCD
-#define ECRAN_RS 0x01 //PA0  reset
-#define ECRAN_RW 0x02 //PA1  read/write
-#define ECRAN_EN 0x04 //PA2  enable
-#define ECRAN_BF 0x08 //PA3  busy flag, connecter à la pin D7 de l'écran
-
+#define ECRAN_RS 0x01 //PJ0  reset
+#define ECRAN_RW 0x02 //PJ1  read/write
+#define ECRAN_EN 0x04 //PJ2  enable
 
 
 //volatile unsigned long ulLoop;

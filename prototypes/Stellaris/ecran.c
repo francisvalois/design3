@@ -8,10 +8,10 @@ void ecranAttend(void)
 {
     ECRAN_CTRL &= ~(ECRAN_RS); // RS = 0
     ECRAN_CTRL |= ECRAN_RW; // RW = 1
-    volatile unsigned long busyflag = ECRAN_CTRL & ECRAN_BF;
+    volatile unsigned long busyflag = ECRAN_DATA & ECRAN_D7;
     while (busyflag != 0) //on regarde le busyflag pour s'assurer que l'écran est pas occupé
     { 
-            busyflag = GPIO_PORTD_DATA_R & ECRAN_BF;
+            busyflag = ECRAN_DATA & ECRAN_D7;
     }
      return;
 }
