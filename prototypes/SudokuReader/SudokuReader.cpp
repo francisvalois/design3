@@ -55,8 +55,8 @@ bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int 
 	adaptiveThreshold(blurredSquare, thresholdedSquare, 255, 1, 1, 11, 2);
 	thresholdedSquare.setTo(black, squareMask);
 
-	Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * NUMBER_DILATE_SIZE + 1, 2 * NUMBER_DILATE_SIZE + 1),
-			Point(NUMBER_DILATE_SIZE, NUMBER_DILATE_SIZE));
+	Point dilatePoint(NUMBER_DILATE_SIZE, NUMBER_DILATE_SIZE);
+	Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * NUMBER_DILATE_SIZE + 1, 2 * NUMBER_DILATE_SIZE + 1), dilatePoint);
 	dilate(thresholdedSquare, thresholdedSquare, dilateElem);
 
 	Mat contourImage;
@@ -86,7 +86,15 @@ bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int 
 	return false;
 }
 
-void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
+bool compareXPos(const Rect& rect1, const Rect& rect2) {
+	return rect1.x < rect2.x;
+}
+
+bool compareYPos(const Rect& rect1, const Rect& rect2) {
+	return rect1.y < rect2.y;
+}
+
+void SudokuReader::extractNumbers(Mat & src) {
 	Mat srcGray;
 	cvtColor(src, srcGray, CV_BGR2GRAY);
 
@@ -96,12 +104,12 @@ void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
 	Mat segmentedFrame;
 	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
 
-	Mat frameErodeElem = getStructuringElement(MORPH_ELLIPSE, Size(2 * FRAME_ERODE_SIZE + 1, 2 * FRAME_ERODE_SIZE + 1),
-			Point(FRAME_ERODE_SIZE, FRAME_ERODE_SIZE));
+	Point erodePoint(FRAME_ERODE_SIZE, FRAME_ERODE_SIZE);
+	Mat frameErodeElem = getStructuringElement(MORPH_ELLIPSE, Size(2 * FRAME_ERODE_SIZE + 1, 2 * FRAME_ERODE_SIZE + 1), erodePoint);
 	erode(segmentedFrame, segmentedFrame, frameErodeElem);
 
-	Mat frameDilateElem = getStructuringElement(MORPH_RECT, Size(2 * FRAME_DILATE_SIZE + 1, 2 * FRAME_DILATE_SIZE + 1),
-			Point(FRAME_DILATE_SIZE, FRAME_DILATE_SIZE));
+	Point dilatePoint(FRAME_DILATE_SIZE, FRAME_DILATE_SIZE);
+	Mat frameDilateElem = getStructuringElement(MORPH_RECT, Size(2 * FRAME_DILATE_SIZE + 1, 2 * FRAME_DILATE_SIZE + 1), dilatePoint);
 	dilate(segmentedFrame, segmentedFrame, frameDilateElem);
 	//sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
 	//saveImage(segmentedFrame, filename);
@@ -117,17 +125,12 @@ void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
 	for (uint i = 0; i < frameContours.size(); i++) {
 		approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
 		Rect rect = boundingRect(Mat(frameContoursPoly[i]));
+
 		if (rect.area() > FRAME_AREA_MIN) {
 			frameBoundingRect.push_back(rect);
 		}
 	}
 
-	/*Mat box = Mat::zeros(segmentedFrame.size(), CV_8UC3); //TODO Pas utile à la fin
-	 for (uint i = 0; i < frameBoundingRect.size(); i++) {
-	 rectangle(box, frameBoundingRect[i].tl(), frameBoundingRect[i].br(), white, 2, 8, 0);
-	 }*/
-	//sprintf(filename, "%s/frameBox/%d.png", OUTPUT_PATH, sudocubeNo);
-	//saveImage(box, filename);
 	Rect squareRect;
 	if (frameBoundingRect.empty()) {
 		cout << "Found not enougth frames for sudocube" << endl; // TODO Gestion d'exception...
@@ -177,13 +180,16 @@ void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
 	}
 
 	if (isExtracted == false) {
-		cout << "Could not extract all the square for sudocube no " << sudocubeNo << endl;
+		cout << "Could not extract all the square for sudocube" << endl;
 		return;
 	}
 
 	//Extraction de tous les chiffres des cases
-	vector<Mat> numbers;
+	vector<bool> numberPositives(squaresRect.size());
+	vector<Rect> squaresRectOrdered(0);
 	for (uint squareNo = 0; squareNo < squaresRect.size(); squareNo++) {
+		squaresRectOrdered.push_back(squaresRect[squareNo]);
+
 		Mat squareMask = Mat::zeros(frameCroppedGray.size(), CV_8UC1);
 		fillConvexPoly(squareMask, squaresPoly[squareNo], white);
 
@@ -192,27 +198,50 @@ void SudokuReader::extractNumbers(int sudocubeNo, Mat & src) {
 
 		Mat squareInversedMask = 255 - squareMask;
 		Mat number;
-		bool foundNumber = preProcessNumber(squareMasked, number, NUMBER_WIDTH, NUMBER_HEIGHT, squareInversedMask);
+		bool foundPossibleNumber = preProcessNumber(squareMasked, number, NUMBER_WIDTH, NUMBER_HEIGHT, squareInversedMask);
 
-		if (foundNumber == true) {
-			numbers.push_back(number);
+		if (foundPossibleNumber == true) {
 			int numberFound = numberReader.searchANumber(number);
-
+			if (numberFound != -1) {
+				numberPositives[squareNo] = true;
+			}
 			cout << "Found : " << numberFound << endl;
 			//sprintf(filename, "%s/number/%d_%d.png", OUTPUT_PATH, sudocubeNo, squareNo + 1);
 			//saveImage(number, filename);
 		}
 	}
+
+	sort(squaresRectOrdered.begin(), squaresRectOrdered.end(), compareXPos);
+	int dx = frameCroppedGray.cols / 18;
+
+	vector<Rect>::iterator it;
+	int actualXColumn = 0;
+	vector<vector<Rect> > colonnesX(8);
+	for (it = squaresRectOrdered.begin(); it != squaresRectOrdered.end(); ++it) {
+		colonnesX[actualXColumn].push_back(*it);
+		if ((it + 1) != squaresRectOrdered.end()) {
+			if ((it->x + dx) < (it + 1)->x) {
+				actualXColumn++;
+			}
+		}
+	}
+
+	for (int i = 0; i < 8; i++) {
+		sort(colonnesX[i].begin(), colonnesX[i].end(), compareYPos);
+
+		/*vector<Rect>::iterator itY;
+		for (itY = colonnesX[i].begin(); itY != colonnesX[i].end(); ++itY) {
+			cout << "colonne " << i << " ligne " << distance(colonnesX[i].begin(), itY) << " y=" << itY->y << endl;
+		}*/
+	}
 }
 
 void SudokuReader::testAllSudocubes() {
-	int nbPict = 42;
 	char filename[255];
-
-	for (int i = 1; i <= nbPict; i++) {
+	for (int i = 1; i <= 3; i++) { //Il y en as 42...
 		sprintf(filename, "%s%d.png", PATH_SUDOCUBES, i);
 		Mat sudocube = imread(filename);
-		extractNumbers(i, sudocube);
+		extractNumbers(sudocube);
 	}
 
 }
@@ -221,12 +250,12 @@ void SudokuReader::testOneSudocube(int sudocubeNo) {
 	char filename[255];
 	sprintf(filename, "%s%d.png", PATH_SUDOCUBES, sudocubeNo);
 	Mat sudocube = imread(filename);
-	extractNumbers(sudocubeNo, sudocube);
+	extractNumbers(sudocube);
 }
 
 int main(int argc, char** argv) {
 	SudokuReader sudokuReader;
-	sudokuReader.testOneSudocube(42);
-
+	//sudokuReader.testOneSudocube(42);
+	sudokuReader.testAllSudocubes();
 	return 0;
 }

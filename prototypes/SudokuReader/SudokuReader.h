@@ -7,6 +7,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <list>
+#include <cctype>
 
 #include "NumberReader.h"
 
@@ -47,7 +49,7 @@ private:
 	cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
 	void removeInvalidSquares(std::vector<std::vector<cv::Point> > &, std::vector<cv::Rect> &);
 	bool preProcessNumber(cv::Mat &inImage, cv::Mat &outImage, int sizex, int sizey, cv::Mat &squareMask);
-	void extractNumbers(int sudocubeNo, cv::Mat & src);
+	void extractNumbers(cv::Mat & src);
 
 	void showWindowWith(const char*, const cv::Mat &);
 	void saveImage(cv::Mat &pict, char* filename);
