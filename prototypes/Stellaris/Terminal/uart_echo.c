@@ -32,6 +32,7 @@
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/uart.h"
+#include <string.h>
 
 #include "inc/lm3s9b92.h"
 
@@ -145,9 +146,9 @@ void reverse(char s[])
 }
 
 
-void itoa(int n, char s[5])
+void itoa(int n, unsigned char s[10])
 {
-	char srev[5];
+	char srev[10];
 	int lenght = 0;
 	while(n > 0)
 	{
@@ -155,7 +156,7 @@ void itoa(int n, char s[5])
 		srev[lenght++] = a | '0';
 		n /= 10;
 	}
-	while(lenght < 5)
+	while(lenght < 10)
 	{
 		srev[lenght++] = '0';
 	}
@@ -223,7 +224,7 @@ main(void)
     //
     // Loop forever echoing data through the UART.
     //
-    unsigned long testArray[] = {1,2,3,4,5,5,4,3,2,1};
+    unsigned long testArray[] = {110,10,3,4,5,5,4,3,2,1};
     
     int compte = 0;
 
@@ -242,9 +243,12 @@ main(void)
     		int i;
     		const unsigned char nbColonnes = '2';
     		UARTSend(&nbColonnes,1);
-    		for(i = 0; i < sizeof(testArray); i++)
+    		for(i = 0;i < sizeof(testArray)/4; i++)
     		{
-    			sendInt(testArray[i]);
+    			unsigned char data[10];
+    			itoa(testArray[i],data);
+    			UARTSend(data,10);
+
     		}
     		const unsigned char fin = '\n';
     		UARTSend(&fin,1);
@@ -253,3 +257,4 @@ main(void)
     
     }
 }
+
