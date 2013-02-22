@@ -5,7 +5,7 @@
 
 % modifié par Francis Valois, Université Laval
 % 31/01/2011 - version 1.0 - Création du document
-\section{Registre de risques}
+\chapter{Registre de risques}
 \begin{landscape}
 \begin{table}[htbp]
 	\small
@@ -13,9 +13,9 @@
   	\caption{Registre de risques partie 1}
   	\scalebox{0.8}{
 	\tabcolsep=0.11cm
-    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
+    \begin{tabular}{|Z{\centering}{m}{1.5cm}||Z{\raggedright}{p}{3cm}|Z{\raggedright}{m}{1.5cm}|Z{\raggedright}{p}{4cm}|Z{\raggedright}{p}{4cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\raggedright}{p}{4cm}|Z{\raggedright}{p}{3cm}|}\hline
     \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
-    \multirow{6}{*}{1} & Bris  de la batterie Li-Po suite à une mauvaise utilisation & 5 & Plus d'autonomie énergétique pour le robot, opération impossible & L'ensemble du système sera inopérable &15 & 60 & Formation des utilisateurs à l'endroit de l'utilisation. Apposition d'un capteur de tension. Dispositifs de protection (fusibles) & É. Arsenault \\\hline
+    1 & Bris  de la batterie Li-Po suite à une mauvaise utilisation & 5 & Plus d'autonomie énergétique pour le robot, opération impossible & L'ensemble du système sera inopérable &15 & 60 & Formation des utilisateurs à l'endroit de l'utilisation. Apposition d'un capteur de tension. Dispositifs de protection (fusibles) & É. Arsenault \\\hline
     2 & Bris  d'un ou des système d'alimentation & 5 & Les systèmes auxiliaires, le Mac mini ou les moteurs ne seront pas alimentés. Le système ne sera pas fonctionnel & Une partie ou l'ensemble du système sera inopérable & 20 & 25 & Utilisateur de connecteurs protégés (d'un seul sens possible). Dispositifs de protection (fusibles), surdimensionnement des composantes d'alimentation & D. Thibodeau \\\hline
     3 & Bris  du crayon lors du dessin & 4 & Le dessin ne pourra être complété & La portion dessin sera partiellement complète & 20 & 2 & Tests rigoureux et optimisation du choix de crayon avant la compétition & É. Arsenault \\\hline
     4 & Bris du système de préhension & 5 & Le dessin ne pourra être complété et selon le moment du bris, la trajectoire du robot peut être affectée & La portion dessin sera partiellement complète et la trajectoire sera déviée & 15 & 10 & Tests rigoureux et essais multiples pour vérifier la stabilité en température lors du fonctionnement  & É. Arsenault \\\hline
@@ -34,8 +34,8 @@
     \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
     \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
     6 & Problèmes de réception du signal d'antenne & 4 & Si la réception est erronée, le robot peut exécuter sa séquence, mais l'exécution ne sera pas conforme au message. Si la réception est impossible, le système ne s'amorcera pas. & Accomplissement de la mauvaise tâche ou système non fonctionnel & 5 & 15 & Tests répétés pour un taux de succès de 100\% lors de la réception et du décodage. & D.Fournier \\\hline
-    7 & Problème d'identification du robot (vision) & 5 & Correction de la trajectoire erronée, risque de rencontrer les obstacles & La trajectoire réelle ne sera pas optimale & 10 &  & Tests rigoureux et taux de succès de l'identification proche de 100\% & I. Mouhtij \\\hline
-    8 & Problème de détection des chiffres du sudo cube & 5 & Erreur dans la résolution du sudo cube (mauvais chiffres à la base) & Le chiffre dessiné ne sera pas le bon & 5 &       & Tests répétés pour un taux de succès de près de 100\% lors de la détection des chiffres & P. Bourdages \\\hline
+    7 & Problème d'identification du robot et de l'environnement (vision) par la Kinect & 5 & Correction de la trajectoire erronée, risque de rencontrer les obstacles, mauvaise trajectoire calculée & La trajectoire réelle ne sera pas optimale et le robot risque de rencontrer des obstacles & 10 &  & Tests rigoureux et taux de succès de l'identification proche de 100\% & I. Mouhtij \\\hline
+    8 & Problème de détection des chiffres et de représentation du sudo cube & 5 & Erreur dans la résolution du sudo cube (mauvais chiffres à la base) & Le chiffre dessiné ne sera pas le bon & 5 &       & Tests répétés pour un taux de succès de près de 100\% lors de la détection des chiffres & P. Bourdages \\\hline
     9 & Problème de résolution du sudo cube & 5 & Erreur dans la résolution du sudo cube, emballement de l'algorithme et arrêt de la tâche & Le chiffre dessiné ne sera pas le bon, le robot peut arrêter sa séquence d'opération avant le moment prévu & 15 &       & Tests répétés pour un taux de succès de près de 100\% lors de la résolution du cube & O. Sylvain \\\hline
     10 & Problème de communication entre le Mac mini et la station de base & 5 & Les informations requises ne pourront être transmises correctement, on perd l'information sur le comportement du robot ainsi que sa position. Le robot ne pourra pas se localiser initialement et en temps réel. & Le robot de remplira pas les exigences d'affichage sur la station de base, le robot ne recevra aucune position de la Kinect  & 5 &       & Tests répétés pour un taux de succès de près de 100\% lors de la transmission et de la réception de l'information en temps réel entre le Mac mini et la station de base & P. Bourdages \\\hline
 \end{tabular}}%
@@ -58,6 +58,24 @@
     15 & Bris du pont en H & 5 & Les moteurs ne pourront être commandés correctement & Le robot ne peut pas se déplacer, le système n'est pas fonctionnel & 5 & 130 & Utilisation d'un régulateur de type PID afin d'éviter les appels brusques de courants, positionnement du pont de manière à limiter son exposition aux accrochages & F. Valois \\\hline
     \end{tabular}}%
   \label{tab:rr3}%
+\end{table}%
+\end{landscape}
+
+\begin{landscape}
+\begin{table}[htbp]
+	\small
+ 	 \centering
+  	\caption{Registre de risques partie 4}
+  	\scalebox{0.8}{
+	\tabcolsep=0.11cm
+    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
+    \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
+	16 & Bris du Mac mini & 5 & L'ensemble des auxiliaires ne fonctionnera pas correctement. Le système sera non fonctionnel & Robot incapable de se déplacer selon la trajectoire prévue et d'effectuer la tâche & 5 &  600  & Apposition de protections électriques (fusibles et interrupteurs) sur l'étage d'alimentation du Mac mini. Fixation robuste du Mac mini sur le robot. Protection du port USB du Mac mini en n'utilisant pas le fil d'alimentation. & F. Valois \\\hline
+    17 & Bris du système d'exploitation du Mac mini & 4 & La portion logicielle du robot et le traitement seront absents. Le système ne sera pas fonctionnel & Robot incapable d'accomplir un traitement de tâches & 30 &       &Clonage d'une version fonctionnelle et stable du système d'exploitation & P. Buhler \\\hline
+    18 & Caméra web désaxée & 3 & Les prises de données du sudo cube seront affectées & L'acquisition des données du sudo cube pourrait être non fonctionnelle et causer une erreur dans la résolution du cube & 10 &       & Tests rigoureux d'asservissement de la caméra et de retour à l'axe désiré suivant une modification externe. & P. Buhler \\\hline
+    19 & Bris de la caméra web & 4 & Le bris de la caméra empêche la vision des cubes & Si la caméra ne peut voir le sudo cube, on ne peut trouver le chiffre dans la case rouge et effectuer le bon dessin & 5 & 80 & Storage adéquat de la caméra, protection d'alimentation (fusible), limiter les chocs contre les obstacles & D. Thibodeau \\\hline
+   \end{tabular}}%
+  \label{tab:rr4}%
 \end{table}%
 \end{landscape}
 
