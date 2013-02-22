@@ -19,19 +19,16 @@ Rect SudokuReader::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) 
 	return rect2;
 }
 
-void SudokuReader::removeInvalidSquares(vector<vector<Point> > &squaresPoly, vector<Rect> &squaresRect) {
-	vector<vector<Point> > validPoly;
-	vector<Rect> validRect;
-
-	for (uint i = 0; i < squaresRect.size(); i++) {
-		if (squaresRect[i].area() > 5000 && squaresRect[i].area() < 160000) {
-			validRect.push_back(squaresRect[i]);
-			validPoly.push_back(squaresPoly[i]);
+void SudokuReader::removeInvalidSquaresPair(vector<SquarePair>& squaresPair) {
+	vector<SquarePair> validSquaresPair;
+	for (uint i = 0; i < squaresPair.size(); i++) {
+		if (squaresPair[i].rect.area() > 5000 && squaresPair[i].rect.area() < 160000) {
+			SquarePair squarePair(squaresPair[i].rect, squaresPair[i].poly);
+			validSquaresPair.push_back(squarePair);
 		}
 	}
 
-	squaresPoly = validPoly;
-	squaresRect = validRect;
+	squaresPair = validSquaresPair;
 }
 
 void SudokuReader::showWindowWith(const char* name, const Mat &mat) {
@@ -86,14 +83,6 @@ bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int 
 	return false;
 }
 
-bool compareXPos(const Rect& rect1, const Rect& rect2) {
-	return rect1.x < rect2.x;
-}
-
-bool compareYPos(const Rect& rect1, const Rect& rect2) {
-	return rect1.y < rect2.y;
-}
-
 void SudokuReader::extractNumbers(Mat & src) {
 	Mat srcGray;
 	cvtColor(src, srcGray, CV_BGR2GRAY);
@@ -101,6 +90,48 @@ void SudokuReader::extractNumbers(Mat & src) {
 	Mat srcHSV;
 	cvtColor(src, srcHSV, CV_BGR2HSV);
 
+	Rect frameRect = getFrameRect(srcHSV);
+	Mat frameCroppedGray = srcGray(frameRect) / 1.05; // Diminution de la luminosité de 5% //TODO Corriger sur la caméra direct
+	//sprintf(filename, "%s/frameCropped/%d.png", OUTPUT_PATH, sudocubeNo);
+	//saveImage(frameCroppedGray, filename);
+
+	vector<SquarePair> squaresPair;
+	bool squaresAreExtracted = getSquaresPair(frameCroppedGray, squaresPair);
+
+	if (squaresAreExtracted == false) {
+		cout << "Could not extract all the square for sudocube" << endl; //TODO gestion d'exception
+		return;
+	}
+
+	SquarePair redSquarePair = getRedSquarePair(srcHSV);
+	squaresPair[squaresPair.size() - 1] = redSquarePair;
+
+	vector<vector<SquarePair> > orderedSquaresPair = getOrderedSquaresPair(squaresPair, frameCroppedGray.cols);
+
+	for (int i = 0; i < 8; i++) {
+		vector<SquarePair>::iterator it;
+		for (it = orderedSquaresPair[i].begin(); it != orderedSquaresPair[i].end(); it++) {
+			Mat squareMask = Mat::zeros(frameCroppedGray.size(), CV_8UC1);
+			fillConvexPoly(squareMask, it->poly, white);
+
+			Mat squareMasked = Mat::ones(frameCroppedGray.size(), CV_8UC3);
+			frameCroppedGray.copyTo(squareMasked, squareMask);
+
+			Mat squareInversedMask = 255 - squareMask;
+			Mat number;
+			bool foundPossibleNumber = preProcessNumber(squareMasked, number, NUMBER_WIDTH, NUMBER_HEIGHT, squareInversedMask);
+
+			if (foundPossibleNumber == true) {
+				int numberFound = numberReader.searchANumber(number);
+				cout << "Found : " << numberFound << endl;
+				//sprintf(filename, "%s/number/%d_%d.png", OUTPUT_PATH, sudocubeNo, squareNo + 1);
+				//saveImage(number, filename);
+			}
+		}
+	}
+}
+
+Rect SudokuReader::getFrameRect(Mat& srcHSV) {
 	Mat segmentedFrame;
 	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
 
@@ -114,12 +145,10 @@ void SudokuReader::extractNumbers(Mat & src) {
 	//sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
 	//saveImage(segmentedFrame, filename);
 
-	//Recuperation des contours
 	vector<vector<Point> > frameContours;
 	vector<Vec4i> frameHierarchy;
 	findContours(segmentedFrame, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-	//Recuperation des polygones et des Rect
 	vector<vector<Point> > frameContoursPoly(frameContours.size());
 	vector<Rect> frameBoundingRect(0);
 	for (uint i = 0; i < frameContours.size(); i++) {
@@ -131,109 +160,121 @@ void SudokuReader::extractNumbers(Mat & src) {
 		}
 	}
 
-	Rect squareRect;
 	if (frameBoundingRect.empty()) {
-		cout << "Found not enougth frames for sudocube" << endl; // TODO Gestion d'exception...
-		return;
+		cout << "Found not enought frames for sudocube" << endl; // TODO Gestion d'exception...
+		return Rect();
 	} else if (frameBoundingRect.size() == 1) {
-		squareRect = frameBoundingRect[0];
+		return frameBoundingRect[0];
 	} else if (frameBoundingRect.size() == 2) {
-		squareRect = getSmallestRectBetween(frameBoundingRect[0], frameBoundingRect[1]);
+		return getSmallestRectBetween(frameBoundingRect[0], frameBoundingRect[1]);
 	} else {
 		cout << "Found too many potential frames for sudocube" << endl; // TODO Gestion d'exception...
-		return;
+		return Rect();
 	}
+}
 
-	vector<vector<Point> > squaresPoly;
-	vector<Rect> squaresRect;
-	Mat frameCroppedGray = srcGray(squareRect) / 1.05; // Diminution de la luminosité de 5% //TODO Corriger sur la caméra direct
-	//sprintf(filename, "%s/frameCropped/%d.png", OUTPUT_PATH, sudocubeNo);
-	//saveImage(frameCroppedGray, filename);
-
-	//Extraction de toutes les cases
+bool SudokuReader::getSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair) {
 	bool isExtracted = false;
+
 	for (int erodeSize = 0; erodeSize <= 3 && isExtracted == false; erodeSize++) {
 		for (int thresh = SQUARE_THRESHOLD_MIN; thresh <= SQUARE_THRESHOLD_MAX && isExtracted == false; thresh++) {
 			Mat thresholdedSudocube;
-			threshold(frameCroppedGray, thresholdedSudocube, thresh, 500, THRESH_BINARY);
+			threshold(srcGray, thresholdedSudocube, thresh, 500, THRESH_BINARY);
 
-			Mat sudocubeErodeEle = getStructuringElement(MORPH_RECT, Size(2 * erodeSize + 1, 2 * erodeSize + 1), Point(erodeSize, erodeSize));
+			Point sudocubeErodePoint = Point(erodeSize, erodeSize);
+			Mat sudocubeErodeEle = getStructuringElement(MORPH_RECT, Size(2 * erodeSize + 1, 2 * erodeSize + 1), sudocubeErodePoint);
 			erode(thresholdedSudocube, thresholdedSudocube, sudocubeErodeEle);
-			//sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
-			//saveImage(thresholdedSudocube, filename);
 
-			findContours(thresholdedSudocube, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+			vector<vector<Point> > squaresContours;
+			vector<Vec4i> squaresHierarchy;
+			findContours(thresholdedSudocube, squaresContours, squaresHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-			squaresPoly.resize(frameContours.size());
-			squaresRect.resize(frameContours.size());
-			for (uint i = 0; i < frameContours.size(); i++) {
-				approxPolyDP(Mat(frameContours[i]), squaresPoly[i], 10, true);
-				squaresRect[i] = boundingRect(Mat(squaresPoly[i]));
+			squaresPair.resize(squaresContours.size() + 1);
+			for (uint i = 0; i < squaresContours.size(); i++) {
+				approxPolyDP(Mat(squaresContours[i]), squaresPair[i].poly, 10, true);
+				squaresPair[i].rect = boundingRect(Mat(squaresPair[i].poly));
 			}
 
-			removeInvalidSquares(squaresPoly, squaresRect);
+			removeInvalidSquaresPair(squaresPair);
 
-			if (squaresRect.size() == 47) {
+			if (squaresPair.size() == 47) {
 				isExtracted = true;
 			}
 		}
 	}
 
-	if (isExtracted == false) {
-		cout << "Could not extract all the square for sudocube" << endl;
-		return;
-	}
+	return isExtracted;
+}
 
-	//Extraction de tous les chiffres des cases
-	vector<bool> numberPositives(squaresRect.size());
-	vector<Rect> squaresRectOrdered(0);
-	for (uint squareNo = 0; squareNo < squaresRect.size(); squareNo++) {
-		squaresRectOrdered.push_back(squaresRect[squareNo]);
+SquarePair SudokuReader::getRedSquarePair(const Mat& srcHSV) {
+	Mat segmentedRedSquare;
+	Mat segmentedRedSquare2;
+	inRange(srcHSV, Scalar(0, 100, 50), Scalar(25, 255, 255), segmentedRedSquare); // Pas le choix, en deux partie...
+	inRange(srcHSV, Scalar(130, 100, 50), Scalar(255, 255, 255), segmentedRedSquare2);
+	segmentedRedSquare += segmentedRedSquare2;
 
-		Mat squareMask = Mat::zeros(frameCroppedGray.size(), CV_8UC1);
-		fillConvexPoly(squareMask, squaresPoly[squareNo], white);
+	int erodeSize = 2;
+	Point redSquareErodePoint = Point(erodeSize, erodeSize);
+	Mat redSquareErodeEle = getStructuringElement(MORPH_CROSS, Size(2 * erodeSize + 1, 2 * erodeSize + 1), redSquareErodePoint);
+	erode(segmentedRedSquare, segmentedRedSquare, redSquareErodeEle);
 
-		Mat squareMasked = Mat::ones(frameCroppedGray.size(), CV_8UC3);
-		frameCroppedGray.copyTo(squareMasked, squareMask);
+	vector<vector<Point> > squareContour;
+	vector<Vec4i> squareHierarchy;
+	findContours(segmentedRedSquare, squareContour, squareHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-		Mat squareInversedMask = 255 - squareMask;
-		Mat number;
-		bool foundPossibleNumber = preProcessNumber(squareMasked, number, NUMBER_WIDTH, NUMBER_HEIGHT, squareInversedMask);
+	vector<vector<Point> > squareContoursPoly(squareContour.size());
+	vector<Rect> squareBoundingRect(0);
+	for (uint i = 0; i < squareContour.size(); i++) {
+		approxPolyDP(Mat(squareContour[i]), squareContoursPoly[i], 3, true);
+		Rect rect = boundingRect(Mat(squareContoursPoly[i]));
 
-		if (foundPossibleNumber == true) {
-			int numberFound = numberReader.searchANumber(number);
-			if (numberFound != -1) {
-				numberPositives[squareNo] = true;
-			}
-			cout << "Found : " << numberFound << endl;
-			//sprintf(filename, "%s/number/%d_%d.png", OUTPUT_PATH, sudocubeNo, squareNo + 1);
-			//saveImage(number, filename);
+		if (rect.area() > SQUARE_AREA_MIN && rect.area() < SQUARE_AREA_MAX) {
+			squareBoundingRect.push_back(rect);
 		}
 	}
 
-	sort(squaresRectOrdered.begin(), squaresRectOrdered.end(), compareXPos);
-	int dx = frameCroppedGray.cols / 18;
+	if (squareBoundingRect.empty() == true) {
+		cout << "Could not find the red square" << endl;
+		return SquarePair();
+	}
 
-	vector<Rect>::iterator it;
+	SquarePair squarePair(squareBoundingRect[0], squareContoursPoly[0]);
+
+	return squarePair;
+}
+
+bool compareXPos(const SquarePair& pair1, const SquarePair& pair2) {
+	return pair1.rect.x < pair2.rect.x;
+}
+
+bool compareYPos(const SquarePair& pair1, const SquarePair& pair2) {
+	return pair1.rect.y < pair2.rect.y;
+}
+
+vector<vector<SquarePair> > SudokuReader::getOrderedSquaresPair(vector<SquarePair> squaresPair, const int frameWidth) {
+	//Tri selon les x des Rect
+	sort(squaresPair.begin(), squaresPair.end(), compareXPos);
+
+	//Séparation des colonnes selon la variation importante en x entre i et i+1
+	int dx = frameWidth / 18; //Seuil pour tester la variation
 	int actualXColumn = 0;
-	vector<vector<Rect> > colonnesX(8);
-	for (it = squaresRectOrdered.begin(); it != squaresRectOrdered.end(); ++it) {
+	vector<vector<SquarePair> > colonnesX(8);
+	vector<SquarePair>::iterator it;
+	for (it = squaresPair.begin(); it != squaresPair.end(); ++it) {
 		colonnesX[actualXColumn].push_back(*it);
-		if ((it + 1) != squaresRectOrdered.end()) {
-			if ((it->x + dx) < (it + 1)->x) {
+		if ((it + 1) != squaresPair.end()) {
+			if ((it->rect.x + dx) < (it + 1)->rect.x) {
 				actualXColumn++;
 			}
 		}
 	}
 
+	//Tri selon les y des Rect
 	for (int i = 0; i < 8; i++) {
 		sort(colonnesX[i].begin(), colonnesX[i].end(), compareYPos);
-
-		/*vector<Rect>::iterator itY;
-		for (itY = colonnesX[i].begin(); itY != colonnesX[i].end(); ++itY) {
-			cout << "colonne " << i << " ligne " << distance(colonnesX[i].begin(), itY) << " y=" << itY->y << endl;
-		}*/
 	}
+
+	return colonnesX;
 }
 
 void SudokuReader::testAllSudocubes() {

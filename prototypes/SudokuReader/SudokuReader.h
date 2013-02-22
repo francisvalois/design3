@@ -11,6 +11,7 @@
 #include <cctype>
 
 #include "NumberReader.h"
+#include "SquarePair.h"
 
 class SudokuReader {
 
@@ -40,14 +41,16 @@ private:
 	NumberReader numberReader;
 
 	cv::Mat src;
-	cv::Mat srcGray;
-	cv::Mat srcHSV;
 
 	cv::Scalar white;
 	cv::Scalar black;
 
 	cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
-	void removeInvalidSquares(std::vector<std::vector<cv::Point> > &, std::vector<cv::Rect> &);
+	void removeInvalidSquaresPair(std::vector<SquarePair>& squaresPair);
+	cv::Rect getFrameRect(cv::Mat& srcHSV);
+	bool getSquaresPair(const cv::Mat& srcGray, std::vector<SquarePair>& squaresPair);
+	SquarePair getRedSquarePair(const cv::Mat& srcHSV);
+	std::vector<std::vector<SquarePair> > getOrderedSquaresPair(std::vector<SquarePair> squaresRect, const int frameWidth);
 	bool preProcessNumber(cv::Mat &inImage, cv::Mat &outImage, int sizex, int sizey, cv::Mat &squareMask);
 	void extractNumbers(cv::Mat & src);
 
