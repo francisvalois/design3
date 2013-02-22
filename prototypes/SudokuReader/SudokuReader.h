@@ -41,9 +41,9 @@ private:
 	NumberReader numberReader;
 
 	cv::Mat src;
-
 	cv::Scalar white;
 	cv::Scalar black;
+	int sudocubeNo;
 
 	cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
 	void removeInvalidSquaresPair(std::vector<SquarePair>& squaresPair);
@@ -51,8 +51,12 @@ private:
 	bool getSquaresPair(const cv::Mat& srcGray, std::vector<SquarePair>& squaresPair);
 	SquarePair getRedSquarePair(const cv::Mat& srcHSV);
 	std::vector<std::vector<SquarePair> > getOrderedSquaresPair(std::vector<SquarePair> squaresRect, const int frameWidth);
-	bool preProcessNumber(cv::Mat &inImage, cv::Mat &outImage, int sizex, int sizey, cv::Mat &squareMask);
+	bool preProcessNumber(cv::Mat &inImage, cv::Mat &outImage, int sizex, int sizey, cv::Mat &squareMask, cv::Mat &blueLinesMask);
 	void extractNumbers(cv::Mat & src);
+
+	void applyErode(cv::Mat & toErode, int size, int morphShape);
+	void applyDilate(cv::Mat & toDilate, int size, int morphShape);
+	cv::Mat getBlueLinesMask(cv::Mat& srcHSV);
 
 	void showWindowWith(const char*, const cv::Mat &);
 	void saveImage(cv::Mat &pict, char* filename);

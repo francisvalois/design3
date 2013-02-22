@@ -6,6 +6,7 @@ using namespace std;
 SudokuReader::SudokuReader() {
 	white = cv::Scalar(255, 255, 255);
 	black = cv::Scalar(0, 0, 0);
+	sudocubeNo = 1;
 }
 
 SudokuReader::~SudokuReader() {
@@ -44,17 +45,15 @@ void SudokuReader::saveImage(Mat &pict, char* filename) {
 	imwrite(filename, pict, compression_params);
 }
 
-bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &squareMask) {
+bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int sizey, Mat &squareMask, Mat & blueLinesMask) {
 	Mat blurredSquare;
 	GaussianBlur(inImage, blurredSquare, Size(5, 5), 1, 1);
 
 	Mat thresholdedSquare;
 	adaptiveThreshold(blurredSquare, thresholdedSquare, 255, 1, 1, 11, 2);
 	thresholdedSquare.setTo(black, squareMask);
-
-	Point dilatePoint(NUMBER_DILATE_SIZE, NUMBER_DILATE_SIZE);
-	Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * NUMBER_DILATE_SIZE + 1, 2 * NUMBER_DILATE_SIZE + 1), dilatePoint);
-	dilate(thresholdedSquare, thresholdedSquare, dilateElem);
+	thresholdedSquare -= blueLinesMask;
+	applyDilate(thresholdedSquare, NUMBER_DILATE_SIZE, MORPH_RECT);
 
 	Mat contourImage;
 	thresholdedSquare.copyTo(contourImage);
@@ -84,6 +83,8 @@ bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int 
 }
 
 void SudokuReader::extractNumbers(Mat & src) {
+	char filename[255];
+
 	Mat srcGray;
 	cvtColor(src, srcGray, CV_BGR2GRAY);
 
@@ -92,6 +93,8 @@ void SudokuReader::extractNumbers(Mat & src) {
 
 	Rect frameRect = getFrameRect(srcHSV);
 	Mat frameCroppedGray = srcGray(frameRect) / 1.05; // Diminution de la luminosité de 5% //TODO Corriger sur la caméra direct
+	Mat blueLinesMask = getBlueLinesMask(srcHSV);
+	blueLinesMask = blueLinesMask(frameRect);
 	//sprintf(filename, "%s/frameCropped/%d.png", OUTPUT_PATH, sudocubeNo);
 	//saveImage(frameCroppedGray, filename);
 
@@ -103,13 +106,15 @@ void SudokuReader::extractNumbers(Mat & src) {
 		return;
 	}
 
-	SquarePair redSquarePair = getRedSquarePair(srcHSV);
+	SquarePair redSquarePair = getRedSquarePair(srcHSV(frameRect));
 	squaresPair[squaresPair.size() - 1] = redSquarePair;
 	vector<vector<SquarePair> > orderedSquaresPair = getOrderedSquaresPair(squaresPair, frameCroppedGray.cols);
 
 	for (int i = 0; i < 8; i++) {
 		vector<SquarePair>::iterator it;
 		for (it = orderedSquaresPair[i].begin(); it != orderedSquaresPair[i].end(); it++) {
+			int y = distance(orderedSquaresPair[i].begin(), it);
+
 			Mat squareMask = Mat::zeros(frameCroppedGray.size(), CV_8UC1);
 			fillConvexPoly(squareMask, it->poly, white);
 
@@ -117,30 +122,40 @@ void SudokuReader::extractNumbers(Mat & src) {
 			frameCroppedGray.copyTo(squareMasked, squareMask);
 
 			Mat squareInversedMask = 255 - squareMask;
+			applyDilate(squareInversedMask, 8, MORPH_RECT);
+
 			Mat number;
-			bool foundPossibleNumber = preProcessNumber(squareMasked, number, NUMBER_WIDTH, NUMBER_HEIGHT, squareInversedMask);
+			bool foundPossibleNumber = preProcessNumber(squareMasked, number, NUMBER_WIDTH, NUMBER_HEIGHT, squareInversedMask, blueLinesMask);
 
 			if (foundPossibleNumber == true) {
 				int numberFound = numberReader.identifyNumber(number);
 				cout << "Found : " << numberFound << endl;
-				//sprintf(filename, "%s/number/%d_%d.png", OUTPUT_PATH, sudocubeNo, squareNo + 1);
-				//saveImage(number, filename);
+				sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
+				saveImage(number, filename);
 			}
 		}
 	}
+
+	sudocubeNo++;
+}
+
+void SudokuReader::applyErode(Mat & toErode, int size, int morphShape) {
+	Point erodePoint(size, size);
+	Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
+	erode(toErode, toErode, erodeElem);
+}
+
+void SudokuReader::applyDilate(Mat & toDilate, int size, int morphShape) {
+	Point dilatePoint(size, size);
+	Mat dilateElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), dilatePoint);
+	dilate(toDilate, toDilate, dilateElem);
 }
 
 Rect SudokuReader::getFrameRect(Mat& srcHSV) {
 	Mat segmentedFrame;
 	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
-
-	Point erodePoint(FRAME_ERODE_SIZE, FRAME_ERODE_SIZE);
-	Mat frameErodeElem = getStructuringElement(MORPH_ELLIPSE, Size(2 * FRAME_ERODE_SIZE + 1, 2 * FRAME_ERODE_SIZE + 1), erodePoint);
-	erode(segmentedFrame, segmentedFrame, frameErodeElem);
-
-	Point dilatePoint(FRAME_DILATE_SIZE, FRAME_DILATE_SIZE);
-	Mat frameDilateElem = getStructuringElement(MORPH_RECT, Size(2 * FRAME_DILATE_SIZE + 1, 2 * FRAME_DILATE_SIZE + 1), dilatePoint);
-	dilate(segmentedFrame, segmentedFrame, frameDilateElem);
+	applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
+	applyDilate(segmentedFrame, FRAME_DILATE_SIZE, MORPH_RECT);
 	//sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
 	//saveImage(segmentedFrame, filename);
 
@@ -179,10 +194,7 @@ bool SudokuReader::getSquaresPair(const Mat& srcGray, vector<SquarePair> & squar
 		for (int thresh = SQUARE_THRESHOLD_MIN; thresh <= SQUARE_THRESHOLD_MAX && isExtracted == false; thresh++) {
 			Mat thresholdedSudocube;
 			threshold(srcGray, thresholdedSudocube, thresh, 500, THRESH_BINARY);
-
-			Point sudocubeErodePoint = Point(erodeSize, erodeSize);
-			Mat sudocubeErodeEle = getStructuringElement(MORPH_RECT, Size(2 * erodeSize + 1, 2 * erodeSize + 1), sudocubeErodePoint);
-			erode(thresholdedSudocube, thresholdedSudocube, sudocubeErodeEle);
+			applyErode(thresholdedSudocube, erodeSize, MORPH_RECT);
 
 			vector<vector<Point> > squaresContours;
 			vector<Vec4i> squaresHierarchy;
@@ -205,6 +217,15 @@ bool SudokuReader::getSquaresPair(const Mat& srcGray, vector<SquarePair> & squar
 	return isExtracted;
 }
 
+Mat SudokuReader::getBlueLinesMask(Mat& srcHSV) {
+	Mat segmentedBlueLines;
+	inRange(srcHSV, Scalar(80, 125, 50), Scalar(130, 255, 255), segmentedBlueLines);
+	applyErode(segmentedBlueLines, 1, MORPH_CROSS);
+	applyDilate(segmentedBlueLines, 2, MORPH_RECT);
+
+	return segmentedBlueLines;
+}
+
 SquarePair SudokuReader::getRedSquarePair(const Mat& srcHSV) {
 	Mat segmentedRedSquare;
 	Mat segmentedRedSquare2;
@@ -212,10 +233,7 @@ SquarePair SudokuReader::getRedSquarePair(const Mat& srcHSV) {
 	inRange(srcHSV, Scalar(130, 100, 50), Scalar(255, 255, 255), segmentedRedSquare2);
 	segmentedRedSquare += segmentedRedSquare2;
 
-	int erodeSize = 2;
-	Point redSquareErodePoint = Point(erodeSize, erodeSize);
-	Mat redSquareErodeEle = getStructuringElement(MORPH_CROSS, Size(2 * erodeSize + 1, 2 * erodeSize + 1), redSquareErodePoint);
-	erode(segmentedRedSquare, segmentedRedSquare, redSquareErodeEle);
+	applyErode(segmentedRedSquare, 2, MORPH_CROSS);
 
 	vector<vector<Point> > squareContour;
 	vector<Vec4i> squareHierarchy;
@@ -251,8 +269,7 @@ bool compareYPos(const SquarePair& pair1, const SquarePair& pair2) {
 }
 
 vector<vector<SquarePair> > SudokuReader::getOrderedSquaresPair(vector<SquarePair> squaresPair, const int frameWidth) {
-	//Tri selon les x des Rect
-	sort(squaresPair.begin(), squaresPair.end(), compareXPos);
+	sort(squaresPair.begin(), squaresPair.end(), compareXPos); //Tri selon les x des Rect
 
 	//Séparation des colonnes selon la variation importante en x entre i et i+1
 	int dx = frameWidth / 18; //Seuil pour tester la variation
@@ -269,8 +286,7 @@ vector<vector<SquarePair> > SudokuReader::getOrderedSquaresPair(vector<SquarePai
 		}
 	}
 
-	//Tri selon les y des Rect
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 8; i++) { 	//Tri selon les y des Rect
 		sort(colonnesX[i].begin(), colonnesX[i].end(), compareYPos);
 	}
 
@@ -279,15 +295,14 @@ vector<vector<SquarePair> > SudokuReader::getOrderedSquaresPair(vector<SquarePai
 
 void SudokuReader::testAllSudocubes() {
 	char filename[255];
-	for (int i = 1; i <= 42; i++) { //Il y en as 42...
-		double t = (double)getTickCount();
-
-
+	for (int i =1; i <= 42; i++) { //Il y en as 42...
+		double t = (double) getTickCount();
+		cout << "sudocube no " << i << endl;
 		sprintf(filename, "%s%d.png", PATH_SUDOCUBES, i);
 		Mat sudocube = imread(filename);
 		extractNumbers(sudocube);
 
-		t = ((double)getTickCount() - t)/getTickFrequency();
+		t = ((double) getTickCount() - t) / getTickFrequency();
 		cout << "Times passed in seconds: " << t << endl;
 	}
 
