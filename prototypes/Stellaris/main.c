@@ -38,10 +38,10 @@ extern volatile unsigned long previous_status, previous_state_m2, previous_state
 extern volatile long position_m2, position_m3; //Position des moteurs m2, m3
 extern volatile long pos0, pos1, pos2, pos3;
 extern volatile long previous_error0, previous_error1, previous_error2, previous_error3;
-extern volatile long I0, I1, I2, I3;
+extern volatile float I0, I1, I2, I3;
 extern volatile long consigne0, consigne1, consigne2, consigne3; 
-extern volatile long Kd, Ki, Kp;
-extern volatile long slow_brake_pente, slow_start_pente;
+extern volatile float Kd, Ki, Kp;
+extern volatile float slow_brake_pente, slow_start_pente;
 extern long tolerancePos;
 extern tBoolean slow_brake, slow_start;
 extern volatile long posqei1;
@@ -54,7 +54,7 @@ volatile long position; // Position à faire afficher
 volatile long speed; // Vitesse à faire afficher
 volatile unsigned long speed_table[300];
 volatile unsigned long pos_table[300];
-volatile unsigned long dt = 1/10;
+volatile float dt;
 
 
 //Fonction externe provenant de lcd.c: TODO supprimer et utiliser plutôt celles de ecran.c/.h
@@ -86,7 +86,8 @@ void initMotorCommand(void);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
 void motorBrake(volatile long mnumber);
-void moveFront(long distance);
+void moveLateral(long distance, long vitesse);
+void moveFront(long distance, long vitesse);
 void initLED(void);
 
 
@@ -110,10 +111,6 @@ int main(void)
 	IntPrioritySet(INT_GPIOE,0); 
 	//Activer les interruptions
 	IntMasterEnable();
-	
-   
-    //Initialisation des périphériques
-
 
  
     //Initialisation des variables globales
@@ -141,14 +138,15 @@ int main(void)
     consigne1=0;
     consigne2=0;
     consigne3=0;
-    Kd = 1;
-    Ki = 1;
+    Kd = 0;
+    Ki = 4;//5.64;
     Kp = 1;
+    dt = 0.1;
     slow_brake_pente = 1;
     slow_start_pente = 1;
     slow_brake = false;
     slow_start = false;
-    tolerancePos = 1000;
+    tolerancePos = 500;
     posqei1 = 0;
     speedqei1=0;
     
@@ -157,31 +155,17 @@ int main(void)
 
 
 	initMotorCommand();
-    /*motorBrake(0);
-	motorBrake(1);
-	motorBrake(2);
-	motorBrake(3);*/
-    //initLED();
-    
+
+    //initLED();   
     initQEI();
     //init_lcd();
     initPWM();
     initTimer();
     //initUart();
 
-	
-	//motorTurnCW(0);
-	//motorTurnCW(1);
-	//motorTurnCW(2);
-	//motorTurnCW(3);
-	//moveFront(6400*3);
-
     while(1)
 	{
 		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
-		/*motorBrake(1);
-		motorBrake(2);
-		motorBrake(3);*/
 		
 		
 		

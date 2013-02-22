@@ -43,12 +43,14 @@ volatile unsigned long index;
 volatile long posqei1;
 volatile long speedqei1;
 
+void resetVariables(void);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
 void motorBrake(volatile long mnumber);
 void asservirMoteurs(void);
-void moveLateral(long distance);
-void moveFront(long distance);
+void moveLateral(long distance, long vitesse);
+void moveFront(long distance, long vitesse);
+void turn(long distance, long vitesse);
 
 //Fonction qui gère les interruption du timer et appele les fonctions d'asservissement
 void TimerInt(void){
@@ -67,7 +69,9 @@ void TimerInt(void){
 	pos_table[index]=position;
 	if(index==0){
 		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x20);
-		moveFront(10*6400);
+		resetVariables();
+		//moveLateral(10*6400);
+		moveFront(2*6400, 4000);
 	}
 	/*if(index==50){
 		motorBrake(0);
@@ -138,6 +142,7 @@ void TimerInt(void){
 	
 	//Asservissement Moteurs
 	asservirMoteurs();
+	
 	//Changement graduelle de la vitesse de moteurs
 	if(slow_brake){
 		if(slow_brake_index > 0){

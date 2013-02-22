@@ -35,10 +35,10 @@ void initPWM(void){
     ROM_PWMGenPeriodSet(PWM_BASE, PWM_GEN_1, periodPWM);
 
     // Modifier le duty cycle des PWM
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, pulsewidth);//periodPWM / 4);
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, pulsewidth);
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, pulsewidth);
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, pulsewidth);
+    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, 0);//periodPWM / 4);
+    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, 0);
+    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, 0);
+    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, 0);
 
     // Mettre les PWM en sorties
     ROM_PWMOutputState(PWM_BASE, PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT | PWM_OUT_3_BIT, true);
