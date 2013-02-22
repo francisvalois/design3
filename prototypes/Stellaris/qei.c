@@ -12,7 +12,7 @@
 
 volatile unsigned long state, state_m2, state_m3; //États des encodeurs (m2 = moteur2, m3=moteur3)
 volatile unsigned long previous_status, previous_state_m2, previous_state_m3; //Pour le traitement des encodeurs
-volatile long position_m2, position_m3; //Position des moteurs m2, m3
+volatile long position_m0, position_m1, position_m2, position_m3; //Position des moteurs m2, m3
 //volatile unsigned long speed_table[300];
 //volatile unsigned long pos_table[300];
 
@@ -39,7 +39,7 @@ void initQEI(void){
 	QEIVelocityConfigure (QEI0_BASE, QEI_VELDIV_1, ROM_SysCtlClockGet()/10);
 	QEIVelocityEnable(QEI0_BASE);
 	
-	//init QEI0 du micro pour moteur 1
+	//init QEI1 du micro pour moteur 1
     GPIOPinConfigure(GPIO_PE3_PHA1);
     GPIOPinConfigure(GPIO_PE2_PHB1);
 	GPIOPinTypeQEI(GPIO_PORTE_BASE, GPIO_PIN_3);  //Ph A
@@ -60,6 +60,15 @@ void initQEI(void){
 	GPIOPinIntEnable(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
 	IntEnable(INT_GPIOE);
 	
+	//En cas que les QEI matérielles marchent pas
+	/*GPIOPadConfigSet(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
+	GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
+	GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_BOTH_EDGES);
+	GPIOPinIntEnable(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
+	IntEnable(INT_GPIOE);*/
+	
+	position_m0 = 0;
+	position_m1 = 0;
 	position_m2 = 0;
 	position_m3 = 0;
 }
@@ -81,15 +90,15 @@ void EncoderHandler(){
 				if(previous_state_m2==0x01)position_m2++;
 				else position_m2--;
 				break;
-			case 0x10:
+			case 0x01:
 				if(previous_state_m2==0x03)position_m2++;
 				else position_m2--;
 				break;
-			case 0x20:
+			case 0x02:
 				if(previous_state_m2==0x00)position_m2++;
 				else position_m2--;
 				break;
-			case 0x30:
+			case 0x03:
 				if(previous_state_m2==0x02)position_m2++;
 				else position_m2--;
 				break;

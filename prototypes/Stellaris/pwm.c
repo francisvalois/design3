@@ -10,6 +10,7 @@
 #include "driverlib/pwm.h"
 
 volatile unsigned long periodPWM; //Période du PWM
+volatile unsigned long pulsewidth;
 
 //Fonction qui initie les PWM (pin D0, D1, D2 et D3)
 void initPWM(void){	
@@ -24,6 +25,8 @@ void initPWM(void){
 
     // Calcul de la periode du PWM selon la vitess du microcontroleur
     periodPWM = ROM_SysCtlClockGet() / 440;
+    pulsewidth = periodPWM/2;
+    
 
     // Configuraiton les PWM à 440Hz
     ROM_PWMGenConfigure(PWM_BASE, PWM_GEN_0, PWM_GEN_MODE_UP_DOWN | PWM_GEN_MODE_NO_SYNC);
@@ -32,10 +35,10 @@ void initPWM(void){
     ROM_PWMGenPeriodSet(PWM_BASE, PWM_GEN_1, periodPWM);
 
     // Modifier le duty cycle des PWM
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, periodPWM/2);//periodPWM / 4);
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, periodPWM/2);
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, periodPWM/2);
-    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, periodPWM/2);
+    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, pulsewidth);//periodPWM / 4);
+    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, pulsewidth);
+    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, pulsewidth);
+    ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, pulsewidth);
 
     // Mettre les PWM en sorties
     ROM_PWMOutputState(PWM_BASE, PWM_OUT_0_BIT | PWM_OUT_1_BIT | PWM_OUT_2_BIT | PWM_OUT_3_BIT, true);

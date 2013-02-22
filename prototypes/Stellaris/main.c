@@ -42,8 +42,10 @@ extern volatile long I0, I1, I2, I3;
 extern volatile long consigne0, consigne1, consigne2, consigne3; 
 extern volatile long Kd, Ki, Kp;
 extern volatile long slow_brake_pente, slow_start_pente;
-extern long tolerancePID;
+extern long tolerancePos;
 extern tBoolean slow_brake, slow_start;
+extern volatile long posqei1;
+extern volatile long speedqei1;
 
 //Variables globales
 volatile CircularBuffer receive_buffer;
@@ -81,9 +83,10 @@ void EncoderIntHandler(void);
 void EncoderHandler(void);
 //commande.c
 void initMotorCommand(void);
-void motorTurnCCW(unsigned short mnumber);
-void motorTurnCW(unsigned short mnumber);
-void motorBrake(unsigned short mnumber);
+void motorTurnCCW(volatile long mnumber);
+void motorTurnCW(volatile long mnumber);
+void motorBrake(volatile long mnumber);
+void moveFront(long distance);
 void initLED(void);
 
 
@@ -100,19 +103,18 @@ int main(void)
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
     
     //Enable les GPIO pour les timings des interrupts et autres	
-	ROM_GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
+	GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
+	GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_2);
 
+	//Mettre les interrupts du port E en haute prorités: évite collisions avec QEI logiciel
+	IntPrioritySet(INT_GPIOE,0); 
 	//Activer les interruptions
 	IntMasterEnable();
+	
    
     //Initialisation des périphériques
-    initQEI();
-    //init_lcd();
-    initPWM();
-    initTimer();
-    initUart();
-    initMotorCommand();
-    //initLED();
+
+
  
     //Initialisation des variables globales
     ulLoop = 0;
@@ -146,39 +148,57 @@ int main(void)
     slow_start_pente = 1;
     slow_brake = false;
     slow_start = false;
-    tolerancePID = 1000;
-    //IntPrioritySet(INT_TIMER0A,7); //Mettre l'interrupt du timer en basse priorité: évite collision avec QEI logiciel
+    tolerancePos = 1000;
+    posqei1 = 0;
+    speedqei1=0;
+    
+    
+    
 
-	motorBrake(0);
+
+	initMotorCommand();
+    /*motorBrake(0);
 	motorBrake(1);
 	motorBrake(2);
-	motorBrake(3);
+	motorBrake(3);*/
+    //initLED();
+    
+    initQEI();
+    //init_lcd();
+    initPWM();
+    initTimer();
+    //initUart();
+
 	
-	/*motorTurnCW(0);
-	motorTurnCW(1);
-	motorTurnCW(2);
-	motorTurnCW(3);*/
+	//motorTurnCW(0);
+	//motorTurnCW(1);
+	//motorTurnCW(2);
+	//motorTurnCW(3);
+	//moveFront(6400*3);
 
     while(1)
 	{
 		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
+		/*motorBrake(1);
+		motorBrake(2);
+		motorBrake(3);*/
 		
 		
 		
 		//TODO peut-êre faire un UART handler
 		//Traitement octet reçu par le UART
-		if(!(UART0_FR_R & UART_FR_RXFE)){
+		/*if(!(UART0_FR_R & UART_FR_RXFE)){
 			if(receive_buffer.write < receive_buffer.read){
 				receive_buffer.buffer[receive_buffer.write%BUFFER_LEN] = UART0_DR_R;
 				receive_buffer.write++;
 			}
-		}
+		}*/
 		//Traitement octet transmis pas UART
-		if(!(UART0_FR_R & UART_FR_TXFF)){
+		/*if(!(UART0_FR_R & UART_FR_TXFF)){
 			if(send_buffer.read < send_buffer.write){
 				UART0_DR_R = send_buffer.buffer[send_buffer.read%BUFFER_LEN];
 				send_buffer.read++;
 			}
-		}
+		}*/
 	}
 }
