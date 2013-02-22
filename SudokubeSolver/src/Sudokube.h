@@ -32,6 +32,7 @@ public:
 	bool removePossibilitiesFromNakedPairs(int,int,int);
 	bool removePossibilitiesFromHiddenPairs();
 	bool removePossibilitiesFromPointingPairs();
+	bool removePossibilitiesFromBoxLineReduction();
 
 	void print();
 

@@ -41,6 +41,10 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 		sudokube.print();
 		solve(sudokube);
 		return;
+	}else if(boxLineReduction(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
 	}else {
 		cout << "can't solve" << endl;
 	}
@@ -102,4 +106,9 @@ bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
 bool SudokubeSolver::pointingPairs(Sudokube& sudokube) {
 	cout << "pointing pairs" << endl;
 	return sudokube.removePossibilitiesFromPointingPairs();
+}
+
+bool SudokubeSolver::boxLineReduction(Sudokube& sudokube) {
+	cout << "box line reduction" << endl;
+	return sudokube.removePossibilitiesFromBoxLineReduction();
 }

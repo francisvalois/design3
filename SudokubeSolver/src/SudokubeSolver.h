@@ -24,6 +24,7 @@ public:
 	bool nakedPairs(Sudokube&);
 	bool hiddenPairs(Sudokube&);
 	bool pointingPairs(Sudokube&);
+	bool boxLineReduction(Sudokube&);
 
 private:
 	Sudokube sudokube;

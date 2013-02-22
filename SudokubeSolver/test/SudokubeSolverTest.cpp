@@ -39,12 +39,12 @@ namespace {
 	  sudokube.setCaseValue(3,4,3,3);
 
 	  //	  sudokube.setCaseValue(1,1,1,5);
-	  	  sudokube.setCaseValue(1,2,1,1);
+//	  	  sudokube.setCaseValue(1,2,1,1);
 	  //	  sudokube.setCaseValue(1,2,2,7);
 	  //	  sudokube.setCaseValue(1,2,3,3);
 	  //	  sudokube.setCaseValue(1,2,4,4);
 	  //	  sudokube.setCaseValue(1,3,1,8);
-	  	  sudokube.setCaseValue(1,3,2,3);
+//	  	  sudokube.setCaseValue(1,3,2,3);
 	  //	  sudokube.setCaseValue(1,3,3,1);
 	  //	  sudokube.setCaseValue(1,3,4,6);
 	  //	  sudokube.setCaseValue(1,4,2,2);
