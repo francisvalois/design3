@@ -23,9 +23,10 @@ public:
 
 	NumberReader();
 	virtual ~NumberReader();
-	int searchANumber(cv::Mat image);
+	int identifyNumber(cv::Mat image);
 
 private:
+
 	CvMat* trainData;
 	CvMat* trainClasses;
 	cv::KNearest knearest;

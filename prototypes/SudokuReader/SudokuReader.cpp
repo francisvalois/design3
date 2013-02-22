@@ -105,7 +105,6 @@ void SudokuReader::extractNumbers(Mat & src) {
 
 	SquarePair redSquarePair = getRedSquarePair(srcHSV);
 	squaresPair[squaresPair.size() - 1] = redSquarePair;
-
 	vector<vector<SquarePair> > orderedSquaresPair = getOrderedSquaresPair(squaresPair, frameCroppedGray.cols);
 
 	for (int i = 0; i < 8; i++) {
@@ -122,7 +121,7 @@ void SudokuReader::extractNumbers(Mat & src) {
 			bool foundPossibleNumber = preProcessNumber(squareMasked, number, NUMBER_WIDTH, NUMBER_HEIGHT, squareInversedMask);
 
 			if (foundPossibleNumber == true) {
-				int numberFound = numberReader.searchANumber(number);
+				int numberFound = numberReader.identifyNumber(number);
 				cout << "Found : " << numberFound << endl;
 				//sprintf(filename, "%s/number/%d_%d.png", OUTPUT_PATH, sudocubeNo, squareNo + 1);
 				//saveImage(number, filename);
@@ -260,8 +259,9 @@ vector<vector<SquarePair> > SudokuReader::getOrderedSquaresPair(vector<SquarePai
 	int actualXColumn = 0;
 	vector<vector<SquarePair> > colonnesX(8);
 	vector<SquarePair>::iterator it;
-	for (it = squaresPair.begin(); it != squaresPair.end(); ++it) {
+	for (it = squaresPair.begin(); it != squaresPair.end() && actualXColumn < 8; ++it) {
 		colonnesX[actualXColumn].push_back(*it);
+
 		if ((it + 1) != squaresPair.end()) {
 			if ((it->rect.x + dx) < (it + 1)->rect.x) {
 				actualXColumn++;
@@ -279,10 +279,16 @@ vector<vector<SquarePair> > SudokuReader::getOrderedSquaresPair(vector<SquarePai
 
 void SudokuReader::testAllSudocubes() {
 	char filename[255];
-	for (int i = 1; i <= 3; i++) { //Il y en as 42...
+	for (int i = 1; i <= 42; i++) { //Il y en as 42...
+		double t = (double)getTickCount();
+
+
 		sprintf(filename, "%s%d.png", PATH_SUDOCUBES, i);
 		Mat sudocube = imread(filename);
 		extractNumbers(sudocube);
+
+		t = ((double)getTickCount() - t)/getTickFrequency();
+		cout << "Times passed in seconds: " << t << endl;
 	}
 
 }

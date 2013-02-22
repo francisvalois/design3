@@ -4,6 +4,8 @@ using namespace cv;
 using namespace std;
 
 NumberReader::NumberReader() {
+	double t = (double)getTickCount();
+
 	trainData = cvCreateMat(CLASSES * TRAIN_SAMPLES, NUMBER_IMAGE_SIZE, CV_32FC1);
 	trainClasses = cvCreateMat(CLASSES * TRAIN_SAMPLES, 1, CV_32FC1);
 	learnFromImages(trainData, trainClasses);
@@ -72,7 +74,7 @@ bool NumberReader::isTrainedDataValid() {
 	return isValidData;
 }
 
-int NumberReader::searchANumber(Mat src) {
+int NumberReader::identifyNumber(Mat src) {
 	int number = -1;
 
 	CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
