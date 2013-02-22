@@ -16,6 +16,7 @@ using namespace std;
 class Case {
 public:
 	Case();
+	Case(int,int,int);
 	virtual ~Case();
 
 	int numberOfPossibilitiesRemaining();
@@ -25,6 +26,9 @@ public:
 	bool isSolved();
 	bool contains(int);
 	int getValue();
+	int i;
+	int j;
+	int k;
 
 private:
 	vector<int> possibilities;

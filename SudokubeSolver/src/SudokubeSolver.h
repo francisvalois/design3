@@ -21,6 +21,8 @@ public:
 	//STRATEGIES
 	bool lastRemainingCellInARegion(Sudokube&);
 	bool simpleConstraintPropagation(Sudokube&);
+	bool nakedPairs(Sudokube&);
+	bool hiddenPairs(Sudokube&);
 
 private:
 	Sudokube sudokube;

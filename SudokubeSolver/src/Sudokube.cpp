@@ -15,7 +15,7 @@ Sudokube::Sudokube() {
 	for(int i = 0; i < CUBE_FACES; i++) {
 		for(int j = 0; j < CUBE_FACE_HEIGHT; j++) {
 			for(int k = 0; k < CUBE_FACE_LENGTH; k++) {
-				container[i][j][k] = new Case();
+				container[i][j][k] = new Case(i+1,j+1,k+1);
 			}
 		}
 	}
@@ -156,6 +156,160 @@ void Sudokube::removePossibilitiesFromConstraint(int i, int j, int k) {
 	}
 }
 
+bool Sudokube::removePossibilitiesFromNakedPairs(int i, int j, int k) {
+	if(indexesOk(i,j,k)) {
+		if(container[i-1][j-1][k-1]->numberOfPossibilitiesRemaining() == 2) {
+			int possibility1 = container[i-1][j-1][k-1]->getPossibilities()[0];
+			int possibility2 = container[i-1][j-1][k-1]->getPossibilities()[1];
+			int nakedPair = 0;
+
+			vector<Case*> sameColumnCases = getSameColumnOfCase(i,j,k);
+			for(unsigned int x = 0; x < sameColumnCases.size(); x++) {
+				if(		sameColumnCases[x]->numberOfPossibilitiesRemaining() == 2 &&
+						sameColumnCases[x]->contains(possibility1) &&
+						sameColumnCases[x]->contains(possibility2)) {
+					nakedPair++;
+				}
+				if(nakedPair == 2) {
+					for(unsigned int y = 0; y < sameColumnCases.size(); y++) {
+						if(		sameColumnCases[y]->numberOfPossibilitiesRemaining() != 2 ||
+								!sameColumnCases[y]->contains(possibility1) ||
+								!sameColumnCases[y]->contains(possibility2)) {
+							int possibilitiesRemaining = sameColumnCases[y]->numberOfPossibilitiesRemaining();
+							sameColumnCases[y]->removePossibility(possibility1);
+							sameColumnCases[y]->removePossibility(possibility2);
+							if (possibilitiesRemaining > sameColumnCases[y]->numberOfPossibilitiesRemaining()) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			nakedPair = 0;
+			vector<Case*> sameLineCases = getSameLineOfCase(i,j,k);
+			for(unsigned int x = 0; x < sameLineCases.size(); x++) {
+				int nakedPair = 0;
+				if(		sameLineCases[x]->numberOfPossibilitiesRemaining() == 2 &&
+						sameLineCases[x]->contains(possibility1) &&
+						sameLineCases[x]->contains(possibility2)) {
+					nakedPair++;
+				}
+				if(nakedPair == 2) {
+					for(unsigned int y = 0; y < sameLineCases.size(); y++) {
+						if(		sameLineCases[y]->numberOfPossibilitiesRemaining() != 2 ||
+								!sameLineCases[y]->contains(possibility1) ||
+								!sameLineCases[y]->contains(possibility2)) {
+							int possibilitiesRemaining = sameLineCases[y]->numberOfPossibilitiesRemaining();
+							sameLineCases[y]->removePossibility(possibility1);
+							sameLineCases[y]->removePossibility(possibility2);
+							if (possibilitiesRemaining > sameLineCases[y]->numberOfPossibilitiesRemaining()) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+			nakedPair = 0;
+			vector<Case*> sameRegionCases = getSameRegionOfCase(i,j,k);
+			for(unsigned int x = 0; x < sameRegionCases.size(); x++) {
+				int nakedPair = 0;
+				if(		sameRegionCases[x]->numberOfPossibilitiesRemaining() == 2 &&
+						sameRegionCases[x]->contains(possibility1) &&
+						sameRegionCases[x]->contains(possibility2)) {
+					nakedPair++;
+				}
+				if(nakedPair == 2) {
+					for(unsigned int y = 0; y < sameRegionCases.size(); y++) {
+						if(		sameRegionCases[y]->numberOfPossibilitiesRemaining() != 2 ||
+								!sameRegionCases[y]->contains(possibility1) ||
+								!sameRegionCases[y]->contains(possibility2)) {
+							int possibilitiesRemaining = sameRegionCases[y]->numberOfPossibilitiesRemaining();
+							sameRegionCases[y]->removePossibility(possibility1);
+							sameRegionCases[y]->removePossibility(possibility2);
+							if (possibilitiesRemaining > sameRegionCases[y]->numberOfPossibilitiesRemaining()) {
+								return true;
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+	return false;
+}
+
+bool Sudokube::removePossibilitiesFromHiddenPairs() {
+
+	vector<vector<Case*> > allColumns;
+	allColumns.push_back(getSameLineOfCase(1,1,1));
+	allColumns.push_back(getSameLineOfCase(1,1,2));
+	allColumns.push_back(getSameLineOfCase(1,1,3));
+	allColumns.push_back(getSameLineOfCase(1,1,4));
+	allColumns.push_back(getSameColumnOfCase(2,1,1));
+	allColumns.push_back(getSameColumnOfCase(2,2,1));
+	allColumns.push_back(getSameColumnOfCase(2,3,1));
+	allColumns.push_back(getSameColumnOfCase(2,4,1));
+	allColumns.push_back(getSameColumnOfCase(1,1,1));
+	allColumns.push_back(getSameColumnOfCase(1,2,1));
+	allColumns.push_back(getSameColumnOfCase(1,3,1));
+	allColumns.push_back(getSameColumnOfCase(1,4,1));
+
+
+	for(unsigned int a = 0; a < allColumns.size(); a++) {
+		vector<Case*> column = allColumns[a];
+		int value1;
+
+		for(int m = 1; m <= 8; m++) {
+			vector<int> index;
+			for(unsigned int n = 0; n < column.size(); n++) {
+				if(column[n]->contains(m)) {
+					index.push_back(n);
+				}
+			}
+			if(index.size() == 2) {
+				value1 = m;
+				Case* case1 = column[index[0]];
+				Case* case2 = column[index[1]];
+				vector<int> possibilities = case1->getPossibilities();
+				bool isHiddenPair = false;
+
+				for(unsigned int p = 0; p < possibilities.size(); p++) {
+					if(possibilities[p] != value1 && case2->contains(possibilities[p])) {
+						isHiddenPair = true;
+						for(int q = 0; q < 8; q++) {
+							if(q!= index[0] && q != index[1] && column[q]->contains(possibilities[p])) {
+								isHiddenPair = false;
+								break;
+							}
+						}
+						if(isHiddenPair) {
+							int case1PossibilitiesRemaining = case1->numberOfPossibilitiesRemaining();
+							int case2PossibilitiesRemaining = case2->numberOfPossibilitiesRemaining();
+
+							for(int r = 1; r <= 8; r++) {
+								if(r!= value1 && r != possibilities[p]) {
+									case1->removePossibility(r);
+									case2->removePossibility(r);
+								}
+							}
+							if (case1PossibilitiesRemaining > case1->numberOfPossibilitiesRemaining() ||
+									case2PossibilitiesRemaining > case2->numberOfPossibilitiesRemaining()) {
+								vector<int> test = case1->getPossibilities();
+								return true;
+							}
+						}
+					}
+				}
+
+			}
+		}
+	}
+	return false;
+}
+
 vector<Case*> Sudokube::getSameLineOfCase(int i, int j, int k) {
 	vector<Case*> sameLineCases;
 
@@ -215,25 +369,24 @@ vector<Case*> Sudokube::getSameColumnOfCase(int i, int j, int k) {
 
 vector<Case*> Sudokube::getSameRegionOfCase(int i, int j, int k) {
 	vector<Case*> sameRegionCases;
-	int value = container[i-1][j-1][k-1]->getValue();
 	if(j <= 2) {
-		container[i-1][0][0]->removePossibility(value);
-		container[i-1][0][1]->removePossibility(value);
-		container[i-1][0][2]->removePossibility(value);
-		container[i-1][0][3]->removePossibility(value);
-		container[i-1][1][0]->removePossibility(value);
-		container[i-1][1][1]->removePossibility(value);
-		container[i-1][1][2]->removePossibility(value);
-		container[i-1][1][3]->removePossibility(value);
+		sameRegionCases.push_back(container[i-1][0][0]);
+		sameRegionCases.push_back(container[i-1][0][1]);
+		sameRegionCases.push_back(container[i-1][0][2]);
+		sameRegionCases.push_back(container[i-1][0][3]);
+		sameRegionCases.push_back(container[i-1][1][0]);
+		sameRegionCases.push_back(container[i-1][1][1]);
+		sameRegionCases.push_back(container[i-1][1][2]);
+		sameRegionCases.push_back(container[i-1][1][3]);
 	}else {
-		container[i-1][2][0]->removePossibility(value);
-		container[i-1][2][1]->removePossibility(value);
-		container[i-1][2][2]->removePossibility(value);
-		container[i-1][2][3]->removePossibility(value);
-		container[i-1][3][0]->removePossibility(value);
-		container[i-1][3][1]->removePossibility(value);
-		container[i-1][3][2]->removePossibility(value);
-		container[i-1][3][3]->removePossibility(value);
+		sameRegionCases.push_back(container[i-1][2][0]);
+		sameRegionCases.push_back(container[i-1][2][1]);
+		sameRegionCases.push_back(container[i-1][2][2]);
+		sameRegionCases.push_back(container[i-1][2][3]);
+		sameRegionCases.push_back(container[i-1][3][0]);
+		sameRegionCases.push_back(container[i-1][3][1]);
+		sameRegionCases.push_back(container[i-1][3][2]);
+		sameRegionCases.push_back(container[i-1][3][3]);
 	}
 	return sameRegionCases;
 }

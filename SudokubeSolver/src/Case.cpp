@@ -10,10 +10,21 @@
 
 
 Case::Case() {
-	for(int i = 1; i <= 8; i++) {
-		possibilities.push_back(i);
+	for(int x = 1; x <= 8; x++) {
+		possibilities.push_back(x);
 	}
+	i = 0;
+	j = 0;
+	k = 0;
+}
 
+Case::Case(int ii, int jj, int kk) {
+	for(int x = 1; x <= 8; x++) {
+		possibilities.push_back(x);
+	}
+	i = ii;
+	j = jj;
+	k = kk;
 }
 Case::~Case() {
 

@@ -91,4 +91,7 @@ namespace {
 		ASSERT_FALSE(sudokube->isSolved());
   }
 
+  TEST_F(SudokubeTest, canFindNakedPairs) {
+
+  }
 }
