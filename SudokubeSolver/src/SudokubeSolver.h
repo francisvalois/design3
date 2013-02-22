@@ -23,6 +23,7 @@ public:
 	bool simpleConstraintPropagation(Sudokube&);
 	bool nakedPairs(Sudokube&);
 	bool hiddenPairs(Sudokube&);
+	bool pointingPairs(Sudokube&);
 
 private:
 	Sudokube sudokube;

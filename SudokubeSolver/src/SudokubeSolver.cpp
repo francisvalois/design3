@@ -22,22 +22,22 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 	}
 
 	if(simpleConstraintPropagation(sudokube)) {
-		cout << "simple constraint propagation" << endl;
 		sudokube.print();
 		solve(sudokube);
 		return;
 	}else if(lastRemainingCellInARegion(sudokube)) {
-		cout << "last remaining cell in a region" << endl;
 		sudokube.print();
 		solve(sudokube);
 		return;
 	}else if(nakedPairs(sudokube)) {
-		cout << "naked pairs" << endl;
 		sudokube.print();
 		solve(sudokube);
 		return;
 	}else if(hiddenPairs(sudokube)) {
-		cout << "hidden pairs" << endl;
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(pointingPairs(sudokube)) {
 		sudokube.print();
 		solve(sudokube);
 		return;
@@ -49,6 +49,7 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 }
 
 bool SudokubeSolver::lastRemainingCellInARegion(Sudokube& sudokube) {
+	cout << "last remaining cell in a region" << endl;
 	for(int i = 1; i <= 3; i++) {
 		for(int j = 1; j <= 4; j++) {
 			for(int k = 1; k <= 4; k++) {
@@ -62,6 +63,7 @@ bool SudokubeSolver::lastRemainingCellInARegion(Sudokube& sudokube) {
 }
 
 bool SudokubeSolver::simpleConstraintPropagation(Sudokube& sudokube) {
+	cout << "simple constraint propagation" << endl;
 	int remainingCellsToBeSolved = sudokube.remainingCellsToBeSolved();
 	for(int i = 1; i <= 3; i++) {
 		for(int j = 1; j <= 4; j++) {
@@ -79,6 +81,7 @@ bool SudokubeSolver::simpleConstraintPropagation(Sudokube& sudokube) {
 }
 
 bool SudokubeSolver::nakedPairs(Sudokube& sudokube) {
+	cout << "naked pairs" << endl;
 		for(int i = 1; i <= 3; i++) {
 			for(int j = 1; j <= 4; j++) {
 				for(int k = 1; k <= 4; k++) {
@@ -92,5 +95,11 @@ bool SudokubeSolver::nakedPairs(Sudokube& sudokube) {
 }
 
 bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
+	cout << "hidden pairs" << endl;
 		return sudokube.removePossibilitiesFromHiddenPairs();
+}
+
+bool SudokubeSolver::pointingPairs(Sudokube& sudokube) {
+	cout << "pointing pairs" << endl;
+	return sudokube.removePossibilitiesFromPointingPairs();
 }

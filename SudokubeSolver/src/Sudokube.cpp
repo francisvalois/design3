@@ -310,6 +310,73 @@ bool Sudokube::removePossibilitiesFromHiddenPairs() {
 	return false;
 }
 
+bool Sudokube::removePossibilitiesFromPointingPairs() {
+	vector<vector<Case*> > allRegions;
+	allRegions.push_back(getSameRegionOfCase(1,1,1));
+	allRegions.push_back(getSameRegionOfCase(1,3,1));
+	allRegions.push_back(getSameRegionOfCase(2,1,1));
+	allRegions.push_back(getSameRegionOfCase(2,3,1));
+	allRegions.push_back(getSameRegionOfCase(3,1,1));
+	allRegions.push_back(getSameRegionOfCase(3,3,1));
+
+	for(unsigned int a = 0; a < allRegions.size(); a++) {
+		vector<Case*> region = allRegions[a];
+		int value;
+
+		for(int m = 1; m <= 8; m++) {
+			vector<int> index;
+			for(unsigned int n = 0; n < region.size(); n++) {
+				if(region[n]->contains(m)) {
+					index.push_back(n);
+				}
+			}
+			if(index.size() == 2) {
+				value = m;
+				Case* case1 = region[index[0]];
+				Case* case2 = region[index[1]];
+				bool hasRemovedPossibility = false;
+
+
+				if(case1->j == case2->j) {
+					vector<Case*> sameColumn = getSameColumnOfCase(case1->i, case1->j, case1->k);
+					for(unsigned int n = 0; n < sameColumn.size(); n++) {
+						if(		!(sameColumn[n]->i == case1->i &&
+								sameColumn[n]->j == case1->j &&
+								sameColumn[n]->k == case1->k) &&
+								!(sameColumn[n]->i == case2->i &&
+								sameColumn[n]->j == case2->j &&
+								sameColumn[n]->k == case2->k)) {
+							if(sameColumn[n]->contains(value)) {
+								sameColumn[n]->removePossibility(value);
+								hasRemovedPossibility = true;
+							}
+						}
+					}
+				}else if(case1->k == case2->k) {
+					vector<Case*> sameLine = getSameColumnOfCase(case1->i, case1->j, case1->k);
+					for(unsigned int n = 0; n < sameLine.size(); n++) {
+						if(		!(sameLine[n]->i == case1->i &&
+								sameLine[n]->j == case1->j &&
+								sameLine[n]->k == case1->k) &&
+								!(sameLine[n]->i == case2->i &&
+								sameLine[n]->j == case2->j &&
+								sameLine[n]->k == case2->k)) {
+							if(sameLine[n]->contains(value)) {
+								sameLine[n]->removePossibility(value);
+								hasRemovedPossibility = true;
+							}
+						}
+					}
+				}
+				if (hasRemovedPossibility) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 vector<Case*> Sudokube::getSameLineOfCase(int i, int j, int k) {
 	vector<Case*> sameLineCases;
 

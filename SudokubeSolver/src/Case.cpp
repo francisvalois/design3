@@ -60,9 +60,10 @@ bool Case::contains(int value) {
 
 void Case::removePossibility(int value) {
 	if(value >= 1 && value <= 8 && possibilities.size() > 1) {
-		for(unsigned int i = 0; i < possibilities.size(); i++) {
-			if (possibilities[i] == value) {
-				possibilities.erase(possibilities.begin() + i);
+		for(unsigned int x = 0; x < possibilities.size(); x++) {
+			if (possibilities[x] == value) {
+				possibilities.erase(possibilities.begin() + x);
+				cout << "   Case (" << i << ","<< j << ","<< k<< ") possibility " << value << " removed" << endl;
 			}
 		}
 	}
