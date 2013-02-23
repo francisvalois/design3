@@ -37,11 +37,15 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 		sudokube.print();
 		solve(sudokube);
 		return;
+	}else if(hiddenTriples(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
 	}else if(pointingPairs(sudokube)) {
 		sudokube.print();
 		solve(sudokube);
 		return;
-	}else if(boxLineReduction(sudokube)) {
+	}else if(boxLineReductionPair(sudokube)) {
 		sudokube.print();
 		solve(sudokube);
 		return;
@@ -103,12 +107,27 @@ bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
 		return sudokube.removePossibilitiesFromHiddenPairs();
 }
 
+bool SudokubeSolver::hiddenTriples(Sudokube& sudokube) {
+	cout << "hidden triples" << endl;
+		return sudokube.removePossibilitiesFromHiddenTriples();
+}
+
 bool SudokubeSolver::pointingPairs(Sudokube& sudokube) {
 	cout << "pointing pairs" << endl;
 	return sudokube.removePossibilitiesFromPointingPairs();
 }
 
-bool SudokubeSolver::boxLineReduction(Sudokube& sudokube) {
+bool SudokubeSolver::pointingTriples(Sudokube& sudokube) {
+	cout << "pointing triples" << endl;
+	return sudokube.removePossibilitiesFromPointingTriples();
+}
+
+bool SudokubeSolver::boxLineReductionPair(Sudokube& sudokube) {
 	cout << "box line reduction" << endl;
-	return sudokube.removePossibilitiesFromBoxLineReduction();
+	return sudokube.removePossibilitiesFromBoxLineReductionPair();
+}
+
+bool SudokubeSolver::xWing(Sudokube& sudokube) {
+	cout << "x wing" << endl;
+	return sudokube.removePossibilitiesFromXWing();
 }

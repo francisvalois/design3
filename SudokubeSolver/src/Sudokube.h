@@ -31,8 +31,11 @@ public:
 	bool checkLastRemainingCellInARegion(int,int,int);
 	bool removePossibilitiesFromNakedPairs(int,int,int);
 	bool removePossibilitiesFromHiddenPairs();
+	bool removePossibilitiesFromHiddenTriples();
 	bool removePossibilitiesFromPointingPairs();
-	bool removePossibilitiesFromBoxLineReduction();
+	bool removePossibilitiesFromPointingTriples();
+	bool removePossibilitiesFromBoxLineReductionPair();
+	bool removePossibilitiesFromXWing();
 
 	void print();
 
