@@ -13,7 +13,7 @@
 #define NUMBER_WIDTH 25
 #define NUMBER_HEIGHT 30
 #define NUMBER_IMAGE_SIZE NUMBER_WIDTH * NUMBER_HEIGHT
-#define TRAIN_SAMPLES 20
+#define TRAIN_SAMPLES 40
 #define CLASSES 8
 
 class NumberReader {
