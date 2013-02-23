@@ -37,10 +37,10 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 		sudokube.print();
 		solve(sudokube);
 		return;
-//	}else if(hiddenTriples(sudokube)) {
-//		sudokube.print();
-//		solve(sudokube);
-//		return;
+	}else if(hiddenTriples(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
 	}else if(pointingPairs(sudokube)) {
 		sudokube.print();
 		solve(sudokube);

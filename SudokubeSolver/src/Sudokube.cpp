@@ -343,7 +343,7 @@ bool Sudokube::removePossibilitiesFromHiddenTriples() {
 
 	for(unsigned int a = 0; a < allColumns.size(); a++) {
 		vector<Case*> column = allColumns[a];
-		int value1;
+		vector<vector<int> > hiddenTriplePossibilities;
 
 		for(int m = 1; m <= 8; m++) {
 			vector<int> index;
@@ -353,41 +353,45 @@ bool Sudokube::removePossibilitiesFromHiddenTriples() {
 				}
 			}
 			if(index.size() == 3) {
-				value1 = m;
-				Case* case1 = column[index[0]];
-				Case* case2 = column[index[1]];
-				Case* case3 = column[index[2]];
+				vector<int> hiddenTriplePossibility;
+				hiddenTriplePossibility.push_back(index[0]);
+				hiddenTriplePossibility.push_back(index[1]);
+				hiddenTriplePossibility.push_back(index[2]);
+				hiddenTriplePossibility.push_back(m);
+				hiddenTriplePossibilities.push_back(hiddenTriplePossibility);
+			}
+		}
+		if(hiddenTriplePossibilities.size() >= 3) {
+			int hiddenTripleCount;
+			for(unsigned int p = 0; p < hiddenTriplePossibilities.size(); p++) {
+				hiddenTripleCount = 1;
+				vector<int> values;
+				values.push_back(hiddenTriplePossibilities[p][3]);
+				for(unsigned int q = 0; q < hiddenTriplePossibilities.size(); q++) {
+					if(p != q &&
+							hiddenTriplePossibilities[p][0] == hiddenTriplePossibilities[q][0] &&
+							hiddenTriplePossibilities[p][1] == hiddenTriplePossibilities[q][1] &&
+							hiddenTriplePossibilities[p][2] == hiddenTriplePossibilities[q][2]) {
+						hiddenTripleCount++;
+						values.push_back(hiddenTriplePossibilities[q][3]);
+					}
+				}
+				if(hiddenTripleCount == 3) {
+					int case1PossibilitiesCount = column[hiddenTriplePossibilities[p][0]]->numberOfPossibilitiesRemaining();
+					int case2PossibilitiesCount = column[hiddenTriplePossibilities[p][1]]->numberOfPossibilitiesRemaining();
+					int case3PossibilitiesCount = column[hiddenTriplePossibilities[p][2]]->numberOfPossibilitiesRemaining();
 
-				vector<int> possibilities = case1->getPossibilities();
-				bool isHiddenPair = false;
-
-				for(unsigned int p = 0; p < possibilities.size(); p++) {
-					if(possibilities[p] != value1 && case2->contains(possibilities[p]) && case3->contains(possibilities[p])) {
-						isHiddenPair = true;
-						for(int q = 0; q < 8; q++) {
-							if(q!= index[0] && q != index[1] && q != index[2] && column[q]->contains(possibilities[p])) {
-								isHiddenPair = false;
-								break;
-							}
+					for(int m = 1; m <= 8; m++) {
+						if(m != values[0] && m != values[1] && m != values[2]) {
+							column[hiddenTriplePossibilities[p][0]]->removePossibility(m);
+							column[hiddenTriplePossibilities[p][1]]->removePossibility(m);
+							column[hiddenTriplePossibilities[p][2]]->removePossibility(m);
 						}
-						if(isHiddenPair) {
-							int case1PossibilitiesRemaining = case1->numberOfPossibilitiesRemaining();
-							int case2PossibilitiesRemaining = case2->numberOfPossibilitiesRemaining();
-							int case3PossibilitiesRemaining = case3->numberOfPossibilitiesRemaining();
-
-							for(int r = 1; r <= 8; r++) {
-								if(r!= value1 && r != possibilities[p]) {
-									case1->removePossibility(r);
-									case2->removePossibility(r);
-									case3->removePossibility(r);
-								}
-							}
-							if (case1PossibilitiesRemaining > case1->numberOfPossibilitiesRemaining() ||
-									case2PossibilitiesRemaining > case2->numberOfPossibilitiesRemaining() ||
-									case3PossibilitiesRemaining > case3->numberOfPossibilitiesRemaining()) {
-								return true;
-							}
-						}
+					}
+					if(		case1PossibilitiesCount > column[hiddenTriplePossibilities[p][0]]->numberOfPossibilitiesRemaining() &&
+							case2PossibilitiesCount > column[hiddenTriplePossibilities[p][1]]->numberOfPossibilitiesRemaining() &&
+							case3PossibilitiesCount > column[hiddenTriplePossibilities[p][2]]->numberOfPossibilitiesRemaining()) {
+						return true;
 					}
 				}
 
@@ -395,7 +399,6 @@ bool Sudokube::removePossibilitiesFromHiddenTriples() {
 		}
 	}
 	return false;
-
 }
 
 bool Sudokube::removePossibilitiesFromPointingPairs() {
@@ -667,32 +670,9 @@ bool Sudokube::removePossibilitiesFromXWing() {
 	allColumns.push_back(getSameLineOfCase(1,1,2));
 	allColumns.push_back(getSameLineOfCase(1,1,3));
 	allColumns.push_back(getSameLineOfCase(1,1,4));
-	allColumns.push_back(getSameColumnOfCase(2,1,1));
-	allColumns.push_back(getSameColumnOfCase(2,2,1));
-	allColumns.push_back(getSameColumnOfCase(2,3,1));
-	allColumns.push_back(getSameColumnOfCase(2,4,1));
 
 
-	for(unsigned int a = 0; a < allColumns.size(); a++) {
-		vector<Case*> column = allColumns[a];
-		int value1;
-		vector<vector<Case*> > possibleColumns;
-		vector<vector<int> > possibleIndexes;
-
-		for(int m = 1; m <= 8; m++) {
-			vector<int> index;
-			for(unsigned int n = 0; n < column.size(); n++) {
-				if(column[n]->contains(m)) {
-					index.push_back(n);
-				}
-			}
-			if(index.size() == 2) {
-				possibleColumns.push_back(column);
-				possibleIndexes.push_back(index);
-			}
-		}
-	}
-	return false;
+return false;
 }
 
 vector<Case*> Sudokube::getSameLineOfCase(int i, int j, int k) {
