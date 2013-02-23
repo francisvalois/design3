@@ -36,6 +36,7 @@ public:
 	virtual ~SudokuReader();
 	void testOneSudocube(int sudocubeNo);
 	void testAllSudocubes();
+	void extractNumbers(cv::Mat & src);
 
 private:
 	NumberReader numberReader;
@@ -44,6 +45,8 @@ private:
 	cv::Scalar white;
 	cv::Scalar black;
 	int sudocubeNo;
+	char filename[255];
+
 
 	cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
 	void removeInvalidSquaresPair(std::vector<SquarePair>& squaresPair);
@@ -52,7 +55,6 @@ private:
 	SquarePair getRedSquarePair(const cv::Mat& srcHSV);
 	std::vector<std::vector<SquarePair> > getOrderedSquaresPair(std::vector<SquarePair> squaresRect, const int frameWidth);
 	bool preProcessNumber(cv::Mat &inImage, cv::Mat &outImage, int sizex, int sizey, cv::Mat &squareMask, cv::Mat &blueLinesMask);
-	void extractNumbers(cv::Mat & src);
 
 	void applyErode(cv::Mat & toErode, int size, int morphShape);
 	void applyDilate(cv::Mat & toDilate, int size, int morphShape);

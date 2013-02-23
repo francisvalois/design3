@@ -4,8 +4,6 @@ using namespace cv;
 using namespace std;
 
 NumberReader::NumberReader() {
-	double t = (double)getTickCount();
-
 	trainData = cvCreateMat(CLASSES * TRAIN_SAMPLES, NUMBER_IMAGE_SIZE, CV_32FC1);
 	trainClasses = cvCreateMat(CLASSES * TRAIN_SAMPLES, 1, CV_32FC1);
 	learnFromImages(trainData, trainClasses);

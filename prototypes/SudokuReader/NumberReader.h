@@ -16,7 +16,6 @@
 #define TRAIN_SAMPLES 20
 #define CLASSES 8
 
-
 class NumberReader {
 
 public:

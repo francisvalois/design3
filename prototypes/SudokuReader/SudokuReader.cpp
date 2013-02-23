@@ -83,8 +83,6 @@ bool SudokuReader::preProcessNumber(Mat &inImage, Mat &outImage, int sizex, int 
 }
 
 void SudokuReader::extractNumbers(Mat & src) {
-	char filename[255];
-
 	Mat srcGray;
 	cvtColor(src, srcGray, CV_BGR2GRAY);
 
@@ -92,11 +90,16 @@ void SudokuReader::extractNumbers(Mat & src) {
 	cvtColor(src, srcHSV, CV_BGR2HSV);
 
 	Rect frameRect = getFrameRect(srcHSV);
+	if(frameRect.area() == 0) { //TODO Gestion exception
+		cout << "Could not find the green frame" << endl;
+		return;
+	}
+
 	Mat frameCroppedGray = srcGray(frameRect) / 1.05; // Diminution de la luminosité de 5% //TODO Corriger sur la caméra direct
 	Mat blueLinesMask = getBlueLinesMask(srcHSV);
 	blueLinesMask = blueLinesMask(frameRect);
-	//sprintf(filename, "%s/frameCropped/%d.png", OUTPUT_PATH, sudocubeNo);
-	//saveImage(frameCroppedGray, filename);
+	sprintf(filename, "%s/frameCropped/%d.png", OUTPUT_PATH, sudocubeNo);
+	saveImage(frameCroppedGray, filename);
 
 	vector<SquarePair> squaresPair;
 	bool squaresAreExtracted = getSquaresPair(frameCroppedGray, squaresPair);
@@ -156,8 +159,8 @@ Rect SudokuReader::getFrameRect(Mat& srcHSV) {
 	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
 	applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
 	applyDilate(segmentedFrame, FRAME_DILATE_SIZE, MORPH_RECT);
-	//sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
-	//saveImage(segmentedFrame, filename);
+	sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
+	saveImage(segmentedFrame, filename);
 
 	vector<vector<Point> > frameContours;
 	vector<Vec4i> frameHierarchy;
@@ -190,11 +193,14 @@ Rect SudokuReader::getFrameRect(Mat& srcHSV) {
 bool SudokuReader::getSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair) {
 	bool isExtracted = false;
 
+	Mat thresholdedSudocube;
 	for (int erodeSize = 0; erodeSize <= 3 && isExtracted == false; erodeSize++) {
 		for (int thresh = SQUARE_THRESHOLD_MIN; thresh <= SQUARE_THRESHOLD_MAX && isExtracted == false; thresh++) {
 			Mat thresholdedSudocube;
 			threshold(srcGray, thresholdedSudocube, thresh, 500, THRESH_BINARY);
 			applyErode(thresholdedSudocube, erodeSize, MORPH_RECT);
+			sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
+				saveImage(thresholdedSudocube, filename);
 
 			vector<vector<Point> > squaresContours;
 			vector<Vec4i> squaresHierarchy;
@@ -315,9 +321,9 @@ void SudokuReader::testOneSudocube(int sudocubeNo) {
 	extractNumbers(sudocube);
 }
 
-int main(int argc, char** argv) {
+/*int main(int argc, char** argv) {
 	SudokuReader sudokuReader;
 	//sudokuReader.testOneSudocube(42);
 	sudokuReader.testAllSudocubes();
 	return 0;
-}
+}*/
