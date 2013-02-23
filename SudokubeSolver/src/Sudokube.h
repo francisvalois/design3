@@ -27,7 +27,7 @@ public:
 	void removePossibility(int,int,int,int);
 	vector<int> getPossibilities(int,int,int);
 
-	void removePossibilitiesFromConstraint(int,int,int);
+	bool removePossibilitiesFromConstraint(int,int,int);
 	bool checkLastRemainingCellInARegion(int,int,int);
 	bool removePossibilitiesFromNakedPairs(int,int,int);
 	bool removePossibilitiesFromHiddenPairs();
@@ -35,6 +35,7 @@ public:
 	bool removePossibilitiesFromPointingPairs();
 	bool removePossibilitiesFromPointingTriples();
 	bool removePossibilitiesFromBoxLineReductionPair();
+	bool removePossibilitiesFromBoxLineReductionTriple();
 	bool removePossibilitiesFromXWing();
 
 	void print();

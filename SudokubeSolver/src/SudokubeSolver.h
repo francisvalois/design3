@@ -27,6 +27,7 @@ public:
 	bool pointingPairs(Sudokube&);
 	bool pointingTriples(Sudokube&);
 	bool boxLineReductionPair(Sudokube&);
+	bool boxLineReductionTriple(Sudokube&);
 	bool xWing(Sudokube&);
 
 private:

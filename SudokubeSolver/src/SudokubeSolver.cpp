@@ -37,15 +37,23 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 		sudokube.print();
 		solve(sudokube);
 		return;
-	}else if(hiddenTriples(sudokube)) {
-		sudokube.print();
-		solve(sudokube);
-		return;
+//	}else if(hiddenTriples(sudokube)) {
+//		sudokube.print();
+//		solve(sudokube);
+//		return;
 	}else if(pointingPairs(sudokube)) {
 		sudokube.print();
 		solve(sudokube);
 		return;
+	}else if(pointingTriples(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
 	}else if(boxLineReductionPair(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(boxLineReductionTriple(sudokube)) {
 		sudokube.print();
 		solve(sudokube);
 		return;
@@ -72,20 +80,19 @@ bool SudokubeSolver::lastRemainingCellInARegion(Sudokube& sudokube) {
 
 bool SudokubeSolver::simpleConstraintPropagation(Sudokube& sudokube) {
 	cout << "simple constraint propagation" << endl;
-	int remainingCellsToBeSolved = sudokube.remainingCellsToBeSolved();
+	bool hasRemovedPossiblilties = false;
 	for(int i = 1; i <= 3; i++) {
 		for(int j = 1; j <= 4; j++) {
 			for(int k = 1; k <= 4; k++) {
 				if(sudokube.getCaseValue(i,j,k) != 0) {
-					sudokube.removePossibilitiesFromConstraint(i,j,k);
+					if(sudokube.removePossibilitiesFromConstraint(i,j,k)) {
+						hasRemovedPossiblilties = true;
+					}
 				}
 			}
 		}
 	}
-	if (remainingCellsToBeSolved > sudokube.remainingCellsToBeSolved()) {
-		return true;
-	}
-	return false;
+	return hasRemovedPossiblilties;
 }
 
 bool SudokubeSolver::nakedPairs(Sudokube& sudokube) {
@@ -123,8 +130,13 @@ bool SudokubeSolver::pointingTriples(Sudokube& sudokube) {
 }
 
 bool SudokubeSolver::boxLineReductionPair(Sudokube& sudokube) {
-	cout << "box line reduction" << endl;
+	cout << "box line reduction pair" << endl;
 	return sudokube.removePossibilitiesFromBoxLineReductionPair();
+}
+
+bool SudokubeSolver::boxLineReductionTriple(Sudokube& sudokube) {
+	cout << "box line reduction triple" << endl;
+	return sudokube.removePossibilitiesFromBoxLineReductionTriple();
 }
 
 bool SudokubeSolver::xWing(Sudokube& sudokube) {

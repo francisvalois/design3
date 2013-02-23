@@ -129,31 +129,45 @@ void Sudokube::print() {
 	}
 }
 
-void Sudokube::removePossibilitiesFromConstraint(int i, int j, int k) {
+bool Sudokube::removePossibilitiesFromConstraint(int i, int j, int k) {
+	bool hasRemovedPossibilities = false;
 	if(indexesOk(i,j,k) && container[i-1][j-1][k-1]->isSolved()) {
 		int value = container[i-1][j-1][k-1]->getValue();
 
 		vector<Case*> sameColumnCases = getSameColumnOfCase(i,j,k);
 		for(unsigned int x = 0; x < sameColumnCases.size(); x++) {
 			if(sameColumnCases[x]->contains(value)) {
+				int nbPossibilities = sameColumnCases[x]->numberOfPossibilitiesRemaining();
 				sameColumnCases[x]->removePossibility(value);
+				if(nbPossibilities > sameColumnCases[x]->numberOfPossibilitiesRemaining()) {
+					hasRemovedPossibilities = true;
+				}
 			}
 		}
 
 		vector<Case*> sameLineCases = getSameLineOfCase(i,j,k);
 		for(unsigned int x = 0; x < sameLineCases.size(); x++) {
 			if(sameLineCases[x]->contains(value)) {
+				int nbPossibilities = sameLineCases[x]->numberOfPossibilitiesRemaining();
 				sameLineCases[x]->removePossibility(value);
+				if(nbPossibilities > sameLineCases[x]->numberOfPossibilitiesRemaining()) {
+					hasRemovedPossibilities = true;
+				}
 			}
 		}
 
 		vector<Case*> sameRegionCases = getSameRegionOfCase(i,j,k);
 		for(unsigned int x = 0; x < sameRegionCases.size(); x++) {
 			if(sameRegionCases[x]->contains(value)) {
+				int nbPossibilities = sameRegionCases[x]->numberOfPossibilitiesRemaining();
 				sameRegionCases[x]->removePossibility(value);
+				if(nbPossibilities > sameRegionCases[x]->numberOfPossibilitiesRemaining()) {
+					hasRemovedPossibilities = true;
+				}
 			}
 		}
 	}
+	return hasRemovedPossibilities;
 }
 
 bool Sudokube::removePossibilitiesFromNakedPairs(int i, int j, int k) {
@@ -584,6 +598,69 @@ bool Sudokube::removePossibilitiesFromBoxLineReductionPair() {
 	return false;
 }
 
+bool Sudokube::removePossibilitiesFromBoxLineReductionTriple() {
+	vector<vector<Case*> > allLines;
+	allLines.push_back(getSameLineOfCase(1,1,4));
+	allLines.push_back(getSameLineOfCase(1,1,3));
+	allLines.push_back(getSameLineOfCase(1,1,2));
+	allLines.push_back(getSameLineOfCase(1,1,1));
+	allLines.push_back(getSameColumnOfCase(1,1,1));
+	allLines.push_back(getSameColumnOfCase(1,2,1));
+	allLines.push_back(getSameColumnOfCase(1,3,1));
+	allLines.push_back(getSameColumnOfCase(1,4,1));
+	allLines.push_back(getSameColumnOfCase(2,1,1));
+	allLines.push_back(getSameColumnOfCase(2,2,1));
+	allLines.push_back(getSameColumnOfCase(2,3,1));
+	allLines.push_back(getSameColumnOfCase(2,4,1));
+
+	for(unsigned int a = 0; a < allLines.size(); a++) {
+		vector<Case*> lines = allLines[a];
+		int value;
+
+		for(int m = 1; m <= 8; m++) {
+			vector<int> index;
+			for(unsigned int n = 0; n < lines.size(); n++) {
+				if(lines[n]->contains(m)) {
+					index.push_back(n);
+				}
+			}
+			if(index.size() == 3) {
+				value = m;
+				Case* case1 = lines[index[0]];
+				Case* case2 = lines[index[1]];
+				Case* case3 = lines[index[2]];
+				bool hasRemovedPossibility = false;
+
+
+				if((case1->i == case2->i && case1->i == case3->i) && ((case1->j <= 2 && case2->j <= 2 && case3->j <=2) ||
+						(case1->j > 2 && case2->j > 2 && case3->j >2))) {
+					vector<Case*> sameRegion = getSameRegionOfCase(case1->i, case1->j, case1->k);
+					for(unsigned int n = 0; n < sameRegion.size(); n++) {
+						if(		!(sameRegion[n]->i == case1->i &&
+								sameRegion[n]->j == case1->j &&
+								sameRegion[n]->k == case1->k) &&
+								!(sameRegion[n]->i == case2->i &&
+								sameRegion[n]->j == case2->j &&
+								sameRegion[n]->k == case2->k) &&
+								!(sameRegion[n]->i == case3->i &&
+								sameRegion[n]->j == case3->j &&
+								sameRegion[n]->k == case3->k)) {
+							if(sameRegion[n]->contains(value)) {
+								sameRegion[n]->removePossibility(value);
+								hasRemovedPossibility = true;
+							}
+						}
+					}
+				}
+				if (hasRemovedPossibility) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 bool Sudokube::removePossibilitiesFromXWing() {
 	vector<vector<Case*> > allColumns;
 	allColumns.push_back(getSameLineOfCase(1,1,1));
@@ -700,47 +777,48 @@ vector<Case*> Sudokube::getSameRegionOfCase(int i, int j, int k) {
 }
 
 bool Sudokube::checkLastRemainingCellInARegion(int i, int j, int k) {
-	if(indexesOk(i,j,k)) {
-		vector<int> possibilities = getPossibilities(i,j,k);
+	vector<vector<Case*> > allRegions;
+	allRegions.push_back(getSameLineOfCase(1,1,4));
+	allRegions.push_back(getSameLineOfCase(1,1,3));
+	allRegions.push_back(getSameLineOfCase(1,1,2));
+	allRegions.push_back(getSameLineOfCase(1,1,1));
+	allRegions.push_back(getSameColumnOfCase(1,1,1));
+	allRegions.push_back(getSameColumnOfCase(1,2,1));
+	allRegions.push_back(getSameColumnOfCase(1,3,1));
+	allRegions.push_back(getSameColumnOfCase(1,4,1));
+	allRegions.push_back(getSameColumnOfCase(2,1,1));
+	allRegions.push_back(getSameColumnOfCase(2,2,1));
+	allRegions.push_back(getSameColumnOfCase(2,3,1));
+	allRegions.push_back(getSameColumnOfCase(2,4,1));
+	allRegions.push_back(getSameRegionOfCase(1,1,1));
+	allRegions.push_back(getSameRegionOfCase(1,3,1));
+	allRegions.push_back(getSameRegionOfCase(2,1,1));
+	allRegions.push_back(getSameRegionOfCase(2,3,1));
+	allRegions.push_back(getSameRegionOfCase(3,1,1));
+	allRegions.push_back(getSameRegionOfCase(3,3,1));
 
-		for (unsigned int x = 0; x < possibilities.size(); x++) {
-			//COLUMN Should be extracted to a private method
-			vector<Case*> sameColumnCases = getSameColumnOfCase(i,j,k);
-			int possibilitiesInSameColumn = 0;
-			for(unsigned int y = 0; y < sameColumnCases.size(); y++) {
-				if(sameColumnCases[y]->contains(possibilities[x])) {
-					possibilitiesInSameColumn++;
+	for(unsigned int region = 0; region < allRegions.size(); region++) {
+		for(unsigned int caseInRegion = 0; caseInRegion < allRegions[region].size(); caseInRegion++) {
+			vector<int> possibilities = allRegions[region][caseInRegion]->getPossibilities();
+			for (unsigned int x = 0; x < possibilities.size(); x++) {
+				bool noOtherCaseHaveSamePossibility = true;
+				for(unsigned int caseToCompare = 0; caseToCompare < allRegions[region].size(); caseToCompare++) {
+					if(caseInRegion != caseToCompare && allRegions[region][caseToCompare]->contains(possibilities[x])) {
+						noOtherCaseHaveSamePossibility = false;
+						break;
+					}
+				}
+				if(noOtherCaseHaveSamePossibility) {
+					int nbPossibilities = allRegions[region][caseInRegion]->numberOfPossibilitiesRemaining();
+					allRegions[region][caseInRegion]->setValue(possibilities[x]);
+					if(nbPossibilities > allRegions[region][caseInRegion]->numberOfPossibilitiesRemaining()) {
+						return true;
+					}
 				}
 			}
-			if(possibilitiesInSameColumn == 1) {
-				container[i-1][j-1][k-1]->setValue(possibilities[x]);
-				return true;
-			}
-			//LINE Should be extracted to a private method
-			vector<Case*> sameLineCases = getSameLineOfCase(i,j,k);
-			int possibilitiesInSameLine = 0;
-			for(unsigned int y = 0; y < sameLineCases.size(); y++) {
-				if(sameLineCases[y]->contains(possibilities[x])) {
-					possibilitiesInSameLine++;
-				}
-			}
-			if(possibilitiesInSameLine == 1) {
-				container[i-1][j-1][k-1]->setValue(possibilities[x]);
-				return true;
-			}
-			//REGION Should be extracted to a private method
-			vector<Case*> sameRegionCases = getSameRegionOfCase(i,j,k);
-			int possibilitiesInSameRegion = 0;
-			for(unsigned int y = 0; y < sameRegionCases.size(); y++) {
-				if(sameRegionCases[y]->contains(possibilities[x])) {
-					possibilitiesInSameRegion++;
-				}
-			}
-			if(possibilitiesInSameRegion == 1) {
-				container[i-1][j-1][k-1]->setValue(possibilities[x]);
-				return true;
-			}
+
 		}
+
 	}
 	return false;
 }
