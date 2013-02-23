@@ -23,8 +23,12 @@ public:
 	bool simpleConstraintPropagation(Sudokube&);
 	bool nakedPairs(Sudokube&);
 	bool hiddenPairs(Sudokube&);
+	bool hiddenTriples(Sudokube&);
 	bool pointingPairs(Sudokube&);
-	bool boxLineReduction(Sudokube&);
+	bool pointingTriples(Sudokube&);
+	bool boxLineReductionPair(Sudokube&);
+	bool boxLineReductionTriple(Sudokube&);
+	bool xWing(Sudokube&);
 
 private:
 	Sudokube sudokube;
