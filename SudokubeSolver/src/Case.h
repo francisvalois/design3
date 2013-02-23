@@ -22,6 +22,7 @@ public:
 	int numberOfPossibilitiesRemaining();
 	void setValue(int);
 	vector<int> getPossibilities();
+	void setPossibilities(vector<int>);
 	void removePossibility(int);
 	bool isSolved();
 	bool contains(int);

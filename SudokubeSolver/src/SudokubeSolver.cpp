@@ -58,7 +58,9 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 		solve(sudokube);
 		return;
 	}else {
-		cout << "can't solve" << endl;
+		bruteForce(sudokube);
+		sudokube.print();
+		return;
 	}
 
 	return;
@@ -143,3 +145,97 @@ bool SudokubeSolver::xWing(Sudokube& sudokube) {
 	cout << "x wing" << endl;
 	return sudokube.removePossibilitiesFromXWing();
 }
+void SudokubeSolver::bruteForce(Sudokube& sudokube) {
+	cout << "brute force" << endl;
+
+	int unsolvedCaseI;
+	int unsolvedCaseJ;
+	int unsolvedCaseK;
+	vector<int> possibilities;
+
+	for(int i = 1; i <= 3; i++) {
+		for(int j = 1; j <= 4; j++) {
+			for(int k = 1; k <= 4; k++) {
+				if(sudokube.getCaseValue(i,j,k) == 0) {
+					unsolvedCaseI = i;
+					unsolvedCaseJ = j;
+					unsolvedCaseK = k;
+					possibilities = sudokube.getPossibilities(i,j,k);
+					cout << "case (" << unsolvedCaseI << "," << unsolvedCaseJ << "," << unsolvedCaseK << ") is unsolved and has " << possibilities.size() << " possibilities" << endl;
+				}
+			}
+		}
+	}
+
+	for(unsigned int m = 0; m < possibilities.size(); m++) {
+		Sudokube sudokubeClone;
+
+		for(int i = 1; i <= 3; i++) {
+			for(int j = 1; j <= 4; j++) {
+				for(int k = 1; k <= 4; k++) {
+					sudokubeClone.setPossibilities(i,j,k,sudokube.getPossibilities(i,j,k));
+				}
+			}
+		}
+
+		cout << "trying to put " << possibilities[m] << " in case (" << unsolvedCaseI << "," << unsolvedCaseJ << "," << unsolvedCaseK << ")" << endl;
+		sudokubeClone.setCaseValue(unsolvedCaseI, unsolvedCaseJ, unsolvedCaseK, possibilities[m]);
+		solveWithoutBruteForce(sudokubeClone);
+
+		if(sudokubeClone.isSolved()) {
+			sudokube.setCaseValue(unsolvedCaseI, unsolvedCaseJ, unsolvedCaseK, possibilities[m]);
+			solveWithoutBruteForce(sudokube);
+			return;
+		}
+	}
+}
+
+void SudokubeSolver::solveWithoutBruteForce(Sudokube& sudokube) {
+	if(sudokube.isSolved()) {
+		cout << "solved"<<endl;
+		return;
+	}
+
+	if(simpleConstraintPropagation(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(lastRemainingCellInARegion(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(nakedPairs(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(hiddenPairs(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(hiddenTriples(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(pointingPairs(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(pointingTriples(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(boxLineReductionPair(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else if(boxLineReductionTriple(sudokube)) {
+		sudokube.print();
+		solve(sudokube);
+		return;
+	}else {
+		return;
+	}
+
+	return;
+}
+
