@@ -45,6 +45,13 @@ vector<int> Case::getPossibilities() {
 	return possibilities;
 }
 
+void Case::setPossibilities(vector<int> p) {
+	possibilities.clear();
+	for(unsigned int m = 0; m < p.size(); m++) {
+		possibilities.push_back(p[m]);
+	}
+}
+
 bool Case::isSolved() {
 	return possibilities.size() == 1;
 }

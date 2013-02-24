@@ -26,6 +26,7 @@ public:
 
 	void removePossibility(int,int,int,int);
 	vector<int> getPossibilities(int,int,int);
+	void setPossibilities(int,int,int, vector<int>);
 
 	bool removePossibilitiesFromConstraint(int,int,int);
 	bool checkLastRemainingCellInARegion(int,int,int);
