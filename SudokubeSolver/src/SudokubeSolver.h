@@ -29,9 +29,11 @@ public:
 	bool boxLineReductionPair(Sudokube&);
 	bool boxLineReductionTriple(Sudokube&);
 	bool xWing(Sudokube&);
+	void bruteForce(Sudokube&);
 
 private:
 	Sudokube sudokube;
+	void solveWithoutBruteForce(Sudokube&);
 
 };
 

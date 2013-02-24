@@ -99,6 +99,12 @@ vector<int> Sudokube::getPossibilities(int i, int j, int k) {
 	return listOfPossibilities;
 }
 
+void Sudokube::setPossibilities(int i, int j, int k, vector<int> possibilities) {
+	if(indexesOk(i,j,k)){
+		container[i-1][j-1][k-1]->setPossibilities(possibilities);
+	}
+}
+
 bool Sudokube::indexesOk(int i, int j, int k) {
 	if (	i >= 1 && i <= 3 &&
 			j >= 1 && j <= 4 &&
@@ -343,7 +349,7 @@ bool Sudokube::removePossibilitiesFromHiddenTriples() {
 
 	for(unsigned int a = 0; a < allColumns.size(); a++) {
 		vector<Case*> column = allColumns[a];
-		int value1;
+		vector<vector<int> > hiddenTriplePossibilities;
 
 		for(int m = 1; m <= 8; m++) {
 			vector<int> index;
@@ -353,41 +359,45 @@ bool Sudokube::removePossibilitiesFromHiddenTriples() {
 				}
 			}
 			if(index.size() == 3) {
-				value1 = m;
-				Case* case1 = column[index[0]];
-				Case* case2 = column[index[1]];
-				Case* case3 = column[index[2]];
+				vector<int> hiddenTriplePossibility;
+				hiddenTriplePossibility.push_back(index[0]);
+				hiddenTriplePossibility.push_back(index[1]);
+				hiddenTriplePossibility.push_back(index[2]);
+				hiddenTriplePossibility.push_back(m);
+				hiddenTriplePossibilities.push_back(hiddenTriplePossibility);
+			}
+		}
+		if(hiddenTriplePossibilities.size() >= 3) {
+			int hiddenTripleCount;
+			for(unsigned int p = 0; p < hiddenTriplePossibilities.size(); p++) {
+				hiddenTripleCount = 1;
+				vector<int> values;
+				values.push_back(hiddenTriplePossibilities[p][3]);
+				for(unsigned int q = 0; q < hiddenTriplePossibilities.size(); q++) {
+					if(p != q &&
+							hiddenTriplePossibilities[p][0] == hiddenTriplePossibilities[q][0] &&
+							hiddenTriplePossibilities[p][1] == hiddenTriplePossibilities[q][1] &&
+							hiddenTriplePossibilities[p][2] == hiddenTriplePossibilities[q][2]) {
+						hiddenTripleCount++;
+						values.push_back(hiddenTriplePossibilities[q][3]);
+					}
+				}
+				if(hiddenTripleCount == 3) {
+					int case1PossibilitiesCount = column[hiddenTriplePossibilities[p][0]]->numberOfPossibilitiesRemaining();
+					int case2PossibilitiesCount = column[hiddenTriplePossibilities[p][1]]->numberOfPossibilitiesRemaining();
+					int case3PossibilitiesCount = column[hiddenTriplePossibilities[p][2]]->numberOfPossibilitiesRemaining();
 
-				vector<int> possibilities = case1->getPossibilities();
-				bool isHiddenPair = false;
-
-				for(unsigned int p = 0; p < possibilities.size(); p++) {
-					if(possibilities[p] != value1 && case2->contains(possibilities[p]) && case3->contains(possibilities[p])) {
-						isHiddenPair = true;
-						for(int q = 0; q < 8; q++) {
-							if(q!= index[0] && q != index[1] && q != index[2] && column[q]->contains(possibilities[p])) {
-								isHiddenPair = false;
-								break;
-							}
+					for(int m = 1; m <= 8; m++) {
+						if(m != values[0] && m != values[1] && m != values[2]) {
+							column[hiddenTriplePossibilities[p][0]]->removePossibility(m);
+							column[hiddenTriplePossibilities[p][1]]->removePossibility(m);
+							column[hiddenTriplePossibilities[p][2]]->removePossibility(m);
 						}
-						if(isHiddenPair) {
-							int case1PossibilitiesRemaining = case1->numberOfPossibilitiesRemaining();
-							int case2PossibilitiesRemaining = case2->numberOfPossibilitiesRemaining();
-							int case3PossibilitiesRemaining = case3->numberOfPossibilitiesRemaining();
-
-							for(int r = 1; r <= 8; r++) {
-								if(r!= value1 && r != possibilities[p]) {
-									case1->removePossibility(r);
-									case2->removePossibility(r);
-									case3->removePossibility(r);
-								}
-							}
-							if (case1PossibilitiesRemaining > case1->numberOfPossibilitiesRemaining() ||
-									case2PossibilitiesRemaining > case2->numberOfPossibilitiesRemaining() ||
-									case3PossibilitiesRemaining > case3->numberOfPossibilitiesRemaining()) {
-								return true;
-							}
-						}
+					}
+					if(		case1PossibilitiesCount > column[hiddenTriplePossibilities[p][0]]->numberOfPossibilitiesRemaining() &&
+							case2PossibilitiesCount > column[hiddenTriplePossibilities[p][1]]->numberOfPossibilitiesRemaining() &&
+							case3PossibilitiesCount > column[hiddenTriplePossibilities[p][2]]->numberOfPossibilitiesRemaining()) {
+						return true;
 					}
 				}
 
@@ -395,7 +405,6 @@ bool Sudokube::removePossibilitiesFromHiddenTriples() {
 		}
 	}
 	return false;
-
 }
 
 bool Sudokube::removePossibilitiesFromPointingPairs() {
@@ -662,36 +671,88 @@ bool Sudokube::removePossibilitiesFromBoxLineReductionTriple() {
 }
 
 bool Sudokube::removePossibilitiesFromXWing() {
-	vector<vector<Case*> > allColumns;
-	allColumns.push_back(getSameLineOfCase(1,1,1));
-	allColumns.push_back(getSameLineOfCase(1,1,2));
-	allColumns.push_back(getSameLineOfCase(1,1,3));
-	allColumns.push_back(getSameLineOfCase(1,1,4));
-	allColumns.push_back(getSameColumnOfCase(2,1,1));
-	allColumns.push_back(getSameColumnOfCase(2,2,1));
-	allColumns.push_back(getSameColumnOfCase(2,3,1));
-	allColumns.push_back(getSameColumnOfCase(2,4,1));
-
-
-	for(unsigned int a = 0; a < allColumns.size(); a++) {
-		vector<Case*> column = allColumns[a];
-		int value1;
-		vector<vector<Case*> > possibleColumns;
-		vector<vector<int> > possibleIndexes;
-
-		for(int m = 1; m <= 8; m++) {
-			vector<int> index;
-			for(unsigned int n = 0; n < column.size(); n++) {
-				if(column[n]->contains(m)) {
-					index.push_back(n);
-				}
-			}
-			if(index.size() == 2) {
-				possibleColumns.push_back(column);
-				possibleIndexes.push_back(index);
-			}
-		}
-	}
+//	vector<vector<Case*> > allColumns;
+//	allColumns.push_back(getSameLineOfCase(1,1,1));
+//	allColumns.push_back(getSameLineOfCase(1,1,2));
+//	allColumns.push_back(getSameLineOfCase(1,1,3));
+//	allColumns.push_back(getSameLineOfCase(1,1,4));
+//
+//	vector<vector<int> >xWingPossibilities;
+//
+//	for(unsigned int a = 0; a < allColumns.size(); a++) {
+//		vector<Case*> column = allColumns[a];
+//
+//		for(int m = 1; m <= 8; m++) {
+//			vector<int> index;
+//			for(unsigned int n = 0; n < column.size(); n++) {
+//				if(column[n]->contains(m)) {
+//					index.push_back(n);
+//				}
+//			}
+//			if(index.size() == 2) {
+//				vector<int> xWingPossibility;
+//				xWingPossibility.push_back(a);
+//				xWingPossibility.push_back(index[0]);
+//				xWingPossibility.push_back(index[1]);
+//				xWingPossibility.push_back(m);
+//				xWingPossibilities.push_back(xWingPossibility);
+//			}
+//		}
+//	}
+//	if(xWingPossibilities >= 2) {
+//		for(unsigned int p = 0; p < xWingPossibilities.size(); p++) {
+//			for(unsigned int q = 0; q < xWingPossibilities.size(); q++) {
+//				if(p != q &&
+//					xWingPossibilities[p][1] == xWingPossibilities[q][1] &&
+//					xWingPossibilities[p][2] == xWingPossibilities[q][2] &&
+//					xWingPossibilities[p][3] == xWingPossibilities[q][3]) {
+//						int case11I = allColumns[xWingPossibilities[p][0]][xWingPossibilities[p][1]]->i;
+//						int case11J = allColumns[xWingPossibilities[p][0]][xWingPossibilities[p][1]]->j;
+//						int case11K = allColumns[xWingPossibilities[p][0]][xWingPossibilities[p][1]]->k;
+//						int case21I = allColumns[xWingPossibilities[p][0]][xWingPossibilities[p][2]]->i;
+//						int case21J = allColumns[xWingPossibilities[p][0]][xWingPossibilities[p][2]]->i;
+//						int case21K = allColumns[xWingPossibilities[p][0]][xWingPossibilities[p][2]]->i;
+//						int case12I = allColumns[xWingPossibilities[q][0]][xWingPossibilities[q][1]]->i;
+//						int case12J = allColumns[xWingPossibilities[q][0]][xWingPossibilities[q][1]]->j;
+//						int case12K = allColumns[xWingPossibilities[q][0]][xWingPossibilities[q][1]]->k;
+//						int case22I = allColumns[xWingPossibilities[q][0]][xWingPossibilities[q][2]]->i;
+//						int case22J = allColumns[xWingPossibilities[q][0]][xWingPossibilities[q][2]]->i;
+//						int case22K = allColumns[xWingPossibilities[q][0]][xWingPossibilities[q][2]]->i;
+//
+//						bool hasRemovedPossibility = false;
+//
+//						vector<Case*> firstLine;
+//						if(case11I == 1) {
+//							firstLine = getSameColumnOfCase(case11I, case11J, case11K);
+//						}else {
+//							firstLine = getSameLineOfCase(case11I, case11J, case11K);
+//						}
+//
+//						for(unsigned int r = 0; r < firstLine.size(); r++) {
+//							if(!(firstLine[r]->i == case11I &&
+//								firstLine[r]->j == case11J &&
+//								firstLine[r]->k == case11K) &&
+//								!(firstLine[r]->i == case12I &&
+//								firstLine[r]->j == case12J &&
+//								firstLine[r]->k == case12K)) {
+//									firstLine[r]->removePossibility(xWingPossibilities[q][3]);
+//							}
+//						}
+//
+//						vector<Case*> secondLine;
+//						if(case11I == 1) {
+//							secondLine = getSameColumnOfCase(case21I, case21J, case21K);
+//						}else {
+//							secondLine = getSameLineOfCase(case21I, case21J, case21K);
+//						}
+//
+//				}
+//
+//
+//				}
+//			}
+//	}
+//
 	return false;
 }
 
