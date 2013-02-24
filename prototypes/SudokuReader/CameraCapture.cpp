@@ -14,7 +14,7 @@ using namespace std;
 SudokuReader sudokuReader;
 
 int main(int, char**) {
-	VideoCapture cap(0);
+	VideoCapture cap(1);
 
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1200);
