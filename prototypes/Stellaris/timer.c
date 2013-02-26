@@ -61,17 +61,18 @@ void TimerInt(void){
 	//GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_PIN_2);
     
     
-	speed = QEIVelocityGet(QEI0_BASE);
+	/*speed = QEIVelocityGet(QEI0_BASE);
 	position = QEIPositionGet(QEI0_BASE);
 	speedqei1 = QEIVelocityGet(QEI1_BASE);
 	posqei1 = QEIPositionGet(QEI1_BASE);
 	speed_table[index]=speed;
-	pos_table[index]=position;
+	pos_table[index]=position;*/
 	if(index==0){
 		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x20);
 		resetVariables();
-		//moveLateral(10*6400);
-		moveFront(2*6400, 4000);
+		//moveLateral(3*6400, 4000);
+		moveFront(6400, 4000);
+		//motorTurnCW(0);
 	}
 	/*if(index==50){
 		motorBrake(0);
@@ -177,6 +178,8 @@ void TimerInt(void){
 			slow_start = false;
 		}
 	}
+	
+	//FIN ANALYSE
 	//GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_2, 0);
 }
 
