@@ -3,9 +3,12 @@
 using namespace cv;
 using namespace std;
 
+const char NumberReader::PATH_TO_NUMBERS[] = "../../numbers";
+
 NumberReader::NumberReader() {
 	trainData = cvCreateMat(CLASSES * TRAIN_SAMPLES, NUMBER_IMAGE_SIZE, CV_32FC1);
 	trainClasses = cvCreateMat(CLASSES * TRAIN_SAMPLES, 1, CV_32FC1);
+
 	learnFromImages(trainData, trainClasses);
 	knearest.train(trainData, trainClasses);
 
@@ -21,7 +24,6 @@ NumberReader::~NumberReader() {
 }
 
 void NumberReader::learnFromImages(CvMat* trainData, CvMat* trainClasses) {
-	char filename[255];
 	for (int i = 0; i < CLASSES; i++) {
 		int classNo = i + 1;
 
@@ -45,22 +47,25 @@ void NumberReader::learnFromImages(CvMat* trainData, CvMat* trainClasses) {
 	}
 }
 
+void NumberReader::copyData(Mat & src, CvMat * dst) {
+	for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
+		dst->data.fl[n] = src.data[n];
+	}
+}
+
 bool NumberReader::isTrainedDataValid() {
 	bool isValidData = true;
 
 	CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 	for (int i = 1; i <= CLASSES; i++) {
 		for (int j = 1; j < TRAIN_SAMPLES; j++) {
-			char file[255];
-			sprintf(file, "%s/%d/%d-%d.png", PATH_TO_NUMBERS, i, i, j);
-			Mat testedNumber = imread(file, 1);
+			sprintf(filename, "%s/%d/%d-%d.png", PATH_TO_NUMBERS, i, i, j);
+			Mat testedNumber = imread(filename, 1);
 			cvtColor(testedNumber, testedNumber, COLOR_BGR2GRAY);
 
-			for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
-				sample->data.fl[n] = testedNumber.data[n];
-			}
-			float detectedClass = knearest.find_nearest(sample, 1);
-			int number = (int) ((detectedClass));
+			copyData(testedNumber, sample);
+
+			float number = (int) knearest.find_nearest(sample, 1);
 
 			if (i != number) {
 				isValidData = false;
@@ -76,14 +81,10 @@ int NumberReader::identifyNumber(Mat src) {
 	int number = -1;
 
 	CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
-	for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {
-		sample->data.fl[n] = src.data[n];
-	}
+	copyData(src, sample);
 
-	float detectedClass = knearest.find_nearest(sample, 1);
-	int detectedNumber = (int) ((detectedClass));
-
-	if (detectedNumber >= 1 || detectedNumber <= 8) {
+	int detectedNumber = (int) knearest.find_nearest(sample, 1);
+	if (detectedNumber >= 1 || detectedNumber <= 8) { //TODO Vérifier par test si la valeur peut-être différente
 		number = detectedNumber;
 	}
 
