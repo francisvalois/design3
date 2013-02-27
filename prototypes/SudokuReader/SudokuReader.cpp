@@ -3,6 +3,9 @@
 using namespace cv;
 using namespace std;
 
+const char SudokuReader::OUTPUT_PATH[] = "output";
+const char SudokuReader::PATH_SUDOCUBES[] = "../../sudocubes/";
+
 SudokuReader::SudokuReader() {
 	white = cv::Scalar(255, 255, 255);
 	black = cv::Scalar(0, 0, 0);
@@ -14,12 +17,7 @@ SudokuReader::~SudokuReader() {
 
 void SudokuReader::extractNumbers(Mat & src) {
 	Mat srcGray;
-	cvtColor(src, srcGray, CV_BGR2GRAY);
-	GaussianBlur(srcGray, srcGray, Size(5, 5), 1, 1);
-
-	Mat laplacianImg;
-	Laplacian(srcGray, laplacianImg, CV_8UC1, 3);
-	srcGray = srcGray - laplacianImg;
+	cleanGraySrc(src, srcGray);
 
 	Mat srcHSV;
 	cvtColor(src, srcHSV, CV_BGR2HSV);
@@ -37,7 +35,7 @@ void SudokuReader::extractNumbers(Mat & src) {
 	bool squaresAreExtracted = findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded);
 
 	if (squaresAreExtracted == false) {
-		cout << "Could not extract all the square for sudocube" << endl; //TODO gestion d'exception
+		cout << "Could not extract all the square for sudocube" << endl; //TODO gesframeRecttion d'exception
 		return;
 	}
 
@@ -73,6 +71,15 @@ void SudokuReader::extractNumbers(Mat & src) {
 	}
 
 	sudocubeNo++;
+}
+
+void SudokuReader::cleanGraySrc(Mat& src, Mat& srcGray) {
+	cvtColor(src, srcGray, CV_BGR2GRAY);
+	GaussianBlur(srcGray, srcGray, Size(5, 5), 1, 1);
+
+	Mat laplacianImg;
+	Laplacian(srcGray, laplacianImg, CV_8UC1, 3);
+	srcGray = srcGray - laplacianImg;
 }
 
 Rect SudokuReader::getFrameRect(Mat& srcHSV) {
@@ -122,9 +129,8 @@ Rect SudokuReader::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) 
 bool SudokuReader::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded) {
 	bool isExtracted = false;
 
-	for (int thresh = SQUARE_THRESHOLD_MIN; thresh <= SQUARE_THRESHOLD_MAX && isExtracted == false; thresh++) {
-		threshold(srcGray, srcThresholded, thresh, 500, THRESH_BINARY);
-		//applyErode(srcThresholded, erodeSize, MORPH_RECT);
+	for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
+		threshold(srcGray, srcThresholded, threshValue, 500, THRESH_BINARY);
 		sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
 		saveImage(srcThresholded, filename);
 
@@ -143,7 +149,6 @@ bool SudokuReader::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squa
 		removeInvalidSquaresPair(squaresPair);
 
 		if (squaresPair.size() == 47) {
-			cout << "Thresh " << thresh << endl;
 			isExtracted = true;
 		}
 	}
@@ -254,10 +259,10 @@ bool SudokuReader::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask) {
 		}
 	}
 
-	Mat ROI = Mat::zeros(Size(NUMBER_WIDTH, NUMBER_HEIGHT), CV_8UC3);
+	Mat ROI = Mat::zeros(Size(NumberReader::NUMBER_WIDTH, NumberReader::NUMBER_HEIGHT), CV_8UC3);
 	if (rects.empty() == false) {
 		ROI = thresholdedSquare(rects[0]); //TODO Correct?
-		resize(ROI, outImage, Size(NUMBER_WIDTH, NUMBER_HEIGHT));
+		resize(ROI, outImage, Size(NumberReader::NUMBER_WIDTH, NumberReader::NUMBER_HEIGHT));
 		return true;
 	}
 
@@ -276,11 +281,6 @@ void SudokuReader::applyDilate(Mat & toDilate, int size, int morphShape) {
 	dilate(toDilate, toDilate, dilateElem);
 }
 
-void SudokuReader::showWindowWith(const char* name, const Mat &mat) {
-	namedWindow(name, CV_WINDOW_KEEPRATIO);
-	imshow(name, mat);
-}
-
 void SudokuReader::saveImage(Mat &pict, char* filename) {
 	vector<int> compression_params;
 	compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
@@ -288,30 +288,3 @@ void SudokuReader::saveImage(Mat &pict, char* filename) {
 
 	imwrite(filename, pict, compression_params);
 }
-
-void SudokuReader::testAllSudocubes() {
-	double t = (double) getTickCount();
-
-	for (int i = 1; i <= 42; i++) {
-		cout << "sudocube no " << i << endl;
-		sprintf(filename, "%s%d.png", PATH_SUDOCUBES, i);
-		Mat sudocube = imread(filename);
-		extractNumbers(sudocube);
-	}
-
-	t = ((double) getTickCount() - t) / getTickFrequency();
-	cout << "Times passed in seconds: " << t << endl;
-}
-
-void SudokuReader::testOneSudocube(int sudocubeNo) {
-	sprintf(filename, "%s%d.png", PATH_SUDOCUBES, sudocubeNo);
-	Mat sudocube = imread(filename);
-	extractNumbers(sudocube);
-}
-
-/*int main(int argc, char** argv) {
-	SudokuReader sudokuReader;
-	//sudokuReader.testOneSudocube(20);
-	sudokuReader.testAllSudocubes();
-	return 0;
-}*/
