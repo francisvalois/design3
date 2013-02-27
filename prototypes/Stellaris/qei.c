@@ -16,6 +16,8 @@ volatile long position_m0, position_m1, position_m2, position_m3; //Position des
 //volatile unsigned long speed_table[300];
 //volatile unsigned long pos_table[300];
 
+extern volatile float dt;
+
 // IMPORTANT: Moteur 0 et 1 utilisent les QEI, tandis que les moteurs 2 et 3
 //			  utilisent le decodeur logiciels plus bas.
 
@@ -36,7 +38,7 @@ void initQEI(void){
 	QEIEnable(QEI0_BASE);
 	QEIPositionSet(QEI0_BASE,0);
 	QEIVelocityDisable(QEI0_BASE);
-	QEIVelocityConfigure (QEI0_BASE, QEI_VELDIV_1, ROM_SysCtlClockGet()/10);
+	QEIVelocityConfigure (QEI0_BASE, QEI_VELDIV_1, ROM_SysCtlClockGet()*dt);
 	QEIVelocityEnable(QEI0_BASE);
 	
 	//init QEI1 du micro pour moteur 1
@@ -50,7 +52,7 @@ void initQEI(void){
 	QEIEnable(QEI1_BASE);
 	QEIPositionSet(QEI1_BASE,0);
 	QEIVelocityDisable(QEI1_BASE);
-	QEIVelocityConfigure (QEI1_BASE, QEI_VELDIV_1, ROM_SysCtlClockGet()/10);
+	QEIVelocityConfigure (QEI1_BASE, QEI_VELDIV_1, ROM_SysCtlClockGet()*dt);
 	QEIVelocityEnable(QEI1_BASE);
 	
 	//init decodeur fait a la mitaine pour moteur 2 et 3 (pins J4 et J5 pour moteur 2, J6 et J7 pour moteur 3)

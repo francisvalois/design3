@@ -35,6 +35,7 @@ extern tBoolean slow_brake, slow_start;
 extern volatile unsigned long speed_table[200];
 extern volatile unsigned long pos_table[200];
 extern volatile CircularBuffer send_buffer;
+extern volatile float dt;
 //pwm
 extern volatile unsigned long periodPWM, pulsewidth; //Période du PWM
 
@@ -70,9 +71,9 @@ void TimerInt(void){
 	if(index==0){
 		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x20);
 		resetVariables();
-		//moveLateral(3*6400, 4000);
-		moveFront(6400, 4000);
-		//motorTurnCW(0);
+		moveLateral(-6400, 1600);
+		moveFront(6400, 1343);
+		//turn(15709,1600); //1 tours
 	}
 	/*if(index==50){
 		motorBrake(0);
@@ -194,7 +195,7 @@ void initTimer(void){
 
 
     ROM_TimerConfigure(TIMER0_BASE, TIMER_CFG_32_BIT_PER);
-    ROM_TimerLoadSet(TIMER0_BASE, TIMER_A, ROM_SysCtlClockGet()/10); //Au 1/10 de sec
+    ROM_TimerLoadSet(TIMER0_BASE, TIMER_A, ROM_SysCtlClockGet()*dt); //Au 1/10 de sec
 
 
     ROM_IntEnable(INT_TIMER0A);

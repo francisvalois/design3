@@ -15,7 +15,7 @@
 #include "driverlib/timer.h"
 //#include "ecran.h"
 //#include "qei.h"
-#include "uart.h"
+//#include "uart.h"
 //#include "commande.h"
 //#include "timer.h"
 //*****************************************************************************
@@ -41,6 +41,8 @@ extern volatile long previous_error0, previous_error1, previous_error2, previous
 extern volatile float I0, I1, I2, I3;
 extern volatile long consigne0, consigne1, consigne2, consigne3; 
 extern volatile float Kd0, Ki0, Kp0, Kd1, Ki1, Kp1, Kd2, Ki2, Kp2, Kd3, Ki3, Kp3;
+extern volatile float Kd0_s, Ki0_s, Kp0_s, Kd1_s, Ki1_s, Kp1_s, Kd2_s, Ki2_s, Kp2_s, Kd3_s, Ki3_s, Kp3_s;
+extern volatile float Tf0, Tf1, Tf2, Tf3;
 extern volatile float slow_brake_pente, slow_start_pente;
 extern long tolerancePos;
 extern tBoolean slow_brake, slow_start;
@@ -82,6 +84,7 @@ void initQEI(void);
 void EncoderIntHandler(void);
 void EncoderHandler(void);
 //commande.c
+tBoolean CommandHandler(void);
 void initMotorCommand(void);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
@@ -89,10 +92,15 @@ void motorBrake(volatile long mnumber);
 void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
 void initLED(void);
+//uart.c
+void initUART(void);
+void UARTHandler(void);
 
 
 int main(void)
 {
+	//Set clock so it runs directly on the crystal
+	ROM_SysCtlClockSet(SYSCTL_SYSDIV_1 | SYSCTL_USE_OSC | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
     volatile unsigned long ulLoop;
     
     // Initialisation des ports
@@ -138,24 +146,42 @@ int main(void)
     consigne1=0;
     consigne2=0;
     consigne3=0;
-    Kd0 = 0.2;
-    Ki0 = 3.5;//5.64;
+    //Pour les déplacements rapides
+    Kd0 = 0.1;
+    Ki0 = 7;//5.64;
     Kp0 = 1.75;
-    Kd1 = 0.2;
-    Ki1 = 3.5;//5.64;
+    Tf0 = 0.1;
+    Kd1 = 0.1;
+    Ki1 = 7;//5.64;
     Kp1 = 1.75;
-    Kd2 = 0.2;
-    Ki2 = 3.5;//5.64;
+    Tf1 = 0.1;
+    Kd2 = 0.1;
+    Ki2 = 7;//5.64;
     Kp2 = 1.75;
-    Kd3 = 0.2;
-    Ki3 = 3.5;//5.64;
+    Tf2 = 0.1;
+    Kd3 = 0.1;
+    Ki3 = 7;//5.64;
     Kp3 = 1.75;
-    dt = 0.2;
+    Tf3 = 0.1;
+    //Pour les mouvements lents
+    Kd0_s = 0.05;
+    Ki0_s = 10;//5.64;
+    Kp0_s = 1.6;
+    Kd1_s = 0.05;
+    Ki1_s = 10;//5.64;
+    Kp1_s = 1.5;
+    Kd2_s = 0.05;
+    Ki2_s = 10;//5.64;
+    Kp2_s = 1.5;
+    Kd3_s = 0.05;
+    Ki3_s = 10;//5.64;
+    Kp3_s = 1.6;
+    dt = 0.1;
     slow_brake_pente = 1;
     slow_start_pente = 1;
     slow_brake = false;
     slow_start = false;
-    tolerancePos = 500;
+    tolerancePos = 0;
     posqei1 = 0;
     speedqei1=0;
     
@@ -164,34 +190,17 @@ int main(void)
 
 
 	initMotorCommand();
-
-    //initLED();   
+	initPWM();
+    //initUART();
+	initLED();   
     initQEI();
     //init_lcd();
-    initPWM();
     initTimer();
-    //initUart();
 
     while(1)
 	{
 		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
-		
-		
-		
-		//TODO peut-êre faire un UART handler
-		//Traitement octet reçu par le UART
-		/*if(!(UART0_FR_R & UART_FR_RXFE)){
-			if(receive_buffer.write < receive_buffer.read){
-				receive_buffer.buffer[receive_buffer.write%BUFFER_LEN] = UART0_DR_R;
-				receive_buffer.write++;
-			}
-		}*/
-		//Traitement octet transmis pas UART
-		/*if(!(UART0_FR_R & UART_FR_TXFF)){
-			if(send_buffer.read < send_buffer.write){
-				UART0_DR_R = send_buffer.buffer[send_buffer.read%BUFFER_LEN];
-				send_buffer.read++;
-			}
-		}*/
+		//UARTHandler(); //Gère les traitements du UART
+		//CommandHandler(); //Traitement des commandes
 	}
 }
