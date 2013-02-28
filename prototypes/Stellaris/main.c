@@ -15,7 +15,7 @@
 #include "driverlib/timer.h"
 //#include "ecran.h"
 //#include "qei.h"
-//#include "uart.h"
+#include "uart.h"
 //#include "commande.h"
 //#include "timer.h"
 //*****************************************************************************
@@ -27,9 +27,9 @@
 
 //Type def
 typedef struct {
-    long        buffer[BUFFER_LEN];   // buffer
-    int         read;  // prochain élément à lire
-    int         write;   // prochain endroit où écrire
+    volatile long        buffer[BUFFER_LEN];   // buffer
+    volatile long         read;  // prochain élément à lire
+    volatile long         write;   // prochain endroit où écrire
 } CircularBuffer;
 
 //Variables globales externes
@@ -94,7 +94,6 @@ void moveFront(long distance, long vitesse);
 void initLED(void);
 //uart.c
 void initUART(void);
-void UARTHandler(void);
 
 
 int main(void)
@@ -164,18 +163,30 @@ int main(void)
     Kp3 = 1.75;
     Tf3 = 0.1;
     //Pour les mouvements lents
-    Kd0_s = 0.05;
+    Kd0_s = 0.2;
     Ki0_s = 10;//5.64;
-    Kp0_s = 1.6;
+    Kp0_s = 1.2;
     Kd1_s = 0.05;
     Ki1_s = 10;//5.64;
-    Kp1_s = 1.5;
+    Kp1_s = 1.2;
     Kd2_s = 0.05;
     Ki2_s = 10;//5.64;
-    Kp2_s = 1.5;
-    Kd3_s = 0.05;
+    Kp2_s = 1.2;
+    Kd3_s = 0.2;
     Ki3_s = 10;//5.64;
-    Kp3_s = 1.6;
+    Kp3_s = 1.2;
+    /*Kd0_s = 0.05;
+    Ki0_s = 12;//5.64;
+    Kp0_s = 1.2;
+    Kd1_s = 0.05;
+    Ki1_s = 12;//5.64;
+    Kp1_s = 1.2;
+    Kd2_s = 0.05;
+    Ki2_s = 12;//5.64;
+    Kp2_s = 1.2;
+    Kd3_s = 0.05;
+    Ki3_s = 12;//5.64;
+    Kp3_s = 1.2;*/
     dt = 0.1;
     slow_brake_pente = 1;
     slow_start_pente = 1;
@@ -191,15 +202,35 @@ int main(void)
 
 	initMotorCommand();
 	initPWM();
-    //initUART();
+    initUART();
 	initLED();   
     initQEI();
     //init_lcd();
     initTimer();
+    
+    receive_buffer.read=0;
+    receive_buffer.write=0;
+    send_buffer.read=0;
+    send_buffer.write=0;
 
     while(1)
 	{
 		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
+
+		//si un charactère dans la Receive FIFO
+		if(!(UART0_FR_R & UART_FR_RXFE)) //&& (send_buffer.read > send_buffer.write-256))
+		{
+			receive_buffer.buffer[receive_buffer.write%BUFFER_LEN] = UART0_DR_R;
+			receive_buffer.write++;
+		}
+		
+	
+		if(!(UART0_FR_R & UART_FR_TXFF) && (send_buffer.read < send_buffer.write))
+		{
+			UART0_DR_R = send_buffer.buffer[send_buffer.read%BUFFER_LEN];
+			send_buffer.read++;
+		}
+		
 		//UARTHandler(); //Gère les traitements du UART
 		//CommandHandler(); //Traitement des commandes
 	}

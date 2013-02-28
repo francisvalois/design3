@@ -18,9 +18,9 @@
 #define BUFFER_LEN          256
 
 typedef struct {
-    long        buffer[BUFFER_LEN];   // buffer
-    int         read;  // prochain élément à lire
-    int         write;   // prochain endroit où écrire
+    volatile long        buffer[BUFFER_LEN];   // buffer
+    volatile long         read;  // prochain élément à lire
+    volatile long         write;   // prochain endroit où écrire
 } CircularBuffer;
 
 //Variables globales externes
@@ -48,6 +48,7 @@ void resetVariables(void);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
 void motorBrake(volatile long mnumber);
+void motorHardBrake(volatile long mnumber);
 void asservirMoteurs(void);
 void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
@@ -71,19 +72,31 @@ void TimerInt(void){
 	if(index==0){
 		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x20);
 		resetVariables();
-		moveLateral(-6400, 1600);
-		moveFront(6400, 1343);
+		//moveLateral(-6400, 1600);
+		moveFront(9100, 800);
+
 		//turn(15709,1600); //1 tours
 	}
 	/*if(index==50){
-		motorBrake(0);
-		motorTurnCW(0x01);
-		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x00);
-		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7, 0x80);
-	}
-	if(index==100){
-		motorBrake(1);
-		motorTurnCW(0x02);
+		resetVariables();
+		//motorBrake(0);
+		//motorTurnCW(0x01);
+		motorHardBrake(0);
+		motorHardBrake(1);
+		motorHardBrake(2);
+		motorHardBrake(3);
+		turn(15709,1600);
+	}if(index==200){
+		resetVariables();
+		motorHardBrake(0);
+		motorHardBrake(1);
+		motorHardBrake(2);
+		motorHardBrake(3);
+		moveFront(-3200, 800);
+	}*/
+	/*if(index==100){
+		//motorBrake(1);
+		//motorTurnCW(0x02);
 		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7, 0x00);
 		//GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x20);
 	}
@@ -115,29 +128,16 @@ void TimerInt(void){
 	}*/
 	/*if(index==10){
 		moveLateral(2*6400);
-	}
-	if(index==300){
-		long i=0;
-		while(i<300){
-			if(!(UART0_FR_R & UART_FR_TXFF)){
-				pos_table[i] = 0xABCDEF12;
-				pos_table[i] = pos_table[i] >> 8;
-				UART0_DR_R = pos_table[i] >> 24;
-				UART0_DR_R = pos_table[i] >> 16;
-				UART0_DR_R = pos_table[i] >> 8;
-				UART0_DR_R = pos_table[i];
-				i++;
-			}
-
-		}
-		i=0;
-		while(i<300){
-			if(!(UART0_FR_R & UART_FR_TXFF)){
-				UART0_DR_R = speed_table[i];
-				i++; 	
-			}
-		}
 	}*/
+	if(index%10==0){
+		volatile long temp_speed;
+		temp_speed = QEIPositionGet(QEI0_BASE);
+		//long i=0;	
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed >> 24;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed >> 16;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed >> 8;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed;
+	}
 	index++;
 	//send_buffer.buffer[send_buffer.write%256] = position;
 	//send_buffer.write++;

@@ -493,7 +493,7 @@ void motorHardBrake(volatile long mnumber){
 		I0=0;
 		previous_error0=0;
 		dist_cible0=0;
-		position_m3=0;
+		//position_m3=0;
 	}
 	else if(mnumber == 1){ //M2
 		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7, 0xC0);
@@ -501,7 +501,7 @@ void motorHardBrake(volatile long mnumber){
 		I1=0;
 		previous_error1=0;
 		dist_cible1=0;
-		QEIPositionSet(QEI1_BASE, 0);
+		//QEIPositionSet(QEI1_BASE, 0);
 	}
 	else if(mnumber == 2){ //M3
 		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
@@ -509,7 +509,7 @@ void motorHardBrake(volatile long mnumber){
 		I2=0;
 		previous_error2=0;
 		dist_cible2=0;
-		position_m2=0;
+		//position_m2=0;
 	}
 	else if(mnumber == 3){//M4
 		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
@@ -517,7 +517,7 @@ void motorHardBrake(volatile long mnumber){
 		I3=0;
 		previous_error3=0;
 		dist_cible3=0;
-		QEIPositionSet(QEI0_BASE, 0);
+		//QEIPositionSet(QEI0_BASE, 0);
 	}
 }
 
