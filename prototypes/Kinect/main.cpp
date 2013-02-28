@@ -46,15 +46,19 @@ int main( /*int argc, char* argv[]*/ ) {
     clock_t tStart = clock();
 
     kinect model;
-    model.findObstacles(world);
+    model.findCenteredObstacle(world);
+    model.findRobot(world);
 
     printf("Time taken: %.2fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
 
     Vec2f obstacle1 = model.getObstacle1();
     Vec2f obstacle2 = model.getObstacle2();
+    Vec2f robot = model.getRobot();
 
     cout << "Obstacle 1 : (" << obstacle1[0] << "m en x, " << obstacle1[1] << "m en z)" << endl;
     cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
+    cout << "Robot : (" << robot[0] << "m en x, " << robot[1] << "m en z)" << endl;
+
 
     imshow("depth", show);
 
