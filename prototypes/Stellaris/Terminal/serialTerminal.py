@@ -87,7 +87,7 @@ def main(argv=None):
 		commande = raw_input()
 # ----------------------------------------------------------------------------------
 		
-		while len(commande) != 8 or commande[2] != ' ' or commande[5] != ' ':
+		while len(commande) != 8:
 			print('Usage : entrer opcode arg1 arg2')
 			print('Commande: ')
 			# Windows
