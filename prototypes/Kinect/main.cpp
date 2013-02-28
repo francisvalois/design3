@@ -1,23 +1,21 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "kinect.h"
+#include "Utility.h"
 
 using namespace cv;
 using namespace std;
 
 Mat world;
 
-void onMouse(int event, int x, int y, int flags, void *);
-int main( /*int argc, char* argv[]*/ );
-
 void onMouse(int event, int x, int y, int flags, void *) {
     if (event == CV_EVENT_LBUTTONUP) {
-        cout << "Pixel X :" << x << "Pixel Y :" << y;
+        cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
     }
     if (event == CV_EVENT_RBUTTONUP) {
         Vec3f s = world.at<Vec3f>(y, x);
-        Vec2f realPosition = kinect::getTrueCoordFromKinectCoord(s);
-        cout << "Position X :" << realPosition[0] << "Position Z:" << realPosition[1] << '\n';
+        Vec2f realPosition = Kinect::getTrueCoordFromKinectCoord(s);
+        cout << "Position X :" << realPosition[0] << " Position Y :" << s[1] << " Position Z:" << realPosition[1] << endl;
 
     }
 }
@@ -31,21 +29,23 @@ int main( /*int argc, char* argv[]*/ ) {
 
     if (!capture.isOpened()) {
         cout << "Can not open a capture object." << endl;
-        return -1;
+        cout << "Loading from file matrix2.yml" << endl;
+        world =  Utility::readFromFile("matrix3.yml");
+    }
+    else{
+        capture.grab();
+        capture.retrieve(world, CV_CAP_OPENNI_POINT_CLOUD_MAP);
+        capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
+        if (capture.retrieve(depthMap, CV_CAP_OPENNI_DEPTH_MAP))
+            depthMap.convertTo(show, CV_8UC1, 0.05f);
     }
 
     namedWindow("depth", 1);
     setMouseCallback("depth", onMouse, 0);
 
-    capture.grab();
-    capture.retrieve(world, CV_CAP_OPENNI_POINT_CLOUD_MAP);
-    capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
-    if (capture.retrieve(depthMap, CV_CAP_OPENNI_DEPTH_MAP))
-        depthMap.convertTo(show, CV_8UC1, 0.05f);
-
     clock_t tStart = clock();
 
-    kinect model;
+    Kinect model;
     model.findCenteredObstacle(world);
     model.findRobot(world);
 
@@ -59,18 +59,11 @@ int main( /*int argc, char* argv[]*/ ) {
     cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
     cout << "Robot : (" << robot[0] << "m en x, " << robot[1] << "m en z)" << endl;
 
+    imshow("depth", world);
 
-    imshow("depth", show);
+    do{
 
-    for (; ;) {
-        if (!capture.grab()) {
-            cout << "Can not grab images." << endl;
-            return -1;
-        } else {
-
-        }
-        if (waitKey(30) >= 0) break;
-    }
+    }while(waitKey(10) != 30);
 
     return 0;
 }

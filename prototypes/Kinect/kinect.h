@@ -9,11 +9,12 @@
 using namespace cv;
 using namespace std;
 
-class kinect {
+class Kinect {
 
 private:
 
     const static float OBSTACLE_RADIUS;
+    static float const OBSTACLE_HEIGHT;
     const static float KINECTANGLE;
     const static float X_KINECT_POSITION;
     const static float Z_KINECT_POSITION;
@@ -24,12 +25,13 @@ private:
     const static float OBSTACLE_DISTANCE_MIN_THRESHOLD;
     const static float OBSTACLE_DISTANCE_MAX_THRESHOLD;
     static float const ROBOT_RADIUS;
-    static float const X_ROBOT_LEFT_THRESHOLD;
-    static float const X_ROBOT_RIGHT_THRESHOLD;
-    static float const Y_ROBOT_TOP_THRESHOLD;
+    static int const X_ROBOT_LEFT_THRESHOLD;
+    static int const X_ROBOT_RIGHT_THRESHOLD;
+    static int const Y_ROBOT_TOP_THRESHOLD;
+    static int const Y_ROBOT_BOTTOM_THRESHOLD;
     static float const ROBOT_MAX_DISTANCE;
-    static float const Y_ROBOT_BOTTOM_THRESHOLD;
     static float const ROBOT_MIN_DISTANCE;
+    static float const ROBOT_HEIGHT;
 
     Vec2f obstacle1;
     Vec2f obstacle2;
@@ -41,7 +43,9 @@ private:
 
     vector<Point> findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle2);
 
-    void getSomeYDistanceAssociatedWithX(int obstaclePositionX, Mat depthMatrix, list<Vec2f> *allDistances);
+    list<Vec2f> getSomeYDistanceAssociatedWithXForObstacle(int obstaclePositionX, Mat depthMatrix);
+
+    list<Vec2f> getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, Mat depthMatrix);
 
     static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
 
@@ -51,7 +55,7 @@ private:
 
     static Vec2f translateXZCoordtoKinect(Vec2f positionXZ);
 
-    Vec2f getAverageDistanceForPointLine(int obstaclePositionX, Mat depthMatrix);
+    Vec2f getAverageDistanceForPointLine(list<Vec2f> allDistances);
 
     Vec2f getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle);
 
