@@ -1,0 +1,34 @@
+----------------------------------------------
+MESSAGE TRANSMIS AU MICRO
+
+"x" = déplacement => 1 octet => " " ou "-" pour le signe ensuite 7 octet qui donne la position
+"y" = déplacement => 1 octet => " " ou "-" pour le signe ensuite 7 octet qui donne la position
+
+"TPx" = 6 tourner/rotation positif (CW)
+x: 3 octets degré
+
+"TNx" = 6 tourner/rotation negatif (CCW)
+x: 3 octets degré
+
+"br" = forcer le freinage
+
+"BR" = forcer le freinage V (hard brake)
+
+"DP"= descendre péhenseur
+"MP"= monter préhenseur
+
+"RS" = faire un reset du système (SystCtlReset)
+
+"AT" = demander de décoder le signal de l'antenne
+
+"OL" = open LED
+
+"CL" = close LED
+
+
+-----------------------------------------------
+MESSAGE TRANSMIS PAR LE MICRO
+
+"x" = transmission du signal de l'antenne
+x: octet contient les paramètres de l'antenne
+
