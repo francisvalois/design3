@@ -31,7 +31,7 @@ Vec2f kinect::getObstacle2() {
     return obstacle2;
 }
 
-Vec2f kinect::getRobot(){
+Vec2f kinect::getRobot() {
     return robot;
 }
 
@@ -83,7 +83,6 @@ Vec2f kinect::addObstacleRadiusToDistance(Vec2f distanceExtObstacle) {
     }
 
     return distanceCenterObstacle;
-
 }
 
 Vec2f kinect::getAverageDistanceForPointLine(int obstaclePositionX, Mat depthMatrix) {
@@ -130,7 +129,7 @@ void kinect::getSomeYDistanceAssociatedWithX(int obstaclePositionX, Mat depthMat
         Vec3f kinectCoord = depthMatrix.at<Vec3f>(i, obstaclePositionX);
         Vec2f depthXYZ = getTrueCoordFromKinectCoord(kinectCoord);
         if (depthXYZ[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && depthXYZ[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD) {
-            (*allDistances).push_back(Vec2f(depthXYZ[0], depthXYZ[1]));
+            (*allDistances).push_back(Vec2f(kinectCoord[0], kinectCoord[2]));
         }
     }
 }
@@ -138,53 +137,52 @@ void kinect::getSomeYDistanceAssociatedWithX(int obstaclePositionX, Mat depthMat
 vector<Vec2f> kinect::findCenteredObstacle(Mat depthMatrix) {
     list<Point> obstacle1;
     list<Point> obstacle2;
-    Vec2f truePositionObstacle1;
-    Vec2f truePositionObstacle2;
 
     findAllPossiblePositionForEachObstacle(depthMatrix, &obstacle1, &obstacle2);
 
     if (obstacle1.size() > 0) {
-        int averagePointObstacle1 = getAverageFromPointList(obstacle1);
-        truePositionObstacle1 = getAverageDistanceForPointLine(averagePointObstacle1, depthMatrix);
+        Vec2f truePositionObstacle = getAveragePositionForObstacle(depthMatrix, obstacle1);
 
-        //Re-translate Coord to Kinect to add Radius with trigonometry opperation and then translate again to 0.0
-        Vec2f kinectCenteredPosition1 = translateXZCoordtoKinect(truePositionObstacle1);
-        Vec2f obstaclePositionWithRadius1 = addObstacleRadiusToDistance(kinectCenteredPosition1);
-        truePositionObstacle1 = translateXZCoordtoOrigin(obstaclePositionWithRadius1);
-
-        kinect::obstacle1 = truePositionObstacle1;
+        kinect::obstacle1 = truePositionObstacle;
     }
 
     if (obstacle2.size() > 0) {
-        int averagePointObstacle2 = getAverageFromPointList(obstacle2);
-        truePositionObstacle2 = getAverageDistanceForPointLine(averagePointObstacle2, depthMatrix);
+        Vec2f truePositionObstacle = getAveragePositionForObstacle(depthMatrix, obstacle2);
 
-        //Re-translate Coord to Kinect to add Radius with trigonometry opperation and then translate again to 0.0
-        Vec2f kinectCenteredPosition2 = translateXZCoordtoKinect(truePositionObstacle2);
-        Vec2f obstaclePositionWithRadius2 = addObstacleRadiusToDistance(kinectCenteredPosition2);
-        truePositionObstacle2 = translateXZCoordtoOrigin(obstaclePositionWithRadius2);
-
-        kinect::obstacle2 = truePositionObstacle2;
+        kinect::obstacle2 = truePositionObstacle;
     }
 
     vector<Vec2f> obstaclesPosition;
-    obstaclesPosition.push_back(truePositionObstacle1);
-    obstaclesPosition.push_back(truePositionObstacle2);
+    obstaclesPosition.push_back(kinect::obstacle1);
+    obstaclesPosition.push_back(kinect::obstacle2);
     return obstaclesPosition;
 }
 
-Vec2f kinect::findRobot(Mat depthMatrix){
+Vec2f kinect::getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle) {
+    int averagePointObstacle1 = getAverageFromPointList(obstacle);
+    Vec2f positionObstacle = getAverageDistanceForPointLine(averagePointObstacle1, depthMatrix);
+
+    //Rotate to add Radius with trigonometry opperation and then translate to 0.0
+    Vec3f positionObstacle3(positionObstacle[0], 0, positionObstacle[1]);
+    Vec2f kinectRotatedPosition = getRotatedXZCoordFromKinectCoord(positionObstacle3);
+    Vec2f obstaclePositionWithRadius = addObstacleRadiusToDistance(kinectRotatedPosition);
+    Vec2f truePositionObstacle = translateXZCoordtoOrigin(obstaclePositionWithRadius);
+
+    return truePositionObstacle;
+}
+
+Vec2f kinect::findRobot(Mat depthMatrix) {
     vector<Point> validRobotPosition = findAllPossiblePositionForRobot(depthMatrix, obstacle1, obstacle2);
 
-    if(validRobotPosition.size() > 0){
+    if (validRobotPosition.size() > 0) {
         int leftAveragePosition = getAverageFromPointListWithConditions(validRobotPosition, 0.1f, 0.25f);
         int rightAveragePosition = getAverageFromPointListWithConditions(validRobotPosition, 0.75f, 0.9f);
 
-        Vec2f trueRobotLeftPosition = getAverageDistanceForPointLine(leftAveragePosition, depthMatrix);
-        Vec2f trueRobotRightPosition = getAverageDistanceForPointLine(rightAveragePosition, depthMatrix);
+        Vec2f RobotLeftPosition = getAverageDistanceForPointLine(leftAveragePosition, depthMatrix);
+        Vec2f RobotRightPosition = getAverageDistanceForPointLine(rightAveragePosition, depthMatrix);
 
-        float averageXCenteredPosition = (trueRobotLeftPosition[0] + trueRobotRightPosition[0])/2;
-        float averageZCenteredPosition = (trueRobotLeftPosition[1] + trueRobotRightPosition[1] + (2 * ROBOT_RADIUS))/2;
+        float averageXCenteredPosition = (RobotLeftPosition[0] + RobotRightPosition[0]) / 2;
+        float averageZCenteredPosition = (RobotLeftPosition[1] + RobotRightPosition[1] + (2 * ROBOT_RADIUS)) / 2;
         Vec3f averageCenteredPosition(averageXCenteredPosition, 0, averageZCenteredPosition);
 
         kinect::robot = getTrueCoordFromKinectCoord(averageCenteredPosition);
@@ -199,7 +197,7 @@ int kinect::getAverageFromPointListWithConditions(vector<Point> robotPositions, 
 
     vector<Point>::const_iterator first = robotPositions.begin() + min;
     vector<Point>::const_iterator last = robotPositions.begin() + max;
-    std::list<Point> pointList(first, last);
+    list<Point> pointList(first, last);
 
     return getAverageFromPointList(pointList);
 }
@@ -239,17 +237,17 @@ void kinect::findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point>
     }
 }
 
- vector<Point> kinect::findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle2) {
+vector<Point> kinect::findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle2) {
     Vec2f tempPosition;
     int count;
     int middleYPoint = (int) ((Y_ROBOT_BOTTOM_THRESHOLD - Y_ROBOT_TOP_THRESHOLD) * 0.5f);
     vector<Point> validObstaclePosition;
 
-    for (int i = X_ROBOT_LEFT_THRESHOLD ; i <= X_ROBOT_RIGHT_THRESHOLD; i++) {
+    for (int i = X_ROBOT_LEFT_THRESHOLD; i <= X_ROBOT_RIGHT_THRESHOLD; i++) {
         count = 0;
         for (int j = Y_ROBOT_TOP_THRESHOLD; j <= Y_ROBOT_BOTTOM_THRESHOLD; j++) {
             tempPosition = getTrueCoordFromKinectCoord(depthMatrix.at<Vec3f>(j, i));
-            if (tempPosition[1] > ROBOT_MIN_DISTANCE && tempPosition[1] < ROBOT_MAX_DISTANCE){
+            if (tempPosition[1] > ROBOT_MIN_DISTANCE && tempPosition[1] < ROBOT_MAX_DISTANCE) {
                 count++;
             }
         }

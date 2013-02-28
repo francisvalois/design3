@@ -53,6 +53,8 @@ private:
 
     Vec2f getAverageDistanceForPointLine(int obstaclePositionX, Mat depthMatrix);
 
+    Vec2f getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle);
+
     int getAverageFromPointListWithConditions(vector<Point> robotPositions, float minCondition, float maxCondition);
 
 public:
@@ -68,9 +70,6 @@ public:
     Vec2f findRobot(Mat depthMatrix);
 
     Vec2f getRobot();
-
-
-
 
 };
 
