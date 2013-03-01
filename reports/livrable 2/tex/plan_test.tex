@@ -8,3 +8,24 @@
 
 \chapter{Plan de tests avec matrice de vérification des exigences intégrées}
 \label{s:plantest}
+\begin{landscape}
+\begin{table}[htbp]
+	\small
+ 	 \centering
+  	\caption{Plan de tests côté matériel}
+  	\scalebox{0.8}{
+	\tabcolsep=0.11cm
+    \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{5cm}|}\hline
+    \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Exigence}& \textbf{Méthode de vérification}& \textbf{Équipement requis}& \textbf{Méthode d'analyse}\\ \hline\hline
+    \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Contrôler le robot pour le dessin}& \multirow{4}{5cm}{\centering Précision de $\pm$1cm de la ligne centrale}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{4}{5cm}{\centering Effectuer l'ensemble des dessins 3 fois et mesurer l'écart maximal}\\\cline{5-5}
+    & & &  																											& Ruban à mesurer  & \\\cline{5-5}
+    & & &  																											& Gabarits des dessins& \\\cline{5-5}
+    & & &  																											& Crayon              &\\\hline
+    \multirow{4}{4cm}{\centering Déplacement} & \multirow{4}{5cm}{\centering Se déplacer sans toucher aux obstacles}& \multirow{4}{5cm}{\centering Distance minimale de 1cm par rapport à l'axe de la trajectoire et vitesse supérieure à 3cm/s}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{4}{5cm}{\centering Vérifier la déviation maximale ainsi que la vitesse moyenne pour une dizaine de trajectoires différentes}\\\cline{5-5}
+    & & &  																											& Ruban à mesurer  & \\\cline{5-5}
+    & & &  																											& Crayon& \\\cline{5-5}
+    & & & 																											& Rapporteur d'angle&\\\hline
+   \end{tabular}}%
+  \label{tab:rr5}%
+\end{table}%
+\end{landscape}
