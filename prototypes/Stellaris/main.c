@@ -145,7 +145,7 @@ int main(void)
     consigne1=0;
     consigne2=0;
     consigne3=0;
-    //Pour les déplacements rapides
+    //Pour les déplacements rapides @6400
     Kd0 = 0.1;
     Ki0 = 7;//5.64;
     Kp0 = 1.75;
@@ -162,19 +162,50 @@ int main(void)
     Ki3 = 7;//5.64;
     Kp3 = 1.75;
     Tf3 = 0.1;
-    //Pour les mouvements lents
-    Kd0_s = 0.2;
-    Ki0_s = 10;//5.64;
+	//Pour les déplacements moyens @3200
+    Kd0_m = 0.05;
+    Ki0_m = 10;//5.64;
+    Kp0_m = 1.6;
+    Tf0_m = 0.1;
+    Kd1_m = 0.05;
+    Ki1_m = 10;//5.64;
+    Kp1_m = 1.5;
+    Tf1_m = 0.1;
+    Kd2_m = 0.05;
+    Ki2_m = 10;//5.64;
+    Kp2_m = 1.5;
+    Tf2_m = 0.1;
+    Kd3_m = 0.05;
+    Ki3_m = 10;//5.64;
+    Kp3_m = 1.6;
+    Tf3_m = 0.1;
+    //Pour les mouvements lents @1600
+    Kd0_s = 0.05;
+    Ki0_s = 12;//5.64;
     Kp0_s = 1.2;
     Kd1_s = 0.05;
-    Ki1_s = 10;//5.64;
+    Ki1_s = 12;//5.64;
     Kp1_s = 1.2;
     Kd2_s = 0.05;
-    Ki2_s = 10;//5.64;
+    Ki2_s = 12;//5.64;
     Kp2_s = 1.2;
     Kd3_s = 0.2;
-    Ki3_s = 10;//5.64;
+    Ki3_s = 12;//5.64;
     Kp3_s = 1.2;
+	//Pour les mouvements de dessin @800
+	Kd0_d = 0.2;
+    Ki0_d = 10;//5.64;
+    Kp0_d = 1.2;
+    //Kd1_d = 0.05;
+    //Ki1_d = 10;//5.64;
+    //Kp1_d = 1.2;
+    //Kd2_d = 0.05;
+    //Ki2_d = 10;//5.64;
+    //Kp2_d = 1.2;
+    Kd3_d = 0.2;
+    Ki3_d = 10;//5.64;
+    Kp3_d = 1.2;
+
     /*Kd0_s = 0.05;
     Ki0_s = 12;//5.64;
     Kp0_s = 1.2;
