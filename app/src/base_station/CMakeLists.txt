@@ -4,7 +4,7 @@ project(base_station)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation)
+find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation kinocto)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -130,5 +130,6 @@ set(PROJ_SOURCES "src/BaseStation.cpp")
 
 #Node de la station de base
 add_executable(BaseStation src/BaseStation.cpp)
+add_dependencies(BaseStation kinocto_gencpp)
 target_link_libraries(BaseStation ${catkin_LIBRARIES})
 

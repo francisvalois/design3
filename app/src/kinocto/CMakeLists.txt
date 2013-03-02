@@ -134,6 +134,7 @@ set(PROJ_SOURCES) #"src/SudocubeExtractor.cpp" "src/CameraImageSource.cpp")
 
 #Node pour le robot kinocto#
 add_executable(Kinocto src/Kinocto.cpp)
+add_dependencies(Kinocto kinocto_gencpp)
 target_link_libraries(Kinocto ${catkin_LIBRARIES})
 
 #Tests pour l'extracteur de sudocube
