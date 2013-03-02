@@ -18,7 +18,7 @@
 #define BUFFER_LEN          256
 
 typedef struct {
-    volatile long        buffer[BUFFER_LEN];   // buffer
+    volatile short        buffer[BUFFER_LEN];   // buffer
     volatile long         read;  // prochain élément à lire
     volatile long         write;   // prochain endroit où écrire
 } CircularBuffer;
@@ -28,9 +28,8 @@ typedef struct {
 extern volatile long position_m2, position_m3; //Position du moteur 2 et 3
 extern volatile long speed, position;
 //commande.c
-extern volatile long slow_brake_pente, slow_start_pente;
-extern volatile long slow_brake_index, slow_start_index;
-extern tBoolean slow_brake, slow_start;
+extern tBoolean is_waiting_for_y;
+extern unsigned long captured_index;
 //main.c
 extern volatile unsigned long speed_table[200];
 extern volatile unsigned long pos_table[200];
@@ -45,6 +44,7 @@ volatile long posqei1;
 volatile long speedqei1;
 
 void resetVariables(void);
+void resetQEI(void);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
 void motorBrake(volatile long mnumber);
@@ -69,14 +69,14 @@ void TimerInt(void){
 	posqei1 = QEIPositionGet(QEI1_BASE);
 	speed_table[index]=speed;
 	pos_table[index]=position;*/
-	if(index==0){
+	/*if(index==0){
 		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x20);
-		resetVariables();
+		//resetVariables();
 		//moveLateral(-6400, 1600);
-		moveFront(9100, 800);
+		moveFront(9100, 800); //21.1cm
 
 		//turn(15709,1600); //1 tours
-	}
+	}*/
 	/*if(index==50){
 		resetVariables();
 		//motorBrake(0);
@@ -129,7 +129,7 @@ void TimerInt(void){
 	/*if(index==10){
 		moveLateral(2*6400);
 	}*/
-	if(index%10==0){
+	/*if(index%10==0){
 		volatile long temp_speed;
 		temp_speed = QEIPositionGet(QEI0_BASE);
 		//long i=0;	
@@ -138,47 +138,17 @@ void TimerInt(void){
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed >> 8;
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed;
 	}
-	index++;
+	index++;*/
 	//send_buffer.buffer[send_buffer.write%256] = position;
 	//send_buffer.write++;
 	
 	//Asservissement Moteurs
 	asservirMoteurs();
 	
-	//Changement graduelle de la vitesse de moteurs
-	if(slow_brake){
-		if(slow_brake_index > 0){
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, PWMPulseWidthGet(PWM_BASE, PWM_OUT_0) - pulsewidth/slow_brake_pente);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, PWMPulseWidthGet(PWM_BASE, PWM_OUT_1) - pulsewidth/slow_brake_pente);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, PWMPulseWidthGet(PWM_BASE, PWM_OUT_2) - pulsewidth/slow_brake_pente);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, PWMPulseWidthGet(PWM_BASE, PWM_OUT_3) - pulsewidth/slow_brake_pente);
-			slow_brake_index--;
-		}
-		else{
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, 0);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, 0);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, 0);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, 0);
-			slow_brake = false;
-		}
-			
-	}
-	if(slow_start){
-		if(slow_start_index > 0){
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, PWMPulseWidthGet(PWM_BASE, PWM_OUT_0) + pulsewidth/slow_start_pente);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, PWMPulseWidthGet(PWM_BASE, PWM_OUT_1) + pulsewidth/slow_start_pente);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, PWMPulseWidthGet(PWM_BASE, PWM_OUT_2) + pulsewidth/slow_start_pente);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, PWMPulseWidthGet(PWM_BASE, PWM_OUT_3) + pulsewidth/slow_start_pente);
-			slow_start_index--;
-		}
-		else{
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, pulsewidth);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, pulsewidth);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, pulsewidth);
-			PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, pulsewidth);
-			slow_start = false;
-		}
-	}
+	//Vérifer si timeout sur commande de déplacement
+	/*if(is_waiting_for_y && index - 150 > captured_index){
+		is_waiting_for_y=false;
+	}*/
 	
 	//FIN ANALYSE
 	//GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_2, 0);
