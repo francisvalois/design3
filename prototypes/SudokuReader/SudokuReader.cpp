@@ -4,7 +4,7 @@ using namespace cv;
 using namespace std;
 
 const char SudokuReader::OUTPUT_PATH[] = "output";
-const char SudokuReader::PATH_SUDOCUBES[] = "../../sudocubes/";
+const char SudokuReader::PATH_SUDOCUBES[] = "../sudocubes/";
 
 SudokuReader::SudokuReader() {
 	white = cv::Scalar(255, 255, 255);
