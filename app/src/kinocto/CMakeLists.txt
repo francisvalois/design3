@@ -28,6 +28,7 @@ find_package(OpenCV REQUIRED)
  add_service_files(
    FILES
    AddTwoInts.srv
+   StartKinocto.srv
  )
 
 ## Generate added messages and services with any dependencies listed here

@@ -43,3 +43,6 @@ Thumbs.db
 *.fls
 *.swp
 .metadata
+Debug
+.project
+.cproject

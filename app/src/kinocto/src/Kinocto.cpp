@@ -1,35 +1,50 @@
 #include <Kinocto.h>
 
 using namespace std;
+using namespace ros;
 
-Kinocto kinocto;
+Kinocto::Kinocto() {
+	state = INITIATED;
+}
 
-Kinocto::Kinocto () {
-    state = INITIATED;
-    ROS_INFO("%s", "Kinocto Initiated");
+Kinocto::~Kinocto() {
+}
+
+void Kinocto::start() {
+	loop();
 }
 
 void Kinocto::loop() {
-    for (;;) {
-        switch (state) {
-            case INITIATED : cout << "waiting" << endl;
-            break;
-            case START_LOOP : cout << "looping" << endl;
-            break;
-        }
-        sleep(10);
-    }
+	while (ros::ok()) {
+		switch (state) {
+		case INITIATED:
+			cout << "waiting" << endl;
+			break;
+		case START_LOOP:
+			cout << "looping" << endl;
+			break;
+		}
+
+		ros::spinOnce();
+	}
 }
 
-void chatterCallback(const std_msgs::String::ConstPtr& msg) {
-  ROS_INFO("Im starting the loop: [%s]", msg->data.c_str());
+bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::StartKinocto::Response & response) {
+	state = START_LOOP;
+	return true;
 }
 
 int main(int argc, char **argv) {
-  ros::init(argc, argv, "kinocto");
-  ros::NodeHandle n;
-  ros::Subscriber sub = n.subscribe("chatter", 1000, chatterCallback);
-  ros::spin();
+	ros::init(argc, argv, "kinocto");
+	ros::NodeHandle nodeHandle;
 
-  return 0;
+	Kinocto kinocto;
+
+	ROS_INFO("%s", "Subscriving callback");
+	ros::ServiceServer service = nodeHandle.advertiseService("start_kinocto", &Kinocto::startLoop, &kinocto);
+
+	ROS_INFO("%s", "Kinocto Initiated");
+	kinocto.start();
+
+	return 0;
 }
