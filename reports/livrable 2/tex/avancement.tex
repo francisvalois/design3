@@ -61,3 +61,29 @@ En utilisant les paramètres obtenus dans Matlab comme point de départ, les par
 \label{fig:as_3}
 \caption{Figure présentant la réponse à un échelon de consigne de 6400$\left[tours^{-1}s^{-1}\right]$ du système régulé au moyen du régulateur réel et de la réponse en position associée}
 \end{figure}
+
+\section{Extraction des sudocubes}
+\subsection{Composantes du système}
+L'algorithme pour extraire les sudocubes est séparé en deux : une classe qui traite une photo afin d'extraire les informations d'un sudocube et un lecteur de chiffres. L'extracteur de sudocubes passe des images au lecteur de chiffres afin d'identifier le chiffre présent.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.3]{fig/sudocubeThreshold.png}
+\label{fig:sudoThresh}
+\caption{Figure présentant un sudocube traité afin d'extraire les informations des cases}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.9]{fig/chiffresLues.png}
+\label{fig:chifLu}
+\caption{Figure présentant un exemple d'images extraites des cases du sudocube et normalisées avant d'être passé au lecteur de chiffres}
+\end{figure}
+
+\subsection{Les solutions retenus/considérés}
+Pour le lecteur de chiffres, deux solutions furent considérés : la librairie Tesseract et l'algorithme d'intelligence artificielle KNearest implanté dans la librairie OpenCV. Tesseract est une librairie qui permet de faire la lecture de caractères de plusieurs langues. Nous avons jugé que cette solution offre des fonctionnalités superflues en plus d'imposer une dépendance supplémentaire au projet. Puisque OpenCV est une dépendance obligatoire et que la méthode KNearest nous permet d'obtenir le même résultat qu'avec Tesseract nous avons choisit cette solution. 
+
+\subsection{Les moyens utilisé pour configurer}
+L'extracteur de sudocube fut configuré (valeur de threshold, coefficient de dilatation/d'érosion) à partir d'un lot de tests de 42 images(angles, distances sudocube/robot et luminosités variés). La configuration fut réalisé par essais/erreur pour trouver les paramètres optimal pour toutes les images.
+
+Le lecteur de chiffres est entraîné avec 40 échantillons par chiffres. Aucune configuration supplémentaire nécessaire.
