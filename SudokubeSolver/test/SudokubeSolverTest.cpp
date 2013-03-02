@@ -21,14 +21,14 @@ namespace {
   TEST_F(SudokubeSolverTest, print) {
 
 	  sudokube.setCaseValue(1,1,2,6);
-//	  sudokube.setCaseValue(1,1,3,2);
-//	  sudokube.setCaseValue(1,1,4,8);
+	  sudokube.setCaseValue(1,1,3,2);
+	  sudokube.setCaseValue(1,1,4,8);
 	  sudokube.setCaseValue(1,4,1,4);
-//	  sudokube.setCaseValue(2,1,2,5);
+	  sudokube.setCaseValue(2,1,2,5);
 	  sudokube.setCaseValue(2,2,3,2);
-//	  sudokube.setCaseValue(2,3,2,8);
+	  sudokube.setCaseValue(2,3,2,8);
 	  sudokube.setCaseValue(3,1,1,1);
-//	  sudokube.setCaseValue(3,2,4,4);
+	  sudokube.setCaseValue(3,2,4,4);
 	  sudokube.setCaseValue(3,4,3,3);
 
 	  sudokube.print();
