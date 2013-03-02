@@ -27,7 +27,7 @@
 
 //Type def
 typedef struct {
-    volatile long        buffer[BUFFER_LEN];   // buffer
+    volatile short        buffer[BUFFER_LEN];   // buffer
     volatile long         read;  // prochain élément à lire
     volatile long         write;   // prochain endroit où écrire
 } CircularBuffer;
@@ -41,11 +41,12 @@ extern volatile long previous_error0, previous_error1, previous_error2, previous
 extern volatile float I0, I1, I2, I3;
 extern volatile long consigne0, consigne1, consigne2, consigne3; 
 extern volatile float Kd0, Ki0, Kp0, Kd1, Ki1, Kp1, Kd2, Ki2, Kp2, Kd3, Ki3, Kp3;
+extern volatile float Kd0_m, Ki0_m, Kp0_m, Kd1_m, Ki1_m, Kp1_m, Kd2_m, Ki2_m, Kp2_m, Kd3_m, Ki3_m, Kp3_m;
 extern volatile float Kd0_s, Ki0_s, Kp0_s, Kd1_s, Ki1_s, Kp1_s, Kd2_s, Ki2_s, Kp2_s, Kd3_s, Ki3_s, Kp3_s;
+extern volatile float Kd0_d, Ki0_d, Kp0_d, Kd1_d, Ki1_d, Kp1_d, Kd2_d, Ki2_d, Kp2_d, Kd3_d, Ki3_d, Kp3_d;
 extern volatile float Tf0, Tf1, Tf2, Tf3;
-extern volatile float slow_brake_pente, slow_start_pente;
+extern volatile float dt;
 extern long tolerancePos;
-extern tBoolean slow_brake, slow_start;
 extern volatile long posqei1;
 extern volatile long speedqei1;
 
@@ -56,7 +57,7 @@ volatile long position; // Position à faire afficher
 volatile long speed; // Vitesse à faire afficher
 volatile unsigned long speed_table[300];
 volatile unsigned long pos_table[300];
-volatile float dt;
+
 
 
 //Fonction externe provenant de lcd.c: TODO supprimer et utiliser plutôt celles de ecran.c/.h
@@ -83,7 +84,9 @@ void AntenneHandler(void);
 void initQEI(void);
 void EncoderIntHandler(void);
 void EncoderHandler(void);
-//commande.c
+//command.c
+void initCommande(void);
+//moteur.c
 tBoolean CommandHandler(void);
 void initMotorCommand(void);
 void motorTurnCCW(volatile long mnumber);
@@ -122,6 +125,11 @@ int main(void)
  
     //Initialisation des variables globales
     ulLoop = 0;
+    receive_buffer.read=0;
+    receive_buffer.write=0;
+    send_buffer.read=0;
+    send_buffer.write=0;
+    //QEI
     position=0;
     speed=0;
     state=0;
@@ -129,10 +137,7 @@ int main(void)
     state_m3=0;
     position_m2=0;
     position_m3=0;
-    receive_buffer.read=0;
-    receive_buffer.write=0;
-    send_buffer.read=0;
-    send_buffer.write=0;
+    //Asservissement
     previous_error0=0;
     previous_error1=0;
     previous_error2=0;
@@ -147,65 +152,60 @@ int main(void)
     consigne3=0;
     //Pour les déplacements rapides @6400
     Kd0 = 0.1;
-    Ki0 = 7;//5.64;
+    Ki0 = 7;
     Kp0 = 1.75;
-    Tf0 = 0.1;
     Kd1 = 0.1;
-    Ki1 = 7;//5.64;
+    Ki1 = 7;
     Kp1 = 1.75;
-    Tf1 = 0.1;
     Kd2 = 0.1;
-    Ki2 = 7;//5.64;
+    Ki2 = 7;
     Kp2 = 1.75;
-    Tf2 = 0.1;
     Kd3 = 0.1;
-    Ki3 = 7;//5.64;
+    Ki3 = 7;
     Kp3 = 1.75;
+    Tf0 = 0.1;
+    Tf1 = 0.1;
+    Tf2 = 0.1;
     Tf3 = 0.1;
 	//Pour les déplacements moyens @3200
     Kd0_m = 0.05;
-    Ki0_m = 10;//5.64;
+    Ki0_m = 10;
     Kp0_m = 1.6;
-    Tf0_m = 0.1;
     Kd1_m = 0.05;
-    Ki1_m = 10;//5.64;
+    Ki1_m = 10;
     Kp1_m = 1.5;
-    Tf1_m = 0.1;
     Kd2_m = 0.05;
-    Ki2_m = 10;//5.64;
+    Ki2_m = 10;
     Kp2_m = 1.5;
-    Tf2_m = 0.1;
     Kd3_m = 0.05;
-    Ki3_m = 10;//5.64;
+    Ki3_m = 10;
     Kp3_m = 1.6;
-    Tf3_m = 0.1;
     //Pour les mouvements lents @1600
     Kd0_s = 0.05;
-    Ki0_s = 12;//5.64;
+    Ki0_s = 12;
     Kp0_s = 1.2;
     Kd1_s = 0.05;
-    Ki1_s = 12;//5.64;
+    Ki1_s = 12;
     Kp1_s = 1.2;
     Kd2_s = 0.05;
-    Ki2_s = 12;//5.64;
+    Ki2_s = 12;
     Kp2_s = 1.2;
     Kd3_s = 0.2;
-    Ki3_s = 12;//5.64;
+    Ki3_s = 12;
     Kp3_s = 1.2;
 	//Pour les mouvements de dessin @800
 	Kd0_d = 0.2;
-    Ki0_d = 10;//5.64;
+    Ki0_d = 10;
     Kp0_d = 1.2;
-    //Kd1_d = 0.05;
-    //Ki1_d = 10;//5.64;
-    //Kp1_d = 1.2;
-    //Kd2_d = 0.05;
-    //Ki2_d = 10;//5.64;
-    //Kp2_d = 1.2;
+    Kd1_d = 0.05;
+    Ki1_d = 10;
+    Kp1_d = 1.2;
+    Kd2_d = 0.05;
+    Ki2_d = 10;
+    Kp2_d = 1.2;
     Kd3_d = 0.2;
-    Ki3_d = 10;//5.64;
+    Ki3_d = 10;
     Kp3_d = 1.2;
-
     /*Kd0_s = 0.05;
     Ki0_s = 12;//5.64;
     Kp0_s = 1.2;
@@ -219,10 +219,6 @@ int main(void)
     Ki3_s = 12;//5.64;
     Kp3_s = 1.2;*/
     dt = 0.1;
-    slow_brake_pente = 1;
-    slow_start_pente = 1;
-    slow_brake = false;
-    slow_start = false;
     tolerancePos = 0;
     posqei1 = 0;
     speedqei1=0;
@@ -231,6 +227,7 @@ int main(void)
     
 
 
+	initCommande();
 	initMotorCommand();
 	initPWM();
     initUART();
@@ -239,10 +236,7 @@ int main(void)
     //init_lcd();
     initTimer();
     
-    receive_buffer.read=0;
-    receive_buffer.write=0;
-    send_buffer.read=0;
-    send_buffer.write=0;
+
 
     while(1)
 	{
@@ -261,8 +255,8 @@ int main(void)
 			UART0_DR_R = send_buffer.buffer[send_buffer.read%BUFFER_LEN];
 			send_buffer.read++;
 		}
-		
-		//UARTHandler(); //Gère les traitements du UART
-		//CommandHandler(); //Traitement des commandes
+		if(receive_buffer.write - receive_buffer.read > 7){
+			CommandHandler(); //Traitement des commandes
+		}
 	}
 }

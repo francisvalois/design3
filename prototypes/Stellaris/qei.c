@@ -13,8 +13,6 @@
 volatile unsigned long state, state_m2, state_m3; //États des encodeurs (m2 = moteur2, m3=moteur3)
 volatile unsigned long previous_status, previous_state_m2, previous_state_m3; //Pour le traitement des encodeurs
 volatile long position_m0, position_m1, position_m2, position_m3; //Position des moteurs m2, m3
-//volatile unsigned long speed_table[300];
-//volatile unsigned long pos_table[300];
 
 extern volatile float dt;
 
@@ -24,7 +22,7 @@ extern volatile float dt;
 void initQEI(void){
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC); //PhA sur C4 et PhB sur C6
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_QEI0);
-	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+	SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE); //PhA sur E3 et PhB sur E2
 	SysCtlPeripheralEnable(SYSCTL_PERIPH_QEI1);
 	
 	//init QEI0 du micro pour moteur 0
@@ -61,13 +59,6 @@ void initQEI(void){
 	GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_BOTH_EDGES);
 	GPIOPinIntEnable(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
 	IntEnable(INT_GPIOE);
-	
-	//En cas que les QEI matérielles marchent pas
-	/*GPIOPadConfigSet(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
-	GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
-	GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_BOTH_EDGES);
-	GPIOPinIntEnable(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
-	IntEnable(INT_GPIOE);*/
 	
 	position_m0 = 0;
 	position_m1 = 0;
@@ -134,3 +125,14 @@ void EncoderHandler(){
 	}
 }
 
+/*
+ * Fonction qui reset les QEIs
+ */
+void resetQEIs(void){
+	QEIPositionSet(QEI0_BASE,0);
+	QEIPositionSet(QEI1_BASE,0);
+	position_m2 = 0;
+	position_m3 = 0;
+	previous_state_m2 = 0;
+	previous_state_m3 = 0;
+}
