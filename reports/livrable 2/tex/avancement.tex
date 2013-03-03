@@ -36,6 +36,7 @@ L'alimentation du Mac mini a été réalisé au moyen d'un circuit de type Boost
 \caption{Figure présentant une photo de l'alimentation 24V pour les périphériques}
 \end{figure}
 
+
 \section{Asservissement des moteurs}
 \subsection{Modélisation}
 L'optimisation des paramètres de réglage a été réalisée grâce à l'utilisation d'un outil de CAO élaboré au moyen de Matlab-Simulink. La fonction de transfert des moteurs a été identifiée au moyen d'une réponse à l'échelon et de l'outil \textit{ident} de Matlab. L'ordre choisi de la fonction est élevé et présente une concordance de 94\% avec la réponse obtenue expérimentalement. L'outil \textit{pidtool} permet par la suite de configurer adéquatement le PIDF et d'obtenir la réponse souhaitée et les paramètres associés. Suivant ces paramètres, le PIDF présent dans le microcontrôleur est ajusté.
@@ -128,20 +129,23 @@ L'algorithme est à présent fonctionnel. Il peut trouver une solution à des su
 \section{Recherche de chemin}
 La fonctionnalité recherche de chemin n’en est encore qu’au stade prototype. Cette fonctionnalité n'a pas reçu beaucoup d'attention depuis le livrable 1. On pourrait donc se fier aux données énoncées dans ce livrable pour connare l'état de la recherche de chemin: "L'algorithme A* a été choisi, car il est très rapide et facile à implémenter". Nous savons que la solution développée dans le prototype est viable, mais il reste du travail à faire pour que ce soit fonctionnel. Il faudra entre autres ajouter une couche logicielle afin de réduire le nombre de points dans le chemin trouvé et ainsi réduire le nombre de rotations du robot.
 
+\section{Communication microcontrôleur - Mac mini}
 
+La communication entre le Mac mini a été réalisée avec un port série UART avec protocole RS-232 à travers le module ICDI du microcontrôleur LM3S9B92. Nous avons choisi ce protocole en raison de sa simplicité et de la facilité du déverminage par rapport au protocole USB plus complexe. Une interface de communication qui passe des commandes sous forme de caractères a été développée du côté microcontrôleur. Un terminal série écrit en Python et utilisant la librairie Pyserial a été développé du côté ordinateur. Ce terminal pour usage diagnostique est compatible avec Linux et Windows et permet de récolter des données utiles sous forme de fichiers CSV pour le développement et les tests d'asservissement et de décodage d'antenne. Le terminal final aura une forme légèrement différente afin de s'interfacer avec ROS.
 
+\section{Décodage du signal Manchester - partie logicielle}
 
+Le décodage logiciel du signal de l'antenne doit transformer les bits en encodage Manchester en bits traditionnels. La méthode choisie doit être robuste aux changements de taux de transmission de bits, car il est spécifié dans la description du projet que ce taux peut varier de plus ou moins 50 bits / seconde. Parmis les algorithmes permettant de détecter des signaux de taux de transmission inconnu, il en existe deux types principaux : 
 
+\begin{enumerate}
+\item{Les algorithmes basés sur l'échantillonnage}
 
+On effectue une mesure du signal à un intervalle prédéfini plus petit que la période du signal mesuré. C'est le décompte des bits consécutifs à zéro et à un qui permet de décoder le signal.
 
+\item{Les algorithmes basés sur les timings} 
 
+On effectue une mesure du temps entre les transitions du signal de zéro à un et de un à zéro. C'est le temps entre les montées et descentes qui permet de décoder le signal.
+\end{enumerate}
 
-
-
-
-
-
-
-
-
+Puisque le LM3S9B92 possède des compteurs d'usage général qui implémentent une fonction de capture d'événement, nous avons choisi d'utiliser la méthode par timings. Pour l'instant, nous pouvons mesurer des temps entre transitions sur un signal interne au microcontrôleur généré par un PWM.
 
