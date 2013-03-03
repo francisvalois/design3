@@ -77,6 +77,9 @@ Le PID utilisé pour l'asservissement est une courte fonction réalisée dans le
 \subsubsection{Ajustement de la vitesse selon la positon}
 Comme indiqué précédemment, pour que le robot atteigne la consigne de position, la vitesse de la rotation des roues doit être ajustée selon la distance restante entre le robot et le point de destination. Cette ajustement est implanté par une simple multiplication d'un certains pourcentage avec la consigne de vitesse lorsque la distance restante à parcourir sera de "X" $tour^{-1}$. Le pourcentage utilisée présentement est hypothétique et sera ajusté lorsque les courbes de décélérations discutée dans la section \ref{s:ass_implantation_pratique} seront identifiées.
 
+\section{Servomoteurs de la Webcam}
+Pour contrôler les servomoteurs de la webcam, nous utilisons le contrôleur Micro Maestro de Pololu. Pour le programmer/configurer nous utilisons l'application "Maestro Control Center". Les servomoteurs et le Micro Maestro sont alimentés par l'alimentation 5V. De plus, les servomoteurs reprennent une position prédéterminée lorsque que ceux-ci et le Micro Maestro sont alimentés et restent fixes pour permettre à la Webcam de rester immobile même lorsque le robot est en mouvement. Prochainement, un script sera implanté dans le Micro Maestro à l'aide du "Maestro Control Center" pour transmettre par USB une commande du Mac Mini au contrôleur un changement de position des servomoteurs. Cela a pour but de changer l'angle de la Webcam par rapport au sol. Ce changement est nécessaire pour détecter l'orientation du robot.
+
 \section{Extraction des sudocubes}
 \subsection{Composantes du système}
 L'algorithme pour extraire les sudocubes est séparé en deux : une classe qui traite une photo afin d'extraire les informations d'un sudocube et un lecteur de chiffres. L'extracteur de sudocubes passe des images au lecteur de chiffres afin d'identifier le chiffre présent.
