@@ -37,7 +37,7 @@ L'alimentation du Mac mini a été réalisé au moyen d'un circuit de type Boost
 
 \section{Asservissement des moteurs}
 \subsection{Modélisation}
-L'optimisation des paramètres de réglage a été réalisée grâce à l'utilisation d'un outil de CAO élaboré au moyen de Matlab-Simulink. La fonction de transfert des moteurs a été identifiée au moyen d'une réponse à l'échelon et de l'outil \textit{ident} de Matlab. L'ordre choisi de la fonction est élevé et présente une concordance de 94\% avec la réponse obtenue expérimentalement. L'outil \textit{pidtool} permet par la suite de configurer adéquatement le PIDF et d'obtenir la réponse souhaitée et les paramètres associés. Suivant ces paramètres, le PIDF présent dans le micontrôleur est ajusté.
+L'optimisation des paramètres de réglage a été réalisée grâce à l'utilisation d'un outil de CAO élaboré au moyen de Matlab-Simulink. La fonction de transfert des moteurs a été identifiée au moyen d'une réponse à l'échelon et de l'outil \textit{ident} de Matlab. L'ordre choisi de la fonction est élevé et présente une concordance de 94\% avec la réponse obtenue expérimentalement. L'outil \textit{pidtool} permet par la suite de configurer adéquatement le PIDF et d'obtenir la réponse souhaitée et les paramètres associés. Suivant ces paramètres, le PIDF présent dans le microcontrôleur est ajusté.
 \paragraph{}L'usage de l'outil interactif permet d'optimiser la réponse et d'obtenir des paramètres de préréglages qui limitent le nombre d'itérations. La réponse obtenue logiciellement est présentée à la figure \ref{fig:as_1}
 \begin{figure}[htbp]
 \centering
@@ -46,7 +46,8 @@ L'optimisation des paramètres de réglage a été réalisée grâce à l'utilis
 \caption{Figure présentant la réponse à un échelon de consigne de 6400$\left[tours^{-1}s^{-1}\right]$ du système régulé au moyen du régulateur optimisé dans simulink}
 \end{figure}
 \subsection{Implantation pratique}
-La réponse à un échelon de consigne de 6400 ($tours^{-1} s^{-1}$) avec les paramètres de réglage réels est présentée à la figure \ref{fig:as_2}
+\label{s:ass_implantation_pratique}
+La réponse à un échelon de consigne de 6400 ($tours^{-1} s^{-1}$) avec les paramètres de réglage réels est présentée à la figure \ref{fig:as_2}. À noter que les consignes en $tours^{-1} s^{-1}$ indique la vitesse en nombre de 1/6400 de tours de roue. Cette fraction de tour est due au fait que les interfaces d'encodeurs en quadratures captent 6400 transitions par tour complet de roue (voir la sous-section \ref{asservissement_mesures} pour plus de détails).
 Le système a été implanté avec un asservissement en vitesse et sans asservissement de position. Les expériences pratiques réalisées montrent que l'évolution de la position est linéaire, et ce, sans asservissement. La figure \ref{fig:as_3} présente ce phénomène pour une consigne de 6400 ($tours^{-1} s^{-1}$) qui vise à amener le système à une position de 9100 $tours^{-1}$.
 En utilisant les paramètres obtenus dans Matlab comme point de départ, les paramètres de réglages ont été modifiés de manière à obtenir des réponses remplissant les critères de stabilité, de vitesse et de dépassement souhaités. Afin d'améliorer la vitesse des déplacements, différents PID ont été ajustés selon différentes vitesses d'asservissement. On compte 3 de ces PID pour les déplacements unilatéraux et 1 déplacement réservé pour les mouvements reliés au dessin. La différence est que la vitesse de dessin est beaucoup plus basse que celle du déplacement usuel en vue de permettre une plus grande précision. Le moteur n'étant plus très linéaire à ces faibles vitesses (roulement et zone morte très limitants) et le système étant incapable de démarrer de lui même pour procéder à l'identification, le PID a donc été ajusté de manière manuelle, par itérations. Les PID sont fonctionnels et les systèmes stables, cependant, la décélération avant l'arrêt et le positionnement critique se font par l'entremise d'un palier de ralentissement à une vitesse intermédiaire avant freinage. Ces courbes de décélérations sont à mettre au point avant de pouvoir entamer le contrôle en dessin. Par ailleurs, les mouvements en diagonale ne sont pas encore parfaitement au point et requièrent quelques heures de travail additionnelles.
 \begin{figure}[htbp]
@@ -61,6 +62,20 @@ En utilisant les paramètres obtenus dans Matlab comme point de départ, les par
 \label{fig:as_3}
 \caption{Figure présentant la réponse à un échelon de consigne de 6400$\left[tours^{-1}s^{-1}\right]$ du système régulé au moyen du régulateur réel et de la réponse en position associée}
 \end{figure}
+\subsection{Implantation électronique}
+\subsubsection{Les prises de mesures}
+\label{asservissement_mesures}
+Pour prendre des mesures de positions et de vitesses pour effectuer l'asservissement, nous utilisons deux QEI (Quadrature Encoder Interface) matériels qui sont sur le microcontrôleur. Ces deux interfaces prennent en entré les sorties des encodeurs situés sur les moteurs et captent les transitions lors de la rotation des moteurs. Puisqu'il y a deux senseurs placées en quadrature sur chaque moteurs, on peut détecter la direction de la rotation des moteurs. À prendre note qu'un signal transmis par un encodeur contient 64 transitions par tour complet de moteur et que le ratio de la rotation moteur:roue est 100:1. Un signal transmis par un encodeur contient alors 6400 transitions pour une rotation complète de roue. Pour les deux autres moteurs, nous avons réalisé deux interfaces d'encodeurs en quadratures logicielles à l'aide de deux broches d'entrées/sorties par interface, de courtes interruptions et d'une machine à états. Les interruptions sont lancées lorsqu'une transition est détectée sur l'une des broches. L'état des broches est alors lue et sauvegardé pour être traitée par la machine à états. La machine à états utilisée est illustrée à la figure \ref{fig:cytron_machine_etats}. Les 0 et 1 indiqué dans les cercles identifie l'état logique des broches. Les -1 ou +1 tracés au dessus des transitions indiquent s'il faut incrémenter ou décrémenter la position de la roue en rotation.
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=1]{fig/cytron_machine_etats.png}
+\label{fig:cytron_machine_etats}
+\caption{Machine à états servant d'interface d'encodeur en quadrature (Cytron. Quadrature Encoder. \url{http://tutorial.cytron.com.my/2012/01/17/quadrature-encoder/}, consulté le 3 mars.)}
+\end{figure}
+\subsubsection{PID}
+Le PID utilisé pour l'asservissement est une courte fonction réalisée dans le microcontrôleur. Cette fonction se retrouve dans l'annexe \ref{s:fonction_PID}. À prendre note que l'argument "I" est l'intégrale de l'erreur et "dt" est la différence en temps entre chaque exécution de l'asservissement des moteurs. Cette fonction est exécutée individuellement pour chaque moteur. Des pointeurs transmis en argument indiquent l'emplacement en mémoire des valeurs de chaque moteurs utilisées dans le PID. Ensuoite, la fréquence d'exécution de la fonction est gardée constante à l'aide d'un timer dans le microcontrôleur qui déclenche une interruption à chaque période et lance l'exécution de l'asservissement.
+\subsubsection{Ajustement de la vitesse selon la positon}
+Comme indiqué précédemment, pour que le robot atteigne la consigne de position, la vitesse de la rotation des roues doit être ajustée selon la distance restante entre le robot et le point de destination. Cette ajustement est implanté par une simple multiplication d'un certains pourcentage avec la consigne de vitesse lorsque la distance restante à parcourir sera de "X" $tour^{-1}$. Le pourcentage utilisée présentement est hypothétique et sera ajusté lorsque les courbes de décélérations discutée dans la section \ref{s:ass_implantation_pratique} seront identifiées.
 
 \section{Extraction des sudocubes}
 \subsection{Composantes du système}
