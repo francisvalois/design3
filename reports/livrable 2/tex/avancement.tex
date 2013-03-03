@@ -128,23 +128,6 @@ L'algorithme est à présent fonctionnel. Il peut trouver une solution à des su
 \section{Recherche de chemin}
 La fonctionnalité recherche de chemin n’en est encore qu’au stade prototype. Cette fonctionnalité n'a pas reçu beaucoup d'attention depuis le livrable 1. On pourrait donc se fier aux données énoncées dans ce livrable pour connare l'état de la recherche de chemin: "L'algorithme A* a été choisi, car il est très rapide et facile à implémenter". Nous savons que la solution développée dans le prototype est viable, mais il reste du travail à faire pour que ce soit fonctionnel. Il faudra entre autres ajouter une couche logicielle afin de réduire le nombre de points dans le chemin trouvé et ainsi réduire le nombre de rotations du robot.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
 \section{Communication microcontrôleur - Mac mini}
 
 La communication entre le Mac mini a été réalisée avec un port série UART avec protocole RS-232 à travers le module ICDI du microcontrôleur LM3S9B92. Nous avons choisi ce protocole en raison de sa simplicité et de la facilité du déverminage par rapport au protocole USB plus complexe. Une interface de communication qui passe des commandes sous forme de caractères a été développée du côté microcontrôleur. Un terminal série écrit en Python et utilisant la librairie Pyserial a été développé du côté ordinateur. Ce terminal pour usage diagnostique est compatible avec Linux et Windows et permet de récolter des données utiles sous forme de fichiers CSV pour le développement et les tests d'asservissement et de décodage d'antenne. Le terminal final aura une forme légèrement différente afin de s'interfacer avec ROS.
@@ -164,5 +147,4 @@ On effectue une mesure du temps entre les transitions du signal de zéro à un e
 \end{enumerate}
 
 Puisque le LM3S9B92 possède des compteurs d'usage général qui implémentent une fonction de capture d'événement, nous avons choisi d'utiliser la méthode par timings. Pour l'instant, nous pouvons mesurer des temps entre transitions sur un signal interne au microcontrôleur généré par un PWM.
->>>>>>> ajout ma partie dans avancement
 

@@ -76,9 +76,37 @@
     & & & & & 									
      \\\
     & & & & & 																										\\\hline
+    \multirow{4}{4cm}{\centering Décodage Manchester} & \multirow{4}{5cm}{\centering Transformer le signal d'onde carrée de type Manchester en bits traditionnels }& \multirow{4}{5cm}{\centering Être robuste aux variations de $\pm$ 50 bits/du taux de transmission}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Récepteur Manchester}& \multirow{3}{5cm}{\centering Vérifier que le signal peut être décodé pour tous les cas, à des vitesses de transmission de 1450 à 1550 bits/s}\\\cline{5-5}
+    & & &  																											& Microcontrôleur & \\\
+    & & &  																											& Antenne & \\\
+    & & & & \\\
+    & & & & & 									
+     \\\
+    & & & & & 																										\\\hline
 
+    \multirow{4}{4cm}{\centering Communication Microcontrôleur - Mac mini} & \multirow{4}{5cm}{\centering Transmettre les commandes du Mac mini vers le microcontôleur via un port série}& \multirow{4}{5cm}{\centering Être robuste au bruit causé par le fonctionnement des moteurs}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel pour ses déplacements}& \multirow{3}{5cm}{\centering Vérifier que les commandes passent du Mac mini au microcontrôleur et que les mécanismes de vérification et de gestion des erreurs de communication sont efficaces}\\\cline{5-5}
+    & & &  																											& & \\\
+    & & &  																											& & \\\
+    & & & & \\\
+    & & & & & 									
+     \\\
+    & & & & & 																										\\\hline
+
+    \multirow{4}{4cm}{\centering Asservissement basse vitesse} & \multirow{4}{5cm}{\centering Dessin des chiffres solution}& \multirow{4}{5cm}{\centering Être capable de dessiner les chiffres en respectant la marge de 1cm de chaque côté de la ligne}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel avec dessins hardcodés}& \multirow{3}{5cm}{\centering Vérifier que l'asservissement en basse vitesse est suffisamment précis pour permettre le dessin de tous les chiffres en respectant les contraintes}\\\cline{5-5}
+    & & &  																											& Papier & \\\
+    & & &  																											& Table de test & \\\
+    & & & & \\\
+    & & & & & 									
+     \\\
+    & & & & & 																										\\\hline
     
-    
+    \multirow{4}{4cm}{\centering Asservissement haute vitesse} & \multirow{4}{5cm}{\centering Déplacement}& \multirow{4}{5cm}{\centering Être capable de se déplacer assez vite sans glissement}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel dans ses déplacements}& \multirow{3}{5cm}{\centering Vérifier que l'asservissement en haute vitesse a une bonne vitesse tout en évitant les oscillations et les glissements au départ et à l'arrêt}\\\cline{5-5}
+    & & &  																											&  & \\\
+    & & &  																											& & \\\
+    & & & & \\\
+    & & & & & 									
+     \\\
+    & & & & & 																										\\\hline    
     
     
    \end{tabular}}%
