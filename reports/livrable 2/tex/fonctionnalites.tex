@@ -8,126 +8,140 @@
 \chapter{Description des propriétés fonctionnelles}
 \label{s:fonctionnelles}
 Pour simplifier la lecture du tableau de la description des propriétés fonctionnelles, celui-ci a été séparé en trois pages selon trois différentes sections: vision et traitement numérique (présenté dans le tableau \ref{tab:dpf1}), communication et déplacement (présenté dans le tableau \ref{tab:dpf2}) ainsi qu'alimentation et affichage (présenté dans le tableau \ref{tab:dpf3}). 
-\begin{landscape}
 
-\eject \pdfpagewidth=15in \pdfpageheight=13in
-\hoffset
+\newlength{\hcolw}
+\setlength{\hcolw}{\textwidth}
+\eject \pdfpagewidth=15.7in \pdfpageheight=10in
+\textwidth=13.7in
+
 \begin{table}[!ht]
 \centering
+	\begin{minipage}[c]{13.8in}
 	\caption{Description des propriétés fonctionnelles: section "Vision et Traitement Numérique"} 
 	\label{tab:dpf1}
 	\small
 	\scalebox{0.8}{
 	\tabcolsep=0.11cm
-	\begin{tabular}{|Z{\raggedright}{m}{6.5cm}||Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|} 
+	\begin{tabular}{|Z{\raggedright}{m}{6.5cm}||Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{2.3cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|} 
 		
-		\cline{2-10}
-		\multicolumn{1}{c}{} 																						& \multicolumn{9}{|c|}{\textbf{Fonctionnalités}} \\ \cline{2-10}
-		\multicolumn{1}{c}{} 																						& \multicolumn{3}{|c}{Vision numérique} 																		& \multicolumn{6}{|c|}{Traitement numérique}																																											\\ \cline{2-10}
-		\multicolumn{1}{c}{} 																						& \multicolumn{1}{|Z{\centering}{m}{2cm}|}{Détecter obstacles} 	& Localiser le robot 	& Lire le cube 			& Calculer la trajectoire optimale 	& \multicolumn{2}{Z{\centering}{m}{4cm}|}{Contrôler le robot pour le dessin} 	& Décoder le signal d'antenne 	& Choisir le cube selon le signal d'antenne & Résoudre le sudocube \\ \hline
-		\centering\textbf{Exigences du client}																		& Temps de calcul (s) 											& Taux d'erreur (\%) 	& Temps de calcul (s) 	& Temps de calcul (s) 				& Temps de calcul (s) 	& Taux d'erreur (\%) 									& 								& 											& Temps de calcul (s) 	\\ \hline  \hline
-		Être autonome pendant un minimum de 10 minutes 																& 3 & 2 & 5 & 2 & 3 & 3 & 2 & 4 & 2 \\ \hline
-		Se déplacer selon la trajectoire optimale																	& 5 & 5 &  & 5 &  & 3 & 3 &  & 3 \\ \hline
-		Effectuer une séquence complète en moins de 10 minutes 														& 5 & 5 & 5 & 5 & 5 &  &  & 3 & 3 \\ \hline
-		Alimenter le Mac mini avec une tension de 22V à 30V et ondulation de tension inférieure à 200 mV 			&  &  &  &  &  &  &  &  &  \\ \hline
-		Résoudre sudocube 																							&  &  & 5 &  &  &  &  &  & 5 \\ \hline
-		Dessiner le chiffre selon le signal d'antenne dans une zone prédéfinie (jaune) avec une précision de ± 1cm 	&  &  &  &  & 5 &  &  &  &  \\ \hline
-		Éviter les obstacles ainsi que les murs de la table															& 5 & 5 &  & 3 &  &  &  &  &  \\ \hline 
-		Décoder le signal d'antenne																					&  &  &  &  &  &  & 5 &  &  \\ \hline
-		Analyser le bon cube selon le signal d'antenne 																&  &  &  &  &  &  &  & 5 & 5 \\ \hline 
-		Utiliser la communication sans fil 																			&  &  &  &  &  &  &  &  &  \\ \hline 
-		Concevoir un système de préhension pour le crayon 															&  &  &  &  &  & 3 &  &  &  \\ \hline 
-		Afficher position réelle																					&  & 5 &  &  &  &  &  &  &  \\ \hline
-		Afficher la trajectoire optimale 																			& 5 & 5 &  & 5 &  &  & 3 & 3 &  \\ \hline
-		Afficher le cube résolu et le chiffre de la case rouge sur la base 											&  &  & 5 &  &  &  &  &  & 5 \\ \hline 
-		Allumer une DEL lorsque tâche terminée 																		&  &  &  &  &  &  &  &  &  \\ \hline 
-		Afficher message de fin 																					&  &  &  &  &  &  &  &  &  \\ \hline
-		Afficher message de départ 																					&  &  &  &  &  &  &  &  &  \\ \hline 
-		Afficher trajectoire réelle avec un délai maximum de 15s 													&  & 5 &  &  &  &  &  &  &  \\ \hline 
-		Afficher les informations sur le robot 																		&  &  &  &  &  &  &  &  &  \\ \hline 
-		Le robot doit se retirer de la zone de dessin une fois celui-ci terminée									&  &  &  &  &  &  &  &  &  \\ \hline 
-		Respecter un budget de 250\$ 																				&  &  &  &  &  &  & 3 &  &  \\ \hline 
-		Respecter l'échéancier																						& 5 & 5 & 5 & 3 & 1 & 5 & 3 & 3 & 5 \\ \hline
+		\cline{2-19}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{18}{c|}{\textbf{Fonctionnalités}} \\ \cline{2-19}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{10}{c|}{Vision numérique} 																		& \multicolumn{8}{c|}{Traitement numérique}																																											\\ \cline{2-19}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{3}{Z{\centering}{m}{5cm}|}{Détecter obstacles} 	& \multicolumn{4}{Z{\centering}{m}{7cm}|}{Localiser le robot} 		& \multicolumn{3}{Z{\centering}{m}{5cm}|}{Lire le cube} 			&  \multicolumn{2}{Z{\centering}{m}{4cm}|}{Calculer la trajectoire optimale}	& \multicolumn{2}{Z{\centering}{m}{4cm}|}{Contrôler le robot pour le dessin} 	& Décoder le signal d'antenne 	& Choisir le cube selon le signal d'antenne & \multicolumn{2}{Z{\centering}{m}{4cm}|}{Résoudre le sudocube}  \\ \hline
+		\centering\textbf{Exigences du client}																		& Temps de calcul (s) & Précision en X (cm) & Précision en Z (cm) & Temps de calcul (s) & Précision en X (cm) & Précision en Z (cm) & Précision angulaire ($^o$)  & Temps de calcul (s) 	& Distance min (m) & Distance max(m) & Temps de calcul (s) & Nombre de déplacement maximum & Temps de calcul (s) 	& Précision (cm) 									& 	Nombre de périodes nécessaires	& 											& Temps de calcul (s) 	& Chiffres initiaux minimum\\ \hline  \hline
+		Être autonome pendant un minimum de 10 minutes 																&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Se déplacer selon la trajectoire optimale																	&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Effectuer une séquence complète en moins de 10 minutes 														&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Alimenter le Mac mini avec une tension de 22V à 30V et ondulation de tension inférieure à 200 mV 			&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Résoudre sudocube 																							&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Dessiner le chiffre selon le signal d'antenne dans une zone prédéfinie (jaune) avec une précision de ± 1cm 	&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Éviter les obstacles ainsi que les murs de la table															&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Décoder le signal d'antenne																					&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Analyser le bon cube selon le signal d'antenne 																&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Utiliser la communication sans fil 																			&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Concevoir un système de préhension pour le crayon 															&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Afficher position réelle																					&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Afficher la trajectoire optimale 																			&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Afficher le cube résolu et le chiffre de la case rouge sur la base 											&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Allumer une DEL lorsque tâche terminée 																		&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Afficher message de fin 																					&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Afficher message de départ 																					&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Afficher trajectoire réelle avec un délai maximum de 15s 													&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Afficher les informations sur le robot 																		&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+		Le robot doit se retirer de la zone de dessin une fois celui-ci terminée									&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Respecter un budget de 250\$ 																				&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Respecter l'échéancier																						&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
 	\end{tabular}}
+	\end{minipage}
 \end{table}
 
+\newpage
+\eject \pdfpagewidth=15.7in 
+
 \begin{table}[!ht]
-\centering
+\makebox[\textwidth][c]{
+\begin{minipage}[c]{12.5in}
 	\caption{Description des propriétés fonctionnelles: section "Communication et Déplacement"} 
 	\label{tab:dpf2}
 	\small
 	\scalebox{0.8}{
 	\tabcolsep=0.11cm
-	\begin{tabular}{|Z{\raggedright}{m}{6.2cm}||Z{\centering}{m}{2cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{1.8cm}|Z{\centering}{m}{2.5cm}|Z{\centering}{m}{2.5cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|} 
+	\begin{tabular}{|Z{\raggedright}{m}{6.2cm}||Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{2.5cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{1.5cm}|} 
 		
-		\cline{2-11}
-		\multicolumn{1}{c|}{} 																						& \multicolumn{10}{c|}{\textbf{Fonctionnalités}} \\ \cline{2-11}
-		\multicolumn{1}{c|}{} 																						& \multicolumn{8}{c|}{Communication} & \multicolumn{2}{c|}{Déplacement}\\ \cline{2-11}
-		\multicolumn{1}{c|}{} 																						& \multicolumn{1}{Z{\centering}{m}{2cm}|}{Recevoir le signal d'antenne} & Communiquer entre le robot et la station de base & Communiquer entre le Mac mini et le microcontrôleur & Commander les moteurs & Transmettre les images de la Kinect vers le Mac & Transmettre les images de la caméra vers le Mac & Contrôler la position de la caméra & Commander le préhenseur du crayon & \multicolumn{2}{Z{\centering}{m}{3cm}|}{Se déplacer sans toucher aux obstacles} \\ \hline
-		\centering\textbf{Exigences du client}																		&  & Vitesse (Mo/s) & Vitesse (bits/s) &  &  &  &  & & Résolution (Degrés) & Vitesse (m/s) \\ \hline  \hline
-		Être autonome pendant un minimum de 10 minutes 																& 4 & 3 & 5 & 5 & 5 & 5 & 1 & 4 & 3 & 1 \\ \hline 
-		Se déplacer selon la trajectoire optimale																	& 3 &  & 3 & 5 & 5 & 2 &  &  & 5 & 5 \\ \hline  
-		Effectuer une séquence complète en moins de 10 minutes 														& 5 &  & 3 & 4 & 5 &  &  &  & 5 & 5 \\ \hline 
-		Alimenter le Mac mini avec une tension de 22V à 30V et une ondulation de tension inférieure à 200 mV 		&  &  &  &  &  &  &  &  &  &  \\ \hline 
-		Résoudre sudocube 																							&  &  &  &  &  & 3 & 1 &  &  &  \\ \hline  
-		Dessiner le chiffre selon le signal d'antenne dans une zone prédéfinie (jaune) avec une précision de ± 1cm 	&  &  & 5 & 5 & 3 &  &  & 5 & 5 & 5 \\ \hline  
-		Éviter les obstacles ainsi que les murs de la table															&  &  & 5 & 3 & 5 & 4 &  &  & 5 &  \\ \hline  
-		Décoder le signal d'antenne																					&  &  & 2 &  &  &  &  &  &  &  \\ \hline 
-		Analyser le bon cube selon le signal d'antenne 																& 5 &  &  &  &  &  &  &  &  &  \\ \hline 
-		Utiliser la communication sans fil 																			&  & 5 &  &  & 5 &  &  &  &  &  \\ \hline 
-		Concevoir un système de préhension pour le crayon 															&  &  &  &  &  &  &  & 5 &  &  \\ \hline  
-		Afficher position réelle																					&  & 5 & 5 &  & 5 &  &  &  &  &  \\ \hline  
-		Afficher la trajectoire optimale 																			& 3 & 5 & 3 &  & 5 &  &  &  &  &  \\ \hline  
-		Afficher le cube résolu et le chiffre de la case rouge sur la base											&  & 5 &  &  &  & 3 &  &  &  &  \\ \hline  
-		Allumer une DEL lorsque tâche terminée 																		&  &  & 5 &  &  &  &  &  &  &  \\ \hline  
-		Afficher message de fin 																					&  & 5 &  &  &  &  &  &  &  &  \\ \hline 
-		Afficher message de départ 																					&  & 5 &  &  &  &  &  &  &  &  \\ \hline  
-		Afficher trajectoire réelle avec un délai maximum de 15s 													&  & 5 & 5 &  & 5 &  &  &  &  &  \\ \hline 
-		Afficher les informations sur le robot 																		&  &  & 5 &  &  &  &  &  &  &  \\ \hline 
-		Le robot doit se retirer de la zone de dessin une fois celui-ci terminée									&  &  & 5 & 5 &  &  &  &  & 5 &  \\ \hline 
-		Respecter un budget de 250\$ 																				& 3 &  & 1 & 5 &  &  &  & 2 &  &  \\ \hline 
-		Respecter l'échéance																						& 3 & 3 & 3 & 5 & 5 & 3 & 1 & 5 & 3 & 3 \\ \hline 
+		\cline{2-14}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{13}{c|}{\textbf{Fonctionnalités}} \\ \cline{2-14}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{11}{c|}{Communication} & \multicolumn{2}{c|}{Déplacement}\\ \cline{2-14}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{1}{Z{\centering}{m}{2cm}|}{Recevoir le signal d'antenne} & \multicolumn{2}{Z{\centering}{m}{4cm}|}{Communiquer entre le robot et la station de base}  & Communiquer entre le Mac mini et le microcontrôleur & \multicolumn{2}{Z{\centering}{m}{3cm}|}{Commander les moteurs} & Transmettre les images de la Kinect vers le Mac & Transmettre les images de la caméra vers le Mac & \multicolumn{2}{Z{\centering}{m}{3cm}|}{Contrôler la position de la caméra}  & Commander le préhenseur du crayon & \multicolumn{2}{Z{\centering}{m}{3.5cm}|}{Se déplacer sans toucher aux obstacles} \\ \hline
+		\centering\textbf{Exigences du client}																		&  & Vitesse (Mo/s) & Latence (ms) &Vitesse (bits/s) &  Précision (cm) &  Temps de réponse (s) & Taux de transfert (images/s) & Taux de transfert(images/s) & Temps de réponse (s) & Précision (degré) & Temps de réponse (s) & Résolution (Degrés) & Vitesse (m/s) \\ \hline  \hline
+		Être autonome pendant un minimum de 10 minutes 																&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Se déplacer selon la trajectoire optimale																	&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline   
+		Effectuer une séquence complète en moins de 10 minutes 														&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Alimenter le Mac mini avec une tension de 22V à 30V et une ondulation de tension inférieure à 200 mV 		&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Résoudre sudocube 																							&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline   
+		Dessiner le chiffre selon le signal d'antenne dans une zone prédéfinie (jaune) avec une précision de ± 1cm 	&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Éviter les obstacles ainsi que les murs de la table															&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Décoder le signal d'antenne																					&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Analyser le bon cube selon le signal d'antenne 																&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Utiliser la communication sans fil 																			&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Concevoir un système de préhension pour le crayon 															&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline   
+		Afficher position réelle																					&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Afficher la trajectoire optimale 																			&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline   
+		Afficher le cube résolu et le chiffre de la case rouge sur la base											&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Allumer une DEL lorsque tâche terminée 																		&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline   
+		Afficher message de fin 																					&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Afficher message de départ 																					&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Afficher trajectoire réelle avec un délai maximum de 15s 													&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Afficher les informations sur le robot 																		&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Le robot doit se retirer de la zone de dessin une fois celui-ci terminée									&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Respecter un budget de 250\$ 																				&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Respecter l'échéance																						&  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
 	\end{tabular}}
+	\end{minipage}}
 \end{table}
 
+\newpage
+\eject \pdfpagewidth=15.7in 
+
 \begin{table}[!ht]
-\centering
+\makebox[\textwidth][c]{
+\begin{minipage}[c]{12.85in}
 	\caption{Description des propriétés fonctionnelles: section "Alimentation et affichage"} 
 	\label{tab:dpf3}
 	\small
 	\scalebox{0.8}{
 	\tabcolsep=0.11cm
-	\begin{tabular}{|Z{\raggedright}{m}{6.2cm}||Z{\centering}{m}{2cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{2.2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{1.4cm}|Z{\centering}{m}{2.1cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|} 
+	\begin{tabular}{|Z{\raggedright}{m}{6.2cm}||Z{\centering}{m}{1.5cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2.5cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{1.8cm}|Z{\centering}{m}{2.2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{2.1cm}|Z{\centering}{m}{2cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|} 
 		
-		\cline{2-12}
-		\multicolumn{1}{c|}{} 																						& \multicolumn{11}{c|}{\textbf{Fonctionnalités}} \\ \cline{2-12}
-		\multicolumn{1}{c|}{} 																						& \multicolumn{4}{c}{Alimentation} & \multicolumn{7}{|c|}{Affichage}\\ \cline{2-12}
-		\multicolumn{1}{c|}{} 																						& \multicolumn{1}{Z{\centering}{m}{2cm}|}{Utiliser une pile rechargeable} & Alimenter les moteurs & Alimenter le Mac & Alimenter les différents périphériques & Afficher message d'initiation de la tâche & Afficher le cube résolu ainsi que la case rouse & Allumer la DEL lorsque tâche complétée & Afficher la trajectoire optimale & Afficher la position réelle & Afficher message de fin & Afficher sur le LCD\\ \hline
-		\centering\textbf{Exigences du client}																		&  & Puissance (W) & & Ondulation de tension (V) &  &  & & & Temps d'actualisation (s) & & \\ \hline  \hline
-		Être autonome pendant un minimum de 10 minutes 																& 5 & 3 & 3 & 3 &  &  &  &  &  &  & \\ \hline  
-		Se déplacer selon la trajectoire optimale																	& 5 & 5 & 5 & 3 &  &  &  &  &  &  & \\ \hline 
-		Effectuer une séquence complète en moins de 10 minutes 														& 5 & 5 & 5 & 5 &  &  &  &  &  &  & \\ \hline 
-		Alimenter le Mac mini avec une tension de 22V à 30V \textbf{et} une ondulation de tension inférieure à 200 mV & 5 &  & 5 & 5 &  &  &  &  &  &  & \\ \hline 
-		Résoudre sudocube 																							& 5 &  & 5 & 5 &  &  &  &  &  &  & \\ \hline  
-		Dessiner le chiffre selon le signal d'antenne dans une zone prédéfinie (jaune) avec une précision de ± 1cm 	& 3 & 3 & 3 & 3 &  &  &  &  &  &  & \\ \hline 
-		Éviter les obstacles ainsi que les murs de la table															& 3 & 3 & 3 & 3 &  &  &  &  &  &  & \\ \hline 
-		Décoder le signal d'antenne																					& 5 &  & 3 & 5 &  &  &  &  &  &  & 3\\ \hline  
-		Analyser le bon cube selon le signal d'antenne 																& 5 &  & 1 & 3 & 3 & 3 & 3 &  &  &  & \\ \hline 
-		Utiliser la communication sans fil 																			&  &  &  &  &  &  &  &  &  &  & \\ \hline 
-		Concevoir un système de préhension pour le crayon 															&  &  &  &  &  &  &  &  &  &  & \\ \hline 
-		Afficher position réelle																					&  &  & 3 & 3 &  &  &  &  & 5 &  & 5\\ \hline   
-		Afficher la trajectoire optimale 																			& 3 &  & 1 & 3 &  &  &  & 5 &  &  & \\ \hline  
-		Afficher le cube résolu et le chiffre de la case rouge sur la base 											& 1 &  & 1 &  &  & 3 &  &  &  &  & \\ \hline 
-		Allumer une DEL lorsque tâche terminée 																		& 3 &  & 3 & 5 &  &  & 5 &  &  &  & \\ \hline 
-		Afficher message de fin 																					& 3 &  & 3 &  &  &  &  &  &  & 5 & \\ \hline
-		Afficher message de départ 																					& 3 &  & 3 &  & 5 &  &  &  &  &  & \\ \hline 
-		Afficher trajectoire réelle avec un délai maximum de 15s 													&  &  & 3 & 3 &  &  &  &  & 5 &  & \\ \hline   
-		Afficher les informations sur le robot 																		& 3 &  &  & 3 &  &  &  &  &  &  & 5\\ \hline   
-		Le robot doit se retirer de la zone de dessin une fois celui-ci terminée									& 3 & 5 & 5 & 5 &  &  &  &  &  &  & \\ \hline
-		Respecter un budget de 250\$ 																				& 5 & 2 & 3 & 5 &  &  &  &  &  &  & \\ \hline  
-		Respecter l'échéance																						& 3 & 3 & 3 & 3 & 1 & 1 & 1 & 1 & 1 & 1 & 1\\ \hline 
+		\cline{2-16}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{15}{c|}{\textbf{Fonctionnalités}} \\ \cline{2-16}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{8}{c}{Alimentation} & \multicolumn{7}{|c|}{Affichage}\\ \cline{2-16}
+		\multicolumn{1}{c|}{} 																						& \multicolumn{3}{Z{\centering}{m}{6.5cm}|}{Utiliser une pile rechargeable} & Alimenter les moteurs & \multicolumn{2}{Z{\centering}{m}{4.3cm}|}{Alimenter le Mac} & \multicolumn{2}{Z{\centering}{m}{4.5cm}|}{Alimenter les différents périphériques }& Afficher message d'initiation de la tâche & Afficher le cube résolu ainsi que la case rouse & Allumer la DEL lorsque tâche complétée & Afficher la trajectoire optimale & Afficher la position et trajectoire réelle & Afficher message de fin & Afficher sur le LCD\\ \hline
+		\centering\textbf{Exigences du client}																		& Énergie (Wh) & Courant maximal (A) & Durée d'une charge (min) & Puissance (W) & Puissance (W) & Ondulation de tension (mV) & Puissance (W) & Ondulation de tension (mV) & Puissance (W) &  &  &  & Temps d'actualisation (s) &  &    \\ \hline  \hline
+		Être autonome pendant un minimum de 10 minutes 																&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Se déplacer selon la trajectoire optimale																	&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Effectuer une séquence complète en moins de 10 minutes 														&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Alimenter le Mac mini avec une tension de 22V à 30V et une ondulation de tension inférieure à 200 mV 		&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Résoudre sudocube 																							&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline   
+		Dessiner le chiffre selon le signal d'antenne dans une zone prédéfinie (jaune) avec une précision de ± 1cm 	&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Éviter les obstacles ainsi que les murs de la table															&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Décoder le signal d'antenne																					&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Analyser le bon cube selon le signal d'antenne 																&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Utiliser la communication sans fil 																			&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Concevoir un système de préhension pour le crayon 															&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Afficher position réelle																					&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline   
+		Afficher la trajectoire optimale 																			&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Afficher le cube résolu et le chiffre de la case rouge sur la base 											&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Allumer une DEL lorsque tâche terminée 																		&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Afficher message de fin 																					&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Afficher message de départ 																					&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Afficher trajectoire réelle avec un délai maximum de 15s 													&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline  
+		Afficher les informations sur le robot 																		&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline   
+		Le robot doit se retirer de la zone de dessin une fois celui-ci terminée									&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Respecter un budget de 250\$ 																				&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
+		Respecter l'échéance																						&  &  &  &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline 
 	\end{tabular}}
+	\end{minipage}}
 \end{table}
 
-
-\end{landscape}
+\eject \pdfpagewidth=8.5in \pdfpageheight=11in
+\textwidth=\hcolw
