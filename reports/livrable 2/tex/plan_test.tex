@@ -74,29 +74,18 @@
 	\tabcolsep=0.11cm
     \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{5cm}|}\hline
     \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Exigence}& \textbf{Méthode de vérification}& \textbf{Équipement requis}& \textbf{Méthode d'analyse}\\ \hline\hline
+     																								
     
-    \multirow{7}{4cm}{\centering Protections et interrupteurs} & \multirow{7}{5cm}{\centering Protéger et interrompre les alimentations}& \multirow{7}{5cm}{\centering Interrompre les trois alimentations individuellement }&\multirow{7}{3cm}{\centering Test visuel et de manipulation}& \multirow{7}{4cm}{\centering Robot fonctionnel}& \multirow{7}{5cm}{\centering Vérifier que le témoin lumineux s'allume lorsqu'on actionne l'interrupteur de l'une des alimentations et vérifier visuellement que les filaments des fusibles sont intacts}\\
-    & & & & &\\
-    & & & & &\\
-    & & & & &\\
-    & & & & &\\
-    & & & & &\\
-    & & & & &\\\hline
-     																										
-    
-    \multirow{6}{4cm}{\centering Batterie} & \multirow{6}{5cm}{\centering Alimenter les trois circuits d'alimentation}& \multirow{6}{5cm}{\centering Fournir une puissance suffisante pour alimenter les trois circuits d'alimentation }&\multirow{6}{3cm}{\centering Test électrique}& \multirow{1}{4cm}{\centering Batterie}& \multirow{6}{5cm}{\centering Vérifier à l'aide du testeur de batterie que la tension de chacune des trois cellule est au dessus de 3.7V}\\\cline{5-5}
-    & & &  																											& \multirow{5}{4cm}{\centering Testeur de batterie} & \\
-    & & & & & \\
+    \multirow{4}{4cm}{\centering Alimentation} & \multirow{4}{5cm}{\centering Utiliser une pile rechargeable}& \multirow{4}{5cm}{\centering Avoir un temps de charge (pour 10 minutes) inférieur à 1 heure}& \multirow{4}{3cm}{\centering Test de mesure}& \multirow{1}{4cm}{\centering Pile}& \multirow{4}{5cm}{\centering Mesurer le temps de charge pour une opération de 10 minutes}\\\cline{5-5}
+    & & & & Testeur de batterie & \\\cline{5-5}
+    & & & & Chargeur & \\\cline{5-5}
+    & & & & Chronomètre & \\\hline
+\multirow{6}{4cm}{\centering Communication Microcontrôleur - Mac mini} & \multirow{6}{5cm}{\centering Transmettre les commandes du Mac mini vers le microcontôleur via un port série}& \multirow{6}{5cm}{\centering Vitesse de transfert d'environ 57600 bit/s}&\multirow{6}{3cm}{\centering Test pratique}& \multirow{6}{4cm}{\centering Robot fonctionnel pour ses déplacements}& \multirow{6}{5cm}{\centering Vérifier que les commandes passent du Mac mini au microcontrôleur et que les mécanismes de vérification et de gestion des erreurs de communication sont efficaces}\\
     & & & & & \\\
-    & & & & &\\
-    & & & & &\\\hline
-\multirow{4}{4cm}{\centering Communication Microcontrôleur - Mac mini} & \multirow{4}{5cm}{\centering Transmettre les commandes du Mac mini vers le microcontôleur via un port série}& \multirow{4}{5cm}{\centering Être robuste au bruit causé par le fonctionnement des moteurs}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel pour ses déplacements}& \multirow{3}{5cm}{\centering Vérifier que les commandes passent du Mac mini au microcontrôleur et que les mécanismes de vérification et de gestion des erreurs de communication sont efficaces}\\\cline{5-5}
-    & & &  																											& & \\\
-    & & &  																											& & \\\
-    & & & & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
+    & & & & & \\\
+    & & & & & \\\
+    & & & & & \\\
+    & & & & & \\\hline
 
    \end{tabular}}%
   \label{tab:pt2}%

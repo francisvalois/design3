@@ -12,14 +12,91 @@
 \begin{table}[htbp]
 	\small
  	 \centering
-  	\caption{Matrice ce vérification des exigences côté matériel}
+  	\caption{Matrice de vérification des exigences (partie 1)}
   	\scalebox{0.8}{
 	\tabcolsep=0.11cm
     \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\raggedright}{m}{7cm}|}\hline
     \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Paramètre critique}& \textbf{Méthode de vérification}& \textbf{Commentaires}\\ \hline\hline
+ \multirow{7}{4cm}{\centering Vision numérique}  
+    & \multirow{3}{4cm}{\centering Détecter les obstacles}			& 	Temps de calcul (s)		& Test	& \\\cline{3-5}
+    & & Précision en x(cm)& Test&\\\cline{3-5}
+    & & Précision en z(cm)& Test&\\\cline{2-5}
     
+    & \multirow{4}{4cm}{\centering Localiser le robot}		& Temps de calcul (s)			&Test			 & \\\cline{3-5}
+    & & Précision en x(cm)& Test&\\\cline{3-5}
+    & & Précision en z(cm)& Test&\\\cline{3-5}
+    & & Précision angulaire($^\circ$)& Test&\\\hline
     
+  \multirow{10}{4cm}{\centering Traitement numérique}   & Lire le cube		& 	Temps de calcul(s)		& Test			 & \\\cline{2-5}
+  
+	
+   
+	& Calculer la trajectoire optimale		& Temps de calcul(s)			& Test& \\\cline{2-5}
+	&\multirow{2}{4cm}{\centering Contrôler le robot pour le dessin}	& 	Temps de calcul(s)		& Test& \\\cline{3-5}
+	& & Précision (cm)& Test&\\\cline{2-5}
+	& Décoder le signal d’antenne	& Nombre de périodes nécessaires			& Test& \\	\cline{2-5}
+	& Choisir le cube selon le signal d’antenne	& Démonstration		&& \\	\cline{2-5}
+	& \multirow{2}{4cm}{Résoudre le sudocube}& Temps de calcul (s)		& Test& \\\cline{3-5}
+	& & Chiffres initiaux minimum& Test&\\\hline
+	
+	
+	
+	
+	\multirow{14}{4cm}{\centering Communication}   & Recevoir  signal d'antenne		& Test			&			 & \\\cline{2-5}
+   
+	& \multirow{2}{4.5cm}{\centering Communiquer entre le robot et la station de base}& Vitesse(Mo/s)			& Démonstration& \\\cline{3-5}
+		& & Latence (ms)& Analyse&\\\cline{2-5}
+	&Communiquer entre le Mac mini et le microcontrôleur	& 	Vitesse(bit/s)		& Test& \\\cline{2-5}
+
+	& \multirow{2}{4cm}{\centering Commander les moteurs}	& Précision (cm)			& Test& \\	\cline{3-5}
+	& & Temps de réponse (ms)&Analyse et test&\\\cline{2-5}
+	& Transmettre les images de la Kinect vers le Mac mini	& Taux de transfert (Images/s)		&Démonstration& \\	\cline{2-5}
+	& Transmettre les images de la caméra vers le Mac mini& Taux de transfert (Images/s)	& Démonstration& \\\cline{2-5}
+	& \multirow{2}{4cm}{ \centering Contrôler la position de la caméra}& Temps de réponse(s) &Test& \\\cline{3-5}
+	& & Précision($^\circ$)& Test&\\\cline{2-5}
+	& Commander le préhenseur du crayon& Temps de réponse(s) & Test& \\\hline
+ 
    \end{tabular}}%
   \label{tab:mve1}%
+\end{table}%
+\end{landscape}
+
+\begin{landscape}
+\begin{table}[htbp]
+	\small
+ 	 \centering
+  	\caption{Matrice de vérification des exigences (partie 2)}
+  	\scalebox{0.8}{
+	\tabcolsep=0.11cm
+    \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\raggedright}{m}{7cm}|}\hline
+    \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Paramètre critique}& \textbf{Méthode de vérification}& \textbf{Commentaires}\\ \hline\hline
+ \multirow{2}{4cm}{\centering Déplacement}  
+    & \multirow{2}{4.5cm}{\centering Se déplacer sans toucher aux obstacles et aux murs}			& 	Précision (cm)		&
+    Test et démonstration	& \\\cline{3-5}
+    & & Vitesse (cm/s)&&\\\hline
+    
+  \multirow{8}{4cm}{\centering Alimentation}  & \multirow{3}{4cm}{\centering Utiliser une pile rechargeable}		& Énergie (Wh)			& Inspection			 & \\\cline{3-5}
+    & & Courant maximal (A)& Inspection&\\\cline{3-5}
+    & & Durée de charge(min)& Test&\\\cline{2-5}
+    
+	& Alimenter les moteurs		& Puissance (W)		&Test			 & \\\cline{2-5}
+	& Alimenter l'ordinateur	& Puissance (W)		&Test		 & \\\cline{3-5}
+	& 	& Ondulation de tension (mV)	&Test			 & \\\cline{2-5}
+	& Alimenter les différents périphériques	& Puissance (W)		&Test			 & \\\cline{3-5}
+	& 	& Ondulation de tension (mV)	&Test			 & \\\hline
+  
+	
+   
+	\multirow{10}{4cm}{\centering Affichage} & Afficher message d'initiation de la tâche		& 			&Démonstration& \\\cline{2-5}
+	 & Afficher le cube résolu ainsi que la case rouge		&		&Démonstration 	& \\\cline{2-5}
+	 & Allumer la DEL lorsque tâche complétée		& 		&Test& \\\cline{2-5}
+	 & Afficher la trajectoire optimale calculée		& 			&Démonstration & \\\cline{2-5}
+	 & Afficher la position et trajectoire réelle		&Temps d'actualisation (s)		&Démonstration  & \\\cline{2-5}
+	 & Afficher message de fin	& 			&Démonstration & \\\cline{2-5}
+	 & Afficher sur le LCD	& 			&Démonstration & \\\hline
+	
+ 
+   \end{tabular}}%
+  \label{tab:mve2}%
 \end{table}%
 \end{landscape}
