@@ -274,6 +274,19 @@
    \maketitle
 }
 
+% Generation de la table des matieres, de la liste des figures, de la liste des tableaux
+\AtBeginDocument{%
+   \tableofcontents
+   \ifthenelse{\boolean{InsererListeDesFigures}}%
+              {\clearpage%
+               \listoffigures%
+               \addcontentsline{toc}{chapter}{\listfigurename}}{}
+   \ifthenelse{\boolean{InsererListeDesTableaux}}%
+              {\clearpage%
+               \listoftables%
+               \addcontentsline{toc}{chapter}{\listtablename}}{}
+}
+
 % Reinitialisation du compteur "page" (valeur et style)
 \AtBeginDocument{%
    \cleardoublepage%

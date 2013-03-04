@@ -13,7 +13,7 @@
   	\caption{Registre de risques partie 1}
   	\scalebox{0.8}{
 	\tabcolsep=0.11cm
-    \begin{tabular}{|Z{\centering}{m}{1.5cm}||Z{\raggedright}{p}{3cm}|Z{\raggedright}{m}{1.5cm}|Z{\raggedright}{p}{4cm}|Z{\raggedright}{p}{4cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\raggedright}{p}{4cm}|Z{\raggedright}{p}{3cm}|}\hline
+    \begin{tabular}{|Z{\centering}{m}{1.5cm}||Z{\raggedright}{p}{3cm}|Z{\raggedright}{m}{1.5cm}|Z{\raggedright}{p}{5cm}|Z{\raggedright}{p}{4cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\raggedright}{p}{4cm}|Z{\raggedright}{p}{3cm}|}\hline
     \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
     1 & Bris  de la batterie Li-Po suite à une mauvaise utilisation & 5 & Plus d'autonomie énergétique pour le robot, opération impossible & L'ensemble du système sera inopérable &15 & 60 & Formation des utilisateurs à l'endroit de l'utilisation. Apposition d'un capteur de tension. Dispositifs de protection (fusibles) & É. Arsenault \\\hline
     2 & Bris  d'un ou des système d'alimentation & 5 & Les systèmes auxiliaires, le Mac mini ou les moteurs ne seront pas alimentés. Le système ne sera pas fonctionnel & Une partie ou l'ensemble du système sera inopérable & 20 & 25 & Utilisateur de connecteurs protégés (d'un seul sens possible). Dispositifs de protection (fusibles), surdimensionnement des composantes d'alimentation & D. Thibodeau \\\hline
@@ -31,7 +31,7 @@
   	\caption{Registre de risques partie 2}
   	\scalebox{0.8}{
 	\tabcolsep=0.11cm
-    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
+    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4.8cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
     \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
     6 & Problèmes de réception ou de décodage du signal d'antenne & 4 & Si la réception est erronée, le robot peut exécuter sa séquence, mais l'exécution ne sera pas conforme au message. Si la réception est impossible, le système ne s'amorcera pas. & Accomplissement de la mauvaise tâche ou système non fonctionnel & 5 & 15 & Tests répétés pour un taux de succès de 100\% lors de la réception et du décodage. & D.Fournier \\\hline
     7 & Problème d'identification du robot et de l'environnement (vision) par la Kinect & 5 & Correction de la trajectoire erronée, risque de rencontrer les obstacles, mauvaise trajectoire calculée & La trajectoire réelle ne sera pas optimale et le robot risque de rencontrer des obstacles & 10 &  & Tests rigoureux et taux de succès de l'identification proche de 100\% & I. Mouhtij \\\hline
@@ -49,7 +49,7 @@
   	\caption{Registre de risques partie 3}
   	\scalebox{0.8}{
 	\tabcolsep=0.11cm
-    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
+    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{5cm}|p{3cm}|}\hline
     \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
 	11 & Problème de communication entre le Mac mini et le microcontrôleur & 5 & L'ensemble des auxiliaires ne fonctionnera pas correctement. Le système sera non fonctionnel & Robot incapable de se déplacer selon la trajectoire prévue et d'effectuer la tâche & 5 &       & Tests répétés pour un taux de succès de près de 100\% lors de la transmission et de la réception de l'information entre le Mac mini et le microcontrôleur & D. Fournier \\\hline
     12 & Asservissement des moteurs déficient & 3 & Un asservissement instable causera des dépassements ainsi que des oscillations importantes de vitesse dans les roues. Dans le pire des cas, le robot sera incontrôlable. & Robot plus lent ou incapable de se déplacer, hausse du risque de toucher les obstacles, système non fonctionnel & 10 &       &Tests rigoureux dans le plus de conditions différentes possibles. Maximiser la robustesse en optant pour un asservissement avec une marge de phase élevé et bande passante assurant la stabilité. & P. Buhler \\\hline
@@ -68,7 +68,7 @@
   	\caption{Registre de risques partie 4}
   	\scalebox{0.8}{
 	\tabcolsep=0.11cm
-    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
+    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{5cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
     \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
 	16 & Bris du Mac mini & 5 & L'ensemble des auxiliaires ne fonctionnera pas correctement. Le système sera non fonctionnel & Robot incapable de se déplacer selon la trajectoire prévue et d'effectuer la tâche & 5 &  600  & Apposition de protections électriques (fusibles et interrupteurs) sur l'étage d'alimentation du Mac mini. Fixation robuste du Mac mini sur le robot. Protection du port USB du Mac mini en n'utilisant pas le fil d'alimentation. & F. Valois \\\hline
     17 & Bris du système d'exploitation du Mac mini & 4 & La portion logicielle du robot et le traitement seront absents. Le système ne sera pas fonctionnel & Robot incapable d'accomplir un traitement de tâches & 30 &       &Clonage d'une version fonctionnelle et stable du système d'exploitation & P. Buhler \\\hline

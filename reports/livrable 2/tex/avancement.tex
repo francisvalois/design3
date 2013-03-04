@@ -15,15 +15,15 @@ L'alimentation employée pour les périphériques est une alimentation de type b
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.5]{fig/alim_5V.png}
-\label{fig:alim5V}
 \caption{Figure présentant les plans de l'alimentation 5V pour les périphériques}
+\label{fig:alim5V}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.2]{fig/alim_5V_photo.png}
-\label{fig:alim5Vphoto}
 \caption{Figure présentant une photo de l'alimentation 5V pour les périphériques}
+\label{fig:alim5Vphoto}
 \end{figure}
 
 \section{Alimentation du Mac mini}
@@ -32,15 +32,10 @@ L'alimentation du Mac mini a été réalisé au moyen d'un circuit de type Boost
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.1]{fig/alim_24V_photo.png}
-\label{fig:alim24Vphoto}
 \caption{Figure présentant une photo de l'alimentation 24V pour les périphériques}
+\label{fig:alim24Vphoto}
 \end{figure}
 
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
->>>>>>> 4546ccb8e51d6a1cad4c255b62b1e3a2c27c2d4c
 \section{Asservissement des moteurs}
 \subsection{Modélisation}
 L'optimisation des paramètres de réglage a été réalisée grâce à l'utilisation d'un outil de CAO élaboré au moyen de Matlab-Simulink. La fonction de transfert des moteurs a été identifiée au moyen d'une réponse à l'échelon et de l'outil \textit{ident} de Matlab. L'ordre choisi de la fonction est élevé et présente une concordance de 94\% avec la réponse obtenue expérimentalement. L'outil \textit{pidtool} permet par la suite de configurer adéquatement le PIDF et d'obtenir la réponse souhaitée et les paramètres associés. Suivant ces paramètres, le PIDF présent dans le microcontrôleur est ajusté.
@@ -48,8 +43,8 @@ L'optimisation des paramètres de réglage a été réalisée grâce à l'utilis
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.6]{fig/asservissement_1.png}
-\label{fig:as_1}
 \caption{Figure présentant la réponse à un échelon de consigne de 6400$\left[tours^{-1}s^{-1}\right]$ du système régulé au moyen du régulateur optimisé dans simulink}
+\label{fig:as_1}
 \end{figure}
 \subsection{Implantation pratique}
 \label{s:ass_implantation_pratique}
@@ -59,14 +54,14 @@ En utilisant les paramètres obtenus dans Matlab comme point de départ, les par
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.6]{fig/asservissement_3.png}
-\label{fig:as_2}
 \caption{Figure présentant la réponse à un échelon de consigne de 6400$\left[tours^{-1}s^{-1}\right]$ du système régulé au moyen du régulateur réel et de la réponse en position associée}
+\label{fig:as_2}
 \end{figure}
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.6]{fig/asservissement_2.png}
-\label{fig:as_3}
 \caption{Figure présentant la réponse à un échelon de consigne de 6400$\left[tours^{-1}s^{-1}\right]$ du système régulé au moyen du régulateur réel et de la réponse en position associée}
+\label{fig:as_3}
 \end{figure}
 \subsection{Implantation électronique}
 \subsubsection{Les prises de mesures}
@@ -75,8 +70,8 @@ Pour prendre des mesures de positions et de vitesses pour effectuer l'asservisse
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.7]{fig/cytron_machine_etats.png}
-\label{fig:cytron_machine_etats}
 \caption{Machine à états servant d'interface d'encodeur en quadrature (Cytron. Quadrature Encoder. \url{http://tutorial.cytron.com.my/2012/01/17/quadrature-encoder/}, consulté le 3 mars.)}
+\label{fig:cytron_machine_etats}
 \end{figure}
 \subsubsection{PID}
 Le PID utilisé pour l'asservissement est une courte fonction réalisée dans le microcontrôleur. Cette fonction se retrouve dans l'annexe \ref{s:fonction_PID}. À prendre note que l'argument "I" est l'intégrale de l'erreur et "dt" est la différence en temps entre chaque exécution de l'asservissement des moteurs. Cette fonction est exécutée individuellement pour chaque moteur. Des pointeurs transmis en argument indiquent l'emplacement en mémoire des valeurs de chaque moteur utilisées dans le PID. Ensuite, la fréquence d'exécution de la fonction est gardée constante à l'aide d'un timer dans le microcontrôleur qui déclenche une interruption à chaque période et lance l'exécution de l'asservissement.
@@ -93,15 +88,15 @@ L'algorithme pour extraire les sudocubes est séparé en deux : une classe qui t
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.25]{fig/sudocubeThreshold.png}
-\label{fig:sudoThresh}
 \caption{Figure présentant un sudocube traité afin d'extraire les informations des cases}
+\label{fig:sudoThresh}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.9]{fig/chiffresLues.png}
-\label{fig:chifLu}
 \caption{Figure présentant un exemple d'images extraites des cases du sudocube et normalisées avant d'être passé au lecteur de chiffres}
+\label{fig:chifLu}
 \end{figure}
 
 \subsection{Les solutions retenus/considérés}
@@ -157,4 +152,22 @@ Puisque le LM3S9B92 possède des compteurs d'usage général qui implémentent u
 \section{Orientation du robot}
 
 Pour la détermination d’angle et l’orientation du robot, le choix de la caméra embarquée  est très recommandé pour sa précision comparé à la kinect. En premier, on calibre la caméra, deux méthodes s’offrent à nous pour cette opération : l’application de l’algorithme de Zhang ou la calibration avec Opencv. Celle qui est retenue est la première, malgré sa complexité, elle est plus efficace. Ensuite, on procède à la détermination d’angle du robot par rapport à la ligne rouge déjà tracée sur la table, cette partie est réalisée grâce à un traitement d’image supportant la variation de luminosité, d’ombres… et des règles de trigonométrie. Finalement,  la détermination de l’orientation du robot (N, S, E, O) est effectuée par la détection des coins de la table. L’algorithme de cette opération est assez simple, si la caméra détecte : Orange avant bleu (orienté vers le Nord), bleu avant orange (orienté vers le Sud), les deux coins bleu (orienté vers le Ouest), les deux coins orange (orienté vers le Est). Les deux dernières parties sont commencées mais ne sont pas encore complétées à ce jour.
+
+\section{Vision par Kinect}
+Pour aider au déplacement du robot, la Kinect à été utilisée pour détecter la position des obstacles, la position du robot lui-même ainsi que sa position angulaire par rapport au point (0.0) de notre représentation cartésienne de la table. Toutefois, comme la Kinect est située à l'extérieur de la table de jeu, il a fallu effectuer une translation et une rotation des données obtenues pour positionner avec exactitude les objets. Les 3 sections qui suivent expliquent en détail les différentes parties de l'algorithme de vision de la Kinect.
+
+\subsection{Transformation des distances}
+En premier lieu, il est important de clarifier quelles distances il est possible d'obtenir à l'aide de la Kinect. Le «Framework» OpenNI est capable de retourner 2 types de distances pour chacun des points dans l'image infrarouge obtenue de la Kinect. Le premier type de distances retourné est la longueur en mètre entre l'objectif et un point quelquonque sur l'image. Le second type est dérivé du premier et correspond aux composantes X, Y et Z du vecteur de longueur entre l'objectif et la cible. Pour aider à la compréhension, les deux types de distances peuvent être représenté par les ligne verte sur l'image \ref{fig:kinect_distance}. Toutefois, comme l'origine de notre représentation cartésienne de la table est situé sur le coin inférieur droit de la table et que la Kinect n'est pas situé à cet endroit, il est nécessaire d'obtenir la distance X et Y (lignes bleues sur l'image \ref{fig:kinect_distance}) entre l'origine et le point ciblé sur l'image obtenue de la Kinect. Pour y arriver, il suffit d'obtenir la position X et Y (lignes rouges sur l'image \ref{fig:kinect_distance}) de la lentille infrarouge de la Kinect ainsi que l'angle de la Kinect avec l'axe X de la table. Avec ces valeurs, dans notre cas 14cm, -56cm et $23.5^o$, nous avons mis en oeuvre un logiciel qui permet la transformation des distances de la Kinect vers les composantes X et Y recherchée à l'aide de règles de trigonométrie simples. Cet algorithme permet d'obtenir avec une précision de plus ou moins 1cm pour n'importe quel point situé sur l'image obtenue avec la Kinect. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{fig/kinect_distance.png}
+\caption{Schéma représentant la table et les différentes mesures obtenues avec la Kinect pour un point quelquonque}
+\label{fig:kinect_distance}
+\end{figure}
+
+\subsection{Détection des obstacles}
+Maintenant que nous pouvons obtenir n'importe quelle distance entre l'origine et un point quelquonque sur l'image, nous avons créé l'algorithme de recherche d'obstacles. Sachant que les obstacles sont situés dans une zone précise sur la table et que ceux-ci font 40cm de hauteur, il suffit de rechercher tout objet de cette hauteur et situé dans la zone prédefinie. Comme la Kinect est capable de retourner la hauteur de chacun des points sur l'image infrarouge, il a été facile de trouver les obstacles de cette manière. De plus, à l'aide de simples calculs de statistiques, notre programme est capable de trouver les obstacles qui sont presque enlignés ou bien les obstacles avec obstructions devant eux. Comme cet algorithme dépend entièrement de l'algorithme précédent, les positions obtenues pour chacun des obstacles possèdent la même incertitude de 1 cm sur chaque mesure de distance effectuée.
+
+\subsection{Détection du robot}
 
