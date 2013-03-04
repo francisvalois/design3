@@ -125,3 +125,48 @@
   \label{tab:pt2}%
 \end{table}%
 \end{landscape}
+
+\begin{landscape}
+\begin{table}[htbp]
+	\small
+ 	 \centering
+  	\caption{Plan de tests côté logiciel (partie 1)}
+  	\scalebox{0.8}{
+	\tabcolsep=0.11cm
+    \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{5cm}|}\hline
+    \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Exigence}& \textbf{Méthode de vérification}& \textbf{Équipement requis}& \textbf{Méthode d'analyse}\\ \hline\hline
+    
+    \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Décoder le signal Manchester}& \multirow{4}{5cm}{\centering Décodage de toutes les combinaisons possibles en tolérant une variation de taux de transmission de $\pm$ 50 bits/s }&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{1}{4cm}{\centering Antenne}& \multirow{4}{5cm}{\centering Tester l'algorithme dans tous les cas possibles avec variation de taux de transmission de $\pm$ 50 bits/s}\\\cline{5-5}
+ & & &  																											& \multirow{2}{4cm}{\centering Récepteur Manchester} & \\
+    & & &  																											& & \\\cline{5-5}	
+    & & &  																											& \multirow{2}{4cm}{\centering Microcontrôleur} & \\
+    & & &  																											& & \\\hline     
+    \multirow{4}{4cm}{\centering Vision numérique} & \multirow{4}{5cm}{\centering Détecter les obstacles}& \multirow{4}{5cm}{\centering Déteminer la position des obstacles avec une précision de $\pm$ 2 cm en x et en z en moins de 2s}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{1}{4cm}{\centering Kinect}& \multirow{4}{5cm}{\centering Vérifier la précision de la localisation ainsi que le temps de calcul avec un jeu de positions}\\\cline{5-5}
+    & & &  																											& Ruban à mesurer  & \\\cline{5-5}
+    & & &  																											& Obstacles& \\\
+    & & & 																											& &\\\hline
+    
+     \multirow{5}{4cm}{\centering Vision numérique} & \multirow{5}{5cm}{\centering Localiser le robot}& \multirow{5}{5cm}{\centering Déterminer la position et l'orientation du robot avec une précision de $\pm$ 2cm et $\pm$ 1° en moins de 1s}&\multirow{5}{3cm}{\centering Tests pratiques}& \multirow{1}{4cm}{\centering Kinect}& \multirow{5}{5cm}{\centering Vérifier la précision de la localisation et d'orientation avec un jeu de positions et d'orientations du robot}\\\cline{5-5}
+    & & &  																											&\multirow{2}{4cm}{\centering Ruban à mesurer} & \\
+    & & &  																											& & \\\cline{5-5}	
+    & & &  																											&\multirow{2}{4cm} {\centering Robot avec repères} & \\
+    & & &  																											& & \\\hline											
+    \multirow{5}{4cm}{\centering Traitement numérique} & \multirow{5}{5cm}{\centering Calculer la trajectoire optimale}& \multirow{5}{5cm}{\centering Calculer la trajectoire optimale en moins de 2s}&\multirow{5}{3cm}{\centering Tests Pratiques}& \multirow{4}{4cm}{\centering Ordinateur}& \multirow{5}{5cm}{\centering Vérifier l'efficacité et le temps de calcul de l'algorithme avec un jeu de positions du robot et des obstacles}\\
+   & & & & & \\\
+    & & & & & \\\
+    & & & & & \\\
+    & & & & & \\\
+    & & & & & \\\hline   
+     
+     \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Résoudre le sudocube}& \multirow{4}{5cm}{\centering Être capable de résoudre des sudocube de 7 chiffres et plus}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{3}{4cm}{\centering Ordinateur}& \multirow{4}{5cm}{\centering Tester l'algorithme sur un jeu de sudocubes ayant des nombres différents de chiffres}\\
+   & & & & & \\\
+    & & & & & \\\
+    & & & & & \\\
+    & & & & & \\\
+    & & & & & \\\hline   
+
+     \end{tabular}}%
+  \label{tab:pt1}%
+\end{table}%
+\end{landscape}
+    
