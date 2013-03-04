@@ -1,39 +1,29 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(base_station)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation kinocto)
 
-## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
-## Uncomment this if the package has a setup.py. This macro ensures
-## modules and scripts declared therein get installed
 # catkin_python_setup()
 
 #######################################
 ## Declare ROS messages and services ##
 #######################################
 
-## Generate messages in the 'msg' folder
 # add_message_files(
 #   FILES
 #   Num.msg
 # )
 
-## Generate services in the 'srv' folder
 # add_service_files(
 #   FILES
 #   AddTwoInts.srv
 # )
 
-## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
 #   std_msgs
-   
 # )
 
 ###################################################
@@ -45,7 +35,7 @@ find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
    INCLUDE_DIRS include
-#  LIBRARIES base_station
+  LIBRARIES base_station
    CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 #  DEPENDS system_lib
 )
@@ -53,8 +43,9 @@ catkin_package(
 ###########
 ## Build ##
 ###########
+include_directories(include ${catkin_INCLUDE_DIRS})
+set(PROJ_SOURCES "src/BaseStation.cpp")
 
-## Specify additional locations of header files
 include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
@@ -64,16 +55,9 @@ include_directories(include
 #   src/${PROJECT_NAME}/base_station.cpp
 # )
 
-## Declare a cpp executable
-# add_executable(base_station_node src/base_station_node.cpp)
-
-## Add dependencies to the executable
-# add_dependencies(base_station_node ${PROJECT_NAME})
-
-## Specify libraries to link a library or executable target against
-# target_link_libraries(base_station_node
-#   ${catkin_LIBRARIES}
-# )
+add_executable(BaseStation src/BaseStation.cpp)
+add_dependencies(BaseStation kinocto_gencpp)
+target_link_libraries(BaseStation ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -119,17 +103,4 @@ include_directories(include
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-#######################################
-
-include_directories(include ${catkin_INCLUDE_DIRS})
-set(PROJ_SOURCES "src/BaseStation.cpp")
-
-#file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
-#file(GLOB_RECURSE PROJ_HEADERS inc/${PROJ_NAME}/*.h)
-
-#Node de la station de base
-add_executable(BaseStation src/BaseStation.cpp)
-add_dependencies(BaseStation kinocto_gencpp)
-target_link_libraries(BaseStation ${catkin_LIBRARIES})
 

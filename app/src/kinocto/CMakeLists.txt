@@ -1,37 +1,23 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(kinocto)
 
-## Find catkin macros and libraries
-## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
-## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation)
-
-## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
 find_package(OpenCV REQUIRED)
-
-## Uncomment this if the package has a setup.py. This macro ensures
-## modules and scripts declared therein get installed
 # catkin_python_setup()
 
 #######################################
 ## Declare ROS messages and services ##
 #######################################
 
-## Generate messages in the 'msg' folder
  add_message_files(
    FILES
-   Num.msg
  )
 
-## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   AddTwoInts.srv
    StartKinocto.srv
  )
 
-## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
    std_msgs
@@ -46,35 +32,37 @@ find_package(OpenCV REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
    INCLUDE_DIRS include
-#  LIBRARIES beginner_tutorials
-  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+#   LIBRARIES ${PROJECT_NAME}
+   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
 ###########
 ## Build ##
 ###########
+set(PROJ_SOURCES)
 
-## Specify additional locations of header files
+file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
+file(GLOB_RECURSE PROJ_HEADERS include/${PROJ_NAME}/*.h)
+
 include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
-# add_library(beginner_tutorials
-#   src/${PROJECT_NAME}/beginner_tutorials.cpp
-# )
+ #add_library(
+ #KinoctoLib ${PROJ_SOURCES}
+ #)
 
-## Declare a cpp executable
-# add_executable(beginner_tutorials_node src/beginner_tutorials_node.cpp)
+add_executable(Kinocto src/Kinocto.cpp)
+add_dependencies(Kinocto kinocto_gencpp)
+target_link_libraries(Kinocto ${catkin_LIBRARIES})
 
-## Add dependencies to the executable
-# add_dependencies(beginner_tutorials_node ${PROJECT_NAME})
+link_directories(include 
+    ${catkin_LIB_DIRS}
+)
 
-## Specify libraries to link a library or executable target against
-# target_link_libraries(beginner_tutorials_node
-#   ${catkin_LIBRARIES}
-# )
+
 
 #############
 ## Install ##
@@ -113,29 +101,21 @@ include_directories(include
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_beginner_tutorials.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
+#${PROJECT_NAME}
+catkin_add_gtest(kinoctoTest test/AllTests.cpp 
+src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp
+)
+target_link_libraries(kinoctoTest ${catkin_LIBRARIES})
+#catkin_add_executable() 
+#catkin_add_gtest_build_flags()
+#target_link_libraries(kinoctoTest ${catkin_LIBRARIES})
+
+#if(TARGET ${PROJECT_NAME}-test)
+#   target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
+#endif()
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-
-#############################
-## Les fichiers à compiler ##
-## Chaques add_executable est un node en principe...
-#############################
-
-include_directories(include ${catkin_INCLUDE_DIRS})
-set(PROJ_SOURCES) #"src/SudocubeExtractor.cpp" "src/CameraImageSource.cpp")
-
-#file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
-#file(GLOB_RECURSE PROJ_HEADERS inc/${PROJ_NAME}/*.h)
-
-#Node pour le robot kinocto#
-add_executable(Kinocto src/Kinocto.cpp)
-add_dependencies(Kinocto kinocto_gencpp)
-target_link_libraries(Kinocto ${catkin_LIBRARIES})
 
 #Tests pour l'extracteur de sudocube
 #add_executable(SudocubeExtractor ${PROJ_SOURCES})
