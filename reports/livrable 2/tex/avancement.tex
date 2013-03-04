@@ -153,3 +153,8 @@ On effectue une mesure du temps entre les transitions du signal de zéro à un e
 
 Puisque le LM3S9B92 possède des compteurs d'usage général qui implémentent une fonction de capture d'événement, nous avons choisi d'utiliser la méthode par timings. Pour l'instant, nous pouvons mesurer des temps entre transitions sur un signal interne au microcontrôleur généré par un PWM.
 
+
+\section{Orientation du robot}
+
+Pour la détermination d’angle et l’orientation du robot, le choix de la caméra embarquée  est très recommandé pour sa précision comparé à la kinect. En premier, on calibre la caméra, deux méthodes s’offrent à nous pour cette opération : l’application de l’algorithme de Zhang ou la calibration avec Opencv. Celle qui est retenue est la première, malgré sa complexité, elle est plus efficace. Ensuite, on procède à la détermination d’angle du robot par rapport à la ligne rouge déjà tracée sur la table, cette partie est réalisée grâce à un traitement d’image supportant la variation de luminosité, d’ombres… et des règles de trigonométrie. Finalement,  la détermination de l’orientation du robot (N, S, E, O) est effectuée par la détection des coins de la table. L’algorithme de cette opération est assez simple, si la caméra détecte : Orange avant bleu (orienté vers le Nord), bleu avant orange (orienté vers le Sud), les deux coins bleu (orienté vers le Ouest), les deux coins orange (orienté vers le Est). Les deux dernières parties sont commencées mais ne sont pas encore complétées à ce jour.
+
