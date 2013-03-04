@@ -6,13 +6,13 @@
 % modifié par Francis Valois, Université Laval
 % 31/01/2011 - version 1.0 - Création du document
 
-\chapter{Plan de tests avec matrice de vérification des exigences intégrées}
+\chapter{Plan de tests}
 \label{s:plantest}
 \begin{landscape}
 \begin{table}[htbp]
 	\small
  	 \centering
-  	\caption{Plan de tests côté matériel}
+  	\caption{Plan de tests côté matériel (partie 1)}
   	\scalebox{0.8}{
 	\tabcolsep=0.11cm
     \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{5cm}|}\hline
@@ -26,65 +26,71 @@
     & & &  																											& Ruban à mesurer  & \\\cline{5-5}
     & & &  																											& Crayon& \\\cline{5-5}
     & & & 																											& Rapporteur d'angle&\\\hline
-     \multirow{4}{4cm}{\centering Alimentation} & \multirow{4}{5cm}{\centering Alimenter le mac-mini et le préhenseur à une tension de 24 volts}& \multirow{4}{5cm}{\centering Fournir une tension de 24 volts CC avec des oscillations maximum de 1 volt}&\multirow{4}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{4}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
-    & & &  																											& Oscilloscope & \\\cline{5-5}
-    & & &  																											& Sondes de mesure & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
-    \multirow{4}{4cm}{\centering Alimentation} & \multirow{4}{5cm}{\centering Alimenter le micro-contrôleur et les différents circuits à une tension de 5 volts}& \multirow{4}{5cm}{\centering Fournir une tension de 5 volts CC avec des oscillations maximum de 0.2 volt}&\multirow{4}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{3}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
-    & & &  																											& Oscilloscope & \\\cline{5-5}
-    & & &  																											& Sondes de mesure & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
+    
+     \multirow{5}{4cm}{\centering Alimentation} & \multirow{5}{5cm}{\centering Alimenter le mac-mini et le préhenseur à une tension de 24 volts}& \multirow{5}{5cm}{\centering Fournir une tension de 24 volts CC avec des oscillations maximum de 1 volt}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Mac mini}& \multirow{5}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
+    & & &  																											& \multirow{2}{4cm}{\centering Oscilloscope} & \\
+    & & &  																											& & \\\cline{5-5}	
+    & & &  																											& \multirow{2}{4cm}{\centering Sondes de mesure} & \\
+    & & &  																											& & \\\hline											
+    \multirow{5}{4cm}{\centering Alimentation} & \multirow{5}{5cm}{\centering Alimenter le micro-contrôleur et les différents circuits à une tension de 5 volts}& \multirow{5}{5cm}{\centering Fournir une tension de 5 volts CC avec des oscillations maximum de 0.2 volt}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
+    & & &  																											& \multirow{2}{4cm}{\centering Oscilloscope} & \\
+    & & &  																											& & \\\cline{5-5}	
+    & & &  																											& \multirow{2}{4cm}{\centering Sondes de mesure} & \\
+    & & &  																											& & \\\hline     
+     
      \multirow{4}{4cm}{\centering Récepteur manchester} & \multirow{4}{5cm}{\centering Recevoir le signal manchester et le rendre utilisable par le micro-contrôleur}& \multirow{4}{5cm}{\centering Fournir un signal carré 0-5 volts à l'image du signal reçu}&\multirow{4}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{3}{5cm}{\centering Vérifier la présence du signal carré en sortie du module de réception lorsque le robot est à proximité de l'antenne }\\\cline{5-5}
     & & &  																											& Oscilloscope & \\\cline{5-5}
      & & &  																											& Antenne fonctionnelle & \\\cline{5-5}
-    & & &  																											& Sondes de mesure & \\\
-    & & & & & 																											\\\hline
-     \multirow{4}{4cm}{\centering Préhenseur} & \multirow{4}{5cm}{\centering Monter et descendre le crayon pour passer en mode écriture ou arrêt d'écriture}& \multirow{4}{5cm}{\centering Descendre le crayon lorsqu'une commande 5V est apliqué et le remonté lorsque la commande 0V est appliquée}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{3}{5cm}{\centering Vérifier que le crayon descend lorsqu'on applique la commande de 5V au circuit et qu'il remonte lorsqu'on la relâche}\\\cline{5-5}
-    & & &  																											& source 24V CC & \\\
+    & & &  																											& Sondes de mesure & \\\hline
+     \multirow{5}{4cm}{\centering Préhenseur} & \multirow{5}{5cm}{\centering Monter et descendre le crayon pour passer en mode écriture ou arrêt d'écriture}& \multirow{5}{5cm}{\centering Descendre le crayon lorsqu'une commande 5V est apliqué et le remonté lorsque la commande 0V est appliquée}&\multirow{5}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Vérifier que le crayon descend lorsqu'on applique la commande de 5V au circuit et qu'il remonte lorsqu'on la relâche}\\\cline{5-5}
+    & & &  																											& \multirow{4}{4cm}{\centering Source 24V CC} & \\\
     & & &  																											&  & \\\
     & & & & & 									
      \\\
     & & & & & 																										\\\hline
-    \multirow{4}{4cm}{\centering Allumer la del} & \multirow{4}{5cm}{\centering Allumer la DEL lorsque la commande est appliquée}& \multirow{4}{5cm}{\centering Allumer la DEL lorsque 5V est appliqué à son circuit et l'éteindre lorsqu'on relâche la commande}&\multirow{4}{3cm}{\centering Test électrique}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{3}{5cm}{\centering Vérifier que la DEL verte allume lorsqu'on applique une commande de 5V à son circuit}\\\cline{5-5}
-    & & &  																											& source 5V CC & \\\
+    \multirow{5}{4cm}{\centering Allumer la DEL} & \multirow{5}{5cm}{\centering Allumer la DEL lorsque la commande est appliquée}& \multirow{5}{5cm}{\centering Allumer la DEL lorsque 5V est appliqué à son circuit et l'éteindre lorsqu'on relâche la commande}&\multirow{5}{3cm}{\centering Test électrique}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Vérifier que la DEL verte allume lorsqu'on applique une commande de 5V à son circuit}\\\cline{5-5}
+    & & &  																											& \multirow{4}{4cm}{\centering Source 5V CC} & \\\
     & & &  																											&  & \\\
     & & & & & 									
      \\\
     & & & & & 																										\\\hline
-    \multirow{4}{4cm}{\centering Positionnement de la camera} & \multirow{4}{5cm}{\centering Garder la camera en position malgré les perturbations extérieurs}& \multirow{4}{5cm}{\centering Replacer la camera à sa position de départ lorsqu'on allume l'alimentation 5V}&\multirow{4}{3cm}{\centering Test de manipulation}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{3}{5cm}{\centering Déplacer la camera lorsque l'alimentation est fermé et vérifier qu'elle reprend sa position lorsqu'on actionne l'alimentation 5V}\\\
+    \multirow{5}{4cm}{\centering Positionnement de la caméra} & \multirow{5}{5cm}{\centering Garder la camera en position malgré les perturbations extérieures}& \multirow{5}{5cm}{\centering Replacer la camera à sa position de départ lorsqu'on allume l'alimentation 5V}&\multirow{5}{3cm}{\centering Test de manipulation}& \multirow{5}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Déplacer la camera lorsque l'alimentation est fermé et vérifier qu'elle reprend sa position lorsqu'on actionne l'alimentation 5V}\\\
     & & &  																											&  & \\\
     & & &  																											&  & \\\
     & & & & & 									
      \\\
     & & & & & 																										\\\hline
-    \multirow{4}{4cm}{\centering Protections et interrupteurs} & \multirow{4}{5cm}{\centering Protéger et interrompre les alimentations}& \multirow{4}{5cm}{\centering interrompre les trois alimentations individuellement }&\multirow{4}{3cm}{\centering Test visuel et de manipulation}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{3}{5cm}{\centering Vérifier que le témoin lumineux s'allume lorsqu'on actionne l'interrupteur de l'une des alimentations et vérifier visuellement que les filament des fusibles sont intacts}\\\
-    & & &  																											&  & \\\
-    & & &  																											&  & \\\
-    & & & & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
+     \end{tabular}}%
+  \label{tab:pt1}%
+\end{table}%
+\end{landscape}
     
-    \multirow{4}{4cm}{\centering Batterie} & \multirow{4}{5cm}{\centering Alimenter les trois circuits d'alimentation}& \multirow{4}{5cm}{\centering Fournir une puissance suffisante pour alimenter les trois circuits d'alimentation }&\multirow{4}{3cm}{\centering Test électrique}& \multirow{1}{4cm}{\centering Batterie}& \multirow{3}{5cm}{\centering Vérifier à l'aide du testeur de batterie que la tension de chacune des trois cellule est au dessus de 3.7V}\\\cline{5-5}
-    & & &  																											& testeur de batterie & \\\
-    & & &  																											&  & \\\
-    & & & & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
-    \multirow{4}{4cm}{\centering Décodage Manchester} & \multirow{4}{5cm}{\centering Transformer le signal d'onde carrée de type Manchester en bits traditionnels }& \multirow{4}{5cm}{\centering Être robuste aux variations de $\pm$ 50 bits/du taux de transmission}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Récepteur Manchester}& \multirow{3}{5cm}{\centering Vérifier que le signal peut être décodé pour tous les cas, à des vitesses de transmission de 1450 à 1550 bits/s}\\\cline{5-5}
-    & & &  																											& Microcontrôleur & \\\
-    & & &  																											& Antenne & \\\
-    & & & & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
-
-    \multirow{4}{4cm}{\centering Communication Microcontrôleur - Mac mini} & \multirow{4}{5cm}{\centering Transmettre les commandes du Mac mini vers le microcontôleur via un port série}& \multirow{4}{5cm}{\centering Être robuste au bruit causé par le fonctionnement des moteurs}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel pour ses déplacements}& \multirow{3}{5cm}{\centering Vérifier que les commandes passent du Mac mini au microcontrôleur et que les mécanismes de vérification et de gestion des erreurs de communication sont efficaces}\\\cline{5-5}
+    \begin{landscape}
+\begin{table}[htbp]
+	\small
+ 	 \centering
+  	\caption{Plan de tests côté matériel (partie 2)}
+  	\scalebox{0.8}{
+	\tabcolsep=0.11cm
+    \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{5cm}|}\hline
+    \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Exigence}& \textbf{Méthode de vérification}& \textbf{Équipement requis}& \textbf{Méthode d'analyse}\\ \hline\hline
+    
+    \multirow{7}{4cm}{\centering Protections et interrupteurs} & \multirow{7}{5cm}{\centering Protéger et interrompre les alimentations}& \multirow{7}{5cm}{\centering Interrompre les trois alimentations individuellement }&\multirow{7}{3cm}{\centering Test visuel et de manipulation}& \multirow{7}{4cm}{\centering Robot fonctionnel}& \multirow{7}{5cm}{\centering Vérifier que le témoin lumineux s'allume lorsqu'on actionne l'interrupteur de l'une des alimentations et vérifier visuellement que les filaments des fusibles sont intacts}\\
+    & & & & &\\
+    & & & & &\\
+    & & & & &\\
+    & & & & &\\
+    & & & & &\\
+    & & & & &\\\hline
+     																										
+    
+    \multirow{6}{4cm}{\centering Batterie} & \multirow{6}{5cm}{\centering Alimenter les trois circuits d'alimentation}& \multirow{6}{5cm}{\centering Fournir une puissance suffisante pour alimenter les trois circuits d'alimentation }&\multirow{6}{3cm}{\centering Test électrique}& \multirow{1}{4cm}{\centering Batterie}& \multirow{6}{5cm}{\centering Vérifier à l'aide du testeur de batterie que la tension de chacune des trois cellule est au dessus de 3.7V}\\\cline{5-5}
+    & & &  																											& \multirow{5}{4cm}{\centering Testeur de batterie} & \\
+    & & & & & \\
+    & & & & & \\\
+    & & & & &\\
+    & & & & &\\\hline
+\multirow{4}{4cm}{\centering Communication Microcontrôleur - Mac mini} & \multirow{4}{5cm}{\centering Transmettre les commandes du Mac mini vers le microcontôleur via un port série}& \multirow{4}{5cm}{\centering Être robuste au bruit causé par le fonctionnement des moteurs}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel pour ses déplacements}& \multirow{3}{5cm}{\centering Vérifier que les commandes passent du Mac mini au microcontrôleur et que les mécanismes de vérification et de gestion des erreurs de communication sont efficaces}\\\cline{5-5}
     & & &  																											& & \\\
     & & &  																											& & \\\
     & & & & \\\
@@ -92,24 +98,7 @@
      \\\
     & & & & & 																										\\\hline
 
-    \multirow{4}{4cm}{\centering Asservissement basse vitesse} & \multirow{4}{5cm}{\centering Dessin des chiffres solution}& \multirow{4}{5cm}{\centering Être capable de dessiner les chiffres en respectant la marge de 1cm de chaque côté de la ligne}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel avec dessins hardcodés}& \multirow{3}{5cm}{\centering Vérifier que l'asservissement en basse vitesse est suffisamment précis pour permettre le dessin de tous les chiffres en respectant les contraintes}\\\cline{5-5}
-    & & &  																											& Papier & \\\
-    & & &  																											& Table de test & \\\
-    & & & & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
-    
-    \multirow{4}{4cm}{\centering Asservissement haute vitesse} & \multirow{4}{5cm}{\centering Déplacement}& \multirow{4}{5cm}{\centering Être capable de se déplacer assez vite sans glissement}&\multirow{4}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel dans ses déplacements}& \multirow{3}{5cm}{\centering Vérifier que l'asservissement en haute vitesse a une bonne vitesse tout en évitant les oscillations et les glissements au départ et à l'arrêt}\\\cline{5-5}
-    & & &  																											&  & \\\
-    & & &  																											& & \\\
-    & & & & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline    
-    
-    
    \end{tabular}}%
-  \label{tab:rr5}%
+  \label{tab:pt2}%
 \end{table}%
 \end{landscape}

@@ -6,8 +6,9 @@
 % modifié par Francis Valois, Université Laval
 % 31/01/2011 - version 1.0 - Création du document
 
-\chapter{Avancement de la conception et de la construction du système}
+\chapter{Avancements pratiques}
 \label{s:avancement}
+Cette section décrit les avancements dans la conception et dans la construction du système Kinocto.
 \section{Alimentation des périphériques 5V}
 L'alimentation employée pour les périphériques est une alimentation de type buck qui convert la tension de la batterie (11.1V) vers une tension usuelle de 5V. Cette alimentation utilise un hacheur de tension avec une fréquence autour de 50kHz. Cette fréquence procure une marge de sécurité par rapport à la fréquence d'antenne et évite l'ajout d'un bruit excessif. Cette alimentation a été réalisée avec succès, les plans sont présentés à la figure \ref{fig:alim5V}. Une photo de ladite alimentation est présentée à la figure \ref{fig:alim5Vphoto}.
 
@@ -36,6 +37,10 @@ L'alimentation du Mac mini a été réalisé au moyen d'un circuit de type Boost
 \end{figure}
 
 <<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+>>>>>>> 4546ccb8e51d6a1cad4c255b62b1e3a2c27c2d4c
 \section{Asservissement des moteurs}
 \subsection{Modélisation}
 L'optimisation des paramètres de réglage a été réalisée grâce à l'utilisation d'un outil de CAO élaboré au moyen de Matlab-Simulink. La fonction de transfert des moteurs a été identifiée au moyen d'une réponse à l'échelon et de l'outil \textit{ident} de Matlab. L'ordre choisi de la fonction est élevé et présente une concordance de 94\% avec la réponse obtenue expérimentalement. L'outil \textit{pidtool} permet par la suite de configurer adéquatement le PIDF et d'obtenir la réponse souhaitée et les paramètres associés. Suivant ces paramètres, le PIDF présent dans le microcontrôleur est ajusté.
@@ -69,7 +74,7 @@ En utilisant les paramètres obtenus dans Matlab comme point de départ, les par
 Pour prendre des mesures de positions et de vitesses pour effectuer l'asservissement, nous utilisons deux QEI (Quadrature Encoder Interface) matériels qui sont sur le microcontrôleur. Ces deux interfaces prennent en entré les sorties des encodeurs situés sur les moteurs et captent les transitions lors de la rotation des moteurs. Puisqu'il y a deux senseurs placées en quadrature sur chaque moteurs, on peut détecter la direction de la rotation des moteurs. À prendre note qu'un signal transmis par un encodeur contient 64 transitions par tour complet de moteur et que le ratio de la rotation moteur:roue est 100:1. Un signal transmis par un encodeur contient alors 6400 transitions pour une rotation complète de roue. Pour les deux autres moteurs, nous avons réalisé deux interfaces d'encodeurs en quadratures logicielles à l'aide de deux broches d'entrées/sorties par interface, de courtes interruptions et d'une machine à états. Les interruptions sont lancées lorsqu'une transition est détectée sur l'une des broches. L'état des broches est alors lue et sauvegardé pour être traitée par la machine à états. La machine à états utilisée est illustrée à la figure \ref{fig:cytron_machine_etats}. Les 0 et 1 indiqué dans les cercles identifie l'état logique des broches. Les -1 ou +1 tracés au dessus des transitions indiquent s'il faut incrémenter ou décrémenter la position de la roue en rotation.
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=1]{fig/cytron_machine_etats.png}
+\includegraphics[scale=0.7]{fig/cytron_machine_etats.png}
 \label{fig:cytron_machine_etats}
 \caption{Machine à états servant d'interface d'encodeur en quadrature (Cytron. Quadrature Encoder. \url{http://tutorial.cytron.com.my/2012/01/17/quadrature-encoder/}, consulté le 3 mars.)}
 \end{figure}
@@ -87,7 +92,7 @@ L'algorithme pour extraire les sudocubes est séparé en deux : une classe qui t
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[scale=0.3]{fig/sudocubeThreshold.png}
+\includegraphics[scale=0.25]{fig/sudocubeThreshold.png}
 \label{fig:sudoThresh}
 \caption{Figure présentant un sudocube traité afin d'extraire les informations des cases}
 \end{figure}
@@ -112,7 +117,7 @@ L'algorithme qui solve les sudocubes a été codé en C++. Malgré que l'utilisa
 
 Le solveur utilise une structure de données afin de garder en mémoire le sudocube qui n'est en fait qu'un simple tableau à trois dimensions. Elle devient donc en même temps une interface pour la vision afin de stocker ses données obtenues lors de l'extraction du sudocube.
 
-Les stratégies utilisées pour solutionner le sudocube sont les mêmes qui sont utilisées dans le monde des sudoku normaux, mais adaptées aux sudocubes. Plus spécifiquement, nous avons utilisé les stratégies (ici citées en anglais pour les retrouver plus facilement sur Internet) :
+Les stratégies utilisées pour solutionner le sudocube sont les mêmes qui sont utilisées dans le monde des sudoku normaux, mais adaptées aux sudocubes. Plus spécifiquement, nous avons utilisé les stratégies (ici citées en anglais pour les retrouver plus facilement sur Internet):\newline
 
 \begin{itemize}
 \item Naked pairs
@@ -121,7 +126,7 @@ Les stratégies utilisées pour solutionner le sudocube sont les mêmes qui sont
 \item Box and line reduction
 \end{itemize}
 
-Si ces stratégies ne suffisent pas à solutionner le sudocube, nous utilisons la technique de force brute. Nous pensons que c'est une solution acceptable puisque il sera plutôt rare que cette situation surviendra et même lorsque ça arrive, le temps d'exécution de l'algorithme reste sous un niveau acceptable.
+\paragraph{}Si ces stratégies ne suffisent pas à solutionner le sudocube, nous utilisons la technique de force brute. Nous pensons que c'est une solution acceptable puisque il sera plutôt rare que cette situation surviendra et même lorsque ça arrive, le temps d'exécution de l'algorithme reste sous un niveau acceptable.
 
 L'algorithme est à présent fonctionnel. Il peut trouver une solution à des sudocubes ayant uniquement 4 chiffres au départ. Il satisfait donc les exigences du client étant donné que les sudokubes "test" présentés au laboratoires ont entre 9 et 14 chiffres. À l'heure actuelle, bien que nous sachions que l'algorithme fonctionne correctement, il resterait toutefois un refactoring à faire au niveau des classes afin d'améliorer la structure et la lisibilité du code, tout en respectant l'orienté-objet. De plus, il resterais quelques tests unitaitres et tests d'intégration à écrire afin de s'assurer de la robustesse du code.
 
