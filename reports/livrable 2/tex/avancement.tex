@@ -83,7 +83,7 @@ Pour contrôler les servomoteurs de la webcam, nous utilisons le contrôleur Mic
 
 \section{Extraction des sudocubes}
 \subsection{Composantes du système}
-L'algorithme pour extraire les sudocubes est séparé en deux : une classe qui traite une photo afin d'extraire les informations d'un sudocube et un lecteur de chiffres. L'extracteur de sudocubes passe des images au lecteur de chiffres afin d'identifier le chiffre présent.
+L'algorithme pour extraire les sudocubes est séparé en deux : une classe qui traite une photo afin d'extraire les informations d'un sudocube et un lecteur de chiffres. L'extracteur de sudocubes passe des images au lecteur de chiffres afin d'identifier le chiffre présent. 
 
 \begin{figure}[htbp]
 \centering
@@ -95,17 +95,17 @@ L'algorithme pour extraire les sudocubes est séparé en deux : une classe qui t
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.9]{fig/chiffresLues.png}
-\caption{Figure présentant un exemple d'images extraites des cases du sudocube et normalisées avant d'être passé au lecteur de chiffres}
+\caption{Figure présentant un exemple d'images extraites des cases du sudocube et normalisées avant d'être passées au lecteur de chiffres}
 \label{fig:chifLu}
 \end{figure}
 
 \subsection{Les solutions retenus/considérés}
-Pour le lecteur de chiffres, deux solutions furent considérés : la librairie Tesseract et l'algorithme d'intelligence artificielle KNearest implanté dans la librairie OpenCV. Tesseract est une librairie qui permet de faire la lecture de caractères de plusieurs langues. Nous avons jugé que cette solution offre des fonctionnalités superflues en plus d'imposer une dépendance supplémentaire au projet. Puisque OpenCV est une dépendance obligatoire et que la méthode KNearest nous permet d'obtenir le même résultat qu'avec Tesseract nous avons choisit cette solution. 
+Pour le lecteur de chiffres, deux solutions furent considérées : la librairie Tesseract et l'algorithme d'intelligence artificielle KNearest implanté dans la librairie OpenCV. Tesseract est une librairie qui permet de faire la lecture de caractères de plusieurs langues. Nous avons jugé que cette solution offre des fonctionnalités superflues en plus d'imposer une dépendance supplémentaire au projet. Puisqu’OpenCV est une dépendance obligatoire et que la méthode KNearest nous permet d'obtenir le même résultat qu'avec Tesseract nous avons choisi cette solution.
 
 \subsection{Les moyens utilisé pour configurer}
-L'extracteur de sudocube fut configuré (valeur de threshold, coefficient de dilatation/d'érosion) à partir d'un lot de tests de 42 images(angles, distances sudocube/robot et luminosités variés). La configuration fut réalisé par essais/erreur pour trouver les paramètres optimal pour toutes les images.
+L'extracteur de sudocube fut configuré (seuils, coefficients de dilatation et d'érosion) à partir d'un lot de tests de 42 images (angles, distances sudocube/robot et luminosités variées). La configuration fut réalisée par essais/erreur pour trouver les paramètres optimaux pour toutes les images.
 
-Le lecteur de chiffres est entraîné avec 40 échantillons par chiffres. Aucune configuration supplémentaire nécessaire.
+Le lecteur de chiffres est entraîné avec 40 échantillons par chiffres. Puis, testé avec un lot de 60 nouvelles images par chiffres afin de vérifier sa robustesse.
 
 \section{Solveur de Sudocubes}
 L'algorithme qui solve les sudocubes a été codé en C++. Malgré que l'utilisation de la programmation par contraintes (CSP) aurait été beaucoup plus simple à implanter et nous aurait fait économiser du temps, nous n'avions pas envisagé cette solution au départ. Au moment où nous avons entendu parler de ce type de programmation, nous avions presque terminé notre solution "maison". 
@@ -174,11 +174,11 @@ En ce qui concerne la détection du robot, un algorithme semblable à la détect
 
 \section{Communication entre le Mac mini et la station de base}
 \subsection{Composantes du système}
-Avant de pouvoir communiquer avec le robot nous récupérons l’adresse ip du robot grâce à un script bash exécuté lors du démarrage de celui-ci. Le script récupère l’adresse ip et l’envoie sur le site pastebin.com.
+Avant de pouvoir communiquer avec le robot, nous récupérons l’adresse IP du robot grâce à un script bash exécuté lors du démarrage de celui-ci. Le script récupère l’adresse IP et l’envoie sur le site pastebin.com.
 
-Ensuite, nous utilisons ROS pour gérer la communication entre les différents nodes ROS. Une node c’est une application qui utilise l’API de ROS. Actuellement, nous avons testé l’envoie de messages au Mac mini pour démarrer la séquence du robot.
+Ensuite, nous utilisons ROS pour gérer la communication entre les différents nodes ROS. Une node c’est une application qui utilise l’API de ROS. Actuellement, nous avons testé l’envoi de messages au Mac mini pour démarrer la séquence du robot.
 
-On peux voir sur le diagramme \ref{fig:commNodes} la répartition des nodes sur les différents appareils ainsi que les appareils avec lesquels chaques nodes travaillent. Nous avons choisit de séparer le node du mac mini en deux afin de simplifier les tests pour les composantes qui communiquent avec le microcontrolleur. Grace au système de communication de ROS on peux envoyer par ligne de commande des messages afin de déplacer le robot ou encore afficher un message sur l’écran LCD, et ce, sans passer par l’écriture d’une application de tests. 
+On peut voir sur le diagramme \ref{fig:commNodes} la répartition des nodes sur les différents appareils ainsi que les appareils avec lesquels chaque node travaillent. Nous avons choisi de séparer le node du mac mini en deux afin de simplifier les tests pour les composantes qui communiquent avec le microcontrôleur. Grâce au système de communication de ROS on peut envoyer par ligne de commande des messages afin de déplacer le robot ou encore afficher un message sur l’écran LCD, et ce, sans passer par l’écriture d’une application de tests.
 
 \begin{figure}[htbp]
 \centering
@@ -187,15 +187,15 @@ On peux voir sur le diagramme \ref{fig:commNodes} la répartition des nodes sur 
 \label{fig:commNodes}
 \end{figure}
 
-\subsection{Les solutions retenus/considérés}
-Nous avons considérés deux solutions : POCO une librairie C++ et ROS un environnement de développement pour robot.
+\subsection{Les solutions retenues et considérées}
+Nous avons considéré deux solutions : POCO une librairie C++ et ROS un environnement de développement pour robot.
 
 POCO permet d’envoyer des chaines de caractères par TCP/IP. L’envoie de commandes avec POCO consiste en ces étapes : concaténer le nom d’une commande (choisit au préalable) et ses arguments dans une chaine de caractères. Puis, envoyer, à l’aide de la librairie la chaine de caractères. Il faut extraire la commande et ses paramètres lors de la réception d’un message.
 
-ROS fait exactement la même chose que POCO en arrière-plan, mais  il y a une couche logiciel qui nous donne des avantages supplémentaires. Pour envoyer des message entres deux applications ROS iI suffit de déclarer, pour chaque type de message, des variables et leur type dans un fichier texte. Puis, lors de la compilation du projet ROS génère des struct en C pour chaques message. Ensuite, on utilise l’api de ROS pour définir le contenu des messages et envoyer les messages.
+ROS fait exactement la même chose que POCO en arrière-plan, mais il y a une couche logiciel qui nous donne des avantages supplémentaires. Pour envoyer des messages, entre deux applications ROS iI suffit de déclarer, pour chaque type de message, des variables et leur type dans un fichier texte. Puis, lors de la compilation du projet ROS génère des struct en C pour chaque message. Ensuite, on utilise l’api de ROS pour définir le contenu des messages et envoyer les messages.
 
-La courbe d’apprentissage est nettement plus prononcé avec ROS. Cependant, avec celui-ci les messages sont hâchés avec une somme MD5 et lorsqu’un message est reçu par une node (une application ROS) le contenu est vérifié avec la somme MD5. Nous garantissant ainsi que le message s’est transmit.
+La courbe d’apprentissage est nettement plus prononcée avec ROS. Cependant, avec celui-ci les messages sont hachés avec une somme MD5 et lorsqu’un message est reçu par une node (une application ROS) le contenu est vérifié avec la somme MD5. Nous garantissant ainsi que le message s’est transmis.
 
-De plus, il est possible d’enregistrer tous les messages qui sont envoyés par ROS depuis le démarrage de la séquence, de les consulter séquentiellement dans le temps grâce à une interface graphique et de les réexécuter afin de reproduire la même séquence. C’est un outil de déverminage qui sera utile lors du développement de l’agent intelligent et que l’on ne possède pas avec POCO.
+De plus, il est possible d’enregistrer tous les messages qui sont envoyés par ROS depuis le démarrage de la séquence, de les consulter séquentiellement dans le temps grâce à une interface graphique et de les exécuter à nouveau afin de reproduire la même séquence de message. C’est un outil de déverminage qui sera utile lors du développement de l’agent intelligent et que l’on ne possède pas avec POCO.
 
 ROS a été retenu pour ses nombreux avantages. 
