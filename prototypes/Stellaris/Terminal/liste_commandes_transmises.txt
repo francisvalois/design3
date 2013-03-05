@@ -3,8 +3,8 @@ MESSAGE TRANSMIS AU MICRO
 
 "x" = déplacement => 1 octet => " " ou "-" pour le signe ensuite 7 octet qui donne la position (ex: "-0006400")
 "y" = déplacement => 1 octet => " " ou "-" pour le signe ensuite 7 octet qui donne la position (ex: " 0000200")
-
 NOTE: doit envoyer valeur en x et ensuite en y pour que le robot effectue un mouvement
+
 
 "TP"x = 6 tourner/rotation positif (CW)
 x: 3 octets degré + 3 octets de n'importe quoi (ex:"TP045XXX")
@@ -18,12 +18,16 @@ où X = 7 autres octets de n'importe quoi (ex:"bXXXXXXX")
 "B"X = forcer le freinage V (hard brake) (ex:"BXXXXXXX")
 où x = 7 autres octets de n'importe quoi
 
+NOTE: Les commandes de freinage prennent le dessus sur les commandes en exécution et en attente qui alors sont supprimées du buffer de commande.
+
 "D"x= descendre péhenseur
 "M"x= monter préhenseur
 où x = 7 autres octets de n'importe quoi
 
 "R"x = faire un reset du système (SystCtlReset)
 où x = 7 autres octets de n'importe quoi
+
+NOTE: La commande reset prend le dessus sur les commandes en exécution et en attente qui sont alors supprimées du buffer de commande.
 
 "A"x = demander de décoder le signal de l'antenne
 où x = 7 autres octets de n'importe quoi

@@ -2,15 +2,13 @@
 #Faites ls -la pour voir le fichier .bashrc(caché par défaut)
 
 #Veuillez définir vos path et variables pour votre ordinateur
-username=philippe            #Compte utilisateur ou le projet kinocto à été installé
+username=design3            #Compte utilisateur ou le projet kinocto à été installé
 port=11311
-rosAppRoot=/home/design3/app             #Racine de l'application kinocto
+rosAppRoot=/home/$username/design3/app             #Racine de l'application kinocto
 rosRoot=/opt/ros/groovy                  
 
 #Récupère l'adresse ip du macMini
 ipAddress=$(ifconfig wlan0 | grep 'inet ' | awk '{ print $2}')
-#Envoie l'adresse ip du macMini par internet
-#TODO recopier prototype
 
 #Définit les constantes de ros
 source $rosRoot/setup.bash
@@ -26,7 +24,4 @@ source $rosAppRoot/devel/setup.bash
 #Part les nodes de ROS
 #TODO Vérifier si les nodes sont actuellement démarré avant de faire cette étape, sinon 
 à chaques ouverture de terminal ça va prendre une éternité
-source /home/design3/design3/projet/devel/setup.bash
-roscore &
-sleep 5
-rosrun kinocto talker  &
+source $rosAppRoot/devel/setup.bash

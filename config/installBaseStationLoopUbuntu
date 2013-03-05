@@ -4,7 +4,7 @@
 #Veuillez définir vos path et variables pour votre ordinateur
 username=philippe            #Compte utilisateur ou le projet kinocto à été installé
 port=11311
-rosAppRoot=/home/$username/app             #Racine de l'application kinocto
+rosAppRoot=/home/$username/design3/app             #Racine de l'application kinocto
 rosRoot=/opt/ros/groovy
 
 #Récupération de l'adresse ip locale

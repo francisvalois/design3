@@ -1,0 +1,11 @@
+
+root=design3.2013.5@gmail.com
+mailhub=smtp.gmail.com:587
+rewriteDomain=
+hostname=design3.2013.5@gmail.com
+UseSTARTTLS=YES
+AuthUser=design3.2013.5
+AuthPass=d3sign3BOT
+FromLineOverride=YES
+
+
