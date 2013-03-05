@@ -1,4 +1,4 @@
-#include "SudokuReader.h"
+#include "SudocubeExtractor.h"
 
 using namespace cv;
 using namespace std;
@@ -6,16 +6,16 @@ using namespace std;
 const char SudokuReader::OUTPUT_PATH[] = "output";
 const char SudokuReader::PATH_SUDOCUBES[] = "../../sudocubes/";
 
-SudokuReader::SudokuReader() {
+SudocubeExtractor::SudocubeExtractor() {
 	white = cv::Scalar(255, 255, 255);
 	black = cv::Scalar(0, 0, 0);
 	sudocubeNo = 1;
 }
 
-SudokuReader::~SudokuReader() {
+SudocubeExtractor::~SudocubeExtractor() {
 }
 
-void SudokuReader::extractNumbers(Mat & src) {
+void SudocubeExtractor::extractNumbers(Mat & src) {
 	Mat srcGray;
 	cleanGraySrc(src, srcGray);
 
@@ -73,7 +73,7 @@ void SudokuReader::extractNumbers(Mat & src) {
 	sudocubeNo++;
 }
 
-void SudokuReader::cleanGraySrc(Mat& src, Mat& srcGray) {
+void SudocubeExtractor::cleanGraySrc(Mat& src, Mat& srcGray) {
 	cvtColor(src, srcGray, CV_BGR2GRAY);
 	GaussianBlur(srcGray, srcGray, Size(5, 5), 1, 1);
 
@@ -82,7 +82,7 @@ void SudokuReader::cleanGraySrc(Mat& src, Mat& srcGray) {
 	srcGray = srcGray - laplacianImg;
 }
 
-Rect SudokuReader::getFrameRect(Mat& srcHSV) {
+Rect SudocubeExtractor::getFrameRect(Mat& srcHSV) {
 	Mat segmentedFrame;
 	inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
 	applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
@@ -118,7 +118,7 @@ Rect SudokuReader::getFrameRect(Mat& srcHSV) {
 	}
 }
 
-Rect SudokuReader::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
+Rect SudocubeExtractor::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
 	if (rect1.area() < rect2.area()) {
 		return rect1;
 	}
@@ -126,7 +126,7 @@ Rect SudokuReader::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) 
 	return rect2;
 }
 
-bool SudokuReader::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded) {
+bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded) {
 	bool isExtracted = false;
 
 	for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
@@ -156,7 +156,7 @@ bool SudokuReader::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squa
 	return isExtracted;
 }
 
-void SudokuReader::removeInvalidSquaresPair(vector<SquarePair>& squaresPair) {
+void SudocubeExtractor::removeInvalidSquaresPair(vector<SquarePair>& squaresPair) {
 	vector<SquarePair> validSquaresPair;
 	for (uint i = 0; i < squaresPair.size(); i++) {
 		if (squaresPair[i].rect.area() > SQUARE_AREA_MIN && squaresPair[i].rect.area() < SQUARE_AREA_MAX) {
@@ -168,7 +168,7 @@ void SudokuReader::removeInvalidSquaresPair(vector<SquarePair>& squaresPair) {
 	squaresPair = validSquaresPair;
 }
 
-SquarePair SudokuReader::getRedSquarePair(const Mat& srcHSV) {
+SquarePair SudocubeExtractor::getRedSquarePair(const Mat& srcHSV) {
 	Mat segmentedRedSquare;
 	Mat segmentedRedSquare2;
 	inRange(srcHSV, Scalar(0, 100, 50), Scalar(25, 255, 255), segmentedRedSquare); // Pas le choix, en deux partie...
@@ -210,7 +210,7 @@ bool compareYPos(const SquarePair& pair1, const SquarePair& pair2) {
 	return pair1.rect.y < pair2.rect.y;
 }
 
-vector<vector<SquarePair> > SudokuReader::sortSquaresPair(vector<SquarePair> squaresPair, const int frameWidth) {
+vector<vector<SquarePair> > SudocubeExtractor::sortSquaresPair(vector<SquarePair> squaresPair, const int frameWidth) {
 	sort(squaresPair.begin(), squaresPair.end(), compareXPos); //Tri selon les x des Rect
 
 	//Séparation des colonnes selon la variation importante en x entre i et i+1
@@ -235,7 +235,7 @@ vector<vector<SquarePair> > SudokuReader::sortSquaresPair(vector<SquarePair> squ
 	return colonnesX;
 }
 
-bool SudokuReader::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask) {
+bool SudocubeExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask) {
 	Mat thresholdedSquare;
 	adaptiveThreshold(inImage, thresholdedSquare, 255, 1, 1, 11, 2);
 
@@ -269,19 +269,19 @@ bool SudokuReader::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask) {
 	return false;
 }
 
-void SudokuReader::applyErode(Mat & toErode, int size, int morphShape) {
+void SudocubeExtractor::applyErode(Mat & toErode, int size, int morphShape) {
 	Point erodePoint(size, size);
 	Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
 	erode(toErode, toErode, erodeElem);
 }
 
-void SudokuReader::applyDilate(Mat & toDilate, int size, int morphShape) {
+void SudocubeExtractor::applyDilate(Mat & toDilate, int size, int morphShape) {
 	Point dilatePoint(size, size);
 	Mat dilateElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), dilatePoint);
 	dilate(toDilate, toDilate, dilateElem);
 }
 
-void SudokuReader::saveImage(Mat &pict, char* filename) {
+void SudocubeExtractor::saveImage(Mat &pict, char* filename) {
 	vector<int> compression_params;
 	compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
 	compression_params.push_back(9);

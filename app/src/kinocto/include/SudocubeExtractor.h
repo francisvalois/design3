@@ -9,11 +9,11 @@
 #include "NumberReader.h"
 #include "SquarePair.h"
 
-class SudokuReader {
+class SudocubeExtractor {
 
 public:
-	SudokuReader();
-	virtual ~SudokuReader();
+	SudocubeExtractor();
+	virtual ~SudocubeExtractor();
 	void testOneSudocube(int sudocubeNo);
 	void testAllSudocubes();
 	void extractNumbers(cv::Mat & src);
