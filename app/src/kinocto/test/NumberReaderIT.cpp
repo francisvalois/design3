@@ -33,7 +33,6 @@ int getNumberOfWrongDetectionFor(NumberReader * numberReader, int no) {
 			cout << "Can't find test image number" << endl;
 		}
 
-		cvtColor(number, number, COLOR_BGR2GRAY);
 		if (numberReader->identifyNumber(number) != no) {
 			nbOfWrongNumber++;
 		}
@@ -43,41 +42,55 @@ int getNumberOfWrongDetectionFor(NumberReader * numberReader, int no) {
 	return nbOfWrongNumber;
 }
 
-TEST_F(NumberReaderIT, verifyAllNumberOne) {
+TEST_F(NumberReaderIT, trainedDataAreValid) {
+	for (int i = 1; i <= NumberReader::CLASSES; i++) {
+		for (int j = 1; j < NumberReader::TRAIN_SAMPLES; j++) {
+			char filename[255];
+			sprintf(filename, "img/trainingNumbers/%d/%d-%d.png", i, i, j);
+
+			Mat numberImg = imread(filename, 1);
+			int number = numberReader->identifyNumber(numberImg);
+
+			ASSERT_TRUE(number == i);
+		}
+	}
+}
+
+TEST_F(NumberReaderIT, allSampleAreCorrectlyIdentifiedForClassOne) {
 	ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 1) == 0);
 }
 
-TEST_F(NumberReaderIT, verifyAllNumberTwo) {
+TEST_F(NumberReaderIT, allSampleAreCorrectlyIdentifiedForClassTwo) {
 
 	ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 2) == 0);
 }
 
-TEST_F(NumberReaderIT, verifyAllNumberThree) {
+TEST_F(NumberReaderIT, allSampleAreCorrectlyIdentifiedForClassThree) {
 
 	ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 3) == 0);
 }
 
-TEST_F(NumberReaderIT, verifyAllNumberFour) {
+TEST_F(NumberReaderIT, allSampleAreCorrectlyIdentifiedForClassFour) {
 
 	ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 4) == 0);
 }
 
-TEST_F(NumberReaderIT, verifyAllNumberFive) {
+TEST_F(NumberReaderIT, allSampleAreCorrectlyIdentifiedForClassFive) {
 
 	ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 5) == 0);
 }
 
-TEST_F(NumberReaderIT, verifyAllNumberSix) {
+TEST_F(NumberReaderIT, allSampleAreCorrectlyIdentifiedForClassSix) {
 
 	ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 6) == 0);
 }
 
-TEST_F(NumberReaderIT, verifyAllNumberSeven) {
+TEST_F(NumberReaderIT, allSampleAreCorrectlyIdentifiedForClassSeven) {
 
 	ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 7) == 0);
 }
 
-TEST_F(NumberReaderIT, verifyAllNumberEight) {
+TEST_F(NumberReaderIT, allSampleAreCorrectlyIdentifiedForClassEight) {
 
 	ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 8) == 0);
 }

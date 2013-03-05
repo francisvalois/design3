@@ -11,11 +11,6 @@ NumberReader::NumberReader() {
 
 	learnFromImages(trainData, trainClasses);
 	knearest.train(trainData, trainClasses);
-
-	bool isValidData = isTrainedDataValid();
-	if (isValidData == false) {
-		cout << "The trained data for the numbers are wrong" << endl;
-	}
 }
 
 NumberReader::~NumberReader() {
@@ -53,38 +48,17 @@ void NumberReader::copyData(Mat & src, CvMat * dst) {
 	}
 }
 
-bool NumberReader::isTrainedDataValid() {
-	bool isValidData = true;
-
-	CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
-	for (int i = 1; i <= CLASSES; i++) {
-		for (int j = 1; j < TRAIN_SAMPLES; j++) {
-			sprintf(filename, "%s/%d/%d-%d.png", PATH_TO_NUMBERS, i, i, j);
-			Mat testedNumber = imread(filename, 1);
-			cvtColor(testedNumber, testedNumber, COLOR_BGR2GRAY);
-
-			copyData(testedNumber, sample);
-
-			float number = (int) knearest.find_nearest(sample, 1);
-
-			if (i != number) {
-				isValidData = false;
-			}
-		}
-	}
-	cvReleaseMat(&sample);
-
-	return isValidData;
-}
-
 int NumberReader::identifyNumber(Mat src) {
 	int number = -1;
 
+	Mat srcGray = src.clone();
+	cvtColor(srcGray, srcGray, COLOR_BGR2GRAY);
+
 	CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
-	copyData(src, sample);
+	copyData(srcGray, sample);
 
 	int detectedNumber = (int) knearest.find_nearest(sample, 1);
-	if (detectedNumber >= 1 || detectedNumber <= 8) { //TODO Vérifier par test si la valeur peut-être différente
+	if (detectedNumber >= 1 || detectedNumber <= 8) {
 		number = detectedNumber;
 	}
 
