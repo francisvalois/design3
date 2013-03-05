@@ -49,6 +49,7 @@ extern volatile float dt;
 extern long tolerancePos;
 extern volatile long posqei1;
 extern volatile long speedqei1;
+extern volatile CircularBuffer buffer_commande;
 
 //Variables globales
 volatile CircularBuffer receive_buffer;
@@ -86,18 +87,21 @@ void EncoderIntHandler(void);
 void EncoderHandler(void);
 //command.c
 void initCommande(void);
-//moteur.c
+void traiterNouvelleCommande(short commande_a_traiter[8]);
 tBoolean CommandHandler(void);
+//moteur.c
 void initMotorCommand(void);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
 void motorBrake(volatile long mnumber);
 void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
-void initLED(void);
 //uart.c
 void initUART(void);
-
+//prehenseur.c
+void initPrehenseur(void);
+//led.c
+void initLED(void);
 
 int main(void)
 {
@@ -129,6 +133,8 @@ int main(void)
     receive_buffer.write=0;
     send_buffer.read=0;
     send_buffer.write=0;
+    buffer_commande.read = 0;
+	buffer_commande.write = 0;
     //QEI
     position=0;
     speed=0;
@@ -229,9 +235,10 @@ int main(void)
 
 	initCommande();
 	initMotorCommand();
+	initLED();
+	initPrehenseur();
 	initPWM();
-    initUART();
-	initLED();   
+    initUART();   
     initQEI();
     //init_lcd();
     initTimer();
@@ -256,7 +263,16 @@ int main(void)
 			send_buffer.read++;
 		}
 		if(receive_buffer.write - receive_buffer.read > 7){
-			CommandHandler(); //Traitement des commandes
+			long i;
+			short commande[8];
+			for(i=0; i < 8; i++){
+				commande[i] = receive_buffer.buffer[receive_buffer.read%BUFFER_LEN];
+				receive_buffer.read++;
+			}
+			traiterNouvelleCommande(commande); //Traitement des commandes
+		}
+		if(buffer_commande.write - buffer_commande.read >= 8){
+			CommandHandler();
 		}
 	}
 }

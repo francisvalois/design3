@@ -13,7 +13,7 @@ void initLED(void){
 }
 
 void openLED(void){
-	GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_4, 0x40);
+	GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_4, 0x10);
 }
 
 void closeLED(void){
