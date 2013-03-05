@@ -13,6 +13,8 @@ class NumberReader {
 public:
 	const static int NUMBER_WIDTH = 25;
 	const static int NUMBER_HEIGHT = 30;
+	const static int TRAIN_SAMPLES = 40;
+	const static int CLASSES = 8;
 
 	NumberReader();
 	virtual ~NumberReader();
@@ -22,9 +24,6 @@ private:
 
 	const static char PATH_TO_NUMBERS[];
 	const static int NUMBER_IMAGE_SIZE = 750; //NUMBER_WIDTH * NUMBER_HEIGHT
-
-	const static int TRAIN_SAMPLES = 40;
-	const static int CLASSES = 8;
 
 	CvMat* trainData;
 	CvMat* trainClasses;
