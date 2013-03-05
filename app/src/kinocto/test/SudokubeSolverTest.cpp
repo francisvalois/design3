@@ -8,7 +8,6 @@ namespace {
   protected:
     Sudokube sudokube;
     SudokubeSolver solver;
-
   };
 
 
