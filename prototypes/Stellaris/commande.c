@@ -29,11 +29,13 @@ extern tBoolean a_atteint_consigne;
 //timer.c
 extern volatile unsigned long index;
 
+//Variables globales
 volatile short commande[8];
 volatile unsigned long captured_index;
 volatile long deplacement_x;
 volatile long deplacement_y;
 tBoolean is_waiting_for_y;
+volatile CircularBuffer buffer_commande;
 
 
 
@@ -47,6 +49,12 @@ void motorHardBrake(volatile long mnumber);
 void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
 void turn(long distance, long vitesse);
+//led.c
+void closeLED(void);
+void openLED(void);
+//prehenseur.c
+void descendrePrehenseur(void);
+void monterPrehenseur(void);
 
 /*
  * COMMANDE
@@ -59,17 +67,49 @@ void initCommande(void){
 	deplacement_y = 0;
 }
  
- 
+
+// Fonction qui traite les nouvelles commandes.
+void traiterNouvelleCommande(short commande_a_traiter[8]){
+	//Checker si nouvelle commande est un Reset ou un brake, prend alors le dessus sur les autres commandes.
+	if(commande_a_traiter[0] == 'R'){
+		SysCtlReset();
+	}
+	else if(commande_a_traiter[0] == 'b'){
+		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0x00);
+		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x00);
+		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x00);
+		a_atteint_consigne = true; //Indiquer comme si la consigne a été atteinte
+		initCommande();
+		buffer_commande.read = 0;
+		buffer_commande.write = 0;
+		
+	}
+	else if(commande_a_traiter[0] == 'B'){
+		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
+		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
+		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
+		a_atteint_consigne = true; //Indiquer comme si la consigne a été atteinte
+		initCommande();
+		buffer_commande.read = 0;
+		buffer_commande.write = 0;
+	}
+	else{	//Sinon on la met dans le buffer des commandes en attentes
+		long i;
+		for(i=0; i < 8; i++){
+			buffer_commande.buffer[buffer_commande.write%BUFFER_LEN] = commande_a_traiter[i];
+			buffer_commande.write++;
+		}
+	}
+}
+	
 // Fonction qui gere les commandes
-// \param command : commande à traiter
 // \return booléen qui dit si la commande a été traitée avec succès.
-tBoolean CommandHandler(){
+tBoolean CommandHandler(void){
 	long i;
 	for(i=0; i < 8; i++){
-		commande[i] = receive_buffer.buffer[receive_buffer.read%BUFFER_LEN];
-		receive_buffer.read++;
+		commande[i] = buffer_commande.buffer[buffer_commande.read%BUFFER_LEN];
+		buffer_commande.read++;
 	}
-
 	//Si reçoit seconde commande contient valeurs en y
 	if(is_waiting_for_y && (commande[0] == ' ' || commande[0] == '-')){
 		is_waiting_for_y = false;
@@ -156,31 +196,33 @@ tBoolean CommandHandler(){
 		if(commande[1] == 'N'){
 			degree = -degree;
 		}
+		else if(commande[1] != 'P'){
+			initCommande();
+			return false;
+		}
 		turn(degree, 1600);
 		initCommande();
-		return true;
-		
+		return true;	
 	}
-	else if(commande[0] == 'b'){
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0x00);
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x00);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x00);
-		a_atteint_consigne = true; //Indiquer comme si la consigne a été atteinte
-		initCommande();
-		return true;
-		
-	}
-	else if(commande[0] == 'B'){
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
-		a_atteint_consigne = true; //Indiquer comme si la consigne a été atteinte
-		initCommande();
+	else if(commande[0] == 'D'){
+		//descendrePrehenseur();
 		return true;
 	}
-	else if(commande[0] == 'R'){
-		SysCtlReset();
+	else if(commande[0] == 'M'){
+		//monterPrehenseur();
+		return true;
 	}
-	//else if()
-	return true;
+	else if(commande[0] == 'A'){
+		return true;
+	}
+	else if(commande[0] == 'O'){
+		//openLED();
+		return true;
+	}
+	else if(commande[0] == 'C'){
+		//closeLED();
+		return true;
+	}
+	initCommande();
+	return false;
 }
