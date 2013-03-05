@@ -98,3 +98,30 @@
   \label{tab:pt2}%
 \end{table}%
 \end{landscape}
+
+    \begin{landscape}
+\begin{table}[htbp]
+  \small
+   \centering
+    \caption{Plan de tests côté logiciel}
+    \scalebox{0.8}{
+  \tabcolsep=0.11cm
+    \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{5cm}|}\hline
+    \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Exigence}& \textbf{Méthode de vérification}& \textbf{Équipement requis}& \textbf{Méthode d'analyse}\\ \hline\hline
+     \multirow{15}{4cm}{\centering Vision numérique}   &  \multirow{7}{5cm}{ \centering Détecter les obstacles}  & \multirow{7}{5cm}{ \centering La position des obstacles obtenue à l'aide de la Kinect doit être précise au centimètre près.}  & \multirow{7}{3cm}{ \centering Test de mesure}   & \multirow{2}{4cm}{\centering Station de base}     & \multirow{4}{5cm}{Mesurer la distance réelle en X et Y avec le point (0.0) de la table pour différentes position d'obstacles avec et sans obstruction et la comparer avec la position vu par le logiciel.} \\ 
+                                                      &                                                         &                                                                                                                               &                                                 &                                                   & \\ \cline{5-5} 
+                                                      &                                                         &                                                                                                                               &                                                 & Ruban à Mesurer                                   & \\ \cline{5-5} 
+                                                      &                                                         &                                                                                                                               &                                                 & Kinect                                            & \\ \cline{5-5} 
+                                                      &                                                         &                                                                                                                               &                                                 & Algorithme de détection des obstacle              & \\ \cline{5-5}
+                                                      &                                                         &                                                                                                                               &                                                 & Table avec obstacles                              & \\ \cline{2-6}                                                                                                     
+                                                      &  \multirow{8}{5cm}{ \centering Détecter le robot}       & \multirow{7}{5cm}{ \centering La position du robot obtenue à l'aide de la Kinect doit être précise au centimètre près}        & \multirow{7}{3cm}{ \centering Test de mesure}   & \multirow{2}{4cm}{\centering Station de base}     & \multirow{4}{5cm}{Mesurer la distance réelle en X et Y du robot avec le point (0.0) de la table pour différentes position d'obstacles avec et sans obstruction et la comparer avec la position du robot vu par le logiciel.} \\ 
+                                                      &                                                         &                                                                                                                               &                                                 &                                                   & \\ \cline{5-5} 
+                                                      &                                                         &                                                                                                                               &                                                 & Ruban à Mesurer                                   & \\ \cline{5-5} 
+                                                      &                                                         &                                                                                                                               &                                                 & Kinect                                            & \\ \cline{5-5} 
+                                                      &                                                         &                                                                                                                               &                                                 & Algorithme de détection du robot                  & \\ \cline{5-5}
+                                                      &                                                         &                                                                                                                               &                                                 & Table avec obstacles                              & \\ \cline{5-5}
+                                                      &                                                         &                                                                                                                               &                                                 & Robot                                             & \\ \cline{1-6}
+   \end{tabular}}%
+  \label{tab:pt2}%
+\end{table}%
+\end{landscape}
