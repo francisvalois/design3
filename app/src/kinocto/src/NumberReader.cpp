@@ -3,7 +3,7 @@
 using namespace cv;
 using namespace std;
 
-const char NumberReader::PATH_TO_NUMBERS[] = "../../numbers";
+const char NumberReader::PATH_TO_NUMBERS[] = "img/trainingNumbers";
 
 NumberReader::NumberReader() {
 	trainData = cvCreateMat(CLASSES * TRAIN_SAMPLES, NUMBER_IMAGE_SIZE, CV_32FC1);

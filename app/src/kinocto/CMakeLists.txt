@@ -103,9 +103,9 @@ link_directories(include
 ## Add gtest based cpp test target and link libraries
 #${PROJECT_NAME}
 catkin_add_gtest(kinoctoTest test/AllTests.cpp 
-src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp
+src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp src/NumberReader.cpp 
 )
-target_link_libraries(kinoctoTest ${catkin_LIBRARIES})
+target_link_libraries(kinoctoTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
 #catkin_add_executable() 
 #catkin_add_gtest_build_flags()
 #target_link_libraries(kinoctoTest ${catkin_LIBRARIES})
