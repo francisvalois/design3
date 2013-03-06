@@ -109,6 +109,10 @@ Le lecteur de chiffres est entraîné avec 40 échantillons par chiffres. Puis, 
 
 \section{Solveur de Sudocubes}
 
+\subsection{Composantes du solveur}
+L'algorithme qui solutionne les sudocubes a été développé en C++. L'utilisation de la programmation par contraintes (CSP) aurait été  plus simple à implanter et nous aurait fait économiser du temps, mais nous n'avions pas envisagé cette solution au départ. Nous avions déjà un prototype au moment notre prise de conscience de l'existence de ce type de programmation. Le développement du solveur est actuellement terminé et il fonctionne.
+
+
 L'algorithme qui résout les sudocubes a été développé en C++. L'utilisation de la programmation par contraintes (CSP) aurait été  plus simple à implanter et nous aurait fait économiser du temps, mais nous n'avions pas envisagé cette solution au départ. Nous avions déjà un prototype au moment de notre prise de conscience de l'existence de ce type de programmation. Le développement du solveur est actuellement terminé et il fonctionne.
 Il utilise une structure de données afin de garder en mémoire le sudocube qui n'est en fait qu'un simple tableau à trois dimensions. Elle devient donc en même temps une interface pour la vision afin de stocker ses données obtenues lors de l'extraction du sudocube.
 Les stratégies utilisées pour résoudre le sudocube sont les mêmes qui sont utilisées dans le monde des sudokus normaux, mais adaptées aux sudocubes. Plus spécifiquement, nous avons utilisé les stratégies (ici citées en anglais pour les retrouver plus facilement sur Internet):\newline
@@ -120,6 +124,24 @@ Les stratégies utilisées pour résoudre le sudocube sont les mêmes qui sont u
 \end{itemize}
 \paragraph{}Si ces stratégies ne suffisent pas à résoudre le sudocube, nous utilisons la technique de force brute. Nous pensons que c'est une solution acceptable puisque la probabilité d’occurrence de la situation est faible.
 L'algorithme peut trouver une solution à des sudocubes ayant uniquement 4 chiffres au départ. Il satisfait donc les exigences du client étant donné que les sudocubes  présentés au laboratoire ont entre 9 et 14 chiffres. Le temps d'exécution varie de quelques milisecondes à quelques dizaines de milisecondes pour les sudocubes testés.
+
+\paragraph{}Si ces stratégies ne suffisent pas à solutionner le sudocube, nous utilisons la technique de force brute. Nous pensons que c'est une solution acceptable puisque il sera plutôt rare que cette situation surviendra.
+
+L'algorithme peut trouver une solution à des sudocubes ayant uniquement 4 chiffres au départ. Il satisfait donc les exigences du client étant donné que les sudokubes "test" présentés au laboratoires ont entre 9 et 14 chiffres. Le temps d'exécution varie de quelques milisecondes à quelques dizaines de milisecondes pour les sudocubes testés.
+
+\subsection{Stratégie de test}
+Pour tester entièrement notre classe solveur, il faudrait tester chacune des stratégies utilisées unitairement. Toutefois, si nous avions voulu tester chacune des stratégies, il aurait fallu adopter une architecture différente, puisque ces stratégies sont des méthodes privées de la classe solveur. Trois choix s'offraient alors à nous.
+
+Premièrement, nous aurions pu briser l'encapsulation de la classe solveur, ce qui n'est généralement pas une bonne pratique.
+
+Sinon, nous aurions pu nous créer un nouvel objet duquel hériteraient chacune des stratégies. De cette façon, les stratégies deviendraient des objets et seraient injectées dans la classe solveur à sa construction, préservant l'encapsulation. On aurait donc l'avantage de pouvoir tester chacune des stratégies unitairement, en plus de pouvoir isoler la classe solveur pour la tester (en utilisant des mocks). Cette façon de procéder correspond en fait au patron de conception "strategy". Cette façon de tester est la meilleure des trois côté qualité de code.
+
+Finalement, nous pourrions préserver l'encapsulation en ne testant tout simplement pas chacune des stratégies. Nous testerions uniquement la méthode "solve" en passant au solveur des sudokubes et en observant le résultat, ce qui ressemble plus à un test d'intégration.
+
+Dans notre cas, nous avons préféré utiliser la troisième option. Nous pensons que de tester ainsi couvrira suffisament notre solveur. Selon nous, ce test est un bon compromis entre le respect du bris d'encapsulation et le fait de tester unitairement chacune des stratégies. Nous savons que la meilleure façon de procéder serait la deuxième. Par contre, dans le cadre du projet, nous considérons que le temps qui serait investi dans l'écriture de ces tests est trop grand par rapport au gain que l'on ferait en qualité de code. Nous préférons mettre du temps ailleurs et y revenir au besoin.
+
+\section{Recherche de chemin}
+La fonctionnalité recherche de chemin n’en est encore qu’au stade prototype. Cette fonctionnalité n'a pas reçu beaucoup d'attention depuis le livrable 1. On pourrait donc se fier aux données énoncées dans ce livrable pour connaitre l'état de la recherche de chemin: "L'algorithme A* a été choisi, car il est très rapide et facile à implémenter". Nous savons que la solution développée dans le prototype est viable, mais il reste du travail à faire pour que ce soit fonctionnel. Il faudra entre autres ajouter une couche logicielle afin de réduire le nombre de points dans le chemin trouvé et ainsi réduire le nombre de rotations du robot.
 
 
 \section{Communication microcontrôleur - Mac mini}
@@ -145,7 +167,13 @@ Puisque le LM3S9B92 possède des compteurs d'usage général qui implémentent u
 
 \section{Orientation du robot}
 
-Pour la détermination d’angle et l’orientation du robot, le choix de la caméra embarquée  est très recommandé pour sa précision comparé à la kinect. En premier, on calibre la caméra, deux méthodes s’offrent à nous pour cette opération : l’application de l’algorithme de Zhang ou la calibration avec Opencv. Celle qui est retenue est la première, malgré sa complexité, elle est plus efficace. Ensuite, on procède à la détermination d’angle du robot par rapport à la ligne rouge déjà tracée sur la table, cette partie est réalisée grâce à un traitement d’image supportant la variation de luminosité, d’ombres… et des règles de trigonométrie. Finalement,  la détermination de l’orientation du robot (N, S, E, O) est effectuée par la détection des coins de la table. L’algorithme de cette opération est assez simple, si la caméra détecte : Orange avant bleu (orienté vers le Nord), bleu avant orange (orienté vers le Sud), les deux coins bleu (orienté vers le Ouest), les deux coins orange (orienté vers le Est). Les deux dernières parties sont commencées mais ne sont pas encore complétées à ce jour.
+Pour la détermination d’angle et l’orientation du robot, le choix de la caméra embarquée  est très recommandé pour sa précision comparé à la kinect. \\
+Dans un premier temps, nous devons calibrer la caméra. Pour ce faire, deux méthodes s’offrent à nous : l’application de l’algorithme de Zhang ou la calibration avec Opencv. Dans ce cas nous retenons la première méthode, car malgré sa complexité, elle est plus efficace. \\
+Ensuite, nous procédons à la détermination d’angle du robot par rapport à la ligne rouge déjà tracée sur la table.  Cette partie est réalisée grâce à un traitement d’image supportant la variation de luminosité, d’ombres… ainsi que grâce à des règles de trigonométrie.\\
+Enfin,  la détermination de l’orientation du robot (N, S, E, O) est effectuée par la détection des coins de la table. 
+L’algorithme de cette opération est assez simple. Si la caméra détecte le coin orange avant le bleu, le robot sera orienté vers le Nord. Si elle détecte le coin bleu avant le coin orange, le robot sera orienté au Sud. La détection des deux coins bleus montrera une orientation vers l’Ouest et enfin la détection des deux coins orange montrera une orientation vers l’Est.\\
+Les deux dernières parties sont commencées mais ne sont pas encore complétées à ce jour.
+
 
 \section{Vision par Kinect}
 Pour aider au déplacement du robot, la Kinect à été utilisée pour détecter la position des obstacles, la position du robot lui-même ainsi que sa position angulaire par rapport au point (0.0) de notre représentation cartésienne de la table. Toutefois, comme la Kinect est située à l'extérieur de la table de jeu, il a fallu effectuer une translation et une rotation des données obtenues pour positionner avec exactitude les objets. Les 3 sections qui suivent expliquent en détail les différentes parties de l'algorithme de vision de la Kinect.
