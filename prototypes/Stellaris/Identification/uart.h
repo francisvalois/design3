@@ -14,6 +14,6 @@
 
 
 
-void uartInit();
+void initUart();
 char uartLireOctet();
 void uartEcrireOctet(char Octet);
