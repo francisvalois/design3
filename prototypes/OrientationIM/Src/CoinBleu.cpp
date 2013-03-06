@@ -8,7 +8,9 @@
 /*#include "Coinbleu.h"
 
 Coinbleu::Coinbleu() {
-	}
+	zhang = new Zhang();
+	IndexParam = -1;
+}
 
 Coinbleu::~Coinbleu() {
 	cvReleaseImage(&mImage);

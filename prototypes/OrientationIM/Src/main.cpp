@@ -14,12 +14,13 @@ string i2string(int i) {
 	return buffer.str();
 }
 
- /*string CalibParamsFileNames[10] = { "", "ParamsFile/Params1.txt",
+string CalibParamsFileNames[12] = { "", "ParamsFile/Params1.txt",
 		"ParamsFile/Params2.txt", "ParamsFile/Params3.txt",
-	"ParamsFile/Params4.txt", "ParamsFile/Params5.txt",
-	"ParamsFile/Params6.txt", "ParamsFile/Params7.txt",
-	"ParamsFile/Params8.txt", "ParamsFile/Params9.txt", };
-*/
+		"ParamsFile/Params4.txt", "ParamsFile/Params5.txt",
+		"ParamsFile/Params6.txt", "ParamsFile/Params7.txt",
+		"ParamsFile/Params8.txt", "ParamsFile/Params9.txt",
+		"ParamsFile/Params10.txt", "ParamsFile/Params11.txt", };
+
 int main(int, char**) {
 
 	double U = 377;
@@ -29,16 +30,15 @@ int main(int, char**) {
 	double Z = 0;
 
 	while (true) {
-		std::cout << "Entrer x: " ;
+
+		std::cout << "Entrer U : " ;
 		if (std::cin >> U) {
-			std::cout << "Entrer y :" ;
+			std::cout << "Entrer V :" ;
 			if (std::cin >> V) {
 				Calibration calib(&U, &V);
-			//calib.LoadParams();
-				//calib.LoadParams(2);
+				//calib.LoadParams(&CalibParamsFileNames[1]);
+				calib.LoadParams(1);
 				calib.ApplyZhang(&X, &Y, &Z);
-
-				std::cout << "Les parametres en (x,y,z) sont :" ;
 
 				std::cout << "\nX : " << X * 100 << "cm"<<std::endl;
 				std::cout << "Y : " << Y * 100 << "cm"<<std::endl;
@@ -49,4 +49,3 @@ int main(int, char**) {
 
 	}
 }
-

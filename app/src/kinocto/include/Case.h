@@ -1,10 +1,3 @@
-/*
- * Case.h
- *
- *  Created on: 2013-02-13
- *      Author: olivier
- */
-
 #ifndef CASE_H_
 #define CASE_H_
 
@@ -19,20 +12,25 @@ public:
 	Case(int,int,int);
 	virtual ~Case();
 
-	int numberOfPossibilitiesRemaining();
-	void setValue(int);
 	vector<int> getPossibilities();
 	void setPossibilities(vector<int>);
 	void removePossibility(int);
+	int numberOfPossibilitiesRemaining();
 	bool isSolved();
-	bool contains(int);
+
+	bool containsValue(int);
 	int getValue();
-	int i;
-	int j;
-	int k;
+	void setValue(int);
+
+	int getI() {return i;};
+	int getJ() {return j;};
+	int getK() {return k;};
 
 private:
 	vector<int> possibilities;
+	int i;
+	int j;
+	int k;
 };
 
 #endif /* CASE_H_ */

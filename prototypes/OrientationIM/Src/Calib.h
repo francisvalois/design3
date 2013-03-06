@@ -12,7 +12,7 @@ public:
 	double X;
 	double Y;
 	double Z;
-	string CalibParamsFileNames[10];
+	//string CalibParamsFileNames[10];
 	Calibration( double* U,  double* V); 
 	virtual ~Calibration();
 	Zhang* zhang;

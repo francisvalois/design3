@@ -1,7 +1,3 @@
-// Zhang.h
-//
-// Loic Tanon 21/02/2012
-//////////////////////////////////////////////////////////////////////
 #if !defined(AFX_ZHANG_H__8B10705D_BAD0_41E7_8F03_58A8586C86BA__INCLUDED_)
 #define AFX_ZHANG_H__8B10705D_BAD0_41E7_8F03_58A8586C86BA__INCLUDED_
 
