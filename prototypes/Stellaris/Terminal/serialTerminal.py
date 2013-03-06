@@ -21,10 +21,22 @@ def fichierCVS(donnees, nomFichier):
 	#nom = ".\\" + nomFichier
 # ----------------------------------------------------------------------------------
 
-	f = open(nom, 'w')
-
-	for i in range(len(donnees)):
-		f.write(donnees[i][0].lstrip('0') + ',' + donnees[i][1].lstrip('0') +'\n')
+if(len(donnees[0]) == 1):
+		for i in range(len(donnees)):
+			if(donnees[i][0] != '0000000000'):
+				f.write(donnees[i][0].lstrip('0') + '\n')
+			else:
+				f.write('0' + '\n')
+	else:
+		for i in range(len(donnees)):
+			if donnees[i][0] != "0000000000"] and donnees[i][1] != "0000000000":
+				f.write(donnees[i][0].lstrip('0') + ',' + donnees[i][1].lstrip('0') +'\n')
+			elif donnees[i][0] == "0000000000" and donnees[i][1] != "0000000000":
+				f.write("0" + ',' + donnees[i][1].lstrip('0') + '\n')
+			elif donnees[i][0] != "0000000000" and donnees[i][1] == "0000000000" :
+				f.write(donnees[i][0].lstrip('0') + ',' + "0" + '\n')
+			else:
+				f.write("0,0" + '\n')
 	
 	f.close()
 
@@ -40,7 +52,9 @@ def formatDonnees(rawData):
 
 	dataInt = []
 
-	for i in range(10):
+	longueur = int(len(DataString)/10)
+
+	for i in range(longueur):
 		dataInt.append(DataString[i*10:i*10 + 10])
 
 	#print(dataInt)
