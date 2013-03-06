@@ -86,7 +86,7 @@ bool SudokubeSolver::removePossibilityFromListOfCases(vector<Case*> listOfCase, 
 }
 
 bool SudokubeSolver::lastRemainingCellInARegion(Sudokube& sudokube) {
-	vector<vector<Case*> > allRegions = sudokube.constructListOfCaseRegions();
+	vector<vector<Case*> > allRegions = sudokube.getListOfAllCaseLinesAndRegions();
 
 	for(unsigned int region = 0; region < allRegions.size(); region++) {
 		for(unsigned int caseInRegion = 0; caseInRegion < allRegions[region].size(); caseInRegion++) {
@@ -166,24 +166,11 @@ bool SudokubeSolver::removePossibilitiesFromNakedPairsWithinAListOfCases(vector<
 }
 
 bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
-	vector<vector<Case*> > allColumns;
-	allColumns.push_back(sudokube.getSameLineOfCase(1,1,1));
-	allColumns.push_back(sudokube.getSameLineOfCase(1,1,2));
-	allColumns.push_back(sudokube.getSameLineOfCase(1,1,3));
-	allColumns.push_back(sudokube.getSameLineOfCase(1,1,4));
-	allColumns.push_back(sudokube.getSameColumnOfCase(2,1,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(2,2,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(2,3,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(2,4,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(1,1,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(1,2,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(1,3,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(1,4,1));
-
+	vector<vector<Case*> > allColumns = sudokube.getListOfAllCaseLines();
 
 	for(unsigned int a = 0; a < allColumns.size(); a++) {
 		vector<Case*> column = allColumns[a];
-		int value1;
+		int value;
 
 		for(int m = 1; m <= 8; m++) {
 			vector<int> index;
@@ -193,14 +180,14 @@ bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
 				}
 			}
 			if(index.size() == 2) {
-				value1 = m;
+				value = m;
 				Case* case1 = column[index[0]];
 				Case* case2 = column[index[1]];
 				vector<int> possibilities = case1->getPossibilities();
 				bool isHiddenPair = false;
 
 				for(unsigned int p = 0; p < possibilities.size(); p++) {
-					if(possibilities[p] != value1 && case2->containsValue(possibilities[p])) {
+					if(possibilities[p] != value && case2->containsValue(possibilities[p])) {
 						isHiddenPair = true;
 						for(int q = 0; q < 8; q++) {
 							if(q!= index[0] && q != index[1] && column[q]->containsValue(possibilities[p])) {
@@ -213,7 +200,7 @@ bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
 							int case2PossibilitiesRemaining = case2->numberOfPossibilitiesRemaining();
 
 							for(int r = 1; r <= 8; r++) {
-								if(r!= value1 && r != possibilities[p]) {
+								if(r!= value && r != possibilities[p]) {
 									case1->removePossibility(r);
 									case2->removePossibility(r);
 								}
@@ -226,7 +213,6 @@ bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
 						}
 					}
 				}
-
 			}
 		}
 	}
@@ -234,21 +220,7 @@ bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
 }
 
 bool SudokubeSolver::hiddenTriples(Sudokube& sudokube) {
-
-	vector<vector<Case*> > allColumns;
-	allColumns.push_back(sudokube.getSameLineOfCase(1,1,1));
-	allColumns.push_back(sudokube.getSameLineOfCase(1,1,2));
-	allColumns.push_back(sudokube.getSameLineOfCase(1,1,3));
-	allColumns.push_back(sudokube.getSameLineOfCase(1,1,4));
-	allColumns.push_back(sudokube.getSameColumnOfCase(2,1,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(2,2,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(2,3,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(2,4,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(1,1,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(1,2,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(1,3,1));
-	allColumns.push_back(sudokube.getSameColumnOfCase(1,4,1));
-
+	vector<vector<Case*> > allColumns = sudokube.getListOfAllCaseLines();
 
 	for(unsigned int a = 0; a < allColumns.size(); a++) {
 		vector<Case*> column = allColumns[a];
@@ -452,19 +424,7 @@ bool SudokubeSolver::pointingTriples(Sudokube& sudokube) {
 }
 
 bool SudokubeSolver::boxLineReductionPair(Sudokube& sudokube) {
-	vector<vector<Case*> > allLines;
-	allLines.push_back(sudokube.getSameLineOfCase(1,1,4));
-	allLines.push_back(sudokube.getSameLineOfCase(1,1,3));
-	allLines.push_back(sudokube.getSameLineOfCase(1,1,2));
-	allLines.push_back(sudokube.getSameLineOfCase(1,1,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(1,1,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(1,2,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(1,3,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(1,4,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(2,1,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(2,2,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(2,3,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(2,4,1));
+	vector<vector<Case*> > allLines = sudokube.getListOfAllCaseLines();
 
 	for(unsigned int a = 0; a < allLines.size(); a++) {
 		vector<Case*> lines = allLines[a];
@@ -510,19 +470,7 @@ bool SudokubeSolver::boxLineReductionPair(Sudokube& sudokube) {
 }
 
 bool SudokubeSolver::boxLineReductionTriple(Sudokube& sudokube) {
-	vector<vector<Case*> > allLines;
-	allLines.push_back(sudokube.getSameLineOfCase(1,1,4));
-	allLines.push_back(sudokube.getSameLineOfCase(1,1,3));
-	allLines.push_back(sudokube.getSameLineOfCase(1,1,2));
-	allLines.push_back(sudokube.getSameLineOfCase(1,1,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(1,1,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(1,2,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(1,3,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(1,4,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(2,1,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(2,2,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(2,3,1));
-	allLines.push_back(sudokube.getSameColumnOfCase(2,4,1));
+	vector<vector<Case*> > allLines = sudokube.getListOfAllCaseLines();
 
 	for(unsigned int a = 0; a < allLines.size(); a++) {
 		vector<Case*> lines = allLines[a];

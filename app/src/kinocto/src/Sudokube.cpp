@@ -140,8 +140,9 @@ void Sudokube::print() {
 	}
 }
 
-vector<vector<Case*> > Sudokube::constructListOfCaseRegions() {
+vector<vector<Case*> > Sudokube::getListOfAllCaseLinesAndRegions() {
 	vector<vector<Case*> > allRegions;
+
 	allRegions.push_back(getSameLineOfCase(1,1,4));
 	allRegions.push_back(getSameLineOfCase(1,1,3));
 	allRegions.push_back(getSameLineOfCase(1,1,2));
@@ -160,7 +161,27 @@ vector<vector<Case*> > Sudokube::constructListOfCaseRegions() {
 	allRegions.push_back(getSameRegionOfCase(2,3,1));
 	allRegions.push_back(getSameRegionOfCase(3,1,1));
 	allRegions.push_back(getSameRegionOfCase(3,3,1));
+
 	return allRegions;
+}
+
+vector<vector<Case*> > Sudokube::getListOfAllCaseLines() {
+	vector<vector<Case*> > allColumns;
+
+	allColumns.push_back(getSameLineOfCase(1,1,1));
+	allColumns.push_back(getSameLineOfCase(1,1,2));
+	allColumns.push_back(getSameLineOfCase(1,1,3));
+	allColumns.push_back(getSameLineOfCase(1,1,4));
+	allColumns.push_back(getSameColumnOfCase(2,1,1));
+	allColumns.push_back(getSameColumnOfCase(2,2,1));
+	allColumns.push_back(getSameColumnOfCase(2,3,1));
+	allColumns.push_back(getSameColumnOfCase(2,4,1));
+	allColumns.push_back(getSameColumnOfCase(1,1,1));
+	allColumns.push_back(getSameColumnOfCase(1,2,1));
+	allColumns.push_back(getSameColumnOfCase(1,3,1));
+	allColumns.push_back(getSameColumnOfCase(1,4,1));
+
+	return allColumns;
 }
 
 vector<Case*> Sudokube::getSameLineOfCase(int i, int j, int k) {

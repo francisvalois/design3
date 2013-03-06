@@ -25,7 +25,8 @@ public:
 
 	void print();
 
-	vector<vector<Case*> > constructListOfCaseRegions();
+	vector<vector<Case*> > getListOfAllCaseLinesAndRegions();
+	vector<vector<Case*> > getListOfAllCaseLines();
 	vector<Case*> getSameLineOfCase(int,int,int);
 	vector<Case*> getSameColumnOfCase(int,int,int);
 	vector<Case*> getSameRegionOfCase(int,int,int);

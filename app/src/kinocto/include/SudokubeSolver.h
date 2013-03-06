@@ -10,6 +10,11 @@ public:
 
 	void solve(Sudokube&);
 
+private:
+	bool removePossibilityFromListOfCases(vector<Case*>,int);
+	bool removePossibilitiesFromNakedPairsWithinAListOfCases(vector<Case*>,int,int);
+	void solveWithoutBruteForce(Sudokube&);
+
 	//STRATEGIES
 	bool lastRemainingCellInARegion(Sudokube&);
 	bool simpleConstraintPropagation(Sudokube&);
@@ -21,11 +26,6 @@ public:
 	bool boxLineReductionPair(Sudokube&);
 	bool boxLineReductionTriple(Sudokube&);
 	void bruteForce(Sudokube&);
-
-private:
-	bool removePossibilityFromListOfCases(vector<Case*>,int);
-	bool removePossibilitiesFromNakedPairsWithinAListOfCases(vector<Case*>,int,int);
-	void solveWithoutBruteForce(Sudokube&);
 };
 
 #endif /* SUDOKUBESOLVER_H_ */
