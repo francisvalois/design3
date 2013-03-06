@@ -1,10 +1,3 @@
-/*
- * SudokubeSolver.h
- *
- *  Created on: 2013-02-13
- *      Author: olivier
- */
-
 #ifndef SUDOKUBESOLVER_H_
 #define SUDOKUBESOLVER_H_
 
@@ -17,7 +10,6 @@ public:
 
 	void solve(Sudokube&);
 
-
 	//STRATEGIES
 	bool lastRemainingCellInARegion(Sudokube&);
 	bool simpleConstraintPropagation(Sudokube&);
@@ -28,13 +20,12 @@ public:
 	bool pointingTriples(Sudokube&);
 	bool boxLineReductionPair(Sudokube&);
 	bool boxLineReductionTriple(Sudokube&);
-	bool xWing(Sudokube&);
 	void bruteForce(Sudokube&);
 
 private:
-	Sudokube sudokube;
+	bool removePossibilityFromListOfCases(vector<Case*>,int);
+	bool removePossibilitiesFromNakedPairsWithinAListOfCases(vector<Case*>,int,int);
 	void solveWithoutBruteForce(Sudokube&);
-
 };
 
 #endif /* SUDOKUBESOLVER_H_ */
