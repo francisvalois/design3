@@ -279,11 +279,6 @@ vector<Point> Kinect::findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obs
         for (int j = Y_ROBOT_BOTTOM_THRESHOLD; j >= Y_ROBOT_TOP_THRESHOLD; j--) {
             position = depthMatrix.at<Vec3f>(j, i);
 
-            if(i == 110)
-            {
-                cout << position[1] << endl;
-            }
-
             if (position[1] < ROBOT_HEIGHT && position[1] > 0) {
                 validPosition++;
                 distanceAverage += position[2];
@@ -293,7 +288,6 @@ vector<Point> Kinect::findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obs
                 validPosition = 0;
                 break;
             }
-
         }
 
         if (validPosition >= 20) {

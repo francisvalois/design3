@@ -59,7 +59,10 @@ int main( /*int argc, char* argv[]*/ ) {
     cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
     cout << "Robot : (" << robot[0] << "m en x, " << robot[1] << "m en z)" << endl;
 
-    imshow("depth", world);
+    Utility::saveToFile(world, "matrixRobot9.xml");
+    imwrite("matrixRobot9.jpg", show);
+
+    imshow("depth", show);
 
     do{
 

@@ -16,7 +16,7 @@ using namespace std;
 
 namespace {
 
-    TEST(KinectTest, GetDistanceForObstacle1){
+    TEST(KinectTest, GetDistanceForObstacle){
         //Arrange
         Mat testMatrix = Utility::readFromFile("matrix3.yml");
         Kinect kinect;
@@ -24,30 +24,21 @@ namespace {
         //Act
         kinect.findCenteredObstacle(testMatrix);
         Vec2f obstacle1 = kinect.getObstacle1();
-        float positionX = obstacle1[0];
-        float positionZ = obstacle1[1];
-        //Assert
+        float positionX1 = obstacle1[0];
+        float positionZ1 = obstacle1[1];
+        Vec2f obstacle2 = kinect.getObstacle2();
+        float positionX2 = obstacle2[0];
+        float positionZ2 = obstacle2[1];
         
+        //Assert
         //Accept a range of distances for X:0.805 and Z:2.2209
-        ASSERT_TRUE(positionX >= 0.805-0.01 && positionX < 0.805 + 0.01);
-        ASSERT_TRUE(positionZ >= 2.2209-0.01 && positionZ < 2.2209 + 0.01);
-    }
-    
-    TEST(KinectTest, GetDistanceForObstacle2){
-        //Arrange
-        Mat testMatrix = Utility::readFromFile("matrix3.yml");
-        Kinect kinect;
-        
-        //Act
-        kinect.findCenteredObstacle(testMatrix);
-        Vec2f obstacle1 = kinect.getObstacle2();
-        float positionX = obstacle1[0];
-        float positionZ = obstacle1[1];
-        //Assert
+        ASSERT_TRUE(positionX1 >= 0.805-0.01 && positionX1 < 0.805 + 0.01);
+        ASSERT_TRUE(positionZ1 >= 2.2209-0.01 && positionZ1 < 2.2209 + 0.01);
         
         //Accept a range of distances for X:0.258 and Z:1.337
-        ASSERT_TRUE(positionX >= 0.258-0.01 && positionX < 0.258 + 0.01);
-        ASSERT_TRUE(positionZ >= 1.337-0.01 && positionZ < 1.337 + 0.01);
+        ASSERT_TRUE(positionX2 >= 0.258-0.01 && positionX2 < 0.258 + 0.01);
+        ASSERT_TRUE(positionZ2 >= 1.337-0.01 && positionZ2 < 1.337 + 0.01);       
+        
     }
     
     TEST(KinectTEST, getTrueCoordFromKinectCoords){
