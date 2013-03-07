@@ -1,5 +1,4 @@
 #À installer dans le script /home/design3/.bashrc du compte design3 sur le robot
-#Faites ls -la pour voir le fichier .bashrc(caché par défaut)
 
 #Veuillez définir vos path et variables pour votre ordinateur
 username=design3            #Compte utilisateur ou le projet kinocto à été installé
@@ -24,4 +23,3 @@ source $rosAppRoot/devel/setup.bash
 #Part les nodes de ROS
 #TODO Vérifier si les nodes sont actuellement démarré avant de faire cette étape, sinon 
 à chaques ouverture de terminal ça va prendre une éternité
-source $rosAppRoot/devel/setup.bash
