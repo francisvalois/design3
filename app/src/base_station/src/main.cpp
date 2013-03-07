@@ -1,8 +1,15 @@
+#include <QtGui/QApplication>
+#include "MainWindow.h"
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include "kinocto/StartKinocto.h"
 
-int main(int argc, char **argv) {
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.show();
+
 	ros::init(argc, argv, "talker");
 	ros::NodeHandle n;
 
@@ -19,5 +26,7 @@ int main(int argc, char **argv) {
 
 	ros::spinOnce();
 
-	return 0;
+
+    return a.exec();
 }
+
