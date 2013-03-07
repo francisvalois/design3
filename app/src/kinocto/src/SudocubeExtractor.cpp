@@ -4,7 +4,6 @@ using namespace cv;
 using namespace std;
 
 const char SudocubeExtractor::OUTPUT_PATH[] = "output";
-const char SudocubeExtractor::PATH_SUDOCUBES[] = "../../sudocubes/";
 
 SudocubeExtractor::SudocubeExtractor() {
 	white = cv::Scalar(255, 255, 255);
@@ -17,11 +16,14 @@ SudocubeExtractor::~SudocubeExtractor() {
 
 Sudokube SudocubeExtractor::extractSudocube(Mat & src) {
 	//TODO À faire, mettre le contenu extrait de la méthode extractNumbers
+	extractNumbers(src);
+
 	Sudokube sudokube;
 	return sudokube;
 }
 
 void SudocubeExtractor::extractNumbers(Mat & src) {
+	cout << "sudocube no "<< sudocubeNo << endl;
 	Mat srcGray;
 	cleanGraySrc(src, srcGray);
 
@@ -78,8 +80,8 @@ void SudocubeExtractor::extractNumbers(Mat & src) {
 				int numberFound = numberReader.identifyNumber(number);
 				cout << "Found : " << numberFound << endl;
 				sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH,
-						sudocubeNo, i + 1, y);
-				saveImage(number, filename);
+				 sudocubeNo, i + 1, y);
+				 saveImage(number, filename);
 			}
 		}
 	}

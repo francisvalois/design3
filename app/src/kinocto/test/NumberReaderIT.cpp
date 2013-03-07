@@ -33,6 +33,7 @@ int getNumberOfWrongDetectionFor(NumberReader * numberReader, int no) {
 			cout << "Can't find test image number" << endl;
 		}
 
+		cvtColor(number, number, COLOR_BGR2GRAY);
 		if (numberReader->identifyNumber(number) != no) {
 			nbOfWrongNumber++;
 		}
@@ -49,6 +50,7 @@ TEST_F(NumberReaderIT, trainedDataAreValid) {
 			sprintf(filename, "img/trainingNumbers/%d/%d-%d.png", i, i, j);
 
 			Mat numberImg = imread(filename, 1);
+			cvtColor(numberImg, numberImg, COLOR_BGR2GRAY);
 			int number = numberReader->identifyNumber(numberImg);
 
 			ASSERT_TRUE(number == i);

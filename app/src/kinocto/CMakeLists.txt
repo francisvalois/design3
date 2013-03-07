@@ -105,6 +105,11 @@ src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp src/NumberReader.cpp src/Su
 )
 target_link_libraries(kinoctoTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
+catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp 
+src/Case.cpp  src/Sudokube.cpp src/NumberReader.cpp src/SudocubeExtractor.cpp
+)
+target_link_libraries(kinoctoLongTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
+
 
 #catkin_add_executable() 
 #catkin_add_gtest_build_flags()

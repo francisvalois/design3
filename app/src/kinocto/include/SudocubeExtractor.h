@@ -19,7 +19,6 @@ public:
 
 private:
 	const static char OUTPUT_PATH[];
-	const static char PATH_SUDOCUBES[];
 
 	const static int FRAME_AREA_MIN = 300000;
 	const static int FRAME_ERODE_SIZE = 1;

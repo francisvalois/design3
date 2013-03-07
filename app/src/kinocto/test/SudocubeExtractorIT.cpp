@@ -23,8 +23,20 @@ protected:
 };
 
 TEST_F(SudocubeExtractorIT, simpleTest) {
+	char filename[255];
+
+	for (int i = 1; i <= 42; i++) {
+		sprintf(filename, "%s/%d.png", "img/testSudocubes", i);
+		Mat src = imread(filename);
+
+		if (!src.data ) {
+			cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+		}
+
+		sudocubeExtractor->extractSudocube(src);
+	}
+
 	ASSERT_TRUE(true);
-	//ASSERT_TRUE(getNumberOfWrongDetectionFor(numberReader, 1) == 0);
 }
 
 }
