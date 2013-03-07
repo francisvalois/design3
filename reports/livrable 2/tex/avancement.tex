@@ -26,7 +26,7 @@ L'alimentation employée pour les périphériques est une alimentation de type b
 \label{fig:alim5Vphoto}
 \end{figure}
 
-\section{Alimentation 24V du mac mini et du préhenseur}
+\section{Alimentation 24V du Mac mini et du préhenseur}
 L’alimentation 24V, qui alimente le Mac mini ainsi que le préhenseur, a été déjà préconçue et préassemblée sur circuit imprimé, ce qui représentait la solution la plus économique et la plus fiable selon nos hypothèses. Ce module est un hacheur survolteur qui découpe l’alimentation d’entré de 11.1V et la mène à une tension de 24V et cela avec un rendement d’environ 0.94 et de faibles oscillations considérées négligeables. \ref{fig:alim24Vphoto}.
 
 \begin{figure}[htbp]
@@ -47,10 +47,24 @@ Pour la réception du signal Manchester, nous utilisons un circuit intégré de 
 \end{figure}
 
 \section{Préhenseur}
-Le préhenseur est réalisé à l’aide d’un actionneur magnétique qui reçoit une commande de 0V ou 5V qui lui dicte ainsi s’il doit abaisser ou remonter le crayon. Le circuit magnétique exerce une force sur le crayon vers le bas lorsque la commande le lui dicte alors qu’un simple élastique sert de dispositif de retour en place du crayon. Pour minimiser les points morts lors des changements de direction du robot, nous utilisons un système de plongeur qui progresse dans un guide à faible tolérance,  qui maximise ainsi la précision de l’actionneur magnétique qui le précède. Pour actionner le préhenseur, nous utilisons la commande de 0-5V, fournie par le microcontrôleur, sur la gâchette d’un transistor mosfet qui limite la puissance fournie par le microcontrôleur. Le préhenseur et son système de commande sont opérationnels depuis un certain temps déjà. On peut observer le schéma du circuit de l’actionneur sur la figure 10.6.
+Le préhenseur est réalisé à l’aide d’un actionneur magnétique qui reçoit une commande de 0V ou 5V qui lui dicte ainsi s’il doit abaisser ou remonter le crayon. Le circuit magnétique exerce une force sur le crayon vers le bas lorsque la commande le lui dicte alors qu’un simple élastique sert de dispositif de retour en place du crayon. Pour minimiser les points morts lors des changements de direction du robot, nous utilisons un système de plongeur qui progresse dans un guide à faible tolérance,  qui maximise ainsi la précision de l’actionneur magnétique qui le précède. Pour actionner le préhenseur, nous utilisons la commande de 0-5V, fournie par le microcontrôleur, sur la gâchette d’un transistor mosfet qui limite la puissance fournie par le microcontrôleur. Le préhenseur et son système de commande sont opérationnels depuis un certain temps déjà. On peut observer le schéma du circuit de commande du préhenseur sur la figure \ref{fig:prehenseur}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{fig/prehenseur.jpg}
+\caption{Figure présentant les plans du circuit de commande du préhenseur}
+\label{fig:prehenseur}
+\end{figure}
 
 \section{DEL verte de fin de tâche}
-Pour le circuit de la DEL verte qui confirme la fin des tâches du robot, nous utilisons un transistor mosfet de faible puissance qui reçoit la commande du microcontrôleur sur sa gâchette et permet le contrôle de celle-ci. On peut observer le schéma du circuit de commande de la DEL sur la figure 10.7.
+Pour le circuit de la DEL verte qui confirme la fin des tâches du robot, nous utilisons un transistor mosfet de faible puissance qui reçoit la commande du microcontrôleur sur sa gâchette et permet le contrôle de celle-ci. On peut observer le schéma du circuit de commande de la DEL sur la figure \ref{fig:del_verte}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{fig/del_verte.jpg}
+\caption{Figure présentant les plans du circuit de commande du préhenseur}
+\label{fig:del_verte}
+\end{figure}
 
 \section{Circuit de protection}
 Pour le circuit de protection nous avons utilisé trois fusibles en série avec des interrupteurs pour alimenter chacun des circuits d’alimentation 11,1V, 5V et 24V. Chacun des interrupteurs est muni d’un témoin lumineux qui confirme sa mise sous tension et valide que son fusible est intact.
