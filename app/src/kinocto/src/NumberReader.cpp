@@ -48,11 +48,14 @@ void NumberReader::copyData(Mat & src, CvMat * dst) {
 	}
 }
 
+/**
+ * Nécessite que l'image soit en ton de gris
+ */
 int NumberReader::identifyNumber(Mat src) {
 	int number = -1;
 
 	Mat srcGray = src.clone();
-	cvtColor(srcGray, srcGray, COLOR_BGR2GRAY);
+	//cvtColor(srcGray, srcGray, COLOR_BGR2GRAY); //À faire avant d'appeleer la méthode
 
 	CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
 	copyData(srcGray, sample);

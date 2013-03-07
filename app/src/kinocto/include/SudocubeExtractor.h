@@ -8,19 +8,17 @@
 
 #include "NumberReader.h"
 #include "SquarePair.h"
+#include "Sudokube.h"
 
 class SudocubeExtractor {
 
 public:
 	SudocubeExtractor();
 	virtual ~SudocubeExtractor();
-	void testOneSudocube(int sudocubeNo);
-	void testAllSudocubes();
-	void extractNumbers(cv::Mat & src);
+	Sudokube extractSudocube(cv::Mat & src);
 
 private:
 	const static char OUTPUT_PATH[];
-	const static char PATH_SUDOCUBES[];
 
 	const static int FRAME_AREA_MIN = 300000;
 	const static int FRAME_ERODE_SIZE = 1;
@@ -41,6 +39,7 @@ private:
 	int sudocubeNo;
 	char filename[255];
 
+	void extractNumbers(cv::Mat & src);
 	void cleanGraySrc(cv::Mat& src, cv::Mat& srcGray);
 	cv::Rect getFrameRect(cv::Mat& srcHSV);
 	cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
