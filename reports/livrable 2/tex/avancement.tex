@@ -37,7 +37,7 @@ L’alimentation 24V, qui alimente le Mac mini ainsi que le préhenseur, a été
 \end{figure}
 
 \section{Réception du signal Manchester}
-Pour la réception du signal Manchester, nous utilisons un circuit intégré de décodage de tonalité, le LM567, qui met sa patte de sortie à la masse lorsqu’il détecte la fréquence ciblée sur sa patte d’entrée. Nous utilisons un comparateur à hystérésis à la sortie du décodeur afin de contourner les variations de tension causées par les variations d’intensités du signal d’entrée. Cependant, comme le signal de sortie du décodeur est inversé, nous inversons la sortie du comparateur au moyen d'un inverseur et l'envoyons ensuite dans le microcontrôleur qui le décode. Ce récepteur est opérationnel depuis quelques semaines déjà. Le plan de ce récepteur est présenté à la figure \ref{fig:manchester}.
+Pour la réception du signal Manchester, nous utilisons un circuit intégré de décodage de tonalité, le LM567, qui met sa patte de sortie à la masse lorsqu’il détecte la fréquence ciblée sur sa patte d’entrée. Le signal d'entrée qui est recueillie par le décodeur est capté par une antenne que nous avons bobinée sur plusieurs tours autour du préhenseur (on peut apercevoir sur la figure \ref{fig:prehenseur2}) pour maximiser les variations de flux magnétique.  Nous utilisons un comparateur à hystérésis à la sortie du décodeur afin de contourner les variations de tension causées par les variations d’intensités du signal d’entrée. Cependant, comme le signal de sortie du décodeur est inversé, nous inversons la sortie du comparateur au moyen d'un inverseur et l'envoyons ensuite dans le microcontrôleur qui le décode. Ce récepteur est opérationnel depuis quelques semaines déjà. Le plan de ce récepteur est présenté à la figure \ref{fig:manchester}.
 
 \begin{figure}[htbp]
 \centering
@@ -47,13 +47,20 @@ Pour la réception du signal Manchester, nous utilisons un circuit intégré de 
 \end{figure}
 
 \section{Préhenseur}
-Le préhenseur est réalisé à l’aide d’un actionneur magnétique qui reçoit une commande de 0V ou 5V qui lui dicte ainsi s’il doit abaisser ou remonter le crayon. Le circuit magnétique exerce une force sur le crayon vers le bas lorsque la commande le lui dicte alors qu’un simple élastique sert de dispositif de retour en place du crayon. Pour minimiser les points morts lors des changements de direction du robot, nous utilisons un système de plongeur qui progresse dans un guide à faible tolérance,  qui maximise ainsi la précision de l’actionneur magnétique qui le précède. Pour actionner le préhenseur, nous utilisons la commande de 0-5V, fournie par le microcontrôleur, sur la gâchette d’un transistor mosfet qui limite la puissance fournie par le microcontrôleur. Le préhenseur et son système de commande sont opérationnels depuis un certain temps déjà. On peut observer le schéma du circuit de commande du préhenseur sur la figure \ref{fig:prehenseur}.
+Le préhenseur est réalisé à l’aide d’un actionneur magnétique qui reçoit une commande de 0V ou 5V qui lui dicte ainsi s’il doit abaisser ou remonter le crayon. Le circuit magnétique exerce une force sur le crayon vers le bas lorsque la commande le lui dicte alors qu’un simple élastique sert de dispositif de retour en place du crayon. Pour minimiser les points morts lors des changements de direction du robot, nous utilisons un système de plongeur qui progresse dans un guide à faible tolérance,  qui maximise ainsi la précision de l’actionneur magnétique qui le précède. Pour actionner le préhenseur, nous utilisons la commande de 0-5V, fournie par le microcontrôleur, sur la gâchette d’un transistor mosfet qui limite la puissance fournie par le microcontrôleur. Le préhenseur et son système de commande sont opérationnels depuis un certain temps déjà. On peut observer le schéma du circuit de commande du préhenseur sur la figure \ref{fig:prehenseur} ainsi que sa réalisation mécanique sur la figure \ref{fig:prehenseur2}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[scale=0.5]{fig/prehenseur.jpg}
 \caption{Figure présentant les plans du circuit de commande du préhenseur}
 \label{fig:prehenseur}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{fig/prehenseur2.jpg}
+\caption{Figure présentant la réalisation mécanique du préhenseur}
+\label{fig:prehenseur2}
 \end{figure}
 
 \section{DEL verte de fin de tâche}
