@@ -214,8 +214,9 @@ On effectue une mesure du signal à un intervalle prédéfini plus petit que la 
 On effectue une mesure du temps entre les transitions du signal de zéro à un et de un à zéro. C'est le temps entre les montées et descentes qui permet de décoder le signal.
 \end{enumerate}
 
-Puisque le LM3S9B92 possède des compteurs d'usage général qui implémentent une fonction de capture d'événement, la méthode par timings a été employée. Pour l'instant, il est possible de mesurer des temps entre les transitions sur un signal interne au microcontrôleur généré par un PWM.
+Puisque le LM3S9B92 possède des compteurs d'usage général qui implémentent une fonction de capture d'événement, la méthode par timings a été employée. Ces compteurs peuvent être utilisés avec un canal du uDMA. Les interruptions générées par les transitions déclenchent des transferts DMA vers un tampon de données qui contient les valeurs du compteur lors des interruptions. Les timings sont obtenus en soustrayant la valeur précédente de la valeur courante dans le tampon. 
 
+La capture d'événements a d'abord été testée avec un signal PWM interne au microcontrôleur, puis des échantillons ont été pris avec le signal du récepteur d'antenne pour évaluer la variabilité du signal et pour tester notre algorithme de décodage. L'algorithme de décodage est en cours de développement.
 
 \section{Orientation du robot}
 
