@@ -49,11 +49,6 @@ include_directories(include
   ${catkin_INCLUDE_DIRS}
 )
 
-## Declare a cpp library
- #add_library(
- #KinoctoLib ${PROJ_SOURCES}
- #)
-
 add_executable(Kinocto src/Kinocto.cpp)
 add_dependencies(Kinocto kinocto_gencpp)
 target_link_libraries(Kinocto ${catkin_LIBRARIES})
@@ -62,7 +57,10 @@ link_directories(include
     ${catkin_LIB_DIRS}
 )
 
-
+## Declare a cpp library
+ #add_library(
+ #KinoctoLib ${PROJ_SOURCES}
+ #)
 
 #############
 ## Install ##
@@ -103,21 +101,11 @@ link_directories(include
 ## Add gtest based cpp test target and link libraries
 #${PROJECT_NAME}
 catkin_add_gtest(kinoctoTest test/AllTests.cpp 
-src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp src/NumberReader.cpp 
+src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp src/NumberReader.cpp src/SudocubeExtractor.cpp
 )
 target_link_libraries(kinoctoTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
+
+
 #catkin_add_executable() 
 #catkin_add_gtest_build_flags()
-#target_link_libraries(kinoctoTest ${catkin_LIBRARIES})
-
-#if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
-#endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
-
-#Tests pour l'extracteur de sudocube
-#add_executable(SudocubeExtractor ${PROJ_SOURCES})
-#target_link_libraries(SudocubeExtractor ${catkin_LIBRARIES} ${OpenCV_LIBS})
 

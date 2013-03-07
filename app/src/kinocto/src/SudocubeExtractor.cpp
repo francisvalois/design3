@@ -3,8 +3,8 @@
 using namespace cv;
 using namespace std;
 
-const char SudokuReader::OUTPUT_PATH[] = "output";
-const char SudokuReader::PATH_SUDOCUBES[] = "../../sudocubes/";
+const char SudocubeExtractor::OUTPUT_PATH[] = "output";
+const char SudocubeExtractor::PATH_SUDOCUBES[] = "../../sudocubes/";
 
 SudocubeExtractor::SudocubeExtractor() {
 	white = cv::Scalar(255, 255, 255);
@@ -13,6 +13,12 @@ SudocubeExtractor::SudocubeExtractor() {
 }
 
 SudocubeExtractor::~SudocubeExtractor() {
+}
+
+Sudokube SudocubeExtractor::extractSudocube(Mat & src) {
+	//TODO À faire, mettre le contenu extrait de la méthode extractNumbers
+	Sudokube sudokube;
+	return sudokube;
 }
 
 void SudocubeExtractor::extractNumbers(Mat & src) {
@@ -32,39 +38,47 @@ void SudocubeExtractor::extractNumbers(Mat & src) {
 
 	vector<SquarePair> squaresPair;
 	Mat frameCroppedThresholded;
-	bool squaresAreExtracted = findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded);
+	bool squaresAreExtracted = findSquaresPair(frameCroppedGray, squaresPair,
+			frameCroppedThresholded);
 
 	if (squaresAreExtracted == false) {
-		cout << "Could not extract all the square for sudocube" << endl; //TODO gesframeRecttion d'exception
+		cout << "Could not extract all the square for sudocube" << endl; //TODO gestion d'exception
 		return;
 	}
 
 	SquarePair redSquarePair = getRedSquarePair(srcHSV(frameRect));
 	squaresPair[squaresPair.size() - 1] = redSquarePair;
 
-	vector<vector<SquarePair> > orderedSquaresPair = sortSquaresPair(squaresPair, frameCroppedThresholded.cols);
+	vector<vector<SquarePair> > orderedSquaresPair = sortSquaresPair(
+			squaresPair, frameCroppedThresholded.cols);
+	vector<vector<int> > orderedNumber;
 
 	for (int i = 0; i < 8; i++) {
 		vector<SquarePair>::iterator it;
-		for (it = orderedSquaresPair[i].begin(); it != orderedSquaresPair[i].end(); it++) {
+		for (it = orderedSquaresPair[i].begin();
+				it != orderedSquaresPair[i].end(); it++) {
 			int y = distance(orderedSquaresPair[i].begin(), it);
 
-			Mat squareMask = Mat::zeros(frameCroppedThresholded.size(), CV_8UC1);
+			Mat squareMask = Mat::zeros(frameCroppedThresholded.size(),
+					CV_8UC1);
 			fillConvexPoly(squareMask, it->poly, white);
 
-			Mat squareMasked = Mat::ones(frameCroppedThresholded.size(), CV_8UC3);
+			Mat squareMasked = Mat::ones(frameCroppedThresholded.size(),
+					CV_8UC3);
 			frameCroppedThresholded.copyTo(squareMasked, squareMask);
 
 			Mat squareInversedMask = 255 - squareMask;
 			applyDilate(squareInversedMask, 8, MORPH_RECT);
 
 			Mat number;
-			bool foundPossibleNumber = extractNumber(squareMasked, number, squareInversedMask);
+			bool foundPossibleNumber = extractNumber(squareMasked, number,
+					squareInversedMask);
 
 			if (foundPossibleNumber == true) {
 				int numberFound = numberReader.identifyNumber(number);
 				cout << "Found : " << numberFound << endl;
-				sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
+				sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH,
+						sudocubeNo, i + 1, y);
 				saveImage(number, filename);
 			}
 		}
@@ -92,7 +106,8 @@ Rect SudocubeExtractor::getFrameRect(Mat& srcHSV) {
 
 	vector<vector<Point> > frameContours;
 	vector<Vec4i> frameHierarchy;
-	findContours(segmentedFrame, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	findContours(segmentedFrame, frameContours, frameHierarchy, CV_RETR_TREE,
+			CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 	vector<vector<Point> > frameContoursPoly(frameContours.size());
 	vector<Rect> frameBoundingRect(0);
@@ -111,14 +126,16 @@ Rect SudocubeExtractor::getFrameRect(Mat& srcHSV) {
 	} else if (frameBoundingRect.size() == 1) {
 		return frameBoundingRect[0];
 	} else if (frameBoundingRect.size() == 2) {
-		return getSmallestRectBetween(frameBoundingRect[0], frameBoundingRect[1]);
+		return getSmallestRectBetween(frameBoundingRect[0],
+				frameBoundingRect[1]);
 	} else {
 		cout << "Found too many potential frames for sudocube" << endl; // TODO Gestion d'exception...
 		return Rect();
 	}
 }
 
-Rect SudocubeExtractor::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
+Rect SudocubeExtractor::getSmallestRectBetween(const Rect &rect1,
+		const Rect &rect2) {
 	if (rect1.area() < rect2.area()) {
 		return rect1;
 	}
@@ -126,10 +143,13 @@ Rect SudocubeExtractor::getSmallestRectBetween(const Rect &rect1, const Rect &re
 	return rect2;
 }
 
-bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded) {
+bool SudocubeExtractor::findSquaresPair(const Mat& srcGray,
+		vector<SquarePair> & squaresPair, Mat& srcThresholded) {
 	bool isExtracted = false;
 
-	for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
+	for (int threshValue = SQUARE_THRESHOLD_MIN;
+			threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false;
+			threshValue++) {
 		threshold(srcGray, srcThresholded, threshValue, 500, THRESH_BINARY);
 		sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
 		saveImage(srcThresholded, filename);
@@ -138,11 +158,13 @@ bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> &
 		vector<Vec4i> squaresHierarchy;
 		Mat thresContour;
 		srcThresholded.copyTo(thresContour);
-		findContours(thresContour, squaresContours, squaresHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+		findContours(thresContour, squaresContours, squaresHierarchy,
+				CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 		squaresPair.resize(squaresContours.size() + 1);
 		for (uint i = 0; i < squaresContours.size(); i++) {
-			approxPolyDP(Mat(squaresContours[i]), squaresPair[i].poly, 10, true);
+			approxPolyDP(Mat(squaresContours[i]), squaresPair[i].poly, 10,
+					true);
 			squaresPair[i].rect = boundingRect(Mat(squaresPair[i].poly));
 		}
 
@@ -156,10 +178,12 @@ bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> &
 	return isExtracted;
 }
 
-void SudocubeExtractor::removeInvalidSquaresPair(vector<SquarePair>& squaresPair) {
+void SudocubeExtractor::removeInvalidSquaresPair(
+		vector<SquarePair>& squaresPair) {
 	vector<SquarePair> validSquaresPair;
 	for (uint i = 0; i < squaresPair.size(); i++) {
-		if (squaresPair[i].rect.area() > SQUARE_AREA_MIN && squaresPair[i].rect.area() < SQUARE_AREA_MAX) {
+		if (squaresPair[i].rect.area() > SQUARE_AREA_MIN
+				&& squaresPair[i].rect.area() < SQUARE_AREA_MAX) {
 			SquarePair squarePair(squaresPair[i].rect, squaresPair[i].poly);
 			validSquaresPair.push_back(squarePair);
 		}
@@ -171,15 +195,18 @@ void SudocubeExtractor::removeInvalidSquaresPair(vector<SquarePair>& squaresPair
 SquarePair SudocubeExtractor::getRedSquarePair(const Mat& srcHSV) {
 	Mat segmentedRedSquare;
 	Mat segmentedRedSquare2;
-	inRange(srcHSV, Scalar(0, 100, 50), Scalar(25, 255, 255), segmentedRedSquare); // Pas le choix, en deux partie...
-	inRange(srcHSV, Scalar(130, 100, 50), Scalar(255, 255, 255), segmentedRedSquare2);
+	inRange(srcHSV, Scalar(0, 100, 50), Scalar(25, 255, 255),
+			segmentedRedSquare); // Pas le choix, en deux partie...
+	inRange(srcHSV, Scalar(130, 100, 50), Scalar(255, 255, 255),
+			segmentedRedSquare2);
 	segmentedRedSquare += segmentedRedSquare2;
 
 	applyErode(segmentedRedSquare, 2, MORPH_CROSS);
 
 	vector<vector<Point> > squareContour;
 	vector<Vec4i> squareHierarchy;
-	findContours(segmentedRedSquare, squareContour, squareHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	findContours(segmentedRedSquare, squareContour, squareHierarchy,
+			CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
 	vector<vector<Point> > squareContoursPoly(squareContour.size());
 	vector<Rect> squareBoundingRect(0);
@@ -210,7 +237,8 @@ bool compareYPos(const SquarePair& pair1, const SquarePair& pair2) {
 	return pair1.rect.y < pair2.rect.y;
 }
 
-vector<vector<SquarePair> > SudocubeExtractor::sortSquaresPair(vector<SquarePair> squaresPair, const int frameWidth) {
+vector<vector<SquarePair> > SudocubeExtractor::sortSquaresPair(
+		vector<SquarePair> squaresPair, const int frameWidth) {
 	sort(squaresPair.begin(), squaresPair.end(), compareXPos); //Tri selon les x des Rect
 
 	//Séparation des colonnes selon la variation importante en x entre i et i+1
@@ -218,7 +246,8 @@ vector<vector<SquarePair> > SudocubeExtractor::sortSquaresPair(vector<SquarePair
 	int actualXColumn = 0;
 	vector<vector<SquarePair> > colonnesX(8);
 	vector<SquarePair>::iterator it;
-	for (it = squaresPair.begin(); it != squaresPair.end() && actualXColumn < 8; ++it) {
+	for (it = squaresPair.begin(); it != squaresPair.end() && actualXColumn < 8;
+			++it) {
 		colonnesX[actualXColumn].push_back(*it);
 
 		if ((it + 1) != squaresPair.end()) {
@@ -235,7 +264,8 @@ vector<vector<SquarePair> > SudocubeExtractor::sortSquaresPair(vector<SquarePair
 	return colonnesX;
 }
 
-bool SudocubeExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask) {
+bool SudocubeExtractor::extractNumber(Mat &inImage, Mat &outImage,
+		Mat &squareMask) {
 	Mat thresholdedSquare;
 	adaptiveThreshold(inImage, thresholdedSquare, 255, 1, 1, 11, 2);
 
@@ -259,10 +289,13 @@ bool SudocubeExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMa
 		}
 	}
 
-	Mat ROI = Mat::zeros(Size(NumberReader::NUMBER_WIDTH, NumberReader::NUMBER_HEIGHT), CV_8UC3);
+	Mat ROI = Mat::zeros(
+			Size(NumberReader::NUMBER_WIDTH, NumberReader::NUMBER_HEIGHT),
+			CV_8UC3);
 	if (rects.empty() == false) {
 		ROI = thresholdedSquare(rects[0]); //TODO Correct?
-		resize(ROI, outImage, Size(NumberReader::NUMBER_WIDTH, NumberReader::NUMBER_HEIGHT));
+		resize(ROI, outImage,
+				Size(NumberReader::NUMBER_WIDTH, NumberReader::NUMBER_HEIGHT));
 		return true;
 	}
 
@@ -271,13 +304,15 @@ bool SudocubeExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMa
 
 void SudocubeExtractor::applyErode(Mat & toErode, int size, int morphShape) {
 	Point erodePoint(size, size);
-	Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
+	Mat erodeElem = getStructuringElement(morphShape,
+			Size(2 * size + 1, 2 * size + 1), erodePoint);
 	erode(toErode, toErode, erodeElem);
 }
 
 void SudocubeExtractor::applyDilate(Mat & toDilate, int size, int morphShape) {
 	Point dilatePoint(size, size);
-	Mat dilateElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), dilatePoint);
+	Mat dilateElem = getStructuringElement(morphShape,
+			Size(2 * size + 1, 2 * size + 1), dilatePoint);
 	dilate(toDilate, toDilate, dilateElem);
 }
 
