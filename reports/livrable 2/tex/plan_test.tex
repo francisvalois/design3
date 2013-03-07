@@ -18,7 +18,7 @@
     \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{5cm}|}\hline
     \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Exigence}& \textbf{Méthode de vérification}& \textbf{Équipement requis}& \textbf{Méthode d'analyse}\\ \hline\hline
     
-    \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Contrôler le robot pour le dessin}& \multirow{4}{5cm}{\centering Précision de $\pm$1cm de la ligne centrale}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{4}{5cm}{\centering Effectuer l'ensemble des dessins 3 fois et mesurer l'écart maximal}\\\cline{5-5}
+    \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Contrôler le robot pour le dessin}& \multirow{4}{5cm}{\centering Précision de $\pm$1cm de la ligne centrale et temps d'exécution inférieur à 60s}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{4}{5cm}{\centering Effectuer l'ensemble des dessins 3 fois et mesurer l'écart maximal}\\\cline{5-5}
     & & &  																											& Ruban à mesurer  & \\\cline{5-5}
     & & &  																											& Gabarits des dessins& \\\cline{5-5}
     & & &  																											& Crayon              &\\\hline
@@ -27,7 +27,7 @@
     & & &  																											& Crayon& \\\cline{5-5}
     & & & 																											& Rapporteur d'angle&\\\hline
     
-     \multirow{5}{4cm}{\centering Alimentation} & \multirow{5}{5cm}{\centering Alimenter le mac-mini et le préhenseur à une tension de 24 volts}& \multirow{5}{5cm}{\centering Fournir une tension de 24 volts CC avec des oscillations maximum de 1 volt}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Mac mini}& \multirow{5}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
+     \multirow{5}{4cm}{\centering Alimentation} & \multirow{5}{5cm}{\centering Alimenter le mac-mini et le préhenseur à une tension de 24 volts}& \multirow{5}{5cm}{\centering Fournir une tension de 24 volts CC avec des oscillations maximum de 200 mV}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Mac mini}& \multirow{5}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
     & & &  																											& \multirow{2}{4cm}{\centering Oscilloscope} & \\
     & & &  																											& & \\\cline{5-5}	
     & & &  																											& \multirow{2}{4cm}{\centering Sondes de mesure} & \\
@@ -54,13 +54,7 @@
     & & & & & 									
      \\\
     & & & & & 																										\\\hline
-    \multirow{5}{4cm}{\centering Positionnement de la caméra} & \multirow{5}{5cm}{\centering Garder la camera en position malgré les perturbations extérieures}& \multirow{5}{5cm}{\centering Replacer la camera à sa position de départ lorsqu'on allume l'alimentation 5V}&\multirow{5}{3cm}{\centering Test de manipulation}& \multirow{5}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Déplacer la camera lorsque l'alimentation est fermé et vérifier qu'elle reprend sa position lorsqu'on actionne l'alimentation 5V}\\\
-    & & &  																											&  & \\\
-    & & &  																											&  & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
-     \end{tabular}}%
+\end{tabular}}%
   \label{tab:pt1}%
 \end{table}%
 \end{landscape}
@@ -93,6 +87,14 @@
     & & & & & \\\
     & & & & & \\\
     & & & & & \\\hline
+    
+    \multirow{5}{4cm}{\centering Positionnement de la caméra} & \multirow{5}{5cm}{\centering Garder la camera en position malgré les perturbations extérieures}& \multirow{5}{5cm}{\centering Replacer la camera à sa position de départ lorsqu'on allume l'alimentation 5V}&\multirow{5}{3cm}{\centering Test de manipulation}& \multirow{5}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Déplacer la camera lorsque l'alimentation est fermé et vérifier qu'elle reprend sa position lorsqu'on actionne l'alimentation 5V}\\
+    & & & & &\\  																											
+    & & & & &\\ 																											
+    & & & & &\\ 
+    & & & & &\\\hline 											
+
+
 
    \end{tabular}}%
   \label{tab:pt2}%
@@ -108,13 +110,13 @@
   \tabcolsep=0.11cm
     \begin{tabular}{|Z{\centering}{m}{4cm}||Z{\centering}{m}{5cm}|Z{\centering}{m}{5cm}|Z{\centering}{m}{3cm}|Z{\centering}{m}{4cm}|Z{\centering}{m}{5cm}|}\hline
     \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Exigence}& \textbf{Méthode de vérification}& \textbf{Équipement requis}& \textbf{Méthode d'analyse}\\ \hline\hline
-     \multirow{15}{4cm}{\centering Vision numérique}   &  \multirow{7}{5cm}{ \centering Détecter les obstacles}  & \multirow{7}{5cm}{ \centering La position des obstacles obtenue à l'aide de la Kinect doit être précise au centimètre près.}  & \multirow{7}{3cm}{ \centering Test de mesure}   & \multirow{2}{4cm}{\centering Station de base}     & \multirow{4}{5cm}{Mesurer la distance réelle en X et Y avec le point (0.0) de la table pour différentes position d'obstacles avec et sans obstruction et la comparer avec la position vu par le logiciel.} \\ 
+     \multirow{15}{4cm}{\centering Vision numérique}   &  \multirow{7}{5cm}{ \centering Détecter les obstacles}  & \multirow{7}{5cm}{ \centering La position des obstacles obtenue à l'aide de la Kinect doit être précise au centimètre près.Le temps de calcul doit être inférieur à 1s}  & \multirow{7}{3cm}{ \centering Test de mesure}   & \multirow{2}{4cm}{\centering Station de base}     & \multirow{4}{5cm}{\centering Mesurer la distance réelle en X et Y pour différentes position d'obstacles avec et sans obstruction et la comparer avec la position vu par le logiciel. Mesurer le temps d'exécution du logiciel} \\ 
                                                       &                                                         &                                                                                                                               &                                                 &                                                   & \\ \cline{5-5} 
                                                       &                                                         &                                                                                                                               &                                                 & Ruban à Mesurer                                   & \\ \cline{5-5} 
                                                       &                                                         &                                                                                                                               &                                                 & Kinect                                            & \\ \cline{5-5} 
                                                       &                                                         &                                                                                                                               &                                                 & Algorithme de détection des obstacle              & \\ \cline{5-5}
                                                       &                                                         &                                                                                                                               &                                                 & Table avec obstacles                              & \\ \cline{2-6}                                                                                                     
-                                                      &  \multirow{8}{5cm}{ \centering Détecter le robot}       & \multirow{7}{5cm}{ \centering La position du robot obtenue à l'aide de la Kinect doit être précise au centimètre près}        & \multirow{7}{3cm}{ \centering Test de mesure}   & \multirow{2}{4cm}{\centering Station de base}     & \multirow{4}{5cm}{Mesurer la distance réelle en X et Y du robot avec le point (0.0) de la table pour différentes position d'obstacles avec et sans obstruction et la comparer avec la position du robot vu par le logiciel.} \\ 
+                                                      &  \multirow{8}{5cm}{ \centering Détecter le robot}       & \multirow{7}{5cm}{ \centering La position du robot obtenue à l'aide de la Kinect doit être précise au centimètre près. Le temps de calcul doit être inférieur à 1s}        & \multirow{7}{3cm}{ \centering Test de mesure}   & \multirow{2}{4cm}{\centering Station de base}     & \multirow{4}{5cm}{\centering Mesurer la distance réelle en X et Y du robot pour différentes position d'obstacles avec et sans obstruction et la comparer avec la position du robot vu par le logiciel. Mesurer le temps d'exécution du logiciel} \\ 
                                                       &                                                         &                                                                                                                               &                                                 &                                                   & \\ \cline{5-5} 
                                                       &                                                         &                                                                                                                               &                                                 & Ruban à Mesurer                                   & \\ \cline{5-5} 
                                                       &                                                         &                                                                                                                               &                                                 & Kinect                                            & \\ \cline{5-5} 
@@ -126,28 +128,24 @@
     & & &  																											& & \\\cline{5-5}	
     & & &  																											& \multirow{2}{4cm}{\centering Microcontrôleur} & \\
     & & &  																											& & \\\hline     
-    \multirow{5}{4cm}{\centering Traitement numérique} & \multirow{5}{5cm}{\centering Calculer la trajectoire optimale}& \multirow{5}{5cm}{\centering Calculer la trajectoire optimale en moins de 2s}&\multirow{5}{3cm}{\centering Tests Pratiques}& \multirow{4}{4cm}{\centering Ordinateur}& \multirow{5}{5cm}{\centering Vérifier l'efficacité et le temps de calcul de l'algorithme avec un jeu de positions du robot et des obstacles}\\
+    \multirow{5}{4cm}{\centering Traitement numérique} & \multirow{5}{5cm}{\centering Calculer la trajectoire optimale}& \multirow{5}{5cm}{\centering Calculer la trajectoire optimale en moins de 2s}&\multirow{5}{3cm}{\centering Tests Pratiques}& \multirow{5}{4cm}{\centering Ordinateur}& \multirow{5}{5cm}{\centering Vérifier l'efficacité et le temps de calcul de l'algorithme avec un jeu de positions du robot et des obstacles}\\
    & & & & & \\\
-    & & & & & \\\
-    & & & & & \\\
-    & & & & & \\\
-    & & & & & \\\hline   
-    \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Résoudre le sudocube}& \multirow{4}{5cm}{\centering Être capable de résoudre des sudocube de 7 chiffres et plus}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{3}{4cm}{\centering Ordinateur}& \multirow{4}{5cm}{\centering Tester l'algorithme sur un jeu de sudocubes ayant des nombres différents de chiffres}\\
    & & & & & \\\
-    & & & & & \\\
-    & & & & & \\\
-    & & & & & \\\
-    & & & & & \\\hline  
+   & & & & & \\\
+   & & & & & \\\hline   
+    \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Résoudre le sudocube}& \multirow{4}{5cm}{\centering Être capable de résoudre des sudocube de 7 chiffres et plus}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{4}{4cm}{\centering Ordinateur}& \multirow{4}{5cm}{\centering Tester l'algorithme sur un jeu de sudocubes ayant des nombres différents de chiffres}\\
+   & & & & & \\\
+   & & & & & \\\
+   & & & & & \\\hline  
        \multirow{5}{4cm}{\centering Vision numérique} & \multirow{5}{5cm}{\centering Lire le sudocube}& \multirow{5}{5cm}{\centering Le robot doit être situé entre (25.4 et 38.4)cm de distance par rapport au sudocube pour bien lire les informations}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Algorithme de lecture}& \multirow{5}{5cm}{\centering Mesurer la distance entre le sudocube et la caméra après un déplacement vers un sudocube à analyser.}\\\cline{5-5}
    & & & & Robot fonctionnel & \\\cline{5-5}
     & & & & Caméra Web & \\\cline{5-5}
     & & & & Ruban à mesurer & \\\cline{5-5}
     & & & & Table de jeu & \\\hline
 
-      \multirow{5}{4cm}{\centering Orientation} & \multirow{5}{5cm}{\centering Déterminer l'angle et l'orientation du robot}& \multirow{5}{5cm}{\centering L'orientation du robot doit être précise à 100\%}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Algorithme de détermination d'angle et d'orientation}& \multirow{5}{5cm}{\centering La caméra tourne de 20° pour prendre des images jusqu'à l'obtention des coins.\\ vérifier si le robot s'oriente bien. Trouver l'angle avec un algorithme et comparer ce résultat avec le résultat calculé manuellement.}\\
+      \multirow{4}{4cm}{\centering Orientation} & \multirow{4}{5cm}{\centering Déterminer l'angle et l'orientation du robot}& \multirow{4}{5cm}{\centering L'orientation du robot doit être précise au degré près}&\multirow{4}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Algo. d'orientation}& \multirow{4}{5cm}{\centering Trouver l'angle avec l'algorithme et comparer ce résultat avec le résultat calculé manuellement.}\\\cline{5-5}
     & & & & Caméra embarquée & \\\cline{5-5}
     & & & & Station de base & \\\cline{5-5}
-    & & & & Algorithme d'orientation & \\\cline{5-5}
     & & & & Table et robot & \\\hline
 
    \end{tabular}}%
