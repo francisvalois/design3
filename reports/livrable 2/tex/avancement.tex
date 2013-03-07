@@ -26,8 +26,8 @@ L'alimentation employée pour les périphériques est une alimentation de type b
 \label{fig:alim5Vphoto}
 \end{figure}
 
-\section{Alimentation du Mac mini}
-L'alimentation du Mac mini a été réalisé au moyen d'un circuit de type Boost réglable, acheté déjà monté. Les plans ne sont pas disponibles, mais une photo du dispositif l'est à la figure \ref{fig:alim24Vphoto}.
+\section{Alimentation 24V du mac mini et du préhenseur}
+L’alimentation 24V, qui alimente le Mac mini ainsi que le préhenseur, a été déjà préconçue et préassemblée sur circuit imprimé, ce qui représentait la solution la plus économique et la plus fiable selon nos hypothèses. Ce module est un hacheur survolteur qui découpe l’alimentation d’entré de 11.1V et la mène à une tension de 24V et cela avec un rendement d’environ 0.94 et de faibles oscillations considérées négligeables. \ref{fig:alim24Vphoto}.
 
 \begin{figure}[htbp]
 \centering
@@ -35,6 +35,22 @@ L'alimentation du Mac mini a été réalisé au moyen d'un circuit de type Boost
 \caption{Figure présentant une photo de l'alimentation 24V pour les périphériques}
 \label{fig:alim24Vphoto}
 \end{figure}
+
+\section{Réception du signal Manchester}
+Pour la réception du signal Manchester, nous utilisons un circuit intégré de décodage de tonalité, le LM567, qui met sa patte de sortie à la masse lorsqu’il détecte la fréquence ciblée sur sa patte d’entrée. Nous utilisons un comparateur à hystérésis à la sortie du décodeur pour contourner les variations de tension dues aux variations d’intensités du signal d’entré. Cependant, comme le signal de sortie du décodeur est inversé, nous inversons la sortie du comparateur dans un inverseur pour ensuite envoyer le signal de sortie de celui-ci vers le microcontrôleur qui le traite. Ce récepteur est opérationnel depuis quelques semaines déjà. Le plan de ce récepteur est présenté à la figure 10.5.
+
+\section{Préhenseur}
+Le préhenseur est réalisé à l’aide d’un actionneur magnétique qui reçoit une commande de 0V ou 5V qui lui dicte ainsi s’il doit abaisser ou remonter le crayon. Le circuit magnétique exerce une force sur le crayon vers le bas lorsque la commande le lui dicte alors qu’un simple élastique sert de dispositif de retour en place du crayon. Pour minimiser les points morts lors des changements de direction du robot, nous utilisons un système de plongeur qui progresse dans un guide à faible tolérance,  qui maximise ainsi la précision de l’actionneur magnétique qui le précède. Pour actionner le préhenseur, nous utilisons la commande de 0-5V, fournie par le microcontrôleur, sur la gâchette d’un transistor mosfet qui limite la puissance fournie par le microcontrôleur. Le préhenseur et son système de commande sont opérationnels depuis un certain temps déjà. On peut observer le schéma du circuit de l’actionneur sur la figure 10.6.
+
+\section{DEL verte de fin de tâche}
+Pour le circuit de la DEL verte qui confirme la fin des tâches du robot, nous utilisons un transistor mosfet de faible puissance qui reçoit la commande du microcontrôleur sur sa gâchette et permet le contrôle de celle-ci. On peut observer le schéma du circuit de commande de la DEL sur la figure 10.7.
+
+\section{Circuit de protection}
+Pour le circuit de protection nous avons utilisé trois fusibles en série avec des interrupteurs pour alimenter chacun des circuits d’alimentation 11,1V, 5V et 24V. Chacun des interrupteurs est muni d’un témoin lumineux qui confirme sa mise sous tension et valide que son fusible est intact.
+
+\section{Source d'énergie}
+Pour alimenter les différents composants du robot, nous utilisons une batterie lithium Polymère qui est connue pour sa grande capacité énergétique par unité de volume. Nous utilisons donc une pile qui comporte 3 cellules de ce type en série qui produisent une tension totale de 11.1V pour une capacité de 5Ah qui nous permet une autonomie de 30 minutes dans le pire des cas.
+
 
 \section{Asservissement des moteurs}
 \subsection{Modélisation}
