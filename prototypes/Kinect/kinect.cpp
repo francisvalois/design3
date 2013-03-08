@@ -237,7 +237,7 @@ void Kinect::findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point>
 
             //If obstacle is in the obstacle zone and if it's higher than the black walls
             if (tempPosition[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && tempPosition[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD){
-                if (position[1] >= OBSTACLE_HEIGHT * 0.90 && position[1] <= OBSTACLE_HEIGHT * 1.2){
+                if (position[1] >= OBSTACLE_HEIGHT * 0.80 && position[1] <= OBSTACLE_HEIGHT * 1.2){
                     obstaclePoint = true;
                 }
                 else obstaclePoint = false;
