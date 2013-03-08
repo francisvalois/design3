@@ -15,7 +15,7 @@ Sudokube::Sudokube() {
 }
 
 Sudokube::~Sudokube() {
-	Case* aCase;
+	/*Case* aCase;
 	for(int i = 0; i < CUBE_FACES; i++) {
 		for(int j = 0; j < CUBE_FACE_HEIGHT; j++) {
 			for(int k = 0; k < CUBE_FACE_LENGTH; k++) {
@@ -24,7 +24,7 @@ Sudokube::~Sudokube() {
 				aCase = NULL;
 			}
 		}
-	}
+	}*/
 }
 
 bool Sudokube::equals(Sudokube s) {
