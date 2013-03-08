@@ -2,11 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(base_station)
 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation kinocto)
+find_package(OpenCV REQUIRED)
 find_package(Qt4 REQUIRED)
-
-# find_package(Boost REQUIRED COMPONENTS system)
-
-# catkin_python_setup()
 
 #######################################
 ## Declare ROS messages and services ##
@@ -36,7 +33,7 @@ find_package(Qt4 REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
    INCLUDE_DIRS include
-   LIBRARIES base_station
+#  LIBRARIES base_station
    CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 #  DEPENDS system_lib
 )
@@ -45,24 +42,17 @@ catkin_package(
 ## Build ##
 ###########
 add_definitions(${QT_DEFINITIONS})
-include_directories(include ${catkin_INCLUDE_DIRS} ${QT_INCLUDES})
-#set(PROJ_SOURCES "src/BaseStation.cpp")
 
-set(PROJ_SOURCES
-    src/main.cpp
-    src/MainWindow.cpp
-)
+set(PROJ_SOURCES)
+file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
+
+include_directories(include ${catkin_INCLUDE_DIRS} ${QT_INCLUDES})
 
 qt4_wrap_cpp(PROJ_SOURCES include/MainWindow.h)
 
-## Declare a cpp library
-# add_library(base_station
-#   src/${PROJECT_NAME}/base_station.cpp
-# )
-
 add_executable(BaseStation ${PROJ_SOURCES})
 add_dependencies(BaseStation kinocto_gencpp)
-target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY})
+target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${OpenCV_LIBS})
 
 #############
 ## Install ##
@@ -100,12 +90,5 @@ target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_base_station.cpp)
-# if(TARGET ${PROJECT_NAME}-test)
-#   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
-# endif()
-
-## Add folders to be run by python nosetests
-# catkin_add_nosetests(test)
-
+catkin_add_gtest(baseStationTest test/AllTests.cpp src/kinect.cpp src/Utility.cpp)
+target_link_libraries(baseStationTest ${catkin_LIBRARIES} ${OpenCV_LIBS})

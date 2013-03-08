@@ -3,7 +3,6 @@ project(kinocto)
 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation)
 find_package(OpenCV REQUIRED)
-# catkin_python_setup()
 
 #######################################
 ## Declare ROS messages and services ##
@@ -41,13 +40,10 @@ catkin_package(
 ## Build ##
 ###########
 set(PROJ_SOURCES)
-
 file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
-file(GLOB_RECURSE PROJ_HEADERS include/${PROJ_NAME}/*.h)
+#file(GLOB_RECURSE PROJ_HEADERS include/${PROJ_NAME}/*.h)
 
-include_directories(include
-  ${catkin_INCLUDE_DIRS}
-)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
 add_executable(Kinocto src/Kinocto.cpp)
 add_dependencies(Kinocto kinocto_gencpp)
@@ -56,12 +52,6 @@ target_link_libraries(Kinocto ${catkin_LIBRARIES})
 link_directories(include 
     ${catkin_LIB_DIRS}
 )
-
-## Declare a cpp library
- #add_library(
- #KinoctoLib ${PROJ_SOURCES}
- #)
-
 #############
 ## Install ##
 #############
@@ -98,19 +88,8 @@ link_directories(include
 ## Testing ##
 #############
 
-## Add gtest based cpp test target and link libraries
-#${PROJECT_NAME}
-catkin_add_gtest(kinoctoTest test/AllTests.cpp 
-src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp src/NumberReader.cpp src/SudocubeExtractor.cpp src/PathPlanning.cpp
-)
+catkin_add_gtest(kinoctoTest test/AllTests.cpp src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp src/NumberReader.cpp src/SudocubeExtractor.cpp src/PathPlanning.cpp)
 target_link_libraries(kinoctoTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp 
-src/Case.cpp  src/Sudokube.cpp src/NumberReader.cpp src/SudocubeExtractor.cpp
-)
+catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp src/Case.cpp  src/Sudokube.cpp src/NumberReader.cpp src/SudocubeExtractor.cpp)
 target_link_libraries(kinoctoLongTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
-
-
-#catkin_add_executable() 
-#catkin_add_gtest_build_flags()
-
