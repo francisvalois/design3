@@ -1,5 +1,5 @@
-/*#ifndef CoinBleu_H_
-#define CoinBleu_H_
+/*#ifndef CoinOrange_H_
+#define CoinOrange_H_
 
 #include "opencv/cv.h"
 #include "opencv/highgui.h"
@@ -9,12 +9,12 @@
 #include <iostream>
 
 
-class Coinbleu {
+class CoinOrange {
 public:
-	Coinbleu();
-	virtual ~Coinbleu();	
+	CoinOrange();
+	virtual ~CoinOrange();	
 	IplImage* mImage;
-	int Coinbleu(CvPoint* Gauche, CvPoint* Droite);
+	int CoinOrange(CvPoint* Gauche, CvPoint* Droite);
 
 private:
 	
