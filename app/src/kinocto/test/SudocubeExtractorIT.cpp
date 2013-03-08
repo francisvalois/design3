@@ -24,7 +24,7 @@ protected:
 
 Mat loadSudocubeNo(int no) {
     char filename[255];
-    sprintf(filename, "%s/%d.png", "img/testSudocubes", no);
+    sprintf(filename, "%s/%d.jpeg", "img/testSudocubesJpg", no);
     Mat img = imread(filename);
     if (!img.data) {
         cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
