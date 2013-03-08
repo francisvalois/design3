@@ -68,5 +68,109 @@ TEST_F(SudocubeExtractorIT, testSudoku1_1) {
     ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
 }
 
+TEST_F(SudocubeExtractorIT, testSudoku1_2) {
+    char filename[255];
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", 2);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+    Sudokube sudokubeExtracted = sudocubeExtractor->extractSudocube(img);
+    Sudokube sudokube = getSudokube1();
+
+    ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
+}
+
+TEST_F(SudocubeExtractorIT, testSudoku1_3) {
+    char filename[255];
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", 3);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+    Sudokube sudokubeExtracted = sudocubeExtractor->extractSudocube(img);
+    Sudokube sudokube = getSudokube1();
+
+    ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
+}
+
+TEST_F(SudocubeExtractorIT, testSudoku1_4) {
+    char filename[255];
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", 4);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+    Sudokube sudokubeExtracted = sudocubeExtractor->extractSudocube(img);
+    Sudokube sudokube = getSudokube1();
+
+    ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
+}
+
+TEST_F(SudocubeExtractorIT, testSudoku1_5) {
+    char filename[255];
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", 5);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+    Sudokube sudokubeExtracted = sudocubeExtractor->extractSudocube(img);
+    Sudokube sudokube = getSudokube1();
+
+    ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
+}
+
+TEST_F(SudocubeExtractorIT, testSudoku1_6) {
+    char filename[255];
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", 6);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+    Sudokube sudokubeExtracted = sudocubeExtractor->extractSudocube(img);
+    Sudokube sudokube = getSudokube1();
+
+    ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
+}
+
+TEST_F(SudocubeExtractorIT, testSudoku1_7) {
+    char filename[255];
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", 7);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+    Sudokube sudokubeExtracted = sudocubeExtractor->extractSudocube(img);
+    Sudokube sudokube = getSudokube1();
+
+    ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
+}
+
+TEST_F(SudocubeExtractorIT, testSudoku1_9) {
+    char filename[255];
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", 9);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+    Sudokube sudokubeExtracted = sudocubeExtractor->extractSudocube(img);
+    Sudokube sudokube = getSudokube1();
+
+    ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
+}
+
+TEST_F(SudocubeExtractorIT, testSudoku1_10) {
+    char filename[255];
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", 10);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+    Sudokube sudokubeExtracted = sudocubeExtractor->extractSudocube(img);
+    Sudokube sudokube = getSudokube1();
+
+    ASSERT_TRUE(sudokube.equals(sudokubeExtracted));
+}
+
 }
 
