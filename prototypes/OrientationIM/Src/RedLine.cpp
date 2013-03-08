@@ -24,9 +24,15 @@ void RedLine::setZhangParameters(int inIndexFile) {
 float RedLine::getAngle(int index){
 
 		int x, y;
+		int maxLength = 0;
 		int totalX = 0, totalY = 0;
 		IplImage *hsv, *mask, *mask2;
 		IplConvKernel *noyau;
+		double VraiPoint1_X;
+		double VraiPoint1_Y;
+		double VraiPoint2_X;
+		double VraiPoint2_Y;
+		double xVal;
 		IplImage* seuil;
 		IplImage* color;
 		IplImage* secure;
@@ -104,8 +110,6 @@ float RedLine::getAngle(int index){
 		cvCanny( secure, final, 50, 200, 3 );
 		extremities = cvHoughLines2( final, storage, CV_HOUGH_PROBABILISTIC, 1, CV_PI/180, 80, 30, 100 );
 
-
-		int maxLength = 0;
 		CvPoint point1, point2;
 		for(int i = 0; i < extremities->total; i++ ) {
 
@@ -121,11 +125,6 @@ float RedLine::getAngle(int index){
 		}
 		cvReleaseMemStorage(&storage);
 
-		double VraiPoint1_X;
-		double VraiPoint1_Y;
-		double VraiPoint2_X;
-		double VraiPoint2_Y;
-		double xVal;
 
 		setZhangParameters(index);
 

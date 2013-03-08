@@ -33,10 +33,17 @@ int Coinbleu(CvPoint* Gauche, CvPoint* Droite) {
 	int ybR = 0;
 	int minDistR = 2000000;
 	int minDistL = 2200000;
+	const int Maximum = 100;
+	CvPoint2D32f coins[Maximum];
+	int coin_count = Maximum;
+	double quality_level = 0.01;
+	double min_Dist = 1;
+	int eig_bleulock_size = 3;
+	int use_harris = true;
 
 	CvPoint colorCenter;
 	IplImage *hsv, *mask;
-	IplConvnoyau *noyau;
+	IplConvkernel *noyau;
 
 	int hbleu = 112, sbleu = 222, vbleu = 197;
 	int toleranceHbleu = 3, toleranceSbleu = 105, toleranceVbleu = 163;
@@ -116,15 +123,9 @@ int Coinbleu(CvPoint* Gauche, CvPoint* Droite) {
 			temp_image = cvCreateImage(cvSize(width, height), IPL_DEPTH_32F, 1);
 		}
 
-		const int Maximum = 100;
-		CvPoint2D32f coins[Maximum];
-		int coin_count = Maximum;
-		doubleule quality_level = 0.01;
-		doubleule min_Dist = 1;
-		int eig_bleulock_size = 3;
-		int use_harris = true;
+		
 
-		cvCvtColor(mImage, gray_frame, CV_bleuGR2GRAY);
+		cvCvtColor(mImage, gray_frame, CV_BGR2GRAY);
 
 		cvGoodFeaturesToTrack(mask, eig_image, temp_image, coins,
 				&coin_count, quality_level, min_Dist, NULL,
@@ -136,7 +137,7 @@ int Coinbleu(CvPoint* Gauche, CvPoint* Droite) {
 				CvPoint coin;
 				coin.x = coins[i].x;
 				coin.y = coins[i].y;
-				coinsb.push_bleuack(coin);
+				coinsb.push_back(coin);
 				cvCircle(mImage, coin, 2, cvScalar(100, 100, 0), 1);
 			}
 		}
@@ -227,19 +228,5 @@ int Coinbleu(CvPoint* Gauche, CvPoint* Droite) {
 		cvReleaseImage(&mask);
 		cvReleaseImage(&hsv);
 
-		if (Droite->y >= mImage->height || Droite->y <= 0 || Droite->x
-				>= mImage->width || Droite->x <= 0 || Gauche->y
-				>= mImage->height || Gauche->y <= 0 || Gauche->x
-				>= mImage->width || Gauche->x <= 0) {
-				std::cout <<"ENCORE C FUCKE"<< std::endl;
-			Gauche->x = -1;
-			Gauche->y = -1;
-			Droite->x = -1;
-			Droite->y = -1;
-			return -1;
-		} else {
-		std::cout <<"FinIIIIIIIIII!!!!"<< std::endl;
-			return 0;
-		}
 	}
 */

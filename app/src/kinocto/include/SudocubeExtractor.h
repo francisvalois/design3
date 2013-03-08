@@ -39,7 +39,6 @@ private:
     int sudocubeNo;
     char filename[255];
 
-    void extractNumbers(cv::Mat & src);
     void cleanGraySrc(cv::Mat& src, cv::Mat& srcGray);
     cv::Rect getFrameRect(cv::Mat& srcHSV);
     cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
@@ -51,6 +50,9 @@ private:
 
     void applyErode(cv::Mat & toErode, int size, int morphShape);
     void applyDilate(cv::Mat & toDilate, int size, int morphShape);
+
+    void insertAllNumber(Sudokube & sudokube, vector<vector<int> > numbers);
+    void insert(Sudokube & sudokube, int face, int j, int k, int value);
 
     void saveImage(cv::Mat &pict, char* filename);
 };

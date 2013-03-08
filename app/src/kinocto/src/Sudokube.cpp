@@ -27,6 +27,24 @@ Sudokube::~Sudokube() {
 	}
 }
 
+bool Sudokube::equals(Sudokube s) {
+	for(int i = 0; i < CUBE_FACES; i++) {
+		for(int j = 0; j < CUBE_FACE_HEIGHT; j++) {
+			for(int k = 0; k < CUBE_FACE_LENGTH; k++) {
+				if(container[i][j][k]->getValue() != s.getCaseValue(i+1, j+1, k+1)) {
+					return false;
+				}
+			}
+		}
+	}
+	if(redCase[0] != s.getRedCase()[0] ||
+			redCase[1] != s.getRedCase()[1] ||
+			redCase[2] != s.getRedCase()[2]) {
+		return false;
+	}
+	return true;
+}
+
 bool Sudokube::isSolved() {
 	for(int i = 0; i < CUBE_FACES; i++) {
 		for(int j = 0; j < CUBE_FACE_HEIGHT; j++) {

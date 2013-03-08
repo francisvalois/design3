@@ -9,6 +9,8 @@ public:
 	Sudokube();
 	virtual ~Sudokube();
 
+	bool equals(Sudokube);
+
 	bool isSolved();
 	bool caseSolved(int,int,int);
 	int remainingCellsToBeSolved();

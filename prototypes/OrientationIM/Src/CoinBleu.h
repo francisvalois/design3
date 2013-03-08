@@ -9,10 +9,10 @@
 #include <iostream>
 
 
-class CoinBleu {
+class Coinbleu {
 public:
-	CoinBleu();
-	virtual ~CoinBleu();	
+	Coinbleu();
+	virtual ~Coinbleu();	
 	IplImage* mImage;
 	int Coinbleu(CvPoint* Gauche, CvPoint* Droite);
 
