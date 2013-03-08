@@ -15,7 +15,6 @@ SudocubeExtractor::~SudocubeExtractor() {
 }
 
 Sudokube SudocubeExtractor::extractSudocube(Mat & src) {
-    cout << "sudocube no " << sudocubeNo << endl;
     Sudokube sudokube;
     Mat srcGray;
     cleanGraySrc(src, srcGray);
