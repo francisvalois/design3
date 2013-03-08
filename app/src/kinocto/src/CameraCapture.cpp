@@ -6,14 +6,14 @@
 #include <stdlib.h>
 #include <vector>
 
-#include "SudokuReader.h"
+//#include "SudokuReader.h"
 
 using namespace cv;
 using namespace std;
 
-SudokuReader sudokuReader;
+/*SudokuReader sudokuReader;
 
-/*int main(int, char**) {
+int main(int, char**) {
 	VideoCapture cap(1);
 
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1600);

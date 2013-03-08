@@ -5,27 +5,27 @@
 
 class SudokubeSolver {
 public:
-	SudokubeSolver();
-	virtual ~SudokubeSolver();
+    SudokubeSolver();
+    virtual ~SudokubeSolver();
 
-	void solve(Sudokube&);
+    void solve(Sudokube&);
 
 private:
-	bool removePossibilityFromListOfCases(vector<Case*>,int);
-	bool removePossibilitiesFromNakedPairsWithinAListOfCases(vector<Case*>,int,int);
-	void solveWithoutBruteForce(Sudokube&);
+    bool removePossibilityFromListOfCases(vector<Case*>, int);
+    bool removePossibilitiesFromNakedPairsWithinAListOfCases(vector<Case*>, int, int);
+    void solveWithoutBruteForce(Sudokube&);
 
-	//STRATEGIES
-	bool lastRemainingCellInARegion(Sudokube&);
-	bool simpleConstraintPropagation(Sudokube&);
-	bool nakedPairs(Sudokube&);
-	bool hiddenPairs(Sudokube&);
-	bool hiddenTriples(Sudokube&);
-	bool pointingPairs(Sudokube&);
-	bool pointingTriples(Sudokube&);
-	bool boxLineReductionPair(Sudokube&);
-	bool boxLineReductionTriple(Sudokube&);
-	void bruteForce(Sudokube&);
+    //STRATEGIES
+    bool lastRemainingCellInARegion(Sudokube&);
+    bool simpleConstraintPropagation(Sudokube&);
+    bool nakedPairs(Sudokube&);
+    bool hiddenPairs(Sudokube&);
+    bool hiddenTriples(Sudokube&);
+    bool pointingPairs(Sudokube&);
+    bool pointingTriples(Sudokube&);
+    bool boxLineReductionPair(Sudokube&);
+    bool boxLineReductionTriple(Sudokube&);
+    void bruteForce(Sudokube&);
 };
 
 #endif /* SUDOKUBESOLVER_H_ */

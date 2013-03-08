@@ -1,11 +1,9 @@
 #include "SudokubeSolver.h"
 
 SudokubeSolver::SudokubeSolver() {
-
 }
 
 SudokubeSolver::~SudokubeSolver() {
-
 }
 
 void SudokubeSolver::solve(Sudokube& sudokube) {

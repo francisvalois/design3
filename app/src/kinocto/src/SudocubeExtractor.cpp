@@ -74,8 +74,8 @@ Sudokube SudocubeExtractor::extractSudocube(Mat & src) {
 
                 //cout << "Found : " << numberFound << endl;
                 int y = distance(orderedSquaresPair[i].begin(), itPair);
-                sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
-                saveImage(number, filename);
+                //sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
+                //saveImage(number, filename);
             }
         }
     }
@@ -85,7 +85,6 @@ Sudokube SudocubeExtractor::extractSudocube(Mat & src) {
 
     return sudokube;
 }
-
 
 void SudocubeExtractor::cleanGraySrc(Mat& src, Mat& srcGray) {
     cvtColor(src, srcGray, CV_BGR2GRAY);
@@ -344,7 +343,6 @@ void SudocubeExtractor::insert(Sudokube & sudokube, int face, int j, int k, int 
     }
 }
 
-
 void SudocubeExtractor::applyErode(Mat & toErode, int size, int morphShape) {
     Point erodePoint(size, size);
     Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
@@ -364,5 +362,4 @@ void SudocubeExtractor::saveImage(Mat &pict, char* filename) {
 
     imwrite(filename, pict, compression_params);
 }
-
 

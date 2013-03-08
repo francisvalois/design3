@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "opencv2/core/core.hpp"
 #include "Utility.h"
-#include "kinect.h"
+#include "Kinect.h"
 
 using namespace cv;
 using namespace std;
