@@ -27,6 +27,9 @@ void showWorkspace(int table[TABLE_X+1][TABLE_Y+1]) {
             if (table[x][y] == 1) {
                 colorPixel(workspace, black, x, y);
             }
+            if (table[x][y] == 2) {
+                colorPixel(workspace, blue, x, y);
+            }
 
         }
     } 
