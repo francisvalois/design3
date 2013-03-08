@@ -12,13 +12,25 @@ const int OBSTACLE_RADIUS = 7;
 const int DRAWING_ZONE = 89;
 const int BUFFER_SIZE = ROBOT_RADIUS + 3;
 
+struct position {
+	int x;
+	int y;
+};
+
+struct move {
+	int angle;
+	int distance;
+};
+
 
 class PathPlanning {
 public:
 	PathPlanning();
 	virtual ~PathPlanning();
 
-	void setObstacles(int,int,int,int);
+	// getPath();
+
+	void setObstacles(position, position);
 	void printTable();
 
 private:
@@ -28,8 +40,8 @@ private:
 	// 2 = path
 	int table[TABLE_X+1][TABLE_Y+1];
 	void initializeTable();
-	bool obstaclesPositionsOK(int,int,int,int);
-	void drawObstacle(int,int);
+	bool obstaclesPositionsOK(position, position);
+	void drawObstacle(position);
 };
 
 #endif /* PATHPLANNING_H_ */

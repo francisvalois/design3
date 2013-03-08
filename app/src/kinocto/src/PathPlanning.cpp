@@ -24,36 +24,36 @@ void PathPlanning::initializeTable() {
 	}
 }
 
-void PathPlanning::setObstacles(int obstacle1X, int obstacle1Y, int obstacle2X, int obstacle2Y) {
-	if(obstaclesPositionsOK(obstacle1X, obstacle1Y, obstacle2X, obstacle2Y)) {
-		drawObstacle(obstacle1X, obstacle1Y);
-		drawObstacle(obstacle2X, obstacle2Y);
+void PathPlanning::setObstacles(position obstacle1, position obstacle2) {
+	if(obstaclesPositionsOK(obstacle1, obstacle2)) {
+		drawObstacle(obstacle1);
+		drawObstacle(obstacle2);
 	}
 }
 
-void PathPlanning::drawObstacle(int obstacleX, int obstacleY) {
+void PathPlanning::drawObstacle(position obstacle) {
 	int totalObstacleRadius = (BUFFER_SIZE + OBSTACLE_RADIUS);
-	for(int y = (obstacleY - totalObstacleRadius); y <= (obstacleY + totalObstacleRadius); y++) {
-		for(int x = (obstacleX - totalObstacleRadius) ; x <= (obstacleX + totalObstacleRadius); x++) {
+	for(int y = (obstacle.y - totalObstacleRadius); y <= (obstacle.y + totalObstacleRadius); y++) {
+		for(int x = (obstacle.x - totalObstacleRadius) ; x <= (obstacle.x + totalObstacleRadius); x++) {
 			table[x][y] = 1;
 		}
 	}
 }
 
-bool PathPlanning::obstaclesPositionsOK(int obstacle1X, int obstacle1Y, int obstacle2X, int obstacle2Y) {
-	if(obstacle1X < DRAWING_ZONE || obstacle2X < DRAWING_ZONE) {
+bool PathPlanning::obstaclesPositionsOK(position obstacle1, position obstacle2) {
+	if(obstacle1.x < DRAWING_ZONE || obstacle2.x < DRAWING_ZONE) {
 		cout << "X short" << endl;
 		return false;
 	}
-	if(obstacle1X > TABLE_X - OBSTACLE_RADIUS || obstacle2X > TABLE_X - OBSTACLE_RADIUS) {
+	if(obstacle1.x > TABLE_X - OBSTACLE_RADIUS || obstacle2.x > TABLE_X - OBSTACLE_RADIUS) {
 		cout << "X long" << endl;
 		return false;
 	}
-	if(obstacle1Y < OBSTACLE_RADIUS || obstacle2Y < OBSTACLE_RADIUS) {
+	if(obstacle1.y < OBSTACLE_RADIUS || obstacle2.y < OBSTACLE_RADIUS) {
 		cout << "Y short" << endl;
 		return false;
 	}
-	if(obstacle1Y > TABLE_Y - OBSTACLE_RADIUS || obstacle2Y > TABLE_Y - OBSTACLE_RADIUS) {
+	if(obstacle1.y > TABLE_Y - OBSTACLE_RADIUS || obstacle2.y > TABLE_Y - OBSTACLE_RADIUS) {
 		cout << "Y long" << endl;
 		return false;
 	}

@@ -11,7 +11,7 @@ namespace {
 
   TEST_F(PathPlanningTest, print) {
 
-	  pathPlanning.setObstacles(90,65,150,95);
+	  //pathPlanning.setObstacles(90,65,150,95);
 	  pathPlanning.printTable();
   }
 }
