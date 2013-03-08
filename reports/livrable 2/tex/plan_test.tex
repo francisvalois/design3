@@ -27,27 +27,20 @@
     & & &  																											& Crayon& \\\cline{5-5}
     & & & 																											& Rapporteur d'angle&\\\hline
     
-     \multirow{5}{4cm}{\centering Alimentation} & \multirow{5}{5cm}{\centering Alimenter le mac-mini et le préhenseur à une tension de 24 volts}& \multirow{5}{5cm}{\centering Fournir une tension de 24 volts CC avec des oscillations maximum de 200 mV}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Mac mini}& \multirow{5}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
+     \multirow{5}{4cm}{\centering Alimentation} & \multirow{5}{5cm}{\centering Alimenter le mac-mini et le préhenseur à une tension de 24V}& \multirow{5}{5cm}{\centering Fournir une tension de 24 volts CC avec des oscillations maximum de 200 mV et une puissance minimale de 75W}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Mac mini}& \multirow{5}{5cm}{\centering Vérifier la tension moyenne dans une résistance connue à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
     & & &  																											& \multirow{2}{4cm}{\centering Oscilloscope} & \\
     & & &  																											& & \\\cline{5-5}	
     & & &  																											& \multirow{2}{4cm}{\centering Sondes de mesure} & \\
-    & & &  																											& & \\\hline											
-    \multirow{5}{4cm}{\centering Alimentation} & \multirow{5}{5cm}{\centering Alimenter le micro-contrôleur et les différents circuits à une tension de 5 volts}& \multirow{5}{5cm}{\centering Fournir une tension de 5 volts CC avec des oscillations maximum de 0.2 volt}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
+     & & &  																											& &\\
+     & & &  																											& & \\\hline											
+    \multirow{5}{4cm}{\centering Alimentation} & \multirow{5}{5cm}{\centering Alimenter le micro-contrôleur et les différents circuits à une tension de 5 volts}& \multirow{5}{5cm}{\centering Fournir une tension de 5 volts CC avec des oscillations maximum de 200mV et une puissance minimale de 10W}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Vérifier la tension moyenne à la sortie de l'alimentation dans une résistance connue et l'amplitude des oscillations qui y sont superposées sur l'oscilloscope}\\\cline{5-5}
     & & &  																											& \multirow{2}{4cm}{\centering Oscilloscope} & \\
     & & &  																											& & \\\cline{5-5}	
     & & &  																											& \multirow{2}{4cm}{\centering Sondes de mesure} & \\
-    & & &  																											& & \\\hline     
+    & & &  																											& &\\
+      & & &  																											& & \\\hline     
      
-     \multirow{4}{4cm}{\centering Récepteur manchester} & \multirow{4}{5cm}{\centering Recevoir le signal manchester et le rendre utilisable par le micro-contrôleur}& \multirow{4}{5cm}{\centering Fournir un signal carré 0-5 volts à l'image du signal capté}&\multirow{4}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{3}{5cm}{\centering Vérifier la présence du signal carré en sortie du module de réception lorsque le robot est à proximité de l'antenne }\\\cline{5-5}
-    & & &  																											& Oscilloscope & \\\cline{5-5}
-     & & &  																											& Antenne fonctionnelle & \\\cline{5-5}
-    & & &  																											& Sondes de mesure & \\\hline
-     \multirow{5}{4cm}{\centering Préhenseur} & \multirow{5}{5cm}{\centering Monter et descendre le crayon pour passer en mode écriture ou arrêt d'écriture}& \multirow{5}{5cm}{\centering Descendre le crayon lorsqu'une commande 5V est apliqué et le remonté lorsque la commande 0V est appliquée}&\multirow{5}{3cm}{\centering Test pratique}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Vérifier que le crayon descend lorsqu'on applique la commande de 5V au circuit et qu'il remonte lorsqu'on la relâche}\\\cline{5-5}
-    & & &  																											& \multirow{4}{4cm}{\centering Source 24V CC} & \\\
-    & & &  																											&  & \\\
-    & & & & & 									
-     \\\
-    & & & & & 																										\\\hline
+																						\\\hline
     \multirow{5}{4cm}{\centering Affichage} & \multirow{5}{5cm}{\centering Allumer la DEL lorsque la tâche est complétée}& \multirow{5}{5cm}{\centering Allumer la DEL lorsque 5V est appliqué à son circuit et l'éteindre lorsqu'on relâche la commande}&\multirow{5}{3cm}{\centering Test électrique}& \multirow{1}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Vérifier que la DEL verte allume lorsqu'on applique une commande de 5V à son circuit}\\\cline{5-5}
     & & &  																											& \multirow{4}{4cm}{\centering Source 5V CC} & \\\
     & & &  																											&  & \\\
@@ -88,12 +81,16 @@
     & & & & & \\\
     & & & & & \\\hline
     
-    \multirow{5}{4cm}{\centering Positionnement de la caméra} & \multirow{5}{5cm}{\centering Garder la camera en position malgré les perturbations extérieures}& \multirow{5}{5cm}{\centering Replacer la camera à sa position de départ lorsqu'on allume l'alimentation 5V}&\multirow{5}{3cm}{\centering Test de manipulation}& \multirow{5}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Déplacer la camera lorsque l'alimentation est fermé et vérifier qu'elle reprend sa position lorsqu'on actionne l'alimentation 5V}\\
+    \multirow{5}{4cm}{\centering Communication} & \multirow{5}{5cm}{\centering Commander les moteurs}& \multirow{5}{5cm}{\centering Avoir une précision de déplacement de 2mm ainsi qu'un temps de réponse (en vitesse) de moins de 1s}&\multirow{5}{3cm}{\centering Test de manipulation}& \multirow{5}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Comparer la distance parcourue à la distance commandée au robot. Calculer le temps d'exécution}\\
     & & & & &\\  																											
     & & & & &\\ 																											
     & & & & &\\ 
     & & & & &\\\hline 											
-
+   \multirow{5}{4cm}{\centering Communication} & \multirow{5}{5cm}{\centering Contrôler position de la caméra}& \multirow{5}{5cm}{\centering Ajuster l'angle et l'orientation de la caméra avec une précision de 5$^\circ$ en moins de 5s}&\multirow{5}{3cm}{\centering Test de manipulation}& \multirow{5}{4cm}{\centering Robot fonctionnel}& \multirow{5}{5cm}{\centering Vérifier la position de la caméra suite à un changement de consigne. Mesurer le temps d'exécution.}\\
+    & & & & &\\  																											
+    & & & & &\\ 																											
+    & & & & &\\ 
+    & & & & &\\\hline 	
 
 
    \end{tabular}}%
@@ -133,11 +130,11 @@
    & & & & & \\\
    & & & & & \\\
    & & & & & \\\hline   
-    \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Résoudre le sudocube}& \multirow{4}{5cm}{\centering Être capable de résoudre des sudocube de 7 chiffres et plus}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{4}{4cm}{\centering Ordinateur}& \multirow{4}{5cm}{\centering Tester l'algorithme sur un jeu de sudocubes ayant des nombres différents de chiffres}\\
+    \multirow{4}{4cm}{\centering Traitement numérique} & \multirow{4}{5cm}{\centering Résoudre le sudocube}& \multirow{4}{5cm}{\centering Être capable de résoudre des sudocube de 7 chiffres et plus en moins de 10s}&\multirow{4}{3cm}{\centering Tests pratiques}& \multirow{4}{4cm}{\centering Ordinateur}& \multirow{4}{5cm}{\centering Tester l'algorithme sur un jeu de sudocubes ayant des nombres différents de chiffres}\\
    & & & & & \\\
    & & & & & \\\
    & & & & & \\\hline  
-       \multirow{5}{4cm}{\centering Vision numérique} & \multirow{5}{5cm}{\centering Lire le sudocube}& \multirow{5}{5cm}{\centering Le robot doit être situé entre (25.4 et 38.4)cm de distance par rapport au sudocube pour bien lire les informations}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Algorithme de lecture}& \multirow{5}{5cm}{\centering Mesurer la distance entre le sudocube et la caméra après un déplacement vers un sudocube à analyser.}\\\cline{5-5}
+       \multirow{5}{4cm}{\centering Vision numérique} & \multirow{5}{5cm}{\centering Lire le sudocube}& \multirow{5}{5cm}{\centering Le temps de lecture doit être inférieur à 10s}&\multirow{5}{3cm}{\centering Tests de mesure}& \multirow{1}{4cm}{\centering Algorithme de lecture}& \multirow{5}{5cm}{\centering Mesurer la distance entre le sudocube et la caméra après un déplacement vers un sudocube à analyser.}\\\cline{5-5}
    & & & & Robot fonctionnel & \\\cline{5-5}
     & & & & Caméra Web & \\\cline{5-5}
     & & & & Ruban à mesurer & \\\cline{5-5}
@@ -149,7 +146,7 @@
     & & & & Table et robot & \\\hline
 
    \end{tabular}}%
-  \label{tab:pt2}%
+  \label{tab:pt3}%
 \end{table}%
 \end{landscape}
 

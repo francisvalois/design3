@@ -32,29 +32,28 @@
 	
    
 	& Calculer la trajectoire optimale		& Temps de calcul(s)			& Test& \\\cline{2-5}
-	&\multirow{2}{4cm}{\centering Contrôler le robot pour le dessin}	& 	Temps de calcul(s)		& Test& \\\cline{3-5}
+	&\multirow{2}{4cm}{\centering Contrôler le robot pour le dessin}	& 	Temps d'exécution(s)		& Test& \\\cline{3-5}
 	& & Précision (cm)& Test&\\\cline{2-5}
-	& Décoder le signal d’antenne	& Nombre de périodes nécessaires			& Test& \\	\cline{2-5}
-	& Choisir le cube selon le signal d’antenne	& Démonstration		&& \\	\cline{2-5}
+	& Décoder le signal d’antenne	& Taux de transmission (bits/s)			& Test& \\	\cline{2-5}
+	& Choisir le cube selon le signal d’antenne	& 		&Démonstration& Vérification du choix de cube selon un signal d'antenne connu\\	\cline{2-5}
 	& \multirow{2}{4cm}{Résoudre le sudocube}& Temps de calcul (s)		& Test& \\\cline{3-5}
 	& & Chiffres initiaux minimum& Test&\\\hline
 	
 	
 	
 	
-	\multirow{14}{4cm}{\centering Communication}   & Recevoir  signal d'antenne		& Test			&			 & \\\cline{2-5}
+	\multirow{14}{4cm}{\centering Communication}   & Recevoir  signal d'antenne		& 			&Démonstration			 & Vérifier que le signal d'antenne reçu est conforme à celui envoyé\\\cline{2-5}
    
-	& \multirow{2}{4.5cm}{\centering Communiquer entre le robot et la station de base}& Vitesse(Mo/s)			& Démonstration& \\\cline{3-5}
+	& \multirow{2}{4.5cm}{\centering Communiquer entre le robot et la station de base}& Vitesse(Mo/s)			& Démonstration&Vérifier que les informations transmises du robot et de la station de base sont respectivement reçues \\\cline{3-5}
 		& & Latence (ms)& Analyse&\\\cline{2-5}
 	&Communiquer entre le Mac mini et le microcontrôleur	& 	Vitesse(bit/s)		& Test& \\\cline{2-5}
 
 	& \multirow{2}{4cm}{\centering Commander les moteurs}	& Précision (cm)			& Test& \\	\cline{3-5}
 	& & Temps de réponse (ms)&Analyse et test&\\\cline{2-5}
-	& Transmettre les images de la Kinect vers le Mac mini	& Taux de transfert (Images/s)		&Démonstration& \\	\cline{2-5}
-	& Transmettre les images de la caméra vers le Mac mini& Taux de transfert (Images/s)	& Démonstration& \\\cline{2-5}
+	& Réception des images de la Kinect	& Taux de transfert (Images/s)		&Démonstration& Vérifier que les images sont reçues  \\	\cline{2-5}
 	& \multirow{2}{4cm}{ \centering Contrôler la position de la caméra}& Temps de réponse(s) &Test& \\\cline{3-5}
 	& & Précision($^\circ$)& Test&\\\cline{2-5}
-	& Commander le préhenseur du crayon& Temps de réponse(s) & Test& \\\hline
+	& Commander le préhenseur du crayon&  &Démonstration & Vérifier que le préhenseur s'active avec une commande \\\hline
  
    \end{tabular}}%
   \label{tab:mve1}%
@@ -72,11 +71,11 @@
     \textbf{Fonctionnalité}& \textbf{Sous-fonctionnalité} & \textbf{Paramètre critique}& \textbf{Méthode de vérification}& \textbf{Commentaires}\\ \hline\hline
  \multirow{2}{4cm}{\centering Déplacement}  
     & \multirow{2}{4.5cm}{\centering Se déplacer sans toucher aux obstacles et aux murs}			& 	Précision (cm)		&
-    Test et démonstration	& \\\cline{3-5}
-    & & Vitesse (cm/s)&&\\\hline
+    Test & \\\cline{3-5}
+    & & Vitesse (cm/s)&Test&\\\hline
     
-  \multirow{8}{4cm}{\centering Alimentation}  & \multirow{3}{4cm}{\centering Utiliser une pile rechargeable}		& Énergie (Wh)			& Inspection			 & \\\cline{3-5}
-    & & Courant maximal (A)& Inspection&\\\cline{3-5}
+  \multirow{8}{4cm}{\centering Alimentation}  & \multirow{3}{4cm}{\centering Utiliser une pile rechargeable}		& Énergie (Wh)			& Inspection			 & Lire le manuel d'utilisateur \\\cline{3-5}
+    & & Courant maximal (A)& Inspection& Lire le manuel d'utilisateur\\\cline{3-5}
     & & Durée de charge(min)& Test&\\\cline{2-5}
     
 	& Alimenter les moteurs		& Puissance (W)		&Test			 & \\\cline{2-5}
@@ -87,13 +86,13 @@
   
 	
    
-	\multirow{10}{4cm}{\centering Affichage} & Afficher message d'initiation de la tâche		& 			&Démonstration& \\\cline{2-5}
-	 & Afficher le cube résolu ainsi que la case rouge		&		&Démonstration 	& \\\cline{2-5}
+	\multirow{10}{4cm}{\centering Affichage} & Afficher message d'initiation de la tâche		& 			&Démonstration& Vérifier que le message est bien affiché sur l'écran de base\\\cline{2-5}
+	 & Afficher le cube résolu ainsi que la case rouge		&		&Démonstration 	& Vérifier que le cube résolu et la case rouge sont affichés \\\cline{2-5}
 	 & Allumer la DEL lorsque tâche complétée		& 		&Test& \\\cline{2-5}
-	 & Afficher la trajectoire optimale calculée		& 			&Démonstration & \\\cline{2-5}
-	 & Afficher la position et trajectoire réelle		&Temps d'actualisation (s)		&Démonstration  & \\\cline{2-5}
-	 & Afficher message de fin	& 			&Démonstration & \\\cline{2-5}
-	 & Afficher sur le LCD	& 			&Démonstration & \\\hline
+	 & Afficher la trajectoire optimale calculée		& 			&Démonstration & Vérifier que la trajectoire optimale calculée est affichée \\\cline{2-5}
+	 & Afficher la position et trajectoire réelle		&Temps d'actualisation (s)		&Démonstration  & Vérifier le temps de raffraîchissement de l'affichage de la position en temps réel (inférieur à 15s) \\\cline{2-5}
+	 & Afficher message de fin	& 			&Démonstration & Vérifier que le message de fin est affiché \\\cline{2-5}
+	 & Afficher sur le LCD	& 			&Démonstration & Vérifier que le LCD affiche bien les informations \\\hline
 	
  
    \end{tabular}}%
