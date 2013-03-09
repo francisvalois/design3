@@ -151,7 +151,7 @@ long PIDHandler3(volatile long *consigne, volatile long *measured_value, volatil
   *previous_error = error;
   return output;
 }
-long SlowPIDHandler0(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+long SPIDHandler0(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
 {
   long error = *consigne - *measured_value;
   *I = *I + error*dt;
@@ -160,7 +160,7 @@ long SlowPIDHandler0(volatile long *consigne, volatile long *measured_value, vol
   *previous_error = error;
   return output;
 }
-long SlowPIDHandler1(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+long SPIDHandler1(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
 {
   long error = *consigne - *measured_value;
   *I = *I + error*dt;
@@ -169,7 +169,7 @@ long SlowPIDHandler1(volatile long *consigne, volatile long *measured_value, vol
   *previous_error = error;
   return output;
 }
-long SlowPIDHandler2(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+long SPIDHandler2(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
 {
   long error = *consigne - *measured_value;
   *I = *I + error*dt;
@@ -178,12 +178,84 @@ long SlowPIDHandler2(volatile long *consigne, volatile long *measured_value, vol
   *previous_error = error;
   return output;
 }
-long SlowPIDHandler3(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+long SPIDHandler3(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
 {
   long error = *consigne - *measured_value;
   *I = *I + error*dt;
   float D = (error - *previous_error)/dt;
   long output = Kp3_s*error + Ki3_s*(*I) + Kd3_s*D;
+  *previous_error = error;
+  return output;
+}
+long MPIDHandler0(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp0_m*error + Ki0_m*(*I) + Kd0_m*D; //*Tf/(1+Tf/dt);
+  *previous_error = error;
+  return output;
+}
+long MPIDHandler1(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp1_m*error + Ki1_m*(*I) + Kd1_m*D;
+  *previous_error = error;
+  return output;
+}
+long MPIDHandler2(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp2_m*error + Ki2_m*(*I) + Kd2_m*D;
+  *previous_error = error;
+  return output;
+}
+long MPIDHandler3(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp3_m*error + Ki3_m*(*I) + Kd3_m*D;
+  *previous_error = error;
+  return output;
+}
+long DPIDHandler0(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp0_d*error + Ki0_d*(*I) + Kd0_d*D; //*Tf/(1+Tf/dt);
+  *previous_error = error;
+  return output;
+}
+long DPIDHandler1(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp1_d*error + Ki1_d*(*I) + Kd1_d*D;
+  *previous_error = error;
+  return output;
+}
+long DPIDHandler2(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp2_d*error + Ki2_d*(*I) + Kd2_d*D;
+  *previous_error = error;
+  return output;
+}
+long DPIDHandler3(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp3_d*error + Ki3_d*(*I) + Kd3_d*D;
   *previous_error = error;
   return output;
 }
@@ -203,11 +275,17 @@ void asservirMoteurs(void){
 		measured_speed0 = -measured_speed0;
 	}
 	previous_pos0 = pos0;
-	if(consigne0 > 3200){
+	if(consigne0 > 4800){
 		output0 = PIDHandler0(&consigne0, &measured_speed0, &I0, &previous_error0, dt);
 	}
+	else if(consigne0 > 2400){
+		output0 = MPIDHandler0(&consigne0, &measured_speed0, &I0, &previous_error0, dt);
+	}
+	else if(consigne0 > 1200){
+		output0 = SPIDHandler0(&consigne0, &measured_speed0, &I0, &previous_error0, dt);
+	}
 	else{
-		output0 = SlowPIDHandler0(&consigne0, &measured_speed0, &I0, &previous_error0, dt);
+		output0 = DPIDHandler0(&consigne0, &measured_speed0, &I0, &previous_error0, dt);
 	}
 	//Motor 1
 	measured_speed1 = QEIVelocityGet(QEI1_BASE)/dt;//(pos1 - previous_pos1)*10;
@@ -215,11 +293,17 @@ void asservirMoteurs(void){
 		measured_speed1 = -measured_speed1;
 	}
 	previous_pos1 = pos1;
-	if(consigne1 > 3200){
+	if(consigne1 > 4800){
 		output1 = PIDHandler1(&consigne1, &measured_speed1, &I1, &previous_error1, dt);
 	}
+		else if(consigne1 > 2400){
+		output1 = MPIDHandler1(&consigne1, &measured_speed1, &I1, &previous_error1, dt);
+	}
+	else if(consigne1 > 1200){
+		output1 = SPIDHandler1(&consigne1, &measured_speed1, &I1, &previous_error1, dt);
+	}
 	else{
-		output1 = SlowPIDHandler1(&consigne1, &measured_speed1, &I1, &previous_error1, dt);
+		output1 = DPIDHandler1(&consigne1, &measured_speed1, &I1, &previous_error1, dt);
 	}
 	//Motor 2
 	measured_speed2 = (pos2 - previous_pos2)/dt;
@@ -227,11 +311,17 @@ void asservirMoteurs(void){
 		measured_speed2 = -measured_speed2;
 	}
 	previous_pos2 = pos2;
-	if(consigne2 > 3200){
+	if(consigne2 > 4800){
 		output2 = PIDHandler2(&consigne2, &measured_speed2, &I2, &previous_error2, dt);
 	}
+	else if(consigne2 > 2400){
+		output2 = MPIDHandler2(&consigne2, &measured_speed2, &I2, &previous_error2, dt);
+	}
+	else if(consigne2 > 1200){
+		output2 = SPIDHandler2(&consigne2, &measured_speed2, &I2, &previous_error2, dt);
+	}
 	else{
-		output2 = SlowPIDHandler2(&consigne2, &measured_speed2, &I2, &previous_error2, dt);
+		output2 = DPIDHandler2(&consigne2, &measured_speed2, &I2, &previous_error2, dt);
 	}
 	//Motor 3
 	measured_speed3 = QEIVelocityGet(QEI0_BASE)/dt;//(pos3 - previous_pos3)*10;
@@ -239,11 +329,17 @@ void asservirMoteurs(void){
 		measured_speed3 = -measured_speed3;
 	}
 	previous_pos3 = pos3;
-	if(consigne3 > 3200){
+	if(consigne3 > 4800){
 		output3 = PIDHandler3(&consigne3, &measured_speed3, &I3, &previous_error3, dt);
 	}
+	else if(consigne3 > 2400){
+		output3 = MPIDHandler3(&consigne3, &measured_speed3, &I3, &previous_error3, dt);
+	}
+	else if(consigne3 > 1200){
+		output3 = SPIDHandler3(&consigne3, &measured_speed3, &I3, &previous_error3, dt);
+	}
 	else{
-		output3 = SlowPIDHandler3(&consigne3, &measured_speed3, &I3, &previous_error3, dt);
+		output3 = DPIDHandler3(&consigne3, &measured_speed3, &I3, &previous_error3, dt);
 	}
 	
 	/*output0 = output0_old +(dt/Tf0)*(output0-output0_old);
@@ -267,26 +363,26 @@ void asservirMoteurs(void){
 	float fraction2;
 	float fraction3;
 	//Une équation linéaire est utilisée x*0.5/7700 = % du duty cycle
-	fraction0 = ((output0*0.5)/7700);
+	fraction0 = (((output0+640)*0.5)/7700);
 	if(fraction0 > 0.99){
 		fraction0 = 0.99;
 	}
 	else if(fraction0 < 0){
 		fraction0 = 0;
 	}
-	fraction1 = ((output1*0.5)/7700);
+	fraction1 = (((output1+640)*0.5)/7700);
 	if(fraction1 > 0.99){
 		fraction1 = 0.99;
 	}else if(fraction1 < 0){
 		fraction1 = 0;
 	}
-	fraction2 = ((output2*0.5)/7700);
+	fraction2 = (((output2)*0.5)/7700);
 	if(fraction2 > 0.99){
 		fraction2 = 0.99;
 	}else if(fraction2 < 0){
 		fraction2 = 0;
 	}
-	fraction3 = ((output3*0.5)/7700);
+	fraction3 = (((output3+640)*0.5)/7700);
 	if(fraction3 > 0.99){
 		fraction3 = 0.99;
 	}else if(fraction3 < 0){
@@ -370,10 +466,9 @@ void ajustementVitesse(void){
 	}*/
 	if((abs_dist_cible3 != 0 && abs_pos3 > (abs_dist_cible3-tolerancePos))
 			|| (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1-tolerancePos))){
-		motorHardBrake(0);
-		motorHardBrake(1);
-		motorHardBrake(2);
-		motorHardBrake(3);
+		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
+		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
+		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
 		a_atteint_consigne = true;
 		/*PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, 0);
 		PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, 0);
@@ -579,6 +674,5 @@ void turn(long distance, long vitesse){
 		dist_cible3 = distance;
 	}
 }
-
 
 
