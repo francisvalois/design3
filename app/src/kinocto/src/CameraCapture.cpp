@@ -11,9 +11,18 @@
 using namespace cv;
 using namespace std;
 
-/*SudokuReader sudokuReader;
+SudokuReader sudokuReader;
+
+void saveImage(Mat &pict, char* filename) {
+    vector<int> compression_params;
+    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
+    compression_params.push_back(9);
+
+    imwrite(filename, pict, compression_params);
+}
 
 int main(int, char**) {
+    int i = 0;
 	VideoCapture cap(1);
 
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
@@ -34,14 +43,18 @@ int main(int, char**) {
 		imshow("pic", frame);
 
 		int keyPressed = waitKey(30);
+		cout << keyPressed << endl;
 		if (keyPressed == 13 || keyPressed == 10) {
-			sudokuReader.extractNumbers(frame);
+		    char filename[255];
+		    sprintf(filename, "%d.png", i);
+			saveImage(frame, filename);
 			cout << "end of number extraction" << endl;
+			i++;
 		} else if (keyPressed != 13 && keyPressed >= 0) {
 			break;
 		}
 	}
 
 	return 0;
-}*/
+}
 

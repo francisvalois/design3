@@ -23,13 +23,10 @@
 
  */
 
-// used for text debugging
 #include <iostream>
 #include <stdio.h>
-//#include <conio.h>
 #include <assert.h>
 
-// stl includes
 #include <algorithm>
 #include <set>
 #include <vector>

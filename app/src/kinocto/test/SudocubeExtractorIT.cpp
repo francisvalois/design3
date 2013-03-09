@@ -87,7 +87,6 @@ Sudokube getSudokube3() {
     return sudokube;
 }
 
-
 Sudokube getSudokube4() {
     Sudokube sudokube;
     sudokube.setCaseValue(1, 2, 4, 2);
