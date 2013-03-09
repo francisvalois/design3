@@ -472,21 +472,21 @@ int main(void)
 				case 5:
 					switch(segment_to_draw){
 						case 1:
-							moveLateral(5419, 834);
+							moveLateral(-5319, 1667);
 							segment_to_draw++;
 							break;
 						case 2:
-							moveFront(-1806, 903);
+							moveFront(-1806, 803);
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-3613, 803);
-							moveLateral(5419, 1204);
+							moveFront(-2339, 518);
+							moveLateral(5419, 1200);
 							segment_to_draw++;
 							break;
 						case 4:
-							moveFront(-1505, 753);
-							moveLateral(-5419, 2710);
+							moveFront(-1411, 778);
+							moveLateral(-4915, 2710);
 							segment_to_draw++;
 							break;
 						case 5:
