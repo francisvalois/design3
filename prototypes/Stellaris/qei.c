@@ -16,6 +16,8 @@ volatile long position_m0, position_m1, position_m2, position_m3; //Position des
 
 extern volatile float dt;
 
+void EncoderHandler();
+
 // IMPORTANT: Moteur 0 et 1 utilisent les QEI, tandis que les moteurs 2 et 3
 //			  utilisent le decodeur logiciels plus bas.
 
@@ -70,6 +72,7 @@ void initQEI(void){
 void EncoderIntHandler(void){
 	GPIOPinIntClear(GPIO_PORTE_BASE, 0xC3);
 	state = GPIOPinRead(GPIO_PORTE_BASE, 0xC3);
+	EncoderHandler();
 }
 
 //Decodeur logiciel pour traitement des encodeurs en quadratures

@@ -30,6 +30,8 @@ extern volatile long speed, position;
 //commande.c
 extern tBoolean is_waiting_for_y;
 extern unsigned long captured_index;
+extern volatile tBoolean is_drawing;
+extern volatile short number_drawn;
 //main.c
 extern volatile unsigned long speed_table[200];
 extern volatile unsigned long pos_table[200];
@@ -54,6 +56,8 @@ void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
 void turn(long distance, long vitesse);
 
+void draw(volatile short number);
+
 //Fonction qui gère les interruption du timer et appele les fonctions d'asservissement
 void TimerInt(void){
 
@@ -69,11 +73,84 @@ void TimerInt(void){
 	posqei1 = QEIPositionGet(QEI1_BASE);
 	speed_table[index]=speed;
 	pos_table[index]=position;*/
-	/*if(index==0){
+	if(index==0){
+		draw(3);
+	}
+	if(is_drawing && number_drawn == 10){
+		if(index%250==0){
+			moveFront(3613, 803);
+			moveLateral(4817, 1070);
+		}
+		else if(index%250==100){
+			moveFront(-12042, 1338);
+		}
+		else if(index%250==249){
+			is_drawing = false;
+			number_drawn = 0;
+		}
+	}
+	else if(is_drawing && number_drawn == 1){
+		if(index%250==0){
+			moveFront(1806, 803);
+			moveLateral(2408, 1070);
+		}
+		else if(index%250==100){
+			moveFront(-6021, 1338);
+		}
+		else if(index%250==249){
+			is_drawing = false;
+			number_drawn = 0;
+		}
+	}
+	else if(is_drawing && number_drawn == 20){
+		if(index%600==0){
+			moveFront(1806, 800);
+		}
+		else if(index%600==100){
+			moveLateral(9032, 800);
+		}
+		else if(index%600==250){
+			moveFront(-4787, 800);
+		}
+		else if(index%600==350){
+			moveFront(-7225, 800);
+			moveLateral(-8972, 1000);
+		}
+		else if(index%600==500){
+			moveLateral(9032, 1150);	
+		}
+		else if(index%600==599){
+			is_drawing = false;
+			number_drawn = 0;
+		}
+	}
+	else if(is_drawing && number_drawn == 3){
+		if(index==0){
+			moveFront(1806, 800);
+		}
+		else if(index==100){
+			moveLateral(9032, 800);
+		}
+		else if(index==250){
+			moveFront(-4787, 800);
+		}
+		else if(index==350){
+			moveFront(-7225, 800);
+			moveLateral(-8972, 1000);
+		}
+		else if(index==500){
+			moveLateral(9032, 1150);	
+		}
+	}
+	/*else if(index%250==100){
+			moveFront(-12042, 1338);
+	}*/
+	/*else if(index%400==300){
 		//GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x20);
 		//resetVariables();
-		//moveLateral(-6400, 1600);
-		moveFront(9100, 800); //21.1cm
+		moveLateral(-6533, 800);
+		//moveFront(6533, 800); //21.1cm
+		//moveFront(6533, 800); //21.1cm
 
 		//turn(15709,1600); //1 tours
 	}*/
@@ -137,8 +214,8 @@ void TimerInt(void){
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed >> 16;
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed >> 8;
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = temp_speed;
-	}
-	index++;*/
+	}*/
+	index++;
 	//send_buffer.buffer[send_buffer.write%256] = position;
 	//send_buffer.write++;
 	

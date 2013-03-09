@@ -37,6 +37,9 @@ volatile long deplacement_y;
 tBoolean is_waiting_for_y;
 volatile CircularBuffer buffer_commande;
 
+volatile tBoolean is_drawing;
+volatile short number_drawn;
+
 
 
 //Declaration de fonctions
@@ -65,6 +68,8 @@ void initCommande(void){
 	captured_index = 0;
 	deplacement_x = 0;
 	deplacement_y = 0;
+	is_drawing = false;
+	number_drawn = 0;
 }
  
 
@@ -225,4 +230,13 @@ tBoolean CommandHandler(void){
 	}
 	initCommande();
 	return false;
+}
+
+
+void draw(volatile short number){
+	if(!is_drawing){
+		number_drawn = number;
+		is_drawing = true;
+	}
+	
 }

@@ -196,17 +196,17 @@ int main(void)
     Kd2_s = 0.05;
     Ki2_s = 12;
     Kp2_s = 1.2;
-    Kd3_s = 0.2;
+    Kd3_s = 0.05;
     Ki3_s = 12;
     Kp3_s = 1.2;
 	//Pour les mouvements de dessin @800
 	Kd0_d = 0.2;
     Ki0_d = 10;
     Kp0_d = 1.2;
-    Kd1_d = 0.05;
+    Kd1_d = 0.2;
     Ki1_d = 10;
     Kp1_d = 1.2;
-    Kd2_d = 0.05;
+    Kd2_d = 0.2;
     Ki2_d = 10;
     Kp2_d = 1.2;
     Kd3_d = 0.2;
@@ -247,7 +247,7 @@ int main(void)
 
     while(1)
 	{
-		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
+		//EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
 
 		//si un charactère dans la Receive FIFO
 		if(!(UART0_FR_R & UART_FR_RXFE)) //&& (send_buffer.read > send_buffer.write-256))
