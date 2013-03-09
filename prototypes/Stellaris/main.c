@@ -453,13 +453,13 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-4677, 779);
-							moveLateral(10838, 1806);
+							moveFront(-4677, 518);
+							moveLateral(10838, 1200);
 							segment_to_draw++;
 							break;
 						case 4:
-							moveFront(-3211, 803);
-							moveLateral(-10838, 2710);
+							moveFront(-2942, 778);
+							moveLateral(-10248, 2710);
 							segment_to_draw++;
 							break;
 						case 5:
