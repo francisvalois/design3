@@ -1,23 +1,6 @@
 // Pierre-Luc Buhler 910 098 468
 // & Simon Grenier 910 102 197
-#include "inc/lm3s9b92.h"
-#include "inc/hw_ints.h"
-#include "inc/hw_memmap.h"
-#include "inc/hw_types.h"
-#include "driverlib/debug.h"
-#include "driverlib/gpio.h"
-#include "driverlib/interrupt.h"
-#include "driverlib/rom.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/uart.h"
-#include "driverlib/qei.h"
-#include "driverlib/pwm.h"
-#include "driverlib/timer.h"
-//#include "ecran.h"
-//#include "qei.h"
 #include "uart.h"
-//#include "commande.h"
-//#include "timer.h"
 //*****************************************************************************
 //
 // Main de Kinocto
@@ -44,20 +27,19 @@ extern volatile float Kd0, Ki0, Kp0, Kd1, Ki1, Kp1, Kd2, Ki2, Kp2, Kd3, Ki3, Kp3
 extern volatile float Kd0_m, Ki0_m, Kp0_m, Kd1_m, Ki1_m, Kp1_m, Kd2_m, Ki2_m, Kp2_m, Kd3_m, Ki3_m, Kp3_m;
 extern volatile float Kd0_s, Ki0_s, Kp0_s, Kd1_s, Ki1_s, Kp1_s, Kd2_s, Ki2_s, Kp2_s, Kd3_s, Ki3_s, Kp3_s;
 extern volatile float Kd0_d, Ki0_d, Kp0_d, Kd1_d, Ki1_d, Kp1_d, Kd2_d, Ki2_d, Kp2_d, Kd3_d, Ki3_d, Kp3_d;
-extern volatile float Tf0, Tf1, Tf2, Tf3;
 extern volatile float dt;
-extern long tolerancePos;
-extern volatile long posqei1;
-extern volatile long speedqei1;
 extern volatile CircularBuffer buffer_commande;
+extern tBoolean a_atteint_consigne;
+extern tBoolean est_en_mouvement;
+extern short number_to_draw;
+extern short segment_to_draw;
+extern tBoolean is_drawing;
 
 //Variables globales
 volatile CircularBuffer receive_buffer;
 volatile CircularBuffer send_buffer;
-volatile long position; // Position à faire afficher
-volatile long speed; // Vitesse à faire afficher
-volatile unsigned long speed_table[300];
-volatile unsigned long pos_table[300];
+
+
 
 
 
@@ -118,8 +100,8 @@ int main(void)
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
     
     //Enable les GPIO pour les timings des interrupts et autres	
-	GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
-	GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_2);
+	ROM_GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
+	ROM_GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_2);
 
 	//Mettre les interrupts du port E en haute prorités: évite collisions avec QEI logiciel
 	IntPrioritySet(INT_GPIOE,0); 
@@ -136,8 +118,6 @@ int main(void)
     buffer_commande.read = 0;
 	buffer_commande.write = 0;
     //QEI
-    position=0;
-    speed=0;
     state=0;
     state_m2=0;
     state_m3=0;
@@ -169,10 +149,6 @@ int main(void)
     Kd3 = 0.1;
     Ki3 = 7;
     Kp3 = 1.75;
-    Tf0 = 0.1;
-    Tf1 = 0.1;
-    Tf2 = 0.1;
-    Tf3 = 0.1;
 	//Pour les déplacements moyens @3200
     Kd0_m = 0.05;
     Ki0_m = 10;
@@ -212,22 +188,7 @@ int main(void)
     Kd3_d = 0.2;
     Ki3_d = 10;
     Kp3_d = 1.2;
-    /*Kd0_s = 0.05;
-    Ki0_s = 12;//5.64;
-    Kp0_s = 1.2;
-    Kd1_s = 0.05;
-    Ki1_s = 12;//5.64;
-    Kp1_s = 1.2;
-    Kd2_s = 0.05;
-    Ki2_s = 12;//5.64;
-    Kp2_s = 1.2;
-    Kd3_s = 0.05;
-    Ki3_s = 12;//5.64;
-    Kp3_s = 1.2;*/
     dt = 0.1;
-    tolerancePos = 0;
-    posqei1 = 0;
-    speedqei1=0;
     
     
     
@@ -272,6 +233,478 @@ int main(void)
 		}
 		if(buffer_commande.write - buffer_commande.read >= 8){
 			CommandHandler();
+		}
+		
+		//Vérifier si doit dessiner
+		if(is_drawing && a_atteint_consigne && !est_en_mouvement){
+			switch(number_to_draw){
+				case 10: // 1 Large
+					switch(segment_to_draw){ //segment a dessiner
+						case 1: //1er segment
+							moveFront(3613, 803);
+							moveLateral(4817, 1070);
+							segment_to_draw++; //Prochain mouvement faire prochain segment
+							break;
+						case 2:
+							moveFront(-12042, 1338);
+							segment_to_draw++;
+							break;
+						case 3:
+							is_drawing = false; //Fin du dessin, reset les variables
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 1:
+					switch(segment_to_draw){
+						case 1:
+							moveFront(1806, 803);
+							moveLateral(2408, 1070);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveFront(-6021, 1338);
+							segment_to_draw++;
+							break;
+						case 3:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 20:
+					switch(segment_to_draw){
+						case 1:
+							moveFront(1806, 800);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveLateral(9032, 800);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-4787, 800);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-7225, 800);
+							moveLateral(-8972, 1000);
+							segment_to_draw++;
+							break;
+					 	case 5:
+							moveLateral(9032, 1150);
+							segment_to_draw++;	
+							break;
+						case 6:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 2:
+					switch(segment_to_draw){
+						case 1:
+							moveFront(903, 800);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveLateral(4516, 800);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-2408, 800);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-3613, 800);
+							moveLateral(-4516, 1000);
+							segment_to_draw++;
+							break;
+					 	case 5:
+							moveLateral(4516, 800);
+							segment_to_draw++;	
+							break;
+						case 6:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 30:
+					switch(segment_to_draw){
+						case 1:
+							moveLateral(10838, 800);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveFront(-5419, 800);
+							moveLateral(-10486, 1548);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-1658, 700);
+							moveLateral(9945, 4200);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-1740, 800);
+							segment_to_draw++;
+							break;
+					 	case 5:
+					 		moveFront(-2500, 700);
+							moveLateral(-10000, 2800);
+							segment_to_draw++;	
+							break;
+						case 6:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 3:
+					switch(segment_to_draw){
+						case 1:
+							moveLateral(5419, 800);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveFront(-2710, 800);
+							moveLateral(-5243, 1548);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-779, 700);
+							moveLateral(4673, 4200);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-879, 800);
+							segment_to_draw++;
+							break;
+					 	case 5:
+					 		moveFront(-1175, 700);
+							moveLateral(-4700, 2800);
+							segment_to_draw++;	
+							break;
+						case 6:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 40:
+					switch(segment_to_draw){
+						case 1:
+							moveFront(13247, 1656);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveFront(-7528, 1565);
+							moveLateral(-7528, 1565);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveLateral(8970, 1642);
+							segment_to_draw++;
+							break;
+						case 4:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 4:
+					switch(segment_to_draw){
+						case 1:
+							moveFront(6632, 828);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveFront(-3764, 783);
+							moveLateral(-3764, 783);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveLateral(4516, 821);
+							segment_to_draw++;
+							break;
+						case 4:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 50:
+					switch(segment_to_draw){
+						case 1:
+							moveLateral(-10638, 1667);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveFront(-3612, 803);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-4677, 779);
+							moveLateral(10838, 1806);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-3211, 803);
+							moveLateral(-10838, 2710);
+							segment_to_draw++;
+							break;
+						case 5:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;	
+				case 5:
+					switch(segment_to_draw){
+						case 1:
+							moveLateral(5419, 834);
+							segment_to_draw++;
+							break;
+						case 2:
+							moveFront(-1806, 903);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-3613, 803);
+							moveLateral(5419, 1204);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-1505, 753);
+							moveLateral(-5419, 2710);
+							segment_to_draw++;
+							break;
+						case 5:
+							is_drawing = false;
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				/*case 60:
+					switch(segment_to_draw){ //segment a dessiner
+						case 1: //1er segment
+							moveLateral(-6021, 800);
+							segment_to_draw++; //Prochain mouvement faire prochain segment
+							break;
+						case 2:
+							moveFront(-2408,803);
+							moveLateral(-4817, 1606);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-8430, 800);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveLateral(10838, 800);
+							segment_to_draw++;
+							break;
+						case 5:
+							moveFront(4817, 800);
+							segment_to_draw++;
+							break;
+						case 6:
+							moveLateral(-10838, 800);
+							segment_to_draw++;
+							break;
+						case 7:
+							is_drawing = false; //Fin du dessin, reset les variables
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 6:
+					switch(segment_to_draw){ //segment a dessiner
+						case 1: //1er segment
+							moveLateral(-3011, 800);
+							segment_to_draw++; //Prochain mouvement faire prochain segment
+							break;
+						case 2:
+							moveFront(-1204,803);
+							moveLateral(-2408, 1606);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-4215, 800);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveLateral(5419, 800);
+							segment_to_draw++;
+							break;
+						case 5:
+							moveFront(2408, 800);
+							segment_to_draw++;
+							break;
+						case 6:
+							moveLateral(-5419, 800);
+							segment_to_draw++;
+							break;
+						case 7:
+							is_drawing = false; //Fin du dessin, reset les variables
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;		
+				case 70:
+					switch(segment_to_draw){ //segment a dessiner
+						case 1: //1er segment
+							moveFront(1204, 800);
+							segment_to_draw++; //Prochain mouvement faire prochain segment
+							break;
+						case 2:
+							moveLateral(13247, 800);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-10236, 800);
+							moveLateral(-10236, 800);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-2408, 800);
+							segment_to_draw++;
+							break;
+						case 5:
+							is_drawing = false; //Fin du dessin, reset les variables
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 7:
+					switch(segment_to_draw){ //segment a dessiner
+						case 1: //1er segment
+							moveFront(602, 800);
+							segment_to_draw++; //Prochain mouvement faire prochain segment
+							break;
+						case 2:
+							moveLateral(6623, 800);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-5118, 800);
+							moveLateral(-5118, 800);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-1204, 800);
+							segment_to_draw++;
+							break;
+						case 5:
+							is_drawing = false; //Fin du dessin, reset les variables
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;		
+				case 80:
+					switch(segment_to_draw){ //segment a dessiner
+						case 1: //1er segment
+							moveFront(1806, 800);
+							segment_to_draw++; //Prochain mouvement faire prochain segment
+							break;
+						case 2:
+							moveLateral(9634, 800);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-1806, 800);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-9634, 1070);
+							moveLateral(-7225, 803);
+							segment_to_draw++;
+							break;
+						case 5:
+							moveFront(-1806, 800);
+							segment_to_draw++;
+							break;
+						case 6:
+							moveLateral(9634, 800);
+							segment_to_draw++;
+							break;
+						case 7:
+							moveFront(1806, 800);
+							segment_to_draw++;
+							break;
+						case 8:
+							moveFront(9634, 1070);
+							moveLateral(7225,803);
+							segment_to_draw++;
+							break;
+						case 9:
+							is_drawing = false; //Fin du dessin, reset les variables
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;
+				case 8:
+					switch(segment_to_draw){ //segment a dessiner
+						case 1: //1er segment
+							moveFront(903, 800);
+							segment_to_draw++; //Prochain mouvement faire prochain segment
+							break;
+						case 2:
+							moveLateral(4817, 800);
+							segment_to_draw++;
+							break;
+						case 3:
+							moveFront(-903, 800);
+							segment_to_draw++;
+							break;
+						case 4:
+							moveFront(-4817, 1070);
+							moveLateral(-3613, 803);
+							segment_to_draw++;
+							break;
+						case 5:
+							moveFront(-903, 800);
+							segment_to_draw++;
+							break;
+						case 6:
+							moveLateral(4817, 800);
+							segment_to_draw++;
+							break;
+						case 7:
+							moveFront(903, 800);
+							segment_to_draw++;
+							break;
+						case 8:
+							moveFront(4817, 1070);
+							moveLateral(3613,803);
+							segment_to_draw++;
+							break;
+						case 9:
+							is_drawing = false; //Fin du dessin, reset les variables
+							number_to_draw = 0;
+							segment_to_draw = 0;
+							break;
+					}
+					break;*/
+				default:
+					break;
+			}
 		}
 	}
 }

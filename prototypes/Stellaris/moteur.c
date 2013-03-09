@@ -27,8 +27,7 @@ volatile long previous_error0, previous_error1, previous_error2, previous_error3
 volatile float I0, I1, I2, I3; //Integrale de l'asservissement
 volatile long consigne0, consigne1, consigne2, consigne3; //Consigne de vitesse
 volatile long dist_cible0, dist_cible1, dist_cible2, dist_cible3; //Consigne de position
-volatile float output0, output1, output2, output3; //Commande
-volatile float output0_old, output1_old, output2_old, output3_old; //Ancienne commande
+volatile long output0, output1, output2, output3; //Commande
 //Variable de PID
 volatile float Kd0, Ki0, Kp0, Kd1, Ki1, Kp1, Kd2, Ki2, Kp2, Kd3, Ki3, Kp3;
 volatile float Kd0_m, Ki0_m, Kp0_m, Kd1_m, Ki1_m, Kp1_m, Kd2_m, Ki2_m, Kp2_m, Kd3_m, Ki3_m, Kp3_m;
@@ -45,10 +44,10 @@ tBoolean a_atteint_consigne;
 long ouput0_table[10], ouput1_table[10], ouput2_table[10], ouput3_table[10];
 
 //Pour tests
-long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
+/*long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
 long speed0_table[300], speed1_table[300], speed2_table[300], speed3_table[300];
 long output0_table[300], output1_table[300], output2_table[300], output3_table[300];
-long fraction0_table[300], fraction1_table[300], fraction2_table[300], fraction3_table[300];
+long fraction0_table[300], fraction1_table[300], fraction2_table[300], fraction3_table[300];*/
 
 //Declaration de fonctions
 //moteur.c
@@ -80,10 +79,6 @@ void resetQEIs(void);
  	output1=0;
  	output2=0;
  	output3=0;
- 	output0_old=0;
- 	output1_old=0;
- 	output2_old=0;
- 	output3_old=0;
  	dist_cible0=0;
  	dist_cible1=0;
  	dist_cible2=0;
@@ -296,7 +291,7 @@ void asservirMoteurs(void){
 	if(consigne1 > 4800){
 		output1 = PIDHandler1(&consigne1, &measured_speed1, &I1, &previous_error1, dt);
 	}
-		else if(consigne1 > 2400){
+	else if(consigne1 > 2400){
 		output1 = MPIDHandler1(&consigne1, &measured_speed1, &I1, &previous_error1, dt);
 	}
 	else if(consigne1 > 1200){
@@ -341,20 +336,6 @@ void asservirMoteurs(void){
 	else{
 		output3 = DPIDHandler3(&consigne3, &measured_speed3, &I3, &previous_error3, dt);
 	}
-	
-	/*output0 = output0_old +(dt/Tf0)*(output0-output0_old);
-	output1 = output1_old +(dt/Tf1)*(output1-output1_old);
-	output2 = output2_old +(dt/Tf2)*(output2-output2_old);
-	output3 = output3_old +(dt/Tf3)*(output3-output3_old);
-	output0_old = output0;
-	output1_old = output1;
-	output2_old = output2;
-	output3_old = output3;*/
-	
-	//output0_table[index%10] = output0;
-	//output1_table[index%10] = output1;
-	//output2_table[index%10] = output2;
-	//output3_table[index%10] = output3;
 
 	
 	//Traduction 6400e de tour fraction appliqué au pulse width
@@ -393,7 +374,7 @@ void asservirMoteurs(void){
 	PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, (periodPWM*fraction2));
 	PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, (periodPWM*fraction3));
 	
-	pos0_table[index%300]=GPIOPinRead(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
+	/*pos0_table[index%300]=GPIOPinRead(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
 	pos1_table[index%300]=GPIOPinRead(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 	pos2_table[index%300]=pos2;
 	pos3_table[index%300]=pos3;
@@ -408,7 +389,7 @@ void asservirMoteurs(void){
 	fraction0_table[index%300]=fraction0;
 	fraction1_table[index%300]=fraction1;
 	fraction2_table[index%300]=fraction2;
-	fraction3_table[index%300]=fraction3;
+	fraction3_table[index%300]=fraction3;*/
 	
 	//Si le robot est immobile
 	if(a_atteint_consigne && measured_speed0==0 && measured_speed1==0 && measured_speed2==0 && measured_speed3==0){
