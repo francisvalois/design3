@@ -232,7 +232,6 @@ int main(void)
     
     
 
-
 	initCommande();
 	initMotorCommand();
 	initLED();

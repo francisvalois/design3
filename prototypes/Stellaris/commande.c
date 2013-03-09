@@ -38,7 +38,8 @@ tBoolean is_waiting_for_y;
 volatile CircularBuffer buffer_commande;
 
 volatile tBoolean is_drawing;
-volatile short number_drawn;
+volatile short number_to_draw;
+volatile short segment_to_draw;
 
 
 
@@ -69,7 +70,8 @@ void initCommande(void){
 	deplacement_x = 0;
 	deplacement_y = 0;
 	is_drawing = false;
-	number_drawn = 0;
+	number_to_draw = 0;
+	segment_to_draw = 0;
 }
  
 
@@ -235,7 +237,8 @@ tBoolean CommandHandler(void){
 
 void draw(volatile short number){
 	if(!is_drawing){
-		number_drawn = number;
+		number_to_draw = number;
+		segment_to_draw = 1; //Commencer par le segment 1
 		is_drawing = true;
 	}
 	

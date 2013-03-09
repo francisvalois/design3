@@ -110,7 +110,7 @@ void resetQEIs(void);
    	measured_speed3=0;
    	est_demi_consigne = false;
    	est_en_mouvement = false;
-   	a_atteint_consigne = false;
+   	a_atteint_consigne = true;
  }
 
 //Filtre PID, ref: http://www.telecom-robotics.org/node/326
@@ -494,7 +494,7 @@ void initMotorCommand(void){
 	GPIOPadConfigSet(GPIO_PORTE_BASE,GPIO_PIN_4 | GPIO_PIN_5, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
 	GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 	GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
-	
+	resetVariables();	
 }
 
 // Commandes a transmettre aux moteurs
