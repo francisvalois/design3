@@ -22,6 +22,7 @@ Sudokube SudocubeExtractor::extractSudocube(Mat & src) {
     Mat srcHSV;
     cvtColor(src, srcHSV, CV_BGR2HSV);
 
+
     Rect frameRect = getFrameRect(srcHSV);
     if (frameRect.area() == 0) { //TODO Gestion exception
         cout << "Could not find the green frame" << endl;
@@ -100,7 +101,7 @@ Rect SudocubeExtractor::getFrameRect(Mat& srcHSV) {
     inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
     applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
     applyDilate(segmentedFrame, FRAME_DILATE_SIZE, MORPH_RECT);
-    sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
+    //sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
     //saveImage(segmentedFrame, filename);
 
     vector<vector<Point> > frameContours;

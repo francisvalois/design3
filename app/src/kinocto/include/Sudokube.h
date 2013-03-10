@@ -3,6 +3,8 @@
 
 #include "Case.h"
 #include <vector>
+#include <sstream>
+#include <string>
 
 class Sudokube {
 public:
@@ -12,6 +14,7 @@ public:
     bool equals(Sudokube &);
 
     bool isSolved();
+    bool isEmpty();
     bool caseSolved(int, int, int);
     int remainingCellsToBeSolved();
 
@@ -25,7 +28,7 @@ public:
     std::vector<int> getPossibilities(int, int, int);
     void setPossibilities(int, int, int, std::vector<int>);
 
-    void print();
+    std::string print();
 
     std::vector<std::vector<Case*> > getListOfAllCaseLinesAndRegions();
     std::vector<std::vector<Case*> > getListOfAllCaseLines();

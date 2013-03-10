@@ -15,6 +15,7 @@ find_package(OpenCV REQUIRED)
 add_service_files(
   FILES
   StartKinocto.srv
+  ExtractSudocubeAndSolve.srv
 )
 
 generate_messages(

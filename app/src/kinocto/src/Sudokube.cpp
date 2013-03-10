@@ -58,6 +58,15 @@ bool Sudokube::isSolved() {
     return true;
 }
 
+bool Sudokube::isEmpty() {
+    Sudokube sudokube;
+    if (this->equals(sudokube)) {
+        return true;
+    }
+
+    return false;
+}
+
 bool Sudokube::caseSolved(int i, int j, int k) {
     if (indexesOk(i, j, k)) {
         return container[i - 1][j - 1][k - 1]->isSolved();
@@ -135,16 +144,20 @@ bool Sudokube::indexesOk(int i, int j, int k) {
     return false;
 }
 
-void Sudokube::print() {
+string Sudokube::print() {
+    stringstream buff;
     for (int k = 3; k >= 0; k--) {
-        cout << "     ";
+        //cout << "     ";
+        buff << "     ";
         for (int j = 0; j < 4; j++) {
-            cout << container[2][j][k]->getValue() << " ";
+            //cout << container[2][j][k]->getValue() << " ";
+            buff << container[2][j][k]->getValue() << " ";
         }
-        cout << endl;
+        //cout << endl;
+        buff << endl;
     }
     for (int x = 3; x >= 0; x--) {
-        cout << container[0][x][3]->getValue() << " ";
+        /*cout << container[0][x][3]->getValue() << " ";
         cout << container[0][x][2]->getValue() << " ";
         cout << container[0][x][1]->getValue() << " ";
         cout << container[0][x][0]->getValue() << "   ";
@@ -152,8 +165,20 @@ void Sudokube::print() {
         cout << container[1][1][x]->getValue() << " ";
         cout << container[1][2][x]->getValue() << " ";
         cout << container[1][3][x]->getValue() << " ";
-        cout << endl;
+        cout << endl;*/
+
+        buff << container[0][x][3]->getValue() << " ";
+        buff << container[0][x][2]->getValue() << " ";
+        buff << container[0][x][1]->getValue() << " ";
+        buff << container[0][x][0]->getValue() << "   ";
+        buff << container[1][0][x]->getValue() << " ";
+        buff << container[1][1][x]->getValue() << " ";
+        buff << container[1][2][x]->getValue() << " ";
+        buff << container[1][3][x]->getValue() << " ";
+        buff << endl;
     }
+
+    return buff.str();
 }
 
 vector<vector<Case*> > Sudokube::getListOfAllCaseLinesAndRegions() {
