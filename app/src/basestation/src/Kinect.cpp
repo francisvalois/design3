@@ -1,5 +1,8 @@
 #include "Kinect.h"
 
+using namespace cv;
+using namespace std;
+
 const float Kinect::OBSTACLE_RADIUS = 0.0625f;
 const float Kinect::KINECTANGLE = (float) (23.5 / 360.0 * 2.0 * M_PI);
 const float Kinect::X_KINECT_POSITION = 0.14f;
@@ -21,6 +24,8 @@ const float Kinect::ROBOT_MIN_DISTANCE = 0;
 const float Kinect::ROBOT_MAX_DISTANCE = 2.5f;
 const float Kinect::ROBOT_RADIUS = 0.0625f;
 const float Kinect::ROBOT_HEIGHT = 0.11f;
+
+
 
 Vec2f Kinect::getObstacle1() {
     return obstacle1;
