@@ -33,7 +33,7 @@ Mat CameraCapture::takePicture() {
 
     cap >> picture;
 
-    return picture;
+    return picture.clone();
 }
 
 void CameraCapture::saveImage(Mat &pict, char* filename) {

@@ -37,15 +37,9 @@ bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::Start
 }
 
 bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request & request, kinocto::ExtractSudocubeAndSolve::Response & response) {
-    //Mat sudocubeImg = cameraCapture.takePicture();
-    //Mat sudocubeImg = imread("/home/philippe/design3/app/img/testSudocubes/1.png");
-
     list<Sudokube> sudokubes;
     for (int i = 1; i <= 3; i++) {
-        char filename[255];
-        sprintf(filename, "/home/philippe/design3/app/img/testSudocubes/%d.png", i);
-        Mat sudocubeImg = imread(filename);
-
+        Mat sudocubeImg = cameraCapture.takePicture();
         Sudokube sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
         ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube.print().c_str());
         //sudokubes.push_back(sudokube);
