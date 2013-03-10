@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>base_station</name>
+  <name>basestation</name>
   <version>0.0.0</version>
-  <description>The base_station package</description>
+  <description>The baseStation package</description>
 
   <maintainer email="philippe@todo.todo">philippe</maintainer>
   <license>TODO</license>

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(base_station)
+project(basestation)
 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation kinocto)
 find_package(OpenCV REQUIRED)
@@ -46,11 +46,14 @@ add_definitions(${QT_DEFINITIONS})
 set(PROJ_SOURCES)
 file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
 
+set(INTERFACES)
+file(GLOB_RECURSE INTERFACES ui/*.cpp)
+
 include_directories(include ${catkin_INCLUDE_DIRS} ${QT_INCLUDES})
 
 qt4_wrap_cpp(PROJ_SOURCES include/MainWindow.h)
 
-add_executable(BaseStation ${PROJ_SOURCES})
+add_executable(BaseStation main.cpp  ${PROJ_SOURCES} ${INTERFACES})
 add_dependencies(BaseStation kinocto_gencpp)
 target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${OpenCV_LIBS})
 
@@ -90,5 +93,5 @@ target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_
 ## Testing ##
 #############
 
-catkin_add_gtest(baseStationTest test/AllTests.cpp src/Kinect.cpp src/Utility.cpp)
+catkin_add_gtest(baseStationTest test/AllTests.cpp src/Kinect.cpp src/Utility.cpp )
 target_link_libraries(baseStationTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
