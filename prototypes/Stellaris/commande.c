@@ -37,9 +37,9 @@ volatile long deplacement_y;
 tBoolean is_waiting_for_y;
 volatile CircularBuffer buffer_commande;
 
-volatile tBoolean is_drawing;
-volatile short number_to_draw;
-volatile short segment_to_draw;
+tBoolean is_drawing;
+short number_to_draw;
+short segment_to_draw;
 
 
 
