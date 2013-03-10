@@ -23,6 +23,8 @@ add_service_files(
     DrawNumber.srv
     TurnLED.srv
     PutPen.srv
+    ExecuteMove.srv
+    DecodeAntenna.srv
 )
 
 generate_messages(
