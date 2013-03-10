@@ -5,6 +5,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
 
 #include "NumberReader.h"
 #include "SquarePair.h"
@@ -51,7 +52,7 @@ private:
     void applyErode(cv::Mat & toErode, int size, int morphShape);
     void applyDilate(cv::Mat & toDilate, int size, int morphShape);
 
-    void insertAllNumber(Sudokube & sudokube, vector<vector<int> > numbers);
+    void insertAllNumber(Sudokube & sudokube, std::vector<std::vector<int> > numbers);
     void insert(Sudokube & sudokube, int face, int j, int k, int value);
 
     void saveImage(cv::Mat &pict, char* filename);

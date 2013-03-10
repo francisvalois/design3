@@ -4,16 +4,14 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 class Case {
 public:
     Case();
     Case(int, int, int);
     virtual ~Case();
 
-    vector<int> getPossibilities();
-    void setPossibilities(vector<int>);
+    std::vector<int> getPossibilities();
+    void setPossibilities(std::vector<int>);
     void removePossibility(int);
     int numberOfPossibilitiesRemaining();
     bool isSolved();
@@ -33,7 +31,7 @@ public:
     };
 
 private:
-    vector<int> possibilities;
+    std::vector<int> possibilities;
     int i;
     int j;
     int k;

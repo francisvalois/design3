@@ -1,5 +1,6 @@
 #ifndef SUDOKUBESOLVER_H_
 #define SUDOKUBESOLVER_H_
+#include <vector>
 
 #include "Sudokube.h"
 
@@ -11,8 +12,8 @@ public:
     void solve(Sudokube&);
 
 private:
-    bool removePossibilityFromListOfCases(vector<Case*>, int);
-    bool removePossibilitiesFromNakedPairsWithinAListOfCases(vector<Case*>, int, int);
+    bool removePossibilityFromListOfCases(std::vector<Case*>, int);
+    bool removePossibilitiesFromNakedPairsWithinAListOfCases(std::vector<Case*>, int, int);
     void solveWithoutBruteForce(Sudokube&);
 
     //STRATEGIES

@@ -9,7 +9,7 @@ public:
     Sudokube();
     virtual ~Sudokube();
 
-    bool equals(Sudokube);
+    bool equals(Sudokube &);
 
     bool isSolved();
     bool caseSolved(int, int, int);
@@ -22,16 +22,16 @@ public:
     int getRedCaseValue();
 
     void removePossibility(int, int, int, int);
-    vector<int> getPossibilities(int, int, int);
-    void setPossibilities(int, int, int, vector<int>);
+    std::vector<int> getPossibilities(int, int, int);
+    void setPossibilities(int, int, int, std::vector<int>);
 
     void print();
 
-    vector<vector<Case*> > getListOfAllCaseLinesAndRegions();
-    vector<vector<Case*> > getListOfAllCaseLines();
-    vector<Case*> getSameLineOfCase(int, int, int);
-    vector<Case*> getSameColumnOfCase(int, int, int);
-    vector<Case*> getSameRegionOfCase(int, int, int);
+    std::vector<std::vector<Case*> > getListOfAllCaseLinesAndRegions();
+    std::vector<std::vector<Case*> > getListOfAllCaseLines();
+    std::vector<Case*> getSameLineOfCase(int, int, int);
+    std::vector<Case*> getSameColumnOfCase(int, int, int);
+    std::vector<Case*> getSameRegionOfCase(int, int, int);
 
 private:
     Case* container[3][4][4];

@@ -1,5 +1,7 @@
 #include "PathPlanning.h"
-#include "ShowWorkspace.cpp"
+//#include "ShowWorkspace.cpp"
+
+using namespace std;
 
 // In array,
 // 0 = normal area
@@ -223,5 +225,5 @@ bool PathPlanning::obstaclesPositionsOK(position obstacle1, position obstacle2) 
 }
 
 void PathPlanning::printTable() {
-    showWorkspace(table);
+    //showWorkspace(table);
 }

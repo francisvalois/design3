@@ -6,8 +6,6 @@
 
 #include "stlastar.h"
 
-using namespace std;
-
 const int TABLE_X = 231;
 const int TABLE_Y = 114;
 const int ROBOT_RADIUS = 13;
@@ -30,7 +28,7 @@ public:
     PathPlanning();
     virtual ~PathPlanning();
 
-    vector<move> getPath(position, position);
+    std::vector<move> getPath(position, position);
     void setObstacles(position, position);
     void printTable();
 
@@ -38,7 +36,7 @@ private:
     void initializeTable();
     bool obstaclesPositionsOK(position, position);
     void drawObstacle(position);
-    vector<position> executeAStar(position, position);
+    std::vector<position> executeAStar(position, position);
 };
 
 #endif /* PATHPLANNING_H_ */

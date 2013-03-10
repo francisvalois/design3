@@ -1,5 +1,7 @@
 #include "Case.h"
 
+using namespace std;
+
 Case::Case() {
     for (int x = 1; x <= 8; x++) {
         possibilities.push_back(x);

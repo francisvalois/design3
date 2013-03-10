@@ -7,12 +7,13 @@
 using namespace cv;
 using namespace std;
 
-//const int TABLEX = 232;
-//const int TABLEY = 115;
 
-Scalar white = Scalar(255, 255, 255);
-Scalar blue = Scalar(255, 0, 0);
-Scalar black = Scalar(0, 0, 0);
+/*#define TABLE_X 232
+#define TABLE_Y 115
+
+//Scalar white = Scalar(255, 255, 255);
+//Scalar blue = Scalar(255, 0, 0);
+//Scalar black = Scalar(0, 0, 0);
 
 void showWorkspace(int[TABLE_X + 1][TABLE_Y + 1]);
 void showWindowWith(const char*, const Mat &);
@@ -47,5 +48,5 @@ void showWindowWith(const char* name, const Mat &mat) {
     namedWindow(name, CV_WINDOW_AUTOSIZE);
     imshow(name, mat);
     waitKey(0);
-}
+}*/
 

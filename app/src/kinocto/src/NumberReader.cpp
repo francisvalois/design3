@@ -51,7 +51,7 @@ void NumberReader::copyData(Mat & src, CvMat * dst) {
 /**
  * Nécessite que l'image soit en ton de gris
  */
-int NumberReader::identifyNumber(Mat src) {
+int NumberReader::identifyNumber(Mat & src) {
     int number = -1;
 
     Mat srcGray = src.clone();

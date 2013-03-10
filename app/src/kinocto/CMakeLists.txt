@@ -12,15 +12,15 @@ find_package(OpenCV REQUIRED)
    FILES
  )
 
- add_service_files(
-   FILES
-   StartKinocto.srv
- )
+add_service_files(
+  FILES
+  StartKinocto.srv
+)
 
- generate_messages(
-   DEPENDENCIES
-   std_msgs
- )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ###################################################
 ## Declare things to be passed to other projects ##
@@ -45,9 +45,9 @@ file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
 
 include_directories(include ${catkin_INCLUDE_DIRS})
 
-add_executable(Kinocto src/Kinocto.cpp)
+add_executable(Kinocto Kinocto.cpp ${PROJ_SOURCES})
 add_dependencies(Kinocto kinocto_gencpp)
-target_link_libraries(Kinocto ${catkin_LIBRARIES})
+target_link_libraries(Kinocto ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 link_directories(include 
     ${catkin_LIB_DIRS}
@@ -88,8 +88,8 @@ link_directories(include
 ## Testing ##
 #############
 
-catkin_add_gtest(kinoctoTest test/AllTests.cpp src/Case.cpp src/Sudokube.cpp src/SudokubeSolver.cpp src/NumberReader.cpp src/SudocubeExtractor.cpp src/PathPlanning.cpp)
+catkin_add_gtest(kinoctoTest test/AllTests.cpp ${PROJ_SOURCES})
 target_link_libraries(kinoctoTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp src/Case.cpp  src/Sudokube.cpp src/NumberReader.cpp src/SudocubeExtractor.cpp)
+catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp ${PROJ_SOURCES})
 target_link_libraries(kinoctoLongTest ${catkin_LIBRARIES} ${OpenCV_LIBS})

@@ -18,7 +18,7 @@ public:
 
     NumberReader();
     virtual ~NumberReader();
-    int identifyNumber(cv::Mat image);
+    int identifyNumber(cv::Mat & image);
 
 private:
 

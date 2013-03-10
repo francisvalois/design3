@@ -6,12 +6,12 @@
 #include <stdlib.h>
 #include <vector>
 
-//#include "SudokuReader.h"
+#include "SudocubeExtractor.h"
 
 using namespace cv;
 using namespace std;
 
-SudokuReader sudokuReader;
+SudocubeExtractor sudocubeReader;
 
 void saveImage(Mat &pict, char* filename) {
     vector<int> compression_params;
@@ -21,7 +21,7 @@ void saveImage(Mat &pict, char* filename) {
     imwrite(filename, pict, compression_params);
 }
 
-int main(int, char**) {
+/*int main(int, char**) {
     int i = 0;
 	VideoCapture cap(1);
 
@@ -57,4 +57,4 @@ int main(int, char**) {
 
 	return 0;
 }
-
+*/

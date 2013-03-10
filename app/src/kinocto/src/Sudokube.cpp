@@ -4,6 +4,8 @@ const int CUBE_FACES = 3;
 const int CUBE_FACE_HEIGHT = 4;
 const int CUBE_FACE_LENGTH = 4;
 
+using namespace std;
+
 Sudokube::Sudokube() {
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
@@ -15,19 +17,19 @@ Sudokube::Sudokube() {
 }
 
 Sudokube::~Sudokube() {
-    /*Case* aCase;
-     for(int i = 0; i < CUBE_FACES; i++) {
-     for(int j = 0; j < CUBE_FACE_HEIGHT; j++) {
-     for(int k = 0; k < CUBE_FACE_LENGTH; k++) {
-     aCase = container[i][j][k];
-     delete aCase;
-     aCase = NULL;
-     }
-     }
-     }*/
+    Case* aCase;
+    for (int i = 0; i < CUBE_FACES; i++) {
+        for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
+            for (int k = 0; k < CUBE_FACE_LENGTH; k++) {
+                aCase = container[i][j][k];
+                delete aCase;
+                aCase = NULL;
+            }
+        }
+    }
 }
 
-bool Sudokube::equals(Sudokube s) {
+bool Sudokube::equals(Sudokube & s) {
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
             for (int k = 0; k < CUBE_FACE_LENGTH; k++) {

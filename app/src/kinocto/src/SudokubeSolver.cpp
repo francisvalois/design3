@@ -1,5 +1,7 @@
 #include "SudokubeSolver.h"
 
+using namespace std;
+
 SudokubeSolver::SudokubeSolver() {
 }
 
