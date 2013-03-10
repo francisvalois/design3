@@ -1,4 +1,4 @@
-/*#ifndef CoinBleu_H_
+#ifndef CoinBleu_H_
 #define CoinBleu_H_
 
 #include "opencv/cv.h"
@@ -14,10 +14,10 @@ public:
 	Coinbleu();
 	virtual ~Coinbleu();	
 	IplImage* mImage;
-	int Coinbleu(CvPoint* Gauche, CvPoint* Droite);
+	int Coinbleu(CvPoint* Gauche, CvPoint* Droit);
 
 private:
 	
 };
 
-#endif*/
+#endif

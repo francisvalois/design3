@@ -1,4 +1,4 @@
-/*#ifndef CoinOrange_H_
+#ifndef CoinOrange_H_
 #define CoinOrange_H_
 
 #include "opencv/cv.h"
@@ -14,10 +14,10 @@ public:
 	CoinOrange();
 	virtual ~CoinOrange();	
 	IplImage* mImage;
-	int CoinOrange(CvPoint* Gauche, CvPoint* Droite);
+	int CoinOrange(CvPoint* Gauche, CvPoint* Droit);
 
 private:
 	
 };
 
-#endif*/
+#endif

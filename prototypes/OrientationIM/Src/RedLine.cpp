@@ -5,7 +5,7 @@
  * Created on 23 février 2013, 12:38
  */
 
-/*#include "RedLine.h"
+#include "RedLine.h"
 
 RedLine::RedLine() {
 	zhang = new Zhang();
@@ -41,7 +41,7 @@ float RedLine::getAngle(int index){
 		CvSeq* extremities = 0;
 		CvMemStorage* storage = cvCreateMemStorage(0);
 		
-		std::cout << "GetAngle"<< std::endl;
+		cout << "GetAngle"<< endl;
 
 		//Couleur rouge et plus
 		int h = 355 * 179 / 360, s = 56 * 255 / 100, v = 70 * 255 / 100;
@@ -95,7 +95,7 @@ float RedLine::getAngle(int index){
 		lines = cvHoughLines2( seuil, storage, CV_HOUGH_PROBABILISTIC, 1, CV_PI/180, 80, 30, 300 );
 
 		if(lines->total == 0) {
-		std::cout << "On n'a pas retrouvé de ligne!!!"<< std::endl;
+		cout << "On n'a pas retrouvé de ligne!!!"<< endl;
 				return -1;
 		}
 
@@ -137,6 +137,6 @@ float RedLine::getAngle(int index){
 		point2.y = (int) (((-VraiPoint2_Y)-ErreurY[index])*1000);
 
                 double angle = (atan2((double)(point2.y - point1.y), (double)(abs(point2.x - point1.x))))*180/CV_PI;
-		std::cout << "ANGLE:"<< std::endl;
+		cout << "ANGLE:"<< endl;
 		return 90-(int)angle;
-	}*/
+	}

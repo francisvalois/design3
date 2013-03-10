@@ -1,4 +1,4 @@
-/*#ifndef REDLINE_H_
+#ifndef REDLINE_H_
 #define REDLINE_H_
 
 #include "opencv/cv.h"
@@ -23,4 +23,4 @@ private:
 	int IndexParam;
 };
 
-#endif */
+#endif
