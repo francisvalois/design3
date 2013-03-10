@@ -33,13 +33,13 @@ private:
     static float const ROBOT_MIN_DISTANCE;
     static float const ROBOT_HEIGHT;
 
-    Vec2f obstacle1;
-    Vec2f obstacle2;
-    Vec2f robot;
+    Vec2f _obstacle1;
+    Vec2f _obstacle2;
+    Vec2f _robot;
 
     int getAverageFromPointList(list<Point> obstacle);
 
-    void findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point> *obstacle1, list<Point> *obstacle2);
+    void findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point> &obstacle1, list<Point> &obstacle2);
 
     vector<Point> findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle2);
 
@@ -47,11 +47,9 @@ private:
 
     list<Vec2f> getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, Mat depthMatrix);
 
-    static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
+    
 
-    static Vec2f addObstacleRadiusToDistance(Vec2f distanceExtObstacle);
-
-    static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
+ 
 
     static Vec2f translateXZCoordtoKinect(Vec2f positionXZ);
 
@@ -63,6 +61,14 @@ private:
 
 public:
 
+    Kinect();
+
+    Kinect(Vec2f robot);
+
+    Kinect(Vec2f obstacle1, Vec2f obstacle2);
+
+    Kinect(Vec2f obstacle1, Vec2f obstacle2, Vec2f robot);
+
     Vec2f getObstacle1();
 
     Vec2f getObstacle2();
@@ -70,6 +76,12 @@ public:
     vector<Vec2f> findCenteredObstacle(Mat depthMatrix);
 
     static Vec2f getTrueCoordFromKinectCoord(Vec3f depthXYZ);
+    
+       static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
+    
+    static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
+    
+    static Vec2f addObstacleRadiusToDistance(Vec2f distanceExtObstacle);
 
     Vec2f findRobot(Mat depthMatrix);
 
