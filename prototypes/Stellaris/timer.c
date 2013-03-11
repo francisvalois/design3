@@ -27,10 +27,8 @@ void TimerInt(void){
     //ANALYSE
 	//GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_PIN_2);
     
-	if(index%300==0){
-		moveFront(8000, 800);
-	}else if(index%300==150){
-		moveFront(-8000, 800);
+	if(index==0){
+		draw(8);
 	}
 
 	//Asservissement Moteurs
