@@ -88,7 +88,11 @@ namespace {
       Sudokube sudokube1;
       Sudokube sudokube2;
 
-      ASSERT_FALSE(sudokube1.equals(sudokube2));
+      ASSERT_TRUE(sudokube1.equals(sudokube2));
+  }
+
+  TEST_F(SudokubeTest, aSudokubeIsEmptyIfNoValueHasBeenSet) {
+      ASSERT_TRUE(sudokube->isEmpty());
   }
 
 // The following three tests will not be tested with GTest. Since the sudokube structure is

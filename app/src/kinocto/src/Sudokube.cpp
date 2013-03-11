@@ -64,11 +64,8 @@ bool Sudokube::isSolved() {
 
 bool Sudokube::isEmpty() {
     Sudokube sudokube;
-    if (this->equals(sudokube)) {
-        return true;
-    }
 
-    return false;
+    return this->equals(sudokube);
 }
 
 bool Sudokube::caseSolved(int i, int j, int k) {
@@ -151,26 +148,13 @@ bool Sudokube::indexesOk(int i, int j, int k) {
 string Sudokube::print() {
     stringstream buff;
     for (int k = 3; k >= 0; k--) {
-        //cout << "     ";
         buff << "     ";
         for (int j = 0; j < 4; j++) {
-            //cout << container[2][j][k]->getValue() << " ";
             buff << container[2][j][k]->getValue() << " ";
         }
-        //cout << endl;
         buff << endl;
     }
     for (int x = 3; x >= 0; x--) {
-        /*cout << container[0][x][3]->getValue() << " ";
-        cout << container[0][x][2]->getValue() << " ";
-        cout << container[0][x][1]->getValue() << " ";
-        cout << container[0][x][0]->getValue() << "   ";
-        cout << container[1][0][x]->getValue() << " ";
-        cout << container[1][1][x]->getValue() << " ";
-        cout << container[1][2][x]->getValue() << " ";
-        cout << container[1][3][x]->getValue() << " ";
-        cout << endl;*/
-
         buff << container[0][x][3]->getValue() << " ";
         buff << container[0][x][2]->getValue() << " ";
         buff << container[0][x][1]->getValue() << " ";
