@@ -14,6 +14,10 @@ Sudokube::Sudokube() {
             }
         }
     }
+
+    for (int i = 0; i < 3; i++) {
+        redCase[i] = 0;
+    }
 }
 
 Sudokube::~Sudokube() {

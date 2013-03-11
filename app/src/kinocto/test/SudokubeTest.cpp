@@ -84,6 +84,13 @@ namespace {
 		ASSERT_FALSE(sudokube->isSolved());
   }
 
+  TEST_F(SudokubeTest, emptySudokubeAreEquals) {
+      Sudokube sudokube1;
+      Sudokube sudokube2;
+
+      ASSERT_FALSE(sudokube1.equals(sudokube2));
+  }
+
 // The following three tests will not be tested with GTest. Since the sudokube structure is
 // static, the values can be verified easily and don't need to be tested here.
 
