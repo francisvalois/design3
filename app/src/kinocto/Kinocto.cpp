@@ -38,42 +38,28 @@ bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::Start
 
 bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request & request, kinocto::ExtractSudocubeAndSolve::Response & response) {
     vector<Sudokube *> sudokubes;
-    for (int i = 1; i <= 5 && sudokubes.size() < 2; i++) {
+    for (int i = 1; i <= 5 && sudokubes.size() < 3; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
+        sudocubeImg = sudocubeImg.clone();
         Sudokube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
         ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
-        if (sudokube->isEmpty() == false) {
-            sudokubes.push_back(sudokube);
-        }
+        sudokubes.push_back(sudokube);
     }
 
     if (sudokubes.size() < 3) {
+        cout << "not enougth sudokubes" << endl;
         return false;
     }
 
     Sudokube * goodSudocube;
-    if (sudokubes[0]->equals(*sudokubes[1]) == false) {
-        cout << "Need one more cube" << endl;
-        Mat sudocubeImg = cameraCapture.takePicture();
-        for (int i = 1; i <=5; i++) {
-            Mat sudocubeImg = cameraCapture.takePicture();
-            Sudokube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
-            if (sudokube->isEmpty() == false) {
-                sudokubes.push_back(sudokube);
-                break;
-            }
-        }
-
-        if (sudokubes[0]->equals(*sudokubes[2]) == true) {
-            goodSudocube = sudokubes[0];
-        } else if (sudokubes[1]->equals(*sudokubes[2]) == true) {
-            goodSudocube = sudokubes[1];
-        } else {
-            //WE ARE SCREWED
-        }
-    } else {
-        cout << "best scenario" << endl;
+    if (sudokubes[0]->equals(*sudokubes[1]) == true) {
         goodSudocube = sudokubes[0];
+    } else if (sudokubes[0]->equals(*sudokubes[2]) == true) {
+        goodSudocube = sudokubes[0];
+    } else if (sudokubes[1]->equals(*sudokubes[2]) == true) {
+        goodSudocube = sudokubes[1];
+    } else {
+        cout << "NO PAIR OF SUDOCUBE ARE EQUALS" << endl;
     }
 
     sudokubeSolver.solve(*goodSudocube);
