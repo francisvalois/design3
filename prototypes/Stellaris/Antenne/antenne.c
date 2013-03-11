@@ -120,10 +120,11 @@ static void startTimer1B()
 // Retourne 0 si lecture correcte, 1 si erreur
 //
 //*****************************************************************************
-static int readSignal(unsigned short *signalBuffer, unsigned int *signalBufferSize)
+int readSignal(unsigned short *signalBuffer, unsigned int *signalBufferSize)
 {
 	unsigned long ulIdx;
     unsigned short usTimerElapsed;
+    *signalBufferSize = 0;
 	//
 	//   Attend que le transfert DMA soit terminé
 	//
@@ -144,8 +145,44 @@ static int readSignal(unsigned short *signalBuffer, unsigned int *signalBufferSi
     {
         return 1;
     }
-
-
+    for(ulIdx = 1; ulIdx < MAX_TIMER_EVENTS; ulIdx++)
+    {
+        //
+        //   Le DMA lance aussi une interruption lorsqu'il atteint 
+        //   0 dû à une erreur. On sort ne fait rien lorsque c'est 
+        //   le cas.
+        //
+        if(g_usTimerBuf[ulIdx] == g_usTimerBuf[ulIdx - 1])
+        {
+            continue;
+        }
+        usTimerElapsed = g_usTimerBuf[ulIdx - 1] - g_usTimerBuf[ulIdx];
+        *signalBuffer = usTimerElapsed;
+        signalBuffer++;
+        *signalBufferSize++;
+    }
+    g_bDoneFlag = 0;
+    g_ulTimer0BIntCount = 0;
+    return 0;
+}
+//*****************************************************************************
+//
+// Fonction d'inversion des membres d'un array
+//
+//*****************************************************************************
+void reverse(unsigned short s[][2])
+{
+    int i ,j;
+    unsigned short c, d;
+    for(i=0, j=(sizeof(s)/4)-1; i<j; i++,j--)
+    {
+        c = s[i][0];
+        d = s[i][1];
+        s[i][0] = s[j][0];
+        s[i][1] = s[j][1];
+        s[j][0] = c;
+        s[j][1] = d;
+    }
 }
 
 //*****************************************************************************
@@ -154,7 +191,247 @@ static int readSignal(unsigned short *signalBuffer, unsigned int *signalBufferSi
 // Retourne 0 si lecture correcte, 1 si erreur
 //
 //*****************************************************************************
-static int decodeSignal(unsigned char signal[7])
+int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, unsigned char bitsDecode[7])
 {
+    unsigned short *cleanData;
+    unsigned int dataSize = 0;
+    unsigned short smallest_0 = 0xFFFF;
+    unsigned short smallest_1 = 0xFFFF;
+    unsigned idxA;
+    unsigned s_indx = 0;
+    int cmp = -1;
 
+    // 
+    //   Trouver l'élément valide le plus petit et retrait des artéfacts
+    //
+    for(idxA = 0; idxA < signalBufferSize; idxA++)
+    {
+        if(signalBuffer[idxA] < smallest_0 && signalBuffer[idxA] > 2000)
+        {
+            dataSize++;
+            *cleanData = signalBuffer[idxA];
+            cleanData++;
+            if(signalBuffer[idxA] < smallest_0)
+            {
+                smallest_0 = signalBuffer[idxA];
+                s_indx = idxA;
+            }
+        }
+    }
+    unsigned short valuedData[dataSize][2];
+    unsigned short toggle = 0;
+    idxA = s_indx;
+    //
+    //  Assignation des 0 et des 1 à partir de smallest_0
+    //
+    while(idxA >= 0)
+    {
+        valuedData[idxA][1] = toggle;
+        valuedData[idxA][0] = cleanData[idxA];
+        idxA--;
+        if(toggle == 0)
+        {
+            toggle = 1;
+        }
+        else
+        {
+            toggle = 0;
+        }
+    }
+    reverse(valuedData);
+
+    idxA = s_indx + 1;
+    toggle = 1;
+    while(idxA < dataSize)
+    {
+        valuedData[idxA][1] = toggle;
+        valuedData[idxA][0] = cleanData[idxA];
+        idxA++;
+        if(toggle == 0)
+        {
+            toggle = 1;
+        }
+        else
+        {
+            toggle = 0;
+        }
+    }
+
+    // 
+    //   Trouver le plus petit 1
+    //
+    for(idxA = 0; idxA < dataSize; idxA++)
+    {
+        if(valuedData[idxA][1] == 1)
+        {
+            if(valuedData[idxA][0] < smallest_1)
+                smallest_1 = valuedData[idxA][0];
+        }
+    }
+
+    //
+    //   Séquençage : On attribue une valeur digitale à chaque timing selon des correspondances suivantes:
+    //   10 - un seul zéro ; 11 - un seul '1' ; 20 - deux zéros consécutifs ; 21 - deux '1' consécutifs
+    //
+
+    unsigned short seqData[dataSize];
+    for(idxA = 0; idxA < dataSize; idxA++)
+    {
+        if(valuedData[idxA][1] == 0)
+        {
+            if(valuedData[idxA][0] > smallest_0*FACTEUR_0)
+                seqData[idxA] = 20;
+            else
+                seqData[idxA] = 10;
+        }
+        else
+        {
+            if(valuedData[idxA][0] > smallest_1*FACTEUR_1)
+                seqData[idxA] = 21;
+            else
+                seqData[idxA] = 11;
+        }
+    }
+
+    //
+    //   Algorithme de Knuth-Moris-Pratt (modifié)
+    //   On recherche la séquence P des bits d'arrêt et de départ dans l'échanillon seqDat
+    //
+
+    unsigned int *T;
+    unsigned int sizeT = 0;
+    unsigned short P[15] = {10,11,10,11,10,11,10,11,10,11,10,11,10,11,20};
+
+    //
+    //   1 - Construction du tableau des décalages
+    //
+
+    for(idxA = dataSize-1; idxA >= 0; idxA--)
+    {
+        if(seqData[idxA] == 20 && idxA < dataSize - 14 && idxA >= 15 + dataSize)
+        {
+            *T = idxA;
+            T++;
+            sizeT++;
+        }
+            
+
+    }
+
+    //
+    //   2 - Recherche de la séquence
+    //
+
+    int debut = -1
+
+    int m = 0
+    int i = 14
+
+    if(sizeT > 0)
+    {
+        while((T[m] - 14 + i) >= 0 && i >= 0 && m < 14)
+        {
+            if(seqData[T[m] - 14 + i] == P[i])
+                i--;
+            else
+            {
+                m++;
+                i = 14;
+                if(m >= sizeT)
+                    break;
+            }
+        }
+
+        if(i == -1)
+        {
+            debut = T[m];
+        }
+        else
+            debut = -1;
+    }
+    else
+    {
+        debut = -1;
+    } 
+
+    // 
+    //           Décodage
+    //
+
+    if(debut != -1)
+    {
+        int currentBit = 0;
+        idxA = debut + 1;
+        previousBit = 0;
+        while(currentBit < 7)
+        {
+            if(previousBit == 0 && seqData[idxA] == 11)
+            {
+                bitsDecode[currentBit] = '0';
+                currentBit++;
+                idxA++;
+            }
+            else if(previousBit == 0 && seqData[idxA] == 21)
+            {
+                bitsDecode[currentBit] = '1';
+                currentBit++;
+                idxA = idxA + 2;
+            }
+            else if(previousBit == 1 && seqData[idxA] == 10)
+            {
+                bitsDecode[currentBit] = '1';
+                currentBit++;
+                idxA = idxA + 2;
+            }
+            else if(previousBit == 1 && seqData[idxA] == 20)
+            {
+                bitsDecode[currentBit] = '0';
+                currentBit++;
+                idxA++;
+            }
+        }
+
+        // Vérification de la séquence
+
+        currentBit = 6;
+        idxA = debut - 15;
+        unsigned char backDecode[7];
+        previousBit = 1;
+        while(currentBit >= 0)
+        {
+            if(previousBit == 1 && seqData[idxA] == 21)
+            {
+                backDecode[currentBit] = '0';
+                idxA--;
+                currentBit--;
+            }
+            else if(previousBit == 1 && seqData[idxA] == 11)
+            {
+                backDecode[currentBit] = '1';
+                idxA = idxA - 2;
+                currentBit--;
+            }
+            else if(previousBit == 0 && seqData[idxA] == 10)
+            {
+                backDecode[currentBit] = '0';
+                idxA = idxA - 2;
+                currentBit--;
+            }
+            else if(previousBit == 0 && seqData[idxA] == 20)
+            {
+                backDecode[currentBit] = '1';
+                idxA--;
+                currentBit--;
+            }
+        }
+
+        if(strcmp(forwardDecode, backDecode) == 0)
+        {
+            return 0;
+        }
+        else
+            return 1;
+    }
+    else
+        return 1;
 }

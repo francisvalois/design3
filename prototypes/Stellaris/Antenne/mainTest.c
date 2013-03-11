@@ -30,6 +30,7 @@
 //***********************************************************
 #define TIMEOUT_VAL 5000 // periode du signal PWM pour test
 #define MAX_TIMER_EVENTS 100  // taille de l'échantillion 
+#define NB_ESSAIS_MAX 10 // nombre d'essais maximal pour lire le signal
 
 static unsigned short g_usTimerBuf[MAX_TIMER_EVENTS]; // buffer qui contient les timings
 static unsigned long g_ulTimer0BIntCount = 0; // compte d'erreur d'interrupt
@@ -230,6 +231,10 @@ void itoa(unsigned short n, unsigned char s[10])
 
 int main()
 {
+    int okDecode = 1;
+    int okRead = 1;
+    int nbEssais = 0;
+    unsigned char bitsDecode[7];
 	//
     // Set the clocking to run directly from the crystal.
     //
@@ -252,4 +257,36 @@ int main()
     DMAinit();
 
     ROM_IntMasterEnable();
+
+    //
+    //   On fait 10 essais de décodage au maximum et on envoie le résultat sur le UART
+    //
+
+    while(okDecode == 1 && nbEssais < NB_ESSAIS_MAX)
+    {
+        unsigned short *signalBuffer;
+        unsigned int *signalBufferSize;
+        int nbEssaisLecture = 0;
+        startTimer1B();
+        while(okRead == 1 && nbEssaisLecture < NB_ESSAIS_MAX)
+        {
+            okRead = readSignal(signalBuffer, signalBufferSize);
+            nbEssaisLecture++;
+        }
+        okDecode = decodeSignal(signalBuffer, *signalBufferSize, bitsDecode);
+    }
+    if(okDecode == 0)
+    {
+        unsigned char code = '0';
+        UARTSend(&code,1);
+    }
+    else
+    {
+        unsigned char code = '1';
+        UARTSend(&code,1);
+    }
+    UARTSend(bitsDecode,7);
+    unsigned char fin = '\n';
+    UARTSend(&fin, 1);
+    while(1);
 }
