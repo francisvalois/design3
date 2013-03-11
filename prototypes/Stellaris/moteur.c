@@ -1,21 +1,14 @@
-#include "inc/lm3s9b92.h"
-#include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
-#include "driverlib/debug.h"
 #include "driverlib/gpio.h"
-#include "driverlib/interrupt.h"
 #include "driverlib/rom.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/uart.h"
 #include "driverlib/qei.h"
 #include "driverlib/pwm.h"
-#include "driverlib/timer.h"
 
 //Variables globales externes
 extern volatile long position_m2, position_m3; //Position du moteur 2 et 3
 extern volatile unsigned long periodPWM; //Période du PWM
-extern volatile unsigned long index; //temps en ms/index du timer
+//extern volatile unsigned long index; //temps en ms/index du timer
 
 
 //Variables globales
@@ -357,7 +350,7 @@ void asservirMoteurs(void){
 	}else if(fraction1 < 0){
 		fraction1 = 0;
 	}
-	fraction2 = (((output2)*0.5)/7700);
+	fraction2 = (((output2-300)*0.5)/7700);
 	if(fraction2 > 0.99){
 		fraction2 = 0.99;
 	}else if(fraction2 < 0){

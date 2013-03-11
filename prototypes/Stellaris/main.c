@@ -207,7 +207,7 @@ int main(void)
 
     while(1)
 	{
-		//EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
+		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
 
 		//si un charactère dans la Receive FIFO
 		if(!(UART0_FR_R & UART_FR_RXFE)) //&& (send_buffer.read > send_buffer.write-256))
@@ -238,7 +238,7 @@ int main(void)
 		//Vérifier si doit dessiner
 		if(is_drawing && a_atteint_consigne && !est_en_mouvement){
 			switch(number_to_draw){
-				case 10: // 1 Large
+				/*case 10: // 1 Large
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
 							moveFront(3613, 803);
@@ -495,8 +495,8 @@ int main(void)
 							segment_to_draw = 0;
 							break;
 					}
-					break;
-				/*case 60:
+					break;*/
+				case 60:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
 							moveLateral(-6021, 800);
@@ -512,7 +512,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 4:
-							moveLateral(10838, 800);
+							moveLateral(11078, 800);
 							segment_to_draw++;
 							break;
 						case 5:
@@ -520,7 +520,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 6:
-							moveLateral(-10838, 800);
+							moveLateral(-11078, 800);
 							segment_to_draw++;
 							break;
 						case 7:
@@ -564,7 +564,7 @@ int main(void)
 							break;
 					}
 					break;		
-				case 70:
+				/*case 70:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
 							moveFront(1204, 800);
