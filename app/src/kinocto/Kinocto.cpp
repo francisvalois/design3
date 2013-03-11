@@ -37,19 +37,47 @@ bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::Start
 }
 
 bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request & request, kinocto::ExtractSudocubeAndSolve::Response & response) {
-    list<Sudokube> sudokubes;
-    for (int i = 1; i <= 3; i++) {
+    vector<Sudokube> sudokubes;
+    for (int i = 1; i <= 5 && sudokubes.size() < 2; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
         Sudokube sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
         ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube.print().c_str());
-        //sudokubes.push_back(sudokube);
-
-        sudokubeSolver.solve(sudokube);
-        if (sudokube.isSolved()) {
-            ROS_INFO("%s\n%s", "The sudocube has been solved", sudokube.print().c_str());
-        } else {
-            ROS_INFO("%s", "Could not solve the Sudokube");
+        if (sudokube.isEmpty() == false) {
+            sudokubes.push_back(sudokube);
         }
+    }
+
+    if (sudokubes.size() < 3) {
+        return false;
+    }
+
+    if (sudokubes[0].equals(sudokubes[1]) == false) {
+        Mat sudocubeImg = cameraCapture.takePicture();
+        for (int i = 1; i <=5; i++) {
+            Mat sudocubeImg = cameraCapture.takePicture();
+            Sudokube sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
+            if (sudokube.isEmpty() == false) {
+                sudokubes.push_back(sudokube);
+                break;
+            }
+        }
+    }
+
+    Sudokube goodSudocube;
+    if (sudokubes[0].equals(sudokubes[2]) == true) {
+        goodSudocube = sudokubes[0];
+    } else if (sudokubes[1].equals(sudokubes[2]) == true) {
+        goodSudocube = sudokubes[1];
+    } else {
+        //WE ARE SCREWED
+    }
+
+    sudokubeSolver.solve(goodSudocube);
+
+    if (goodSudocube.isSolved()) {
+        ROS_INFO("%s\n%s", "The sudocube has been solved", goodSudocube.print().c_str());
+    } else {
+        ROS_INFO("%s", "Could not solve the Sudokube");
     }
 
     return true;
