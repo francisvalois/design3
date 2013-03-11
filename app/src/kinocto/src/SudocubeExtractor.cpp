@@ -14,8 +14,8 @@ SudocubeExtractor::SudocubeExtractor() {
 SudocubeExtractor::~SudocubeExtractor() {
 }
 
-Sudokube SudocubeExtractor::extractSudocube(Mat & src) {
-    Sudokube sudokube;
+Sudokube * SudocubeExtractor::extractSudocube(Mat & src) {
+    Sudokube * sudokube = new Sudokube();
     Mat srcGray;
     cleanGraySrc(src, srcGray);
 
@@ -283,7 +283,7 @@ bool SudocubeExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMa
     return false;
 }
 
-void SudocubeExtractor::insertAllNumber(Sudokube & sudokube, vector<vector<int> > orderedNumber) {
+void SudocubeExtractor::insertAllNumber(Sudokube * sudokube, vector<vector<int> > orderedNumber) {
     insert(sudokube, 1, 1, 1, orderedNumber[3][7]);
     insert(sudokube, 1, 1, 2, orderedNumber[2][6]);
     insert(sudokube, 1, 1, 3, orderedNumber[1][5]);
@@ -336,11 +336,11 @@ void SudocubeExtractor::insertAllNumber(Sudokube & sudokube, vector<vector<int> 
     insert(sudokube, 3, 4, 4, orderedNumber[6][0]);
 }
 
-void SudocubeExtractor::insert(Sudokube & sudokube, int face, int j, int k, int value) {
+void SudocubeExtractor::insert(Sudokube * sudokube, int face, int j, int k, int value) {
     if (value > 0) {
-        sudokube.setCaseValue(face, j, k, value);
+        sudokube->setCaseValue(face, j, k, value);
     } else if (value == -1) {
-        sudokube.setRedCase(face, j, k);
+        sudokube->setRedCase(face, j, k);
     }
 }
 
