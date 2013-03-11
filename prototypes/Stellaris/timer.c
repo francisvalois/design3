@@ -13,16 +13,9 @@ extern volatile float dt;
 //Variables globales
 volatile unsigned long index;
 
-void resetVariables(void);
-void resetQEI(void);
-void motorTurnCCW(volatile long mnumber);
-void motorTurnCW(volatile long mnumber);
-void motorBrake(volatile long mnumber);
-void motorHardBrake(volatile long mnumber);
 void asservirMoteurs(void);
 void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
-void turn(long distance, long vitesse);
 //commande.c
 void draw(volatile short number);
 
@@ -35,7 +28,7 @@ void TimerInt(void){
 	//GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_PIN_2);
     
 	if(index==0){
-		draw(50);
+		draw(8);
 	}
 
 	//Asservissement Moteurs

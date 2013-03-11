@@ -1,21 +1,14 @@
-#include "inc/lm3s9b92.h"
-#include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
-#include "driverlib/debug.h"
 #include "driverlib/gpio.h"
-#include "driverlib/interrupt.h"
 #include "driverlib/rom.h"
-#include "driverlib/sysctl.h"
-#include "driverlib/uart.h"
 #include "driverlib/qei.h"
 #include "driverlib/pwm.h"
-#include "driverlib/timer.h"
 
 //Variables globales externes
 extern volatile long position_m2, position_m3; //Position du moteur 2 et 3
 extern volatile unsigned long periodPWM; //Période du PWM
-extern volatile unsigned long index; //temps en ms/index du timer
+//extern volatile unsigned long index; //temps en ms/index du timer
 
 
 //Variables globales
@@ -344,26 +337,26 @@ void asservirMoteurs(void){
 	float fraction2;
 	float fraction3;
 	//Une équation linéaire est utilisée x*0.5/7700 = % du duty cycle
-	fraction0 = (((output0+640)*0.5)/7700);
+	fraction0 = (((output0)*0.5)/7700);
 	if(fraction0 > 0.99){
 		fraction0 = 0.99;
 	}
 	else if(fraction0 < 0){
 		fraction0 = 0;
 	}
-	fraction1 = (((output1+640)*0.5)/7700);
+	fraction1 = (((output1)*0.5)/7700);
 	if(fraction1 > 0.99){
 		fraction1 = 0.99;
 	}else if(fraction1 < 0){
 		fraction1 = 0;
 	}
-	fraction2 = (((output2)*0.5)/7700);
+	fraction2 = (((output2-640)*0.5)/7700);
 	if(fraction2 > 0.99){
 		fraction2 = 0.99;
 	}else if(fraction2 < 0){
 		fraction2 = 0;
 	}
-	fraction3 = (((output3+640)*0.5)/7700);
+	fraction3 = (((output3)*0.5)/7700);
 	if(fraction3 > 0.99){
 		fraction3 = 0.99;
 	}else if(fraction3 < 0){

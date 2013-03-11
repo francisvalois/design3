@@ -207,7 +207,7 @@ int main(void)
 
     while(1)
 	{
-		//EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
+		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
 
 		//si un charactère dans la Receive FIFO
 		if(!(UART0_FR_R & UART_FR_RXFE)) //&& (send_buffer.read > send_buffer.write-256))
@@ -238,7 +238,7 @@ int main(void)
 		//Vérifier si doit dessiner
 		if(is_drawing && a_atteint_consigne && !est_en_mouvement){
 			switch(number_to_draw){
-				case 10: // 1 Large
+				/*case 10: // 1 Large
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
 							moveFront(3613, 803);
@@ -495,11 +495,11 @@ int main(void)
 							segment_to_draw = 0;
 							break;
 					}
-					break;
-				/*case 60:
+					break;*/
+				case 60:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
-							moveLateral(-6021, 800);
+							moveLateral(-5821, 1000);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
 						case 2:
@@ -508,11 +508,11 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-8430, 800);
+							moveFront(-8330, 800);
 							segment_to_draw++;
 							break;
 						case 4:
-							moveLateral(10838, 800);
+							moveLateral(11078, 800);
 							segment_to_draw++;
 							break;
 						case 5:
@@ -520,7 +520,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 6:
-							moveLateral(-10838, 800);
+							moveLateral(-11078, 800);
 							segment_to_draw++;
 							break;
 						case 7:
@@ -533,28 +533,28 @@ int main(void)
 				case 6:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
-							moveLateral(-3011, 800);
+							moveLateral(-2771, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
 						case 2:
 							moveFront(-1204,803);
-							moveLateral(-2408, 1606);
+							moveLateral(-2409, 1606);
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-4215, 800);
+							moveFront(-4165, 800);
 							segment_to_draw++;
 							break;
 						case 4:
-							moveLateral(5419, 800);
+							moveLateral(5539, 800);
 							segment_to_draw++;
 							break;
 						case 5:
-							moveFront(2408, 800);
+							moveFront(2409, 800);
 							segment_to_draw++;
 							break;
 						case 6:
-							moveLateral(-5419, 800);
+							moveLateral(-5489, 800);
 							segment_to_draw++;
 							break;
 						case 7:
@@ -575,8 +575,8 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-10236, 800);
-							moveLateral(-10236, 800);
+							moveFront(-10206, 800);
+							moveLateral(-10206, 800);
 							segment_to_draw++;
 							break;
 						case 4:
@@ -623,7 +623,7 @@ int main(void)
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
 						case 2:
-							moveLateral(9634, 800);
+							moveLateral(9934, 800);
 							segment_to_draw++;
 							break;
 						case 3:
@@ -631,8 +631,8 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 4:
-							moveFront(-9634, 1070);
-							moveLateral(-7225, 803);
+							moveFront(-7225, 803);
+							moveLateral(-9574, 1070);
 							segment_to_draw++;
 							break;
 						case 5:
@@ -640,7 +640,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 6:
-							moveLateral(9634, 800);
+							moveLateral(9934, 800);
 							segment_to_draw++;
 							break;
 						case 7:
@@ -648,8 +648,8 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 8:
-							moveFront(9634, 1070);
-							moveLateral(7225,803);
+							moveFront(7225, 803);
+							moveLateral(-9574,1070);
 							segment_to_draw++;
 							break;
 						case 9:
@@ -666,7 +666,7 @@ int main(void)
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
 						case 2:
-							moveLateral(4817, 800);
+							moveLateral(4967, 800);
 							segment_to_draw++;
 							break;
 						case 3:
@@ -674,8 +674,8 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 4:
-							moveFront(-4817, 1070);
-							moveLateral(-3613, 803);
+							moveFront(-3613, 803);
+							moveLateral(-4787, 1070);
 							segment_to_draw++;
 							break;
 						case 5:
@@ -683,7 +683,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 6:
-							moveLateral(4817, 800);
+							moveLateral(4967, 800);
 							segment_to_draw++;
 							break;
 						case 7:
@@ -691,8 +691,8 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 8:
-							moveFront(4817, 1070);
-							moveLateral(3613,803);
+							moveFront(3613, 803);
+							moveLateral(-4787,1070);
 							segment_to_draw++;
 							break;
 						case 9:
@@ -701,7 +701,7 @@ int main(void)
 							segment_to_draw = 0;
 							break;
 					}
-					break;*/
+					break;
 				default:
 					break;
 			}
