@@ -14,15 +14,20 @@ find_package(Qt4 REQUIRED)
 #   Num.msg
 # )
 
-# add_service_files(
-#   FILES
-#   AddTwoInts.srv
-# )
+add_service_files(
+  FILES
+  FindObstaclesPosition.srv
+  FindRobotPosition.srv
+  LoopEnded.srv
+  TraceRealTrajectory.srv
+  UpdateRobotPosition.srv
+  ShowSolvedSudocube.srv
+)
 
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ###################################################
 ## Declare things to be passed to other projects ##

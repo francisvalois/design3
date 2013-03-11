@@ -43,7 +43,10 @@ bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request 
         sudocubeImg = sudocubeImg.clone();
         Sudokube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
         ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
-        sudokubes.push_back(sudokube);
+
+        if (sudokube->isEmpty() == false) {
+            sudokubes.push_back(sudokube);
+        }
     }
 
     if (sudokubes.size() < 3) {
@@ -62,11 +65,15 @@ bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request 
         cout << "NO PAIR OF SUDOCUBE ARE EQUALS" << endl;
     }
 
-    sudokubeSolver.solve(*goodSudocube);
-    if (goodSudocube->isSolved()) {
-        ROS_INFO("%s\n%s", "The sudocube has been solved", goodSudocube->print().c_str());
+    if (goodSudocube != NULL) {
+        sudokubeSolver.solve(*goodSudocube);
+        if (goodSudocube->isSolved()) {
+            ROS_INFO("%s\n%s", "The sudocube has been solved", goodSudocube->print().c_str());
+        } else {
+            ROS_INFO("%s", "Could not solve the Sudokube");
+        }
     } else {
-        ROS_INFO("%s", "Could not solve the Sudokube");
+        return false;
     }
 
     return true;
