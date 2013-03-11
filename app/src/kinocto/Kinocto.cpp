@@ -51,7 +51,9 @@ bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request 
         return false;
     }
 
+    Sudokube * goodSudocube;
     if (sudokubes[0]->equals(*sudokubes[1]) == false) {
+        cout << "Need one more cube" << endl;
         Mat sudocubeImg = cameraCapture.takePicture();
         for (int i = 1; i <=5; i++) {
             Mat sudocubeImg = cameraCapture.takePicture();
@@ -61,19 +63,20 @@ bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request 
                 break;
             }
         }
-    }
 
-    Sudokube * goodSudocube;
-    if (sudokubes[0]->equals(*sudokubes[2]) == true) {
-        goodSudocube = sudokubes[0];
-    } else if (sudokubes[1]->equals(*sudokubes[2]) == true) {
-        goodSudocube = sudokubes[1];
+        if (sudokubes[0]->equals(*sudokubes[2]) == true) {
+            goodSudocube = sudokubes[0];
+        } else if (sudokubes[1]->equals(*sudokubes[2]) == true) {
+            goodSudocube = sudokubes[1];
+        } else {
+            //WE ARE SCREWED
+        }
     } else {
-        //WE ARE SCREWED
+        cout << "best scenario" << endl;
+        goodSudocube = sudokubes[0];
     }
 
     sudokubeSolver.solve(*goodSudocube);
-
     if (goodSudocube->isSolved()) {
         ROS_INFO("%s\n%s", "The sudocube has been solved", goodSudocube->print().c_str());
     } else {
