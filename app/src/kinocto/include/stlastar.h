@@ -23,6 +23,9 @@
 
  */
 
+#ifndef STLASTAR_H
+#define STLASTAR_H
+
 #include <iostream>
 #include <stdio.h>
 #include <assert.h>
@@ -662,3 +665,5 @@ private:
     bool m_CancelRequest;
 
 };
+
+#endif

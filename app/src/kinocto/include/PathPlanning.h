@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "stlastar.h"
+#include "ShowWorkspace.h"
 
 const int TABLE_X = 231;
 const int TABLE_Y = 114;

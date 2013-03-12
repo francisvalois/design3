@@ -49,6 +49,8 @@ include_directories(include ${catkin_INCLUDE_DIRS})
 add_executable(Kinocto Kinocto.cpp ${PROJ_SOURCES})
 add_dependencies(Kinocto kinocto_gencpp)
 target_link_libraries(Kinocto ${catkin_LIBRARIES} ${OpenCV_LIBS})
+add_executable(test maintest.cpp ${PROJ_SOURCES})
+target_link_libraries(test ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
 link_directories(include 
     ${catkin_LIB_DIRS}

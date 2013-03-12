@@ -1,5 +1,5 @@
 #include "PathPlanning.h"
-//#include "ShowWorkspace.cpp"
+#include "ShowWorkspace.cpp"
 
 using namespace std;
 
@@ -225,5 +225,6 @@ bool PathPlanning::obstaclesPositionsOK(position obstacle1, position obstacle2) 
 }
 
 void PathPlanning::printTable() {
-    //showWorkspace(table);
+    ShowWorkspace sw;
+    sw.showWorkspace(table);
 }
