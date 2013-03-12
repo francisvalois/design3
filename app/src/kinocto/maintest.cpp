@@ -15,11 +15,11 @@ int main(int argc, char **argv) {
 	obs2.x = 150;
 	obs2.y = 95;
 	position start;
-	start.x = 16;
-	start.y = 65;
+	start.x = 26;
+	start.y = 75;
 	position end;
 	end.x = 200;
-	end.y = 95;
+	end.y = 90;
 	pathPlanning.setObstacles(obs1,obs2);
 	pathPlanning.getPath(start, end);
 	pathPlanning.printTable();

@@ -4,9 +4,9 @@ using namespace std;
 using namespace cv;
 
 // In array,
-// 0 = normal area
-// 1 = wall or obstacle
+// 1 = normal area
 // 2 = path
+// 9 = wall or obstacle
 int table[TABLE_X + 1][TABLE_Y + 1];
 
 int GetMap(int x, int y) {
@@ -49,10 +49,7 @@ bool MapSearchNode::IsSameState(MapSearchNode &rhs) {
 }
 
 void MapSearchNode::PrintNodeInfo() {
-    char str[100];
-    sprintf(str, "Node position : (%d,%d)\n", x, y);
-
-    cout << str;
+    cout << "Node position : (" << x << ","<< y << ")" << endl;
 }
 
 // Here's the heuristic function that estimates the distance from a Node
@@ -121,7 +118,10 @@ float MapSearchNode::GetCost(MapSearchNode &successor) {
 }
 
 PathPlanning::PathPlanning() {
-    initializeTable();
+	white = Scalar(255, 255, 255);
+	blue = Scalar(255, 0, 0);
+	black = Scalar(0, 0, 0);
+	initializeTable();
 }
 
 PathPlanning::~PathPlanning() {
@@ -132,9 +132,9 @@ void PathPlanning::initializeTable() {
     for (int y = 0; y <= TABLE_Y; y++) {
         for (int x = 0; x <= TABLE_X; x++) {
             if (y <= BUFFER_SIZE || y >= TABLE_Y - BUFFER_SIZE || x <= BUFFER_SIZE || x >= TABLE_X - BUFFER_SIZE) {
-                table[x][y] = 1;
-            } else {
                 table[x][y] = 9;
+            } else {
+                table[x][y] = 1;
             }
         }
     }
@@ -154,36 +154,43 @@ vector<position> PathPlanning::executeAStar(position start, position destination
 
     AStarSearch<MapSearchNode> astarsearch;
 
-    MapSearchNode nodeStart(start.x, start.y);
-    MapSearchNode nodeEnd(destination.x, destination.y);
+	MapSearchNode nodeStart(start.x, start.y);
+	MapSearchNode nodeEnd(destination.x, destination.y);
 
-    astarsearch.SetStartAndGoalStates(nodeStart, nodeEnd);
+	astarsearch.SetStartAndGoalStates( nodeStart, nodeEnd );
 
-    unsigned int SearchState;
+	unsigned int SearchState;
 
-    do {
-        SearchState = astarsearch.SearchStep();
-    } while (SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING);
+	do {
+		SearchState = astarsearch.SearchStep();
+	} while (
+		SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SEARCHING
+	);
 
-    if (SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED) {
-        MapSearchNode *node = astarsearch.GetSolutionStart();
+	if( SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_SUCCEEDED )
+	{
+		cout << "Search found goal state\n";
 
-        for (;;) {
-            node = astarsearch.GetSolutionNext();
+			MapSearchNode *node = astarsearch.GetSolutionStart();
 
-            if (!node) {
-                break;
-            }
-            position nodePosition;
-            nodePosition.x = node->x;
-            nodePosition.y = node->y;
-            path.push_back(nodePosition);
-        };
-    } else if (SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_FAILED) {
-        cout << "Search terminated. Did not find goal state\n";
-    }
+			for( ;; ) {
+				position nodePosition;
+				nodePosition.x = node->x;
+				nodePosition.y = node->y;
+				path.push_back(nodePosition);
 
-    astarsearch.EnsureMemoryFreed();
+				node = astarsearch.GetSolutionNext();
+
+				if( !node ) { break; }
+			};
+
+			astarsearch.FreeSolutionNodes();
+	}
+	else if( SearchState == AStarSearch<MapSearchNode>::SEARCH_STATE_FAILED )
+	{
+		cout << "Search terminated. Did not find goal state\n";
+	}
+	astarsearch.EnsureMemoryFreed();
 
     return path;
 }
@@ -199,39 +206,33 @@ void PathPlanning::drawObstacle(position obstacle) {
     int totalObstacleRadius = (BUFFER_SIZE + OBSTACLE_RADIUS);
     for (int y = (obstacle.y - totalObstacleRadius); y <= (obstacle.y + totalObstacleRadius); y++) {
         for (int x = (obstacle.x - totalObstacleRadius); x <= (obstacle.x + totalObstacleRadius); x++) {
-            table[x][y] = 1;
+            table[x][y] = 9;
         }
     }
 }
 
 bool PathPlanning::obstaclesPositionsOK(position obstacle1, position obstacle2) {
     if (obstacle1.x < DRAWING_ZONE || obstacle2.x < DRAWING_ZONE) {
-        cout << "X short" << endl;
         return false;
     }
     if (obstacle1.x > TABLE_X - OBSTACLE_RADIUS || obstacle2.x > TABLE_X - OBSTACLE_RADIUS) {
-        cout << "X long" << endl;
         return false;
     }
     if (obstacle1.y < OBSTACLE_RADIUS || obstacle2.y < OBSTACLE_RADIUS) {
-        cout << "Y short" << endl;
         return false;
     }
     if (obstacle1.y > TABLE_Y - OBSTACLE_RADIUS || obstacle2.y > TABLE_Y - OBSTACLE_RADIUS) {
-        cout << "Y long" << endl;
         return false;
     }
     return true;
 }
 
 void PathPlanning::printTable() {
-    int tableX = TABLE_X + 1;
-    int tableY = TABLE_Y + 1;
-	Mat workspace = Mat(tableX, tableY, CV_8UC3, white);
+	Mat workspace = Mat(TABLE_X + 1, TABLE_Y + 1, CV_8UC3, white);
 
-    for (int y = 0; y < (tableY); y++) {
-        for (int x = 0; x < (tableX); x++) {
-            if (table[x][y] == 1) {
+    for (int y = 0; y <= TABLE_Y; y++) {
+        for (int x = 0; x <= TABLE_X; x++) {
+        	if (table[x][y] == 9) {
                 colorPixel(workspace, black, x, y);
             }
             if (table[x][y] == 2) {

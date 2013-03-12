@@ -99,7 +99,7 @@ public:
     // methods
 
     // constructor just initialises private data
-    AStarSearch(int MaxNodes = 1000) :
+    AStarSearch(int MaxNodes = 20000) :
             m_AllocateNodeCount(0),
 #if USE_FSA_MEMORY
                     m_FixedSizeAllocator(MaxNodes),
