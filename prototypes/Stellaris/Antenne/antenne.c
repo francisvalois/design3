@@ -1,7 +1,7 @@
 //***********************************************************
 //
 //       antenne.c
-//       Fonctions de d√©codage d'antenne
+//       Fonctions de dÈcodage d'antenne
 //       2013-03-10
 //        
 //
@@ -21,15 +21,32 @@
 #include "driverlib/udma.h"
 #include "utils/uartstdio.h"
 #include "driverlib/uart.h"
-#include "antenne.h"
 #include <string.h>
+
+#include "antenne.h"
+
+//***********************************************************
+//
+// Table de contrÙle du contrÙleur DMA
+//
+//***********************************************************
+#if defined(ewarm)
+#pragma data_alignment=1024
+unsigned char ucControlTable[1024];
+#elif defined(ccs)
+#pragma DATA_ALIGN(ucControlTable, 1024)
+unsigned char ucControlTable[1024];
+#else
+unsigned char ucControlTable[1024] __attribute__ ((aligned(1024)));
+#endif
+
 
 //*****************************************************************************
 //
 // Initialisation du TIMER1B 
 //
 //*****************************************************************************
-static void initTimer1B()
+void initTimer1B()
 {
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	//
@@ -51,7 +68,7 @@ static void initTimer1B()
 // Initialisation du uDMA
 //
 //*****************************************************************************
-static void initDMA()
+void initDMA(unsigned short *ptrBuffer)
 {
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_UDMA);
 	//
@@ -93,19 +110,19 @@ static void initDMA()
     ROM_uDMAChannelTransferSet(UDMA_CHANNEL_TMR1B | UDMA_PRI_SELECT,
                                UDMA_MODE_BASIC,
                                (void *)(TIMER1_BASE + TIMER_O_TBR),
-                               g_usTimerBuf, MAX_TIMER_EVENTS);
+                               ptrBuffer, MAX_TIMER_EVENTS);
 }
 
 //*****************************************************************************
 //
-// D√©marrage du timer et du DMA
+// DÈmarrage du timer et du DMA
 //
 //*****************************************************************************
-static void startTimer1B()
+void startTimer1B()
 {
-    TimerIntEnable(TIMER1_BASE, TIMER_CAPB_EVENT);
+    //TimerIntEnable(TIMER1_BASE, TIMER_CAPB_EVENT);
     TimerEnable(TIMER1_BASE, TIMER_B);
-    IntEnable(INT_TIMER1B);
+    //IntEnable(INT_TIMER1B);
 
     //
     // Now enable the DMA channel for Timer1B.  It should now start performing
@@ -120,31 +137,11 @@ static void startTimer1B()
 // Retourne 0 si lecture correcte, 1 si erreur
 //
 //*****************************************************************************
-int readSignal(unsigned short *signalBuffer, unsigned int *signalBufferSize)
+void readSignal(unsigned short *ptrBuffer, unsigned short *signalBuffer, unsigned int *signalBufferSize)
 {
 	unsigned long ulIdx;
     unsigned short usTimerElapsed;
     *signalBufferSize = 0;
-	//
-	//   Attend que le transfert DMA soit termin√©
-	//
-	while(!g_bDoneFlag)
-    {
-    }
-    // 
-    //   V√©rifie s'il y a eu des erreurs de transfert DMA
-    //
-    if(g_uluDMAErrCount != 0)
-    {
-        return 1;
-    }
-    //
-    //   V√©rifie s'il y a eu des erreurs du c√¥t√© du timer
-    //
-    if(g_ulTimer0BIntCount != 1)
-    {
-        return 1;
-    }
     for(ulIdx = 1; ulIdx < MAX_TIMER_EVENTS; ulIdx++)
     {
         //
@@ -152,25 +149,24 @@ int readSignal(unsigned short *signalBuffer, unsigned int *signalBufferSize)
         //   0 d√ª √† une erreur. On sort ne fait rien lorsque c'est 
         //   le cas.
         //
-        if(g_usTimerBuf[ulIdx] == g_usTimerBuf[ulIdx - 1])
+        if(ptrBuffer[ulIdx] == ptrBuffer[ulIdx - 1])
         {
             continue;
         }
-        usTimerElapsed = g_usTimerBuf[ulIdx - 1] - g_usTimerBuf[ulIdx];
+        usTimerElapsed = ptrBuffer[ulIdx - 1] - ptrBuffer[ulIdx];
         *signalBuffer = usTimerElapsed;
         signalBuffer++;
         *signalBufferSize++;
     }
-    g_bDoneFlag = 0;
-    g_ulTimer0BIntCount = 0;
-    return 0;
+    //g_bDoneFlag = 0;
+    //g_ulTimer0BIntCount = 0;
 }
 //*****************************************************************************
 //
 // Fonction d'inversion des membres d'un array
 //
 //*****************************************************************************
-void reverse(unsigned short s[][2])
+void reverse(unsigned short *s[2])
 {
     int i ,j;
     unsigned short c, d;
@@ -185,9 +181,23 @@ void reverse(unsigned short s[][2])
     }
 }
 
+int bitsCompare(unsigned char s1[7], unsigned char s2[7])
+{
+	int i;
+	int cmp = 0;
+	for(i = 0; i < 7; i++)
+	{
+		if(s1[i] != s2[i])
+		{
+			cmp = 1;
+		}	
+	}
+	return cmp;
+}
+
 //*****************************************************************************
 //
-// D√©codage du signal d'antenne 
+// DÈcodage du signal d'antenne 
 // Retourne 0 si lecture correcte, 1 si erreur
 //
 //*****************************************************************************
@@ -197,9 +207,8 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     unsigned int dataSize = 0;
     unsigned short smallest_0 = 0xFFFF;
     unsigned short smallest_1 = 0xFFFF;
-    unsigned idxA;
-    unsigned s_indx = 0;
-    int cmp = -1;
+    int idxA;
+    int s_indx = 0;
 
     // 
     //   Trouver l'√©l√©ment valide le plus petit et retrait des art√©facts
@@ -218,7 +227,7 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
             }
         }
     }
-    unsigned short valuedData[dataSize][2];
+    unsigned short *valuedData[2];
     unsigned short toggle = 0;
     idxA = s_indx;
     //
@@ -270,11 +279,11 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     }
 
     //
-    //   S√©quen√ßage : On attribue une valeur digitale √† chaque timing selon des correspondances suivantes:
-    //   10 - un seul z√©ro ; 11 - un seul '1' ; 20 - deux z√©ros cons√©cutifs ; 21 - deux '1' cons√©cutifs
+    //   SÈquenÁaage : On attribue une valeur digitale ‡ chaque timing selon des correspondances suivantes:
+    //   10 - un seul zÈro ; 11 - un seul '1' ; 20 - deux zÈros consÈcutifs ; 21 - deux '1' consÈcutifs
     //
 
-    unsigned short seqData[dataSize];
+    unsigned short *seqData;
     for(idxA = 0; idxA < dataSize; idxA++)
     {
         if(valuedData[idxA][1] == 0)
@@ -294,16 +303,16 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     }
 
     //
-    //   Algorithme de Knuth-Moris-Pratt (modifi√©)
-    //   On recherche la s√©quence P des bits d'arr√™t et de d√©part dans l'√©chanillon seqDat
+    //   Algorithme de Knuth-Moris-Pratt (modifiÈ)
+    //   On recherche la sÈquence P des bits d'arrÍt et de dÈpart dans l'Èchanillon seqDat
     //
 
-    unsigned int *T;
-    unsigned int sizeT = 0;
+    int *T;
+    int sizeT = 0;
     unsigned short P[15] = {10,11,10,11,10,11,10,11,10,11,10,11,10,11,20};
 
     //
-    //   1 - Construction du tableau des d√©calages
+    //   1 - Construction du tableau des dÈcalages
     //
 
     for(idxA = dataSize-1; idxA >= 0; idxA--)
@@ -319,13 +328,13 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     }
 
     //
-    //   2 - Recherche de la s√©quence
+    //   2 - Recherche de la sÈquence
     //
 
-    int debut = -1
+    int debut = -1;
 
-    int m = 0
-    int i = 14
+    int m = 0;
+    int i = 14;
 
     if(sizeT > 0)
     {
@@ -355,14 +364,14 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     } 
 
     // 
-    //           D√©codage
+    //           DÈcodage
     //
 
     if(debut != -1)
     {
         int currentBit = 0;
         idxA = debut + 1;
-        previousBit = 0;
+        int previousBit = 0;
         while(currentBit < 7)
         {
             if(previousBit == 0 && seqData[idxA] == 11)
@@ -391,7 +400,7 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
             }
         }
 
-        // V√©rification de la s√©quence
+        // VÈrification de la sÈquence
 
         currentBit = 6;
         idxA = debut - 15;
@@ -425,7 +434,7 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
             }
         }
 
-        if(strcmp(forwardDecode, backDecode) == 0)
+        if(bitsCompare(bitsDecode, backDecode) == 0)
         {
             return 0;
         }
