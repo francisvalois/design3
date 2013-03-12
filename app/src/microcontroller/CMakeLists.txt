@@ -23,7 +23,8 @@ add_service_files(
     DrawNumber.srv
     TurnLED.srv
     PutPen.srv
-    ExecuteMove.srv
+    Move.srv
+    Rotate.srv
     DecodeAntenna.srv
 )
 
