@@ -7,7 +7,12 @@ import serial
 import io
 import rospy
 import sys
+import array
+import time
+
 from microcontroller.srv import *
+
+ser = None
 
 def handlePutPen(req):
     print "put pen down : \r"
@@ -36,6 +41,8 @@ def handleTurnLED(req):
     return TurnLEDResponse()
 
 def handleExecuteMove(req):
+    global ser
+    
     print "Executing move with angle \r"
     print req.angle
     print "and distance of \r"
@@ -57,16 +64,21 @@ def handleExecuteMove(req):
                 commande="TN0"+str(angle_abs)
         commande+="000"
     print(commande)
-    ser = serial.Serial()
-    ser.port = ('/dev/ttyUSB0')
-    ser.baudrate = 115200
-    ser.parity = serial.PARITY_EVEN
-    ser.stopbits = 1
-    ser.timeout = 2
+    
+    
+    print ser.portstr
+    print ser.isOpen()
+    print ser
+    
     ser.open()
+    
+    ser.write(bytes(commande))
+    time.sleep(0.5)
+    
+    response = ser.readline()
+    print(repr("read data:" + response))
 
-    ser.write(commande)
-    ser.close()
+    #ser.close()
     
     return ExecuteMoveResponse()
 
@@ -81,6 +93,8 @@ def handleDecodeAntenna(req):
     return request
 
 def Microcontroller():
+    global ser
+    
     rospy.init_node('microcontroller')
     
     s = rospy.Service('microcontroller/putPen', PutPen, handlePutPen)
@@ -89,7 +103,16 @@ def Microcontroller():
     s = rospy.Service('microcontroller/turnLED', TurnLED, handleTurnLED)
     s = rospy.Service('microcontroller/executeMove', ExecuteMove, handleExecuteMove)
     s = rospy.Service('microcontroller/decodeAntenna', DecodeAntenna, handleDecodeAntenna)
-
+    
+    ser = serial.Serial()
+    ser.port = ('/dev/ttyUSB0') 
+    ser.baudrate = 19200
+    ser.parity = serial.PARITY_EVEN
+    ser.stopbits = 1
+    ser.timeout = 0
+    ser.bytesize = serial.EIGHTBITS
+    ser.writeTimeout = 2
+    
     rospy.spin()
 
         
