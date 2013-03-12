@@ -111,8 +111,6 @@ def sendCommandToController(commande):
     print(repr("read data:" + response))
 
     ser.close()
-    
-    return true
 
 def Microcontroller():
     global ser
