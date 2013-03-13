@@ -2,6 +2,7 @@
 #define NODE_H_
 
 #include <vector>
+#include <algorithm>
 
 struct Position {
     int x;

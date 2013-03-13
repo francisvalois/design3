@@ -34,7 +34,7 @@ Node* Node::getPredecessor() {
 	return predecessor;
 }
 
-void Node::setPosition(Node* p){
+void Node::setPredecessor(Node* p){
 	predecessor = p;
 }
 
@@ -66,12 +66,12 @@ void Node::addNeighbor(Node* neighbor) {
 void Node::removeNeighbor(Node* neighbor) {
 	std::vector<Node*>::iterator it;
 
-	it = find(leftNeighbors.begin(), leftNeighbors.end(), neighbor) ;
-	if(it != leftNeighbors.end()) {
+	it = find(leftNeighbors.begin(), leftNeighbors.end(), neighbor);
+	if(find(leftNeighbors.begin(), leftNeighbors.end(), neighbor) != leftNeighbors.end()) {
 	    leftNeighbors.erase(it);
 	}
 
-	it = find(rightNeighbors.begin(), rightNeighbors.end(), neighbor) ;
+	it = find(rightNeighbors.begin(), rightNeighbors.end(), neighbor);
 	if(it != rightNeighbors.end()) {
 		rightNeighbors.erase(it);
 	}

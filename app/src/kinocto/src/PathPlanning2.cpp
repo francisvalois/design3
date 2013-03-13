@@ -50,6 +50,11 @@ std::vector<move> PathPlanning2::findPathInGraph() {
 	return moves;
 }
 
+move PathPlanning2::convertToMove(Position p1, Position p2) {
+	move move;
+	return move;
+}
+
 void PathPlanning2::constructGraph() {
 	updateMatrixTable();
 
