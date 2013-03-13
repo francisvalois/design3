@@ -44,7 +44,6 @@ bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRo
 }
 
 bool BaseStation::showSolvedSudocube(ShowSolvedSudocube::Request & request, ShowSolvedSudocube::Response & response) {
-    buff
     stringstream buff;
     buff << request.solvedSudocube;
     ROS_INFO("%s\n red square value:%d\n solved sudocube:\n%s", "Show Solved Sudocube", request.redCaseValue, buff.str().c_str());
