@@ -1,3 +1,3 @@
 ---
-int16 y
-int16 x
+float32 y
+float32 x

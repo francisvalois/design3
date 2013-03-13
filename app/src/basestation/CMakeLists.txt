@@ -58,7 +58,7 @@ include_directories(include ${catkin_INCLUDE_DIRS} ${QT_INCLUDES})
 
 qt4_wrap_cpp(PROJ_SOURCES include/MainWindow.h)
 
-add_executable(BaseStation main.cpp  ${PROJ_SOURCES} ${INTERFACES})
+add_executable(BaseStation BaseStation.cpp  ${PROJ_SOURCES} ${INTERFACES})
 add_dependencies(BaseStation kinocto_gencpp)
 target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${OpenCV_LIBS})
 
