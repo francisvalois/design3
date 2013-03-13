@@ -37,7 +37,7 @@ def handleTurnLED(req):
 def handleMove(req):
     rospy.loginfo("Executing Move Of:%f", req.distance)
 
-    commande = "00000000"
+    commande = " 0000000"
     if(req.distance != 0):
         sign = ' '
         if(req.distance < 0):
@@ -45,9 +45,13 @@ def handleMove(req):
         dist_string = str(req.distance)
         while(len(dist_string) < 7):
             dist_string = '0' + dist_string
-        commande = ' 0000000' + sign + dist_string
+        commande = sign + dist_string
     
     sendCommandToController(commande)
+    time.sleep(5)
+    
+    sendCommandToController(' 0000000')
+    time.sleep(5)
     
     return MoveResponse()
 
