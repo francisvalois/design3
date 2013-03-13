@@ -5,7 +5,9 @@
 username=philippe            #Compte utilisateur ou le projet kinocto à été installé
 port=11311
 rosAppRoot=/home/$username/design3/app             #Racine de l'application kinocto
-rosRoot=/opt/ros/groovy                  
+rosRoot=/opt/ros/groovy
+
+#Récupération de l'adresse ip locale                  
 ipAddress=localhost
 
 #Définit les constantes de ros

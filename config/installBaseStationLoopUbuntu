@@ -8,15 +8,15 @@ rosAppRoot=/home/$username/design3/app             #Racine de l'application kino
 rosRoot=/opt/ros/groovy
 
 #Récupération de l'adresse ip locale
-ipAddress=$(ifconfig wlan0 | grep 'inet addr:' | awk '{ print $1}')
-ipAddress=localhost
+ipAddressLocal=$(ifconfig wlan0 | grep 'inet adr:' | cut -d: -f2 | awk '{ print $1}') 
+ipAddressMaster=localhost #Adresse ip du robot
 
 #Définit les constantes de ros
 source $rosRoot/setup.bash
 
 #Définit les constantes pour l'exécution de kinocto
-export -p ROS_IP=$ipAddress
-export -p ROS_MASTER_URI=http://$ipAddress:$port
+export -p ROS_IP=$ipAddressLocal
+export -p ROS_MASTER_URI=http://$ipAddressMaster:$port
 echo $ROS_IP
 echo $ROS_MASTER_URI
 
