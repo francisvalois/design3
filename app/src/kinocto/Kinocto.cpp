@@ -85,7 +85,7 @@ int main(int argc, char **argv) {
 
     Kinocto kinocto;
 
-    ROS_INFO("%s", "Creating services");
+    ROS_INFO("%s", "Creating services for Kinocto");
     ros::ServiceServer service = nodeHandle.advertiseService("kinocto/start", &Kinocto::startLoop, &kinocto);
     ros::ServiceServer service2 = nodeHandle.advertiseService("kinocto/extractSudocubeAndSolve", &Kinocto::extractSudocubeAndSolve, &kinocto);
 
