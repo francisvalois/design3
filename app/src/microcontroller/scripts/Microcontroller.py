@@ -75,6 +75,7 @@ def handleRotate(req):
         commande += "000"
         
     sendCommandToController(commande)
+    time.sleep(2)
     
     return RotateResponse()
 
