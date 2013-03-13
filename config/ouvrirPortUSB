@@ -1,0 +1,2 @@
+sudo adduser design3 dialout
+sudo chmod +t /dev/ttyUSB0
