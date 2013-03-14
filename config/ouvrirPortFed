@@ -1,7 +1,8 @@
-#Ces lignes sont à ajouter dans le fichier texte /etc/sysconfig/iptables
+#Ces lignes sont à ajouter dans le fichier texte /etc/sysconfig/iptables avant la ligne COMMIT
 #Ensuite faite un systemctl restart iptables pour que le linux prenne en
 #compte les modifications sans redémarrer.
 
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 11311 -j ACCEPT
 -A OUTPUT -m state --state NEW -m tcp -p tcp --dport 11311 -j ACCEPT
-
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 11011 -j ACCEPT
+-A OUTPUT -m state --state NEW -m tcp -p tcp --dport 11011 -j ACCEPT
