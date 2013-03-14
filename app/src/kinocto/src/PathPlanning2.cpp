@@ -3,9 +3,6 @@
 using namespace std;
 using namespace cv;
 
-bool DoLineSegmentsIntersect(double x1, double y1, double x2, double y2,
-                             double x3, double y3, double x4, double y4);
-
 PathPlanning2::PathPlanning2() {
 	white = Scalar(255, 255, 255);
 	blue = Scalar(255, 0, 0);
