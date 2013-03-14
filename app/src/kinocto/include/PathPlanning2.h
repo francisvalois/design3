@@ -47,6 +47,7 @@ private:
 	std::vector<Position> getObstacleCorners();
 
 	std::vector<move> findPathInGraph();
+	void applyDijkstra();
 	move convertToMove(Position, Position);
 
     bool linePassesThroughObstacle(Position, Position);

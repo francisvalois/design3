@@ -33,12 +33,11 @@ vector<move> PathPlanning2::getPath(Position start, Position destination) {
 
 	constructGraph();
 
-	vector<move> m;
-	return m;//findPathInGraph();
+	return findPathInGraph();
 }
 
 vector<move> PathPlanning2::findPathInGraph() {
-	//TODO DIJKSTRA
+	applyDijkstra();
 
 	vector<move> moves;
 	Node* current = destinationNode;
@@ -49,6 +48,10 @@ vector<move> PathPlanning2::findPathInGraph() {
 		predecessor = current->getPredecessor();
 	}
 	return moves;
+}
+
+void PathPlanning2::applyDijkstra() {
+
 }
 
 move PathPlanning2::convertToMove(Position p1, Position p) {
