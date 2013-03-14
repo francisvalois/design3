@@ -27,37 +27,111 @@ PathPlanning2::~PathPlanning2() {
 }
 
 vector<move> PathPlanning2::getPath(Position start, Position destination) {
-	//clean start/dest nodes
+	cleanGoalNodes();
 	startNode = new Node(start);
+	startNode->setCost(0.0f);
 	destinationNode = new Node(destination);
+	destinationNode->setCost(10000.0f);
 
 	constructGraph();
 
 	return findPathInGraph();
 }
 
+void PathPlanning2::cleanGoalNodes() {
+	if(startNode != 0) {
+		startNode->resetConnexions();
+		delete startNode;
+		startNode = 0;
+	}
+	if(destinationNode != 0) {
+		destinationNode->resetConnexions();
+		delete destinationNode;
+		destinationNode = 0;
+	}
+}
+
 vector<move> PathPlanning2::findPathInGraph() {
 	applyDijkstra();
 
+	cout << "PATH  --  total cost : " << destinationNode->getCost() << endl;
 	vector<move> moves;
 	Node* current = destinationNode;
 	Node* predecessor = current->getPredecessor();
 	while(predecessor != 0) {
 		moves.push_back(convertToMove(current->getPosition(), predecessor->getPosition()));
+		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
 		current = predecessor;
 		predecessor = current->getPredecessor();
 	}
+	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
 	return moves;
-}
-
-void PathPlanning2::applyDijkstra() {
-
 }
 
 move PathPlanning2::convertToMove(Position p1, Position p) {
 	//TODO
 	move move;
 	return move;
+}
+
+void PathPlanning2::applyDijkstra() {
+	std::queue<Node*> nodesToVisit;
+	bool goingRight = true;
+
+	if(startNode->getPosition().x < destinationNode->getPosition().x) {
+		goingRight = true;
+	} else {
+		goingRight = false;
+	}
+
+	nodesToVisit.push(startNode);
+
+//	cout << "DIJKSTRA" << endl;
+	do {
+		Node* node = nodesToVisit.front();
+		nodesToVisit.pop();
+//		cout << "treating node : (" << node->getPosition().x << "," << node->getPosition().y << ")" << endl;
+
+		vector<Node*> neighbors;
+		if(goingRight) {
+			neighbors = node->getRightNeighbors();
+//			cout << "    getting right neighbors : ";
+			for(unsigned int i = 0; i < neighbors.size(); i++) {
+//				cout << "(" << neighbors[i]->getPosition().x << "," << neighbors[i]->getPosition().y << ") ";
+			}
+//			cout << endl;
+		} else {
+			neighbors = node->getLeftNeighbors();
+//			cout << "    getting left neighbors : ";
+			for(unsigned int i = 0; i < neighbors.size(); i++) {
+//				cout << "(" << neighbors[i]->getPosition().x << "," << neighbors[i]->getPosition().y << ") ";
+			}
+//			cout << endl;
+		}
+
+		for(unsigned int i = 0; i < neighbors.size(); i++) {
+			float cost = node->getCost();
+			cost += calculateCost(node, neighbors[i]);
+			if (cost < neighbors[i]->getCost()) {
+				neighbors[i]->setPredecessor(node);
+				neighbors[i]->setCost(cost);
+				nodesToVisit.push(neighbors[i]);
+//				cout << "     adding neighbor node : (" << neighbors[i]->getPosition().x << "," << neighbors[i]->getPosition().y << ") at cost " << cost << endl;
+			}
+		}
+	} while(nodesToVisit.size() > 0);
+}
+
+float PathPlanning2::calculateCost(Node* node1, Node* node2) {
+	int x = node1->getPosition().x - node2->getPosition().x;
+	if(x < 0) {
+		x *= -1;
+	}
+	int y = node1->getPosition().y - node2->getPosition().y;
+	if(y < 0) {
+		y *= -1;
+	}
+	return sqrt( pow(x,2) + pow(y,2) );
 }
 
 void PathPlanning2::constructGraph() {
@@ -70,9 +144,11 @@ void PathPlanning2::constructGraph() {
 	connectNodes();
 
 //	cout << "printing nodes while construct graph:" << endl;
+//	cout << "node start : (" << startNode->getPosition().x << "," << startNode->getPosition().y << ")" << endl;
 //	for(unsigned int i = 0; i < listOfNodes.size(); i++) {
 //		cout << "node " << i << " : (" << listOfNodes[i]->getPosition().x << "," << listOfNodes[i]->getPosition().y << ")" << endl;
 //	}
+//	cout << "node destination : (" << destinationNode->getPosition().x << "," << destinationNode->getPosition().y << ")" << endl;
 }
 
 void PathPlanning2::createNodes() {
@@ -145,6 +221,7 @@ vector<Position> PathPlanning2::getObstacleCorners() {
 void PathPlanning2::clearConnections() {
 	for(unsigned int i = 0; i < listOfNodes.size(); i++) {
 		listOfNodes[i]->resetConnexions();
+		listOfNodes[i]->setCost(10000.0f);
 	}
 }
 
@@ -282,6 +359,18 @@ void PathPlanning2::printTable() {
     }
     transpose(workspace, workspace);
 
+	Node* current = destinationNode;
+	Node* predecessor = current->getPredecessor();
+	while(predecessor != 0) {
+		Point currentPoint(current->getPosition().x, TABLE_Y - current->getPosition().y);
+		Point predecessorPoint(predecessor->getPosition().x, TABLE_Y - predecessor->getPosition().y);
+		drawLine(workspace, currentPoint, predecessorPoint);
+		current = predecessor;
+		predecessor = current->getPredecessor();
+	}
+
+
+
     showWindowWith("Workspace", workspace);
 }
 
@@ -330,6 +419,17 @@ void PathPlanning2::showWindowWith(const char* name, const Mat &mat) {
     namedWindow(name, CV_WINDOW_AUTOSIZE);
     imshow(name, mat);
     waitKey(0);
+}
+
+void PathPlanning2::drawLine(Mat img, Point start, Point end) {
+  int thickness = 2;
+  int lineType = 8;
+  line( img,
+        start,
+        end,
+        blue,
+        thickness,
+        lineType );
 }
 
 //Code from http://ptspts.blogspot.ca/2010/06/how-to-determine-if-two-line-segments.html
