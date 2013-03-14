@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 struct Position {
     int x;

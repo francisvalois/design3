@@ -1,13 +1,15 @@
 #ifndef PATHPLANNING2_H_
 #define PATHPLANNING2_H_
 
-#include <vector>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "Node.h"
+#include <vector>
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include "Node.h"
+#include <math.h>
+#include <queue>
 
 const int TABLE_X = 231;
 const int TABLE_Y = 114;
@@ -39,6 +41,7 @@ private:
 	std::vector<Node*> listOfNodes;
 	Node* startNode;
 	Node* destinationNode;
+	void cleanGoalNodes();
     void constructGraph();
 	void createNodes();
 	void addNode(Node*);
@@ -48,6 +51,7 @@ private:
 
 	std::vector<move> findPathInGraph();
 	void applyDijkstra();
+	float calculateCost(Node*, Node*);
 	move convertToMove(Position, Position);
 
     bool linePassesThroughObstacle(Position, Position);
@@ -71,6 +75,7 @@ private:
 	cv::Scalar black;
 	void showWindowWith(const char*, const cv::Mat &);
 	void colorPixel(cv::Mat&, cv::Scalar, int, int);
+	void drawLine(cv::Mat,cv::Point,cv::Point);
 };
 
 
