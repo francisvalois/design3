@@ -47,6 +47,17 @@ bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::Start
         return 1;
     }
 
+    ServiceClient client2 = node.serviceClient<basestation::FindRobotPosition>("basestation/findRobotPosition");
+    basestation::FindRobotPosition srv2;
+    srv.request.down = false;
+
+    if (client2.call(srv2)) {
+        ROS_INFO("Received response from service2");
+    } else {
+        ROS_ERROR("Failed to call service");
+        return 1;
+    }
+
     return true;
 }
 

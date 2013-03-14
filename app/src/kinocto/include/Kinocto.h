@@ -11,6 +11,7 @@
 #include "kinocto/StartKinocto.h"
 #include "kinocto/ExtractSudocubeAndSolve.h"
 #include "microcontroller/PutPen.h"
+#include "basestation/FindRobotPosition.h"
 
 #include "CameraCapture.h"
 #include "SudokubeSolver.h"
