@@ -3,3 +3,7 @@ sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 11311 -j ACCEPT
 sudo iptables -A OUTPUT -p tcp -d 0/0 -s 0/0 --dport 11311 -j ACCEPT
 sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 11011 -j ACCEPT
 sudo iptables -A OUTPUT -p tcp -d 0/0 -s 0/0 --dport 11011 -j ACCEPT
+sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 11111 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp -d 0/0 -s 0/0 --dport 11111 -j ACCEPT
+sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 11211 -j ACCEPT
+sudo iptables -A OUTPUT -p tcp -d 0/0 -s 0/0 --dport 11211 -j ACCEPT

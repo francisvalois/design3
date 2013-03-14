@@ -6,3 +6,8 @@
 -A OUTPUT -m state --state NEW -m tcp -p tcp --dport 11311 -j ACCEPT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 11011 -j ACCEPT
 -A OUTPUT -m state --state NEW -m tcp -p tcp --dport 11011 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 11111 -j ACCEPT
+-A OUTPUT -m state --state NEW -m tcp -p tcp --dport 11111 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 11211 -j ACCEPT
+-A OUTPUT -m state --state NEW -m tcp -p tcp --dport 11211 -j ACCEPT
+
