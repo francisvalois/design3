@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 	obs1.y = 65;
 	Position obs2;
 	obs2.x = 150;
-	obs2.y = 95;
+	obs2.y = 45;
 	Position start;
 	start.x = 26;
 	start.y = 75;
@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
 	end.x = 200;
 	end.y = 90;
 	pathPlanning.setObstacles(obs1,obs2);
-	//pathPlanning.getPath(start, end);
+	pathPlanning.getPath(start, end);
 	pathPlanning.printTable();
 
     return 0;

@@ -15,6 +15,7 @@ const int ROBOT_RADIUS = 13;
 const int OBSTACLE_RADIUS = 7;
 const int DRAWING_ZONE = 89;
 const int BUFFER_SIZE = ROBOT_RADIUS + 3;
+const int TOTAL_OBSTACLE_RADIUS = (BUFFER_SIZE + OBSTACLE_RADIUS);
 
 struct move {
     int angle;
@@ -48,9 +49,14 @@ private:
 	std::vector<move> findPathInGraph();
 	move convertToMove(Position, Position);
 
-    bool pointPassesThroughObstacle(Position);
     bool linePassesThroughObstacle(Position, Position);
-
+    bool linesCrosses(Position, Position, Position, Position);
+    bool DoLineSegmentsIntersect(double x1, double y1, double x2, double y2,
+                                 double x3, double y3, double x4, double y4);
+    char ComputeDirection(double xi, double yi, double xj, double yj,
+                                 double xk, double yk);
+    bool IsOnSegment(double xi, double yi, double xj, double yj,
+                            double xk, double yk);
 
 	//PRINTING RELATED METHODS
 	void updateMatrixTable();
