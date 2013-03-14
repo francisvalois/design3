@@ -10,6 +10,7 @@
 #include "std_msgs/String.h"
 #include "kinocto/StartKinocto.h"
 #include "kinocto/ExtractSudocubeAndSolve.h"
+#include "microcontroller/PutPen.h"
 
 #include "CameraCapture.h"
 #include "SudokubeSolver.h"

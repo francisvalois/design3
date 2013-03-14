@@ -35,9 +35,11 @@ void Kinocto::loop() {
 bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::StartKinocto::Response & response) {
     state = START_LOOP;
 
-    ServiceClient client = node.serviceClient<kinocto::StartKinocto>("microcontroller/putPen");
+    ServiceClient client = node.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
 
-    kinocto::StartKinocto srv;
+    microcontroller::PutPen srv;
+    srv.request.down = false;
+
     if (client.call(srv)) {
         ROS_INFO("Received response from service");
     } else {
