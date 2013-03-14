@@ -27,12 +27,13 @@ private:
     CameraCapture cameraCapture;
     SudokubeSolver sudokubeSolver;
     SudocubeExtractor sudocubeExtractor;
+    ros::NodeHandle node;
 
     void loop();
     void chatterCallback(const std_msgs::String::ConstPtr& msg);
 
 public:
-    Kinocto();
+    Kinocto(ros::NodeHandle node);
     ~Kinocto();
     void start();
 

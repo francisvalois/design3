@@ -4,7 +4,8 @@ using namespace std;
 using namespace ros;
 using namespace cv;
 
-Kinocto::Kinocto() {
+Kinocto::Kinocto(NodeHandle node) {
+    this->node = node;
     state = INITIATED;
 }
 
@@ -33,6 +34,17 @@ void Kinocto::loop() {
 
 bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::StartKinocto::Response & response) {
     state = START_LOOP;
+
+    ServiceClient client = node.serviceClient<kinocto::StartKinocto>("microcontroller/putPen");
+
+    kinocto::StartKinocto srv;
+    if (client.call(srv)) {
+        ROS_INFO("Received response from service");
+    } else {
+        ROS_ERROR("Failed to call service");
+        return 1;
+    }
+
     return true;
 }
 
@@ -83,7 +95,7 @@ int main(int argc, char **argv) {
     ros::init(argc, argv, "kinocto");
     ros::NodeHandle nodeHandle;
 
-    Kinocto kinocto;
+    Kinocto kinocto(nodeHandle);
 
     ROS_INFO("%s", "Creating services for Kinocto");
     ros::ServiceServer service = nodeHandle.advertiseService("kinocto/start", &Kinocto::startLoop, &kinocto);
