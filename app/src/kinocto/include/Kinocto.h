@@ -37,11 +37,11 @@ private:
 public:
     Kinocto(ros::NodeHandle node);
     ~Kinocto();
-    void start();
+    void startLoop(const std_msgs::String::ConstPtr& msg);
 
     bool extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request & request, kinocto::ExtractSudocubeAndSolve::Response & response);
-    bool startLoop(kinocto::StartKinocto::Request & request, kinocto::StartKinocto::Response & response);
-
+    //bool startLoop(kinocto::StartKinocto::Request & request, kinocto::StartKinocto::Response & response);
+    void start();
 
 };
 

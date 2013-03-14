@@ -10,11 +10,11 @@ find_package(OpenCV REQUIRED)
 
  add_message_files(
    FILES
+   StartKinocto.msg
  )
 
 add_service_files(
   FILES
-  StartKinocto.srv
   ExtractSudocubeAndSolve.srv
 )
 

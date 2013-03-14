@@ -32,11 +32,14 @@ void Kinocto::loop() {
     }
 }
 
-bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::StartKinocto::Response & response) {
+//const kinocto::StartKinocto::ConstPtr & msg
+
+void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
+    //ROS_INFO("I heard: [%s]", msg->data.c_str());
+
     state = START_LOOP;
 
     ServiceClient client = node.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
-
     microcontroller::PutPen srv;
     srv.request.down = false;
 
@@ -44,7 +47,6 @@ bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::Start
         ROS_INFO("Received response from service");
     } else {
         ROS_ERROR("Failed to call service");
-        return 1;
     }
 
     ServiceClient client2 = node.serviceClient<basestation::FindRobotPosition>("basestation/findRobotPosition");
@@ -55,10 +57,7 @@ bool Kinocto::startLoop(kinocto::StartKinocto::Request & request, kinocto::Start
         ROS_INFO("Received response from service2");
     } else {
         ROS_ERROR("Failed to call service");
-        return 1;
     }
-
-    return true;
 }
 
 bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request & request, kinocto::ExtractSudocubeAndSolve::Response & response) {
@@ -111,8 +110,10 @@ int main(int argc, char **argv) {
     Kinocto kinocto(nodeHandle);
 
     ROS_INFO("%s", "Creating services for Kinocto");
-    ros::ServiceServer service = nodeHandle.advertiseService("kinocto/start", &Kinocto::startLoop, &kinocto);
-    ros::ServiceServer service2 = nodeHandle.advertiseService("kinocto/extractSudocubeAndSolve", &Kinocto::extractSudocubeAndSolve, &kinocto);
+    ros::Subscriber sub = nodeHandle.subscribe("kinocto/start", 1, &Kinocto::startLoop, &kinocto);
+    //ros::ServiceServer service = nodeHandle.advertiseService("kinocto/start", &Kinocto::startLoop, &kinocto);
+
+    //ros::ServiceServer service2 = nodeHandle.advertiseService("kinocto/extractSudocubeAndSolve", &Kinocto::extractSudocubeAndSolve, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.start();
