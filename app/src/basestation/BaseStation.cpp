@@ -86,7 +86,7 @@ int main(int argc, char *argv[]) {
     MainWindow w;
     w.show();
 
-    ros::init(argc, argv, "talker");
+    ros::init(argc, argv, "basestation");
     ros::NodeHandle n;
 
     BaseStation baseStation;
@@ -108,9 +108,21 @@ int main(int argc, char *argv[]) {
     std::stringstream ss;
     ss << "hello world ";
     msg.data = ss.str();
-    startKinoctoPub.publish(msg);
-    cout << "DATA HAVE BEEN SENT" << endl;
 
+    int count = 0;
+    ros::Rate loop_rate(10);
+    while (ros::ok()) {
+        ROS_INFO("%s", msg.data.c_str());
+
+        startKinoctoPub.publish(msg);
+
+        ros::spinOnce();
+
+        loop_rate.sleep();
+        ++count;
+    }
+
+    cout << "DATA HAVE BEEN SENT" << endl;
 
     /*ros::ServiceClient client = n.serviceClient<kinocto::StartKinocto>("kinocto/start");
 
