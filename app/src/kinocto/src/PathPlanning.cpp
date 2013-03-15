@@ -3,10 +3,11 @@
 using namespace std;
 using namespace cv;
 
-PathPlanning2::PathPlanning2() {
+PathPlanning::PathPlanning() {
 	white = Scalar(255, 255, 255);
 	blue = Scalar(255, 0, 0);
 	black = Scalar(0, 0, 0);
+
 	obstacle1.x = 0;
 	obstacle1.y = 0;
 	obstacle2.x = 0;
@@ -22,11 +23,47 @@ PathPlanning2::PathPlanning2() {
     }
 }
 
-PathPlanning2::~PathPlanning2() {
-
+PathPlanning::~PathPlanning() {
+	cleanGoalNodes();
 }
 
-vector<move> PathPlanning2::getPath(Position start, Position destination) {
+void PathPlanning::setObstacles(Position o1, Position o2) {
+    listOfNodes.clear();
+	if (obstaclesPositionsOK(o1, o2)) {
+    	if(o2.x < o1.x) {
+    		obstacle1.x = o2.x;
+			obstacle1.y = o2.y;
+			obstacle2.x = o1.x;
+			obstacle2.y = o1.y;
+    	}
+    	obstacle1.x = o1.x;
+    	obstacle1.y = o1.y;
+    	obstacle2.x = o2.x;
+    	obstacle2.y = o2.y;
+    }
+}
+
+bool PathPlanning::obstaclesPositionsOK(Position obstacle1, Position obstacle2) {
+	if (obstacle1.x < DRAWING_ZONE || obstacle2.x < DRAWING_ZONE) {
+		cout<<"Error : An obstacle is in the drawing zone"<<endl;
+		return false;
+    }
+    if (obstacle1.x > TABLE_X - OBSTACLE_RADIUS || obstacle2.x > TABLE_X - OBSTACLE_RADIUS) {
+    	cout<<"Error : An obstacle is in the west wall (x too high)"<<endl;
+    	return false;
+    }
+    if (obstacle1.y < OBSTACLE_RADIUS || obstacle2.y < OBSTACLE_RADIUS) {
+    	cout<<"Error : An obstacle is in the north wall (y too low)"<<endl;
+    	return false;
+    }
+    if (obstacle1.y > TABLE_Y - OBSTACLE_RADIUS || obstacle2.y > TABLE_Y - OBSTACLE_RADIUS) {
+    	cout<<"Error : An obstacle is in the south wall (y too high)"<<endl;
+    	return false;
+    }
+    return true;
+}
+
+vector<move> PathPlanning::getPath(Position start, float startAngle, Position destination, float destinationAngle) {
 	cleanGoalNodes();
 	startNode = new Node(start);
 	startNode->setCost(0.0f);
@@ -35,10 +72,18 @@ vector<move> PathPlanning2::getPath(Position start, Position destination) {
 
 	constructGraph();
 
-	return findPathInGraph();
+	vector<Position> positions = findPathInGraph();
+
+	vector<move> moves = convertToMoves(positions, startAngle, destinationAngle);
+
+//	for(unsigned int i = 0; i < moves.size(); i++) {
+//
+//		cout << "Move " << i << " : Angle = " << moves[i].angle << " , Distance = " << moves[i].distance << endl;
+//	}
+	return moves; //convertToMoves(positions, startAngle, destinationAngle);
 }
 
-void PathPlanning2::cleanGoalNodes() {
+void PathPlanning::cleanGoalNodes() {
 	if(startNode != 0) {
 		startNode->resetConnexions();
 		delete startNode;
@@ -51,30 +96,56 @@ void PathPlanning2::cleanGoalNodes() {
 	}
 }
 
-vector<move> PathPlanning2::findPathInGraph() {
+vector<Position> PathPlanning::findPathInGraph() {
 	applyDijkstra();
 
 //	cout << "PATH  --  total cost : " << destinationNode->getCost() << endl;
-	vector<move> moves;
+	vector<Position> nodePositions;
 	Node* current = destinationNode;
 	Node* predecessor = current->getPredecessor();
+
+	Position destinationPosition;
+	destinationPosition.x = destinationNode->getPosition().x;
+	destinationPosition.y = destinationNode->getPosition().y;
+	nodePositions.push_back(destinationPosition);
 	while(predecessor != 0) {
-		moves.push_back(convertToMove(current->getPosition(), predecessor->getPosition()));
-//		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
 		current = predecessor;
 		predecessor = current->getPredecessor();
+//		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
+		Position currentPosition;
+		currentPosition.x = current->getPosition().x;
+		currentPosition.y = current->getPosition().y;
+		nodePositions.push_back(currentPosition);
 	}
 //	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
+	return nodePositions;
+}
+
+vector<move> PathPlanning::convertToMoves(vector<Position> positions, float startAngle, float destinationAngle) {
+	vector<move> moves;
+	float robotCurrentAngle = startAngle;
+	Position startPosition;
+	Position endPosition;
+
+	for(unsigned int i = (positions.size() - 1); i > 0; i--) {
+		startPosition = positions[i];
+		endPosition = positions[i-1];
+
+		move move;
+		move.angle = calculateAngle(robotCurrentAngle, startPosition, endPosition);
+		robotCurrentAngle += move.angle;
+		move.distance = calculateCost(startPosition, endPosition);
+
+		moves.push_back(move);
+	}
+	move move;
+	move.angle = destinationAngle - robotCurrentAngle;
+	move.distance = 0;
+	moves.push_back(move);
 	return moves;
 }
 
-move PathPlanning2::convertToMove(Position p1, Position p) {
-	//TODO
-	move move;
-	return move;
-}
-
-void PathPlanning2::applyDijkstra() {
+void PathPlanning::applyDijkstra() {
 	std::queue<Node*> nodesToVisit;
 	bool goingRight = true;
 
@@ -86,55 +157,81 @@ void PathPlanning2::applyDijkstra() {
 
 	nodesToVisit.push(startNode);
 
-//	cout << "DIJKSTRA" << endl;
 	do {
 		Node* node = nodesToVisit.front();
 		nodesToVisit.pop();
-//		cout << "treating node : (" << node->getPosition().x << "," << node->getPosition().y << ")" << endl;
 
 		vector<Node*> neighbors;
 		if(goingRight) {
 			neighbors = node->getRightNeighbors();
-//			cout << "    getting right neighbors : ";
-			for(unsigned int i = 0; i < neighbors.size(); i++) {
-//				cout << "(" << neighbors[i]->getPosition().x << "," << neighbors[i]->getPosition().y << ") ";
-			}
-//			cout << endl;
+
 		} else {
 			neighbors = node->getLeftNeighbors();
-//			cout << "    getting left neighbors : ";
-			for(unsigned int i = 0; i < neighbors.size(); i++) {
-//				cout << "(" << neighbors[i]->getPosition().x << "," << neighbors[i]->getPosition().y << ") ";
-			}
-//			cout << endl;
 		}
 
 		for(unsigned int i = 0; i < neighbors.size(); i++) {
 			float cost = node->getCost();
-			cost += calculateCost(node, neighbors[i]);
+			cost += calculateCost(node->getPosition(), neighbors[i]->getPosition());
 			if (cost < neighbors[i]->getCost()) {
 				neighbors[i]->setPredecessor(node);
 				neighbors[i]->setCost(cost);
 				nodesToVisit.push(neighbors[i]);
-//				cout << "     adding neighbor node : (" << neighbors[i]->getPosition().x << "," << neighbors[i]->getPosition().y << ") at cost " << cost << endl;
 			}
 		}
 	} while(nodesToVisit.size() > 0);
 }
 
-float PathPlanning2::calculateCost(Node* node1, Node* node2) {
-	int x = node1->getPosition().x - node2->getPosition().x;
+float PathPlanning::calculateCost(Position p1, Position p2) {
+	int x = p1.x - p2.x;
 	if(x < 0) {
 		x *= -1;
 	}
-	int y = node1->getPosition().y - node2->getPosition().y;
+	int y = p1.y - p2.y;
 	if(y < 0) {
 		y *= -1;
 	}
 	return sqrt( pow(x,2) + pow(y,2) );
 }
 
-void PathPlanning2::constructGraph() {
+float PathPlanning::calculateAngle(float robotCurrentAngle, Position p1, Position p2) {
+//	cout << "robot current angle : " << robotCurrentAngle << endl;
+//	cout << "    position : (" << p1.x << "," << p1.y << ") (" << p2.x << "," << p2.y << ")" << endl;
+
+	int x = p1.x - p2.x;
+	int multFactor = -1;
+	int addFactor = -180;
+//	cout << "    x : " << x << endl;
+	if(x < 0) {
+		addFactor = 0;
+		multFactor *= -1;
+		x *= -1;
+	}
+	int y = p1.y - p2.y;
+//	cout << "    y : " << y << endl;
+	if(y < 0) {
+		multFactor *= -1;
+		y *= -1;
+	}
+	float ratio = (float)y / (float)x;
+//	cout << "    ratio : " << ratio << endl;
+	float angle = atan(ratio) * 180 / PI;
+//	cout << "    angle : " << angle << endl;
+//	cout << "    addfactor : " << addFactor << endl;
+//	cout << "    multfactor : " << multFactor << endl;
+	angle += addFactor;
+	angle *= multFactor;
+//	cout << "    angle : " << angle << endl;
+//	cout << "    robot current angle : " << robotCurrentAngle << endl;
+	float result = (angle - robotCurrentAngle);
+//	cout << "    result angle move : " << result << endl;
+
+	if(result > 180) {
+		result -= 360;
+	}
+	return result;
+}
+
+void PathPlanning::constructGraph() {
 	updateMatrixTable();
 
 	if(listOfNodes.empty()) {
@@ -142,16 +239,9 @@ void PathPlanning2::constructGraph() {
 	}
 	clearConnections();
 	connectNodes();
-
-//	cout << "printing nodes while construct graph:" << endl;
-//	cout << "node start : (" << startNode->getPosition().x << "," << startNode->getPosition().y << ")" << endl;
-//	for(unsigned int i = 0; i < listOfNodes.size(); i++) {
-//		cout << "node " << i << " : (" << listOfNodes[i]->getPosition().x << "," << listOfNodes[i]->getPosition().y << ")" << endl;
-//	}
-//	cout << "node destination : (" << destinationNode->getPosition().x << "," << destinationNode->getPosition().y << ")" << endl;
 }
 
-void PathPlanning2::createNodes() {
+void PathPlanning::createNodes() {
 	updateMatrixTable();
 
 	listOfNodes.clear();
@@ -179,14 +269,14 @@ void PathPlanning2::createNodes() {
 	}
 }
 
-void PathPlanning2::addNode(Node* newNode) {
+void PathPlanning::addNode(Node* newNode) {
 	std::vector<Node*>::iterator it = find(listOfNodes.begin(), listOfNodes.end(), newNode) ;
 	if(it == listOfNodes.end()) {
 		listOfNodes.push_back(newNode);
 	}
 }
 
-vector<Position> PathPlanning2::getObstacleCorners() {
+vector<Position> PathPlanning::getObstacleCorners() {
 	vector<Position> corners;
 
 	Position p;
@@ -218,24 +308,17 @@ vector<Position> PathPlanning2::getObstacleCorners() {
 	return corners;
 }
 
-void PathPlanning2::clearConnections() {
+void PathPlanning::clearConnections() {
 	for(unsigned int i = 0; i < listOfNodes.size(); i++) {
 		listOfNodes[i]->resetConnexions();
 		listOfNodes[i]->setCost(10000.0f);
 	}
 }
 
-void PathPlanning2::connectNodes() {
-//	cout << "printing nodes while connecting nodes:" << endl;
-	for(unsigned int i = 0; i < listOfNodes.size(); i++) {
-//		cout << "node " << i << " : (" << listOfNodes[i]->getPosition().x << "," << listOfNodes[i]->getPosition().y << ")" << endl;
-	}
-//	cout << "verifying connections :" << endl;
-
+void PathPlanning::connectNodes() {
 	for(unsigned int i = 0; i < listOfNodes.size(); i++) {
 		for(unsigned int j = 0; j < listOfNodes.size(); j++) {
 			if (i < j) {
-//				cout << "checking connection between : (" << listOfNodes[i]->getPosition().x << "," << listOfNodes[i]->getPosition().y << ") and (" << listOfNodes[j]->getPosition().x << "," << listOfNodes[j]->getPosition().y << ")" << endl;
 				if(!linePassesThroughObstacle(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition())) {
 //					cout << "    adding connection between : (" << listOfNodes[i]->getPosition().x << "," << listOfNodes[i]->getPosition().y << ") and (" << listOfNodes[j]->getPosition().x << "," << listOfNodes[j]->getPosition().y << ")" << endl;
 					listOfNodes[i]->addNeighbor(listOfNodes[j]);
@@ -256,7 +339,7 @@ void PathPlanning2::connectNodes() {
 	}
 }
 
-bool PathPlanning2::linePassesThroughObstacle(Position p1, Position p2) {
+bool PathPlanning::linePassesThroughObstacle(Position p1, Position p2) {
 	if((p2.x - p1.x) == 0) return true;
 
 	Position upperLeftObstacle1;
@@ -296,53 +379,11 @@ bool PathPlanning2::linePassesThroughObstacle(Position p1, Position p2) {
 	return false;
 }
 
-bool PathPlanning2::linesCrosses(Position line1p1, Position line1p2, Position line2p1, Position line2p2) {
-	bool boolean = DoLineSegmentsIntersect(line1p1.x, line1p1.y, line1p2.x, line1p2.y, line2p1.x, line2p1.y, line2p2.x, line2p2.y);
-//	if(boolean) {
-//		cout << "Node (" << line1p1.x << "," << line1p1.y << ") and node (" << line1p2.x << "," << line1p2.y << ") cross an obstacle" << endl;
-//	}
-	return boolean;
+bool PathPlanning::linesCrosses(Position line1p1, Position line1p2, Position line2p1, Position line2p2) {
+	return DoLineSegmentsIntersect(line1p1.x, line1p1.y, line1p2.x, line1p2.y, line2p1.x, line2p1.y, line2p2.x, line2p2.y);
 }
 
-
-
-void PathPlanning2::setObstacles(Position o1, Position o2) {
-    listOfNodes.clear();
-	if (obstaclesPositionsOK(o1, o2)) {
-    	if(o2.x < o1.x) {
-    		obstacle1.x = o2.x;
-			obstacle1.y = o2.y;
-			obstacle2.x = o1.x;
-			obstacle2.y = o1.y;
-    	}
-    	obstacle1.x = o1.x;
-    	obstacle1.y = o1.y;
-    	obstacle2.x = o2.x;
-    	obstacle2.y = o2.y;
-    }
-}
-
-bool PathPlanning2::obstaclesPositionsOK(Position obstacle1, Position obstacle2) {
-	if (obstacle1.x < DRAWING_ZONE || obstacle2.x < DRAWING_ZONE) {
-		//cout<<"Error : An obstacle is in the drawing zone"<<endl;
-		return false;
-    }
-    if (obstacle1.x > TABLE_X - OBSTACLE_RADIUS || obstacle2.x > TABLE_X - OBSTACLE_RADIUS) {
-    	//cout<<"Error : An obstacle is in the west wall (x too high)"<<endl;
-    	return false;
-    }
-    if (obstacle1.y < OBSTACLE_RADIUS || obstacle2.y < OBSTACLE_RADIUS) {
-    	//cout<<"Error : An obstacle is in the north wall (y too low)"<<endl;
-    	return false;
-    }
-    if (obstacle1.y > TABLE_Y - OBSTACLE_RADIUS || obstacle2.y > TABLE_Y - OBSTACLE_RADIUS) {
-    	//cout<<"Error : An obstacle is in the south wall (y too high)"<<endl;
-    	return false;
-    }
-    return true;
-}
-
-void PathPlanning2::printTable() {
+void PathPlanning::printTable() {
 	updateMatrixTable();
 
 	Mat workspace = Mat(TABLE_X + 1, TABLE_Y + 1, CV_8UC3, white);
@@ -369,12 +410,11 @@ void PathPlanning2::printTable() {
 		predecessor = current->getPredecessor();
 	}
 
-
-
     showWindowWith("Workspace", workspace);
 }
 
-void PathPlanning2::updateMatrixTable() {
+void PathPlanning::updateMatrixTable() {
+//	WALLS IN BLACK
 	for (int y = 0; y <= TABLE_Y; y++) {
 		for (int x = 0; x <= TABLE_X; x++) {
 			if (y <= BUFFER_SIZE || y >= TABLE_Y - BUFFER_SIZE || x <= BUFFER_SIZE || x >= TABLE_X - BUFFER_SIZE) {
@@ -384,6 +424,7 @@ void PathPlanning2::updateMatrixTable() {
 			}
 		}
 	}
+//	OBSTACLES IN BLACK
 	if(obstacle1.x != 0 && obstacle1.y != 0) {
 		for (int y = (obstacle1.y - TOTAL_OBSTACLE_RADIUS); y <= (obstacle1.y + TOTAL_OBSTACLE_RADIUS); y++) {
 			for (int x = (obstacle1.x - TOTAL_OBSTACLE_RADIUS); x <= (obstacle1.x + TOTAL_OBSTACLE_RADIUS); x++) {
@@ -398,6 +439,7 @@ void PathPlanning2::updateMatrixTable() {
 			}
 		}
 	}
+//	NODES IN BLUE
 	for(unsigned int i = 0; i < listOfNodes.size(); i++) {
 		table[listOfNodes[i]->getPosition().x][listOfNodes[i]->getPosition().y] = 2;
 	}
@@ -409,19 +451,19 @@ void PathPlanning2::updateMatrixTable() {
 	}
 }
 
-void PathPlanning2::colorPixel(Mat &mat, Scalar color, int x, int y) {
+void PathPlanning::colorPixel(Mat &mat, Scalar color, int x, int y) {
     mat.at<cv::Vec3b>(x, y)[0] = color[0];
     mat.at<cv::Vec3b>(x, y)[1] = color[1];
     mat.at<cv::Vec3b>(x, y)[2] = color[2];
 }
 
-void PathPlanning2::showWindowWith(const char* name, const Mat &mat) {
+void PathPlanning::showWindowWith(const char* name, const Mat &mat) {
     namedWindow(name, CV_WINDOW_AUTOSIZE);
     imshow(name, mat);
     waitKey(0);
 }
 
-void PathPlanning2::drawLine(Mat img, Point start, Point end) {
+void PathPlanning::drawLine(Mat img, Point start, Point end) {
   int thickness = 2;
   int lineType = 8;
   line( img,
@@ -433,13 +475,13 @@ void PathPlanning2::drawLine(Mat img, Point start, Point end) {
 }
 
 //Code from http://ptspts.blogspot.ca/2010/06/how-to-determine-if-two-line-segments.html
-bool PathPlanning2::IsOnSegment(double xi, double yi, double xj, double yj,
+bool PathPlanning::IsOnSegment(double xi, double yi, double xj, double yj,
                         double xk, double yk) {
   return (xi <= xk || xj <= xk) && (xk <= xi || xk <= xj) &&
          (yi <= yk || yj <= yk) && (yk <= yi || yk <= yj);
 }
 
-char PathPlanning2::ComputeDirection(double xi, double yi, double xj, double yj,
+char PathPlanning::ComputeDirection(double xi, double yi, double xj, double yj,
                              double xk, double yk) {
   double a = (xk - xi) * (yj - yi);
   double b = (xj - xi) * (yk - yi);
@@ -447,7 +489,7 @@ char PathPlanning2::ComputeDirection(double xi, double yi, double xj, double yj,
 }
 
 /** Do line segments (x1, y1)--(x2, y2) and (x3, y3)--(x4, y4) intersect? */
-bool PathPlanning2::DoLineSegmentsIntersect(double x1, double y1, double x2, double y2,
+bool PathPlanning::DoLineSegmentsIntersect(double x1, double y1, double x2, double y2,
                              double x3, double y3, double x4, double y4) {
   char d1 = ComputeDirection(x3, y3, x4, y4, x1, y1);
   char d2 = ComputeDirection(x3, y3, x4, y4, x2, y2);

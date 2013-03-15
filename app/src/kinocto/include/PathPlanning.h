@@ -19,54 +19,60 @@ const int DRAWING_ZONE = 89;
 const int BUFFER_SIZE = ROBOT_RADIUS + 3;
 const int TOTAL_OBSTACLE_RADIUS = (BUFFER_SIZE + OBSTACLE_RADIUS);
 
+#define PI 3.14159265
+
 struct move {
     int angle;
     int distance;
 };
 
-class PathPlanning2 {
+class PathPlanning {
 public:
-    PathPlanning2();
-    virtual ~PathPlanning2();
+    PathPlanning();
+    virtual ~PathPlanning();
 
-    std::vector<move> getPath(Position, Position);
+    std::vector<move> getPath(Position, float, Position, float);
     void setObstacles(Position, Position);
     void printTable();
 
-private:
-    Position obstacle1;
-    Position obstacle2;
-    bool obstaclesPositionsOK(Position, Position);
 
+private:
+	//OBSTACLES
+	Position obstacle1;
+	Position obstacle2;
+	bool obstaclesPositionsOK(Position, Position);
+
+	//GRAPH
 	std::vector<Node*> listOfNodes;
 	Node* startNode;
 	Node* destinationNode;
-	void cleanGoalNodes();
-    void constructGraph();
+	void constructGraph();
 	void createNodes();
-	void addNode(Node*);
 	void connectNodes();
+	void addNode(Node*);
+	void cleanGoalNodes();
 	void clearConnections();
 	std::vector<Position> getObstacleCorners();
 
-	std::vector<move> findPathInGraph();
+	//FIND PATH
+	std::vector<Position> findPathInGraph();
 	void applyDijkstra();
-	float calculateCost(Node*, Node*);
-	move convertToMove(Position, Position);
+	float calculateCost(Position,Position);
+	float calculateAngle(float, Position, Position);
+	std::vector<move> convertToMoves(std::vector<Position>,float,float);
 
-    bool linePassesThroughObstacle(Position, Position);
-    bool linesCrosses(Position, Position, Position, Position);
-    bool DoLineSegmentsIntersect(double x1, double y1, double x2, double y2,
-                                 double x3, double y3, double x4, double y4);
-    char ComputeDirection(double xi, double yi, double xj, double yj,
-                                 double xk, double yk);
-    bool IsOnSegment(double xi, double yi, double xj, double yj,
-                            double xk, double yk);
+	//Helper functions for connectNodes();
+	bool linePassesThroughObstacle(Position, Position);
+	bool linesCrosses(Position, Position, Position, Position);
+	bool DoLineSegmentsIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);
+	char ComputeDirection(double xi, double yi, double xj, double yj, double xk, double yk);
+	bool IsOnSegment(double xi, double yi, double xj, double yj, double xk, double yk);
 
 	//PRINTING RELATED METHODS
 	void updateMatrixTable();
 	// In array,
 	// 1 = normal area
+	// 2 = node
 	// 9 = wall or obstacle
 	int table[TABLE_X + 1][TABLE_Y + 1];
 
