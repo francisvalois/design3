@@ -16,6 +16,7 @@ find_package(OpenCV REQUIRED)
 add_service_files(
   FILES
   ExtractSudocubeAndSolve.srv
+  MoveRobotToSudocube.srv
 )
 
 generate_messages(
