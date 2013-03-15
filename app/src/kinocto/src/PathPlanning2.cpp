@@ -54,17 +54,17 @@ void PathPlanning2::cleanGoalNodes() {
 vector<move> PathPlanning2::findPathInGraph() {
 	applyDijkstra();
 
-	cout << "PATH  --  total cost : " << destinationNode->getCost() << endl;
+//	cout << "PATH  --  total cost : " << destinationNode->getCost() << endl;
 	vector<move> moves;
 	Node* current = destinationNode;
 	Node* predecessor = current->getPredecessor();
 	while(predecessor != 0) {
 		moves.push_back(convertToMove(current->getPosition(), predecessor->getPosition()));
-		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
+//		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
 		current = predecessor;
 		predecessor = current->getPredecessor();
 	}
-	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
+//	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
 	return moves;
 }
 
