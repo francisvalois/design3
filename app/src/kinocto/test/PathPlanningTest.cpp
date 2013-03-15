@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-#include "PathPlanning2.h"
+#include "PathPlanning.h"
 
 namespace {
 
