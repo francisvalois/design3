@@ -4,6 +4,7 @@ project(basestation)
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation kinocto)
 find_package(OpenCV REQUIRED)
 find_package(Qt4 REQUIRED)
+include(${QT_USE_FILE})
 
 #######################################
 ## Declare ROS messages and services ##
@@ -39,7 +40,7 @@ generate_messages(
 catkin_package(
    INCLUDE_DIRS include
 #  LIBRARIES base_station
-   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime 
 #  DEPENDS system_lib
 )
 
@@ -51,14 +52,15 @@ add_definitions(${QT_DEFINITIONS})
 set(PROJ_SOURCES)
 file(GLOB_RECURSE PROJ_SOURCES src/*.cpp)
 
-set(INTERFACES)
-file(GLOB_RECURSE INTERFACES ui/*.cpp)
+include_directories(include ${catkin_INCLUDE_DIRS} ${QT_INCLUDES} ../../build/basestation/ui_mainwindow.h.)
 
-include_directories(include ${catkin_INCLUDE_DIRS} ${QT_INCLUDES})
+file(GLOB QT_FORMS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ui/*.ui)
+file(GLOB_RECURSE QT_MOC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS include/*.hpp)
 
-qt4_wrap_cpp(PROJ_SOURCES include/MainWindow.h)
+qt4_wrap_ui(QT_FORM_HPP ${QT_FORMS})
+qt4_wrap_cpp(QT_MOCC_HPP ${QT_MOC})
 
-add_executable(BaseStation BaseStation.cpp  ${PROJ_SOURCES} ${INTERFACES})
+add_executable(BaseStation main.cpp  ${PROJ_SOURCES} ${QT_FORM_HPP} ${QT_MOCC_HPP})
 add_dependencies(BaseStation kinocto_gencpp)
 target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${OpenCV_LIBS})
 
