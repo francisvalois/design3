@@ -25,6 +25,14 @@ PathPlanning::PathPlanning() {
 
 PathPlanning::~PathPlanning() {
 	cleanGoalNodes();
+
+	for (int i = 0; i < listOfNodes.size(); i++) {
+	    Node * node = listOfNodes[i];
+	    listOfNodes[i] = 0;
+
+	    delete node;
+	    node = 0;
+	}
 }
 
 void PathPlanning::setObstacles(Position o1, Position o2) {
@@ -164,7 +172,6 @@ void PathPlanning::applyDijkstra() {
 		vector<Node*> neighbors;
 		if(goingRight) {
 			neighbors = node->getRightNeighbors();
-
 		} else {
 			neighbors = node->getLeftNeighbors();
 		}
@@ -178,6 +185,7 @@ void PathPlanning::applyDijkstra() {
 				nodesToVisit.push(neighbors[i]);
 			}
 		}
+		neighbors.clear();
 	} while(nodesToVisit.size() > 0);
 }
 
@@ -273,6 +281,8 @@ void PathPlanning::addNode(Node* newNode) {
 	std::vector<Node*>::iterator it = find(listOfNodes.begin(), listOfNodes.end(), newNode) ;
 	if(it == listOfNodes.end()) {
 		listOfNodes.push_back(newNode);
+	} else {
+	    delete newNode;
 	}
 }
 
