@@ -23,6 +23,7 @@
 
 #include "basestation/FindRobotPosition.h"
 #include "basestation/FindObstaclesPosition.h"
+#include "basestation/ShowSolvedSudocube.h"
 
 #include "CameraCapture.h"
 #include "SudokubeSolver.h"
@@ -54,6 +55,7 @@ private:
     void solveSudocube(std::vector<Sudokube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
     Pos requestRobotPosition();
     std::vector<Pos> requestObstaclesPosition();
+    void sendSolvedSudocube(std::string sudocube, int redCaseValue);
 
 public:
     Kinocto(ros::NodeHandle node);

@@ -60,6 +60,10 @@ vector<Sudokube *> Kinocto::extractSudocube() {
     vector<Sudokube *> sudokubes;
     for (int i = 1; i <= 10 && sudokubes.size() < 3; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
+        if (!sudocubeImg.data) {
+            return sudokubes;
+        }
+
         sudocubeImg = sudocubeImg.clone();
         Sudokube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
         ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
@@ -148,18 +152,38 @@ vector<Pos> Kinocto::requestObstaclesPosition() {
     return obsPos;
 }
 
+void Kinocto::sendSolvedSudocube(std::string sudocube, int redCaseValue) {
+    ROS_INFO("Sending Solved Sudocube");
+
+    ros::ServiceClient client = nodeHandle.serviceClient<basestation::ShowSolvedSudocube>("basestation/showSolvedSudocube");
+    basestation::ShowSolvedSudocube srv;
+    srv.request.solvedSudocube = sudocube;
+    srv.request.redCaseValue = redCaseValue;
+
+    if (client.call(srv)) {
+        ROS_INFO("The solved sudocube has been sent");
+    } else {
+        ROS_ERROR("Failed to call service basestation/showSolvedSudocube");
+    }
+}
+
 bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
         kinocto::TestExtractSudocubeAndSolve::Response & response) {
 
     ROS_INFO("TESTING ExtractSudocubeAndSolve");
 
     vector<Sudokube *> sudocubes = extractSudocube();
+    if (sudocubes.size() == 0) {
+        return false;
+    }
 
     String solvedSudocube;
     int redCaseValue = 0;
     solveSudocube(sudocubes, solvedSudocube, redCaseValue);
+    //TODO Vérifier si c'est solvé?!
 
-    //TODO Envoyer les informations à la station de base
+    sendSolvedSudocube("solvedSudocube", redCaseValue);
+
     response.solvedSudocube = solvedSudocube;
     response.redCaseValue = redCaseValue;
 
