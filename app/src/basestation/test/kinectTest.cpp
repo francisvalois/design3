@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "opencv2/core/core.hpp"
-#include "Utility.h"
+#include "KinectUtility.h"
 #include "Kinect.h"
 
 using namespace cv;
@@ -68,7 +68,7 @@ TEST(KinectTest, GetDistanceForObstacleMatrix2) {
 }
 
 //TODO: Modify Algorithm to make that test work, the obstacle next to the drawing board is not detected
-/*TEST(KinectTest, GetDistanceForObstacleMatrix3) {
+TEST(KinectTest, GetDistanceForObstacleMatrix3) {
     //Arrange
     Mat testMatrix = Utility::readFromFile("img/testKinect/matrixRobot3.xml");
     Kinect kinect;
@@ -95,7 +95,7 @@ TEST(KinectTest, GetDistanceForObstacleMatrix2) {
     //Accept a range of distances for X:0.258 and Z:1.337
     ASSERT_TRUE(positionX2 >= valueX2-0.01 && positionX2 < valueX2 + 0.01);
     ASSERT_TRUE(positionZ2 >= valueZ2-0.01 && positionZ2 < valueZ2 + 0.01);
-}*/
+}
 
 TEST(KinectTest, GetDistanceForObstacleMatrix4) {
     //Arrange

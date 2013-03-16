@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <QThread>
 
+//Services
 #include "std_msgs/String.h"
 #include "kinocto/StartKinocto.h"
 #include "basestation/FindObstaclesPosition.h"
@@ -12,6 +13,11 @@
 #include "basestation/TraceRealTrajectory.h"
 #include "basestation/UpdateRobotPosition.h"
 #include "basestation/LoopEnded.h"
+
+//Objets de la classe
+#include "../../build/basestation/ui_mainwindow.h"
+
+#include <Kinect.h>
 
 class BaseStation: public QThread {
 Q_OBJECT
