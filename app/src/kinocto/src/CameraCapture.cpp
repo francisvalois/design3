@@ -19,7 +19,7 @@ Mat CameraCapture::takePicture() {
     cap.set(CV_CAP_PROP_SATURATION, 0.176470);
 
     Mat picture;
-    if (cap.isOpened() == true) {
+    if (cap.isOpened() == false) {
         ROS_ERROR("%s", "ERROR, COULD NOT TAKE A PICTURE");
         return picture;
     }
