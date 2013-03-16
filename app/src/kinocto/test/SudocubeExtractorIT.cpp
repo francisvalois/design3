@@ -6,23 +6,11 @@ using namespace cv;
 using namespace std;
 
 namespace {
-class SudocubeExtractorIT: public ::testing::Test {
-public:
 
+class SudocubeExtractorIT: public ::testing::Test {
 protected:
     SudocubeExtractor sudocubeExtractor;
 };
-
-Mat loadSudocubeNo(int no) {
-    char filename[255];
-    sprintf(filename, "%s/%d.jpeg", "img/testSudocubesJpg", no);
-    Mat img = imread(filename);
-    if (!img.data) {
-        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
-    }
-
-    return img;
-}
 
 Sudokube getSudokube1() {
     Sudokube sudokube;
@@ -100,296 +88,169 @@ Sudokube getSudokube4() {
     return sudokube;
 }
 
+Mat loadSudocubeNo(int no) {
+    char filename[255];
+    sprintf(filename, "%s/%d.jpeg", "img/testSudocubesJpg", no);
+    Mat img = imread(filename);
+    if (!img.data) {
+        cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
+    }
+
+    return img;
+}
+
+bool isSudocubeCorrectlyExtracted(int sudocubeNo, Sudokube correctSudocube, SudocubeExtractor & sudocubeExtractor) {
+    bool correctlyExtracted = false;
+    Mat img = loadSudocubeNo(sudocubeNo);
+    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
+    correctlyExtracted = correctSudocube.equals(*sudokubeExtracted);
+    delete sudokubeExtracted;
+
+    return correctlyExtracted;
+}
 
 TEST_F(SudocubeExtractorIT, testSudoku1_1) {
-    Mat img = loadSudocubeNo(1);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(1);
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(1, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_2) {
-    Mat img = loadSudocubeNo(2);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(2, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_3) {
-    Mat img = loadSudocubeNo(3);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(3, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_4) {
-    Mat img = loadSudocubeNo(4);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(4, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_5) {
-    Mat img = loadSudocubeNo(5);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(5, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_6) {
-    Mat img = loadSudocubeNo(6);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(6, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_7) {
-    Mat img = loadSudocubeNo(7);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(7, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_9) {
-    Mat img = loadSudocubeNo(9);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(9, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_10) {
-    Mat img = loadSudocubeNo(10);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(10, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_11) {
-    Mat img = loadSudocubeNo(11);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(11, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_12) {
-    Mat img = loadSudocubeNo(12);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(12, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_13) {
-    Mat img = loadSudocubeNo(13);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(13, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_14) {
-    Mat img = loadSudocubeNo(14);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(14, getSudokube1(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_15) {
-    Mat img = loadSudocubeNo(15);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube1();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(15, getSudokube1(), sudocubeExtractor));
 }
 
-
-
 TEST_F(SudocubeExtractorIT, testSudoku1_16) {
-    Mat img = loadSudocubeNo(16);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube2();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(16, getSudokube2(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_17) {
-    Mat img = loadSudocubeNo(17);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube2();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(17, getSudokube2(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_18) {
-    Mat img = loadSudocubeNo(18);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube2();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(18, getSudokube2(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_21) {
-    Mat img = loadSudocubeNo(21);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube2();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(21, getSudokube2(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_22) {
-    Mat img = loadSudocubeNo(22);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube2();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(22, getSudokube2(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_24) {
-    Mat img = loadSudocubeNo(24);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube2();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(24, getSudokube2(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_25) {
-    Mat img = loadSudocubeNo(25);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(25, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_26) {
-    Mat img = loadSudocubeNo(26);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(26, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_28) {
-    Mat img = loadSudocubeNo(28);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(28, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_29) {
-    Mat img = loadSudocubeNo(29);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(29, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_30) {
-    Mat img = loadSudocubeNo(30);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(30, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_31) {
-    Mat img = loadSudocubeNo(31);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(31, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_32) {
-    Mat img = loadSudocubeNo(32);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(32, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_33) {
-    Mat img = loadSudocubeNo(33);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(33, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_34) {
-    Mat img = loadSudocubeNo(34);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube3();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(34, getSudokube3(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_35) {
-    Mat img = loadSudocubeNo(35);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube4();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(35, getSudokube4(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_36) {
-    Mat img = loadSudocubeNo(36);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube4();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(36, getSudokube4(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_37) {
-    Mat img = loadSudocubeNo(37);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube4();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(37, getSudokube4(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_38) {
-    Mat img = loadSudocubeNo(38);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube4();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(38, getSudokube4(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_39) {
-    Mat img = loadSudocubeNo(39);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube4();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(39, getSudokube4(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_40) {
-    Mat img = loadSudocubeNo(40);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube4();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(40, getSudokube4(), sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_42) {
-    Mat img = loadSudocubeNo(42);
-    Sudokube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    Sudokube sudokube = getSudokube4();
-
-    ASSERT_TRUE(sudokube.equals(*sudokubeExtracted));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(42, getSudokube4(), sudocubeExtractor));
 }
 
 }
