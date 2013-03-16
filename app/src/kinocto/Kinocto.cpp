@@ -32,13 +32,10 @@ void Kinocto::loop() {
     }
 }
 
-//const kinocto::StartKinocto::ConstPtr & msg
-
 void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
-    //ROS_INFO("I heard: [%s]", msg->data.c_str());
-
     state = START_LOOP;
 
+    //TODO Test seulement
     ServiceClient client = node.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
     microcontroller::PutPen srv;
     srv.request.down = false;
@@ -60,9 +57,10 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
     }
 }
 
-bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request & request, kinocto::ExtractSudocubeAndSolve::Response & response) {
+bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
+        kinocto::TestExtractSudocubeAndSolve::Response & response) {
     vector<Sudokube *> sudokubes;
-    for (int i = 1; i <= 5 && sudokubes.size() < 3; i++) {
+    for (int i = 1; i <= 10 && sudokubes.size() < 3; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
         sudocubeImg = sudocubeImg.clone();
         Sudokube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
@@ -74,31 +72,62 @@ bool Kinocto::extractSudocubeAndSolve(kinocto::ExtractSudocubeAndSolve::Request 
     }
 
     if (sudokubes.size() < 3) {
-        cout << "not enougth sudokubes" << endl;
-        return false;
-    }
-
-    Sudokube * goodSudocube;
-    if (sudokubes[0]->equals(*sudokubes[1]) == true) {
-        goodSudocube = sudokubes[0];
-    } else if (sudokubes[0]->equals(*sudokubes[2]) == true) {
-        goodSudocube = sudokubes[0];
-    } else if (sudokubes[1]->equals(*sudokubes[2]) == true) {
-        goodSudocube = sudokubes[1];
+        ROS_INFO("%s", "Not enougth sudocubes");
     } else {
-        cout << "NO PAIR OF SUDOCUBE ARE EQUALS" << endl;
-    }
-
-    if (goodSudocube != NULL) {
-        sudokubeSolver.solve(*goodSudocube);
-        if (goodSudocube->isSolved()) {
-            ROS_INFO("%s\n%s", "The sudocube has been solved", goodSudocube->print().c_str());
+        Sudokube * goodSudocube;
+        if (sudokubes[0]->equals(*sudokubes[1]) == true) {
+            goodSudocube = sudokubes[0];
+        } else if (sudokubes[0]->equals(*sudokubes[2]) == true) {
+            goodSudocube = sudokubes[0];
+        } else if (sudokubes[1]->equals(*sudokubes[2]) == true) {
+            goodSudocube = sudokubes[1];
         } else {
-            ROS_INFO("%s", "Could not solve the Sudokube");
+            ROS_INFO("%s", "NO PAIR OF SUDOCUBE ARE EQUALS");
         }
-    } else {
-        return false;
+
+        if (goodSudocube != NULL) {
+            sudokubeSolver.solve(*goodSudocube);
+            if (goodSudocube->isSolved()) {
+                ROS_INFO("%s\n%s", "The sudocube has been solved", goodSudocube->print().c_str());
+            } else {
+                ROS_INFO("%s", "Could not solve the Sudokube");
+            }
+
+            delete goodSudocube;
+        }
     }
+
+    return true;
+}
+
+bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, kinocto::TestGoToSudocubeX::Response & response) {
+    ROS_INFO("%s", "Moving robot to sudocube no ", request.sudocubeNo);
+    ROS_INFO("%s", "Calculating optimal path");
+
+    return true;
+}
+
+bool Kinocto::testFindRobotAngle(kinocto::TestFindRobotAngle::Request & request, kinocto::TestFindRobotAngle::Response & response) {
+
+    return true;
+}
+
+bool Kinocto::testFindRobotPosition(kinocto::TestFindRobotPosition::Request & request, kinocto::TestFindRobotPosition::Response & response) {
+
+    return true;
+}
+
+bool Kinocto::testGetAntennaParam(kinocto::TestGetAntennaParam::Request & request, kinocto::TestGetAntennaParam::Response & response) {
+
+    return true;
+}
+
+bool Kinocto::testFindObstacles(kinocto::TestFindObstacles::Request & request, kinocto::TestFindObstacles::Response & response) {
+
+    return true;
+}
+
+bool Kinocto::testDrawNumer(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response) {
 
     return true;
 }
@@ -110,10 +139,11 @@ int main(int argc, char **argv) {
     Kinocto kinocto(nodeHandle);
 
     ROS_INFO("%s", "Creating services for Kinocto");
-    ros::Subscriber sub = nodeHandle.subscribe("kinocto/start", 1, &Kinocto::startLoop, &kinocto);
-    //ros::ServiceServer service = nodeHandle.advertiseService("kinocto/start", &Kinocto::startLoop, &kinocto);
+    ros::Subscriber sub = nodeHandle.subscribe("kinocto/start", 10, &Kinocto::startLoop, &kinocto);
 
-    //ros::ServiceServer service2 = nodeHandle.advertiseService("kinocto/extractSudocubeAndSolve", &Kinocto::extractSudocubeAndSolve, &kinocto);
+    //Services de test seulement
+    ros::ServiceServer service2 = nodeHandle.advertiseService("kinocto/TestExtractSudocubeAndSolve", &Kinocto::testExtractSudocubeAndSolve, &kinocto);
+    ros::ServiceServer service3 = nodeHandle.advertiseService("kinocto/TestGoToSudocubeX", &Kinocto::testGoToSudocubeX, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.start();

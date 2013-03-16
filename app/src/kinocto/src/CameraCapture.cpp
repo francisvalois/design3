@@ -5,11 +5,9 @@ using namespace ros;
 using namespace std;
 
 CameraCapture::CameraCapture() {
-
 }
 
 CameraCapture::~CameraCapture() {
-
 }
 
 Mat CameraCapture::takePicture() {

@@ -15,7 +15,13 @@ find_package(OpenCV REQUIRED)
 
 add_service_files(
   FILES
-  ExtractSudocubeAndSolve.srv
+  TestExtractSudocubeAndSolve.srv
+  TestFindRobotAngle.srv
+  TestFindRobotPosition.srv
+  TestGetAntennaParam.srv
+  TestGoToSudocubeX.srv
+  TestFindObstacles.srv
+  TestDrawNumber.srv
   MoveRobotToSudocube.srv
 )
 
@@ -91,7 +97,7 @@ link_directories(include
 #############
 
 catkin_add_gtest(kinoctoTest test/AllTests.cpp ${PROJ_SOURCES})
-target_link_libraries(kinoctoTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(kinoctoTest ${OpenCV_LIBS})
 
 catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp ${PROJ_SOURCES})
-target_link_libraries(kinoctoLongTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(kinoctoLongTest ${OpenCV_LIBS})

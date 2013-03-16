@@ -1,0 +1,6 @@
+int8 sudocubeNo
+float32 obs1x
+float32 obs1y
+float32 obs2x
+float32 obs2y
+---
