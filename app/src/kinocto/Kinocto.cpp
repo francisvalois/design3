@@ -182,7 +182,7 @@ bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::
     solveSudocube(sudocubes, solvedSudocube, redCaseValue);
     //TODO Vérifier si c'est solvé?!
 
-    sendSolvedSudocube("solvedSudocube", redCaseValue);
+    sendSolvedSudocube(solvedSudocube, redCaseValue);
 
     response.solvedSudocube = solvedSudocube;
     response.redCaseValue = redCaseValue;
