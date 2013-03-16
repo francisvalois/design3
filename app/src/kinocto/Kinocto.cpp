@@ -36,7 +36,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
     state = START_LOOP;
 
     //TODO Test seulement
-    ServiceClient client = nodeHandle.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
+    /*ServiceClient client = nodeHandle.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
     microcontroller::PutPen srv;
     srv.request.down = false;
 
@@ -53,7 +53,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         ROS_INFO("Received response from service2");
     } else {
         ROS_ERROR("Failed to call service");
-    }
+    }*/
 }
 
 vector<Sudokube *> Kinocto::extractSudocube() {
@@ -194,11 +194,19 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     ROS_INFO("%s", "TESTING GoToSudocubeX ", request.sudocubeNo);
     ROS_INFO("%s", "Calculating optimal path");
 
+    //À partir de : dos au mur, centré sur la table(0, 57)
+    //Détecter les obstacles
+    //Calculer le chemin optimal vers le sudocubes
+    //Se déplacer vers lui
+
     return true;
 }
 
 bool Kinocto::testFindRobotAngle(kinocto::TestFindRobotAngle::Request & request, kinocto::TestFindRobotAngle::Response & response) {
     ROS_INFO("TESTING FindRobotAngle");
+
+    //À venir
+
     return true;
 }
 
@@ -212,8 +220,14 @@ bool Kinocto::testFindRobotPosition(kinocto::TestFindRobotPosition::Request & re
     return true;
 }
 
-bool Kinocto::testGetAntennaParam(kinocto::TestGetAntennaParam::Request & request, kinocto::TestGetAntennaParam::Response & response) {
+bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Request & request, kinocto::TestGetAntennaParamAndShow::Response & response) {
     ROS_INFO("TESTING GetAntennaParam");
+
+    //À partir de : dos au mur, centré sur la table(0, 57)
+    //Se déplacer vers l'antenne
+    //Décoder le message (à min 5 cm de distance de l'antenne)
+    //Afficher le message sur le microcontrolleur
+
     return true;
 }
 
@@ -233,6 +247,10 @@ bool Kinocto::testFindObstacles(kinocto::TestFindObstacles::Request & request, k
 bool Kinocto::testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response) {
     ROS_INFO("TESTING DrawNumber");
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
+
+    //À partir de la position actuelle
+    //Envoyer au microcontroller une requete de dessin, pis c'est tout...
+
     return true;
 }
 
@@ -240,6 +258,12 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
         kinocto::TestGoToGreenFrameAndDraw::Response & response) {
     ROS_INFO("TESTING GoToGreenFrameAndDraw");
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
+
+    //À partir du mur des sudocubes, centré sur celui-ci et orienté vers lui
+    //Détecter les obstacles avec la kinect
+    //Calculer le chemin optimal vers sudocubes demandé
+    //Envoyer les commandes au microcontrolleur pour aller au carré vert, selon l'orientation du dessin
+
     return true;
 }
 
@@ -257,7 +281,7 @@ int main(int argc, char **argv) {
     ros::ServiceServer service2 = nodeHandle.advertiseService("kinocto/TestGoToSudocubeX", &Kinocto::testGoToSudocubeX, &kinocto);
     ros::ServiceServer service3 = nodeHandle.advertiseService("kinocto/TestFindRobotAngle", &Kinocto::testFindRobotAngle, &kinocto);
     ros::ServiceServer service4 = nodeHandle.advertiseService("kinocto/TestFindRobotPosition", &Kinocto::testFindRobotPosition, &kinocto);
-    ros::ServiceServer service5 = nodeHandle.advertiseService("kinocto/TestGetAntennaParam", &Kinocto::testGetAntennaParam, &kinocto);
+    ros::ServiceServer service5 = nodeHandle.advertiseService("kinocto/TestGetAntennaParamAndShow", &Kinocto::testGetAntennaParamAndShow, &kinocto);
     ros::ServiceServer service6 = nodeHandle.advertiseService("kinocto/TestFindObstacles", &Kinocto::testFindObstacles, &kinocto);
     ros::ServiceServer service7 = nodeHandle.advertiseService("kinocto/TestDrawNumber", &Kinocto::testDrawNumber, &kinocto);
     ros::ServiceServer service8 = nodeHandle.advertiseService("kinocto/TestGoToGreenFrameAndDraw", &Kinocto::testGoToGreenFrameAndDraw, &kinocto);

@@ -14,7 +14,7 @@
 #include "kinocto/TestExtractSudocubeAndSolve.h"
 #include "kinocto/TestFindRobotAngle.h"
 #include "kinocto/TestFindRobotPosition.h"
-#include "kinocto/TestGetAntennaParam.h"
+#include "kinocto/TestGetAntennaParamAndShow.h"
 #include "kinocto/TestFindObstacles.h"
 #include "kinocto/TestDrawNumber.h"
 #include "kinocto/TestGoToGreenFrameAndDraw.h"
@@ -68,7 +68,7 @@ public:
     bool testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, kinocto::TestGoToSudocubeX::Response & response);
     bool testFindRobotAngle(kinocto::TestFindRobotAngle::Request & request, kinocto::TestFindRobotAngle::Response & response);
     bool testFindRobotPosition(kinocto::TestFindRobotPosition::Request & request, kinocto::TestFindRobotPosition::Response & response);
-    bool testGetAntennaParam(kinocto::TestGetAntennaParam::Request & request, kinocto::TestGetAntennaParam::Response & response);
+    bool testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Request & request, kinocto::TestGetAntennaParamAndShow::Response & response);
     bool testFindObstacles(kinocto::TestFindObstacles::Request & request, kinocto::TestFindObstacles::Response & response);
     bool testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response);
     bool testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Request & request, kinocto::TestGoToGreenFrameAndDraw::Response & response);

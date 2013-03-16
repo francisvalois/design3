@@ -18,7 +18,7 @@ add_service_files(
   TestExtractSudocubeAndSolve.srv
   TestFindRobotAngle.srv
   TestFindRobotPosition.srv
-  TestGetAntennaParam.srv
+  TestGetAntennaParamAndShow.srv
   TestGoToSudocubeX.srv
   TestFindObstacles.srv
   TestDrawNumber.srv
