@@ -5,7 +5,7 @@ using namespace ros;
 using namespace cv;
 
 Kinocto::Kinocto(NodeHandle node) {
-    this->node = node;
+    this->nodeHandle = nodeHandle;
     state = INITIATED;
 }
 
@@ -36,7 +36,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
     state = START_LOOP;
 
     //TODO Test seulement
-    ServiceClient client = node.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
+    ServiceClient client = nodeHandle.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
     microcontroller::PutPen srv;
     srv.request.down = false;
 
@@ -46,9 +46,8 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         ROS_ERROR("Failed to call service");
     }
 
-    ServiceClient client2 = node.serviceClient<basestation::FindRobotPosition>("basestation/findRobotPosition");
+    ServiceClient client2 = nodeHandle.serviceClient<basestation::FindRobotPosition>("basestation/findRobotPosition");
     basestation::FindRobotPosition srv2;
-    srv.request.down = false;
 
     if (client2.call(srv2)) {
         ROS_INFO("Received response from service2");
@@ -57,11 +56,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
     }
 }
 
-bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
-        kinocto::TestExtractSudocubeAndSolve::Response & response) {
-
-    ROS_INFO("TESTING ExtractSudocubeAndSolve");
-
+vector<Sudokube *> Kinocto::extractSudocube() {
     vector<Sudokube *> sudokubes;
     for (int i = 1; i <= 10 && sudokubes.size() < 3; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
@@ -74,16 +69,20 @@ bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::
         }
     }
 
-    if (sudokubes.size() < 3) {
+    return sudokubes;
+}
+
+void Kinocto::solveSudocube(vector<Sudokube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
+    if (sudocubes.size() < 3) {
         ROS_ERROR("%s", "NOT ENOUGHT SUDOCUBES TO CHOOSE");
     } else {
         Sudokube * goodSudocube;
-        if (sudokubes[0]->equals(*sudokubes[1]) == true) {
-            goodSudocube = sudokubes[0];
-        } else if (sudokubes[0]->equals(*sudokubes[2]) == true) {
-            goodSudocube = sudokubes[0];
-        } else if (sudokubes[1]->equals(*sudokubes[2]) == true) {
-            goodSudocube = sudokubes[1];
+        if (sudocubes[0]->equals(*sudocubes[1]) == true) {
+            goodSudocube = sudocubes[0];
+        } else if (sudocubes[0]->equals(*sudocubes[2]) == true) {
+            goodSudocube = sudocubes[0];
+        } else if (sudocubes[1]->equals(*sudocubes[2]) == true) {
+            goodSudocube = sudocubes[1];
         } else {
             ROS_ERROR("%s", "NO PAIR OF SUDOCUBE ARE EQUALS");
         }
@@ -92,13 +91,77 @@ bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::
             sudokubeSolver.solve(*goodSudocube);
             if (goodSudocube->isSolved()) {
                 ROS_INFO("%s\n%s", "The sudocube has been solved", goodSudocube->print().c_str());
+                ROS_INFO("The number to draw is %d\n", goodSudocube->getRedCaseValue());
+
+                redCaseValue = goodSudocube->getRedCaseValue();
+                solvedSudocube = goodSudocube->print();
             } else {
                 ROS_ERROR("%s", "Could not solve the Sudokube");
             }
-
-            delete goodSudocube;
         }
     }
+
+    for (int i = 0; i < sudocubes.size(); i++) {
+        Sudokube * sudocube = sudocubes[i];
+        sudocubes[i] = 0;
+        delete sudocube;
+    }
+}
+
+Pos Kinocto::requestRobotPosition() {
+    ROS_INFO("Requesting Robot Position");
+
+    Pos pos;
+
+    ros::ServiceClient client = nodeHandle.serviceClient<basestation::FindRobotPosition>("basestation/findRobotPosition");
+    basestation::FindRobotPosition srv;
+
+    if (client.call(srv)) {
+        ROS_INFO("The robot position is : x:%f y:%f", srv.response.x, srv.response.y);
+        pos.x = srv.response.x;
+        pos.y = srv.response.y;
+    } else {
+        ROS_ERROR("Failed to call service basestation/findRobotPosition");
+    }
+
+    return pos;
+}
+
+vector<Pos> Kinocto::requestObstaclesPosition() {
+    ROS_INFO("Requesting Obstacles Position");
+
+    vector<Pos> obsPos(2);
+
+    ros::ServiceClient client = nodeHandle.serviceClient<basestation::FindObstaclesPosition>("basestation/findObstaclesPosition");
+    basestation::FindObstaclesPosition srv;
+
+    if (client.call(srv)) {
+        ROS_INFO("The obstacles positions are : (x:%f, y:%f) (x:%f, y:%f)", srv.response.x1, srv.response.y1, srv.response.x2, srv.response.y2);
+        obsPos[0].x = srv.response.x1;
+        obsPos[0].y = srv.response.y1;
+        obsPos[1].x = srv.response.x2;
+        obsPos[1].y = srv.response.y2;
+    } else {
+        ROS_ERROR("Failed to call service basestation/findObstaclesPosition");
+    }
+
+    return obsPos;
+}
+
+bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
+        kinocto::TestExtractSudocubeAndSolve::Response & response) {
+
+    ROS_INFO("TESTING ExtractSudocubeAndSolve");
+
+    vector<Sudokube *> sudocubes = extractSudocube();
+
+    String solvedSudocube;
+    int redCaseValue = 0;
+    solveSudocube(sudocubes, solvedSudocube, redCaseValue);
+
+    //TODO Envoyer les informations à la station de base
+    response.solvedSudocube = solvedSudocube;
+    response.redCaseValue = redCaseValue;
 
     return true;
 }
@@ -117,6 +180,11 @@ bool Kinocto::testFindRobotAngle(kinocto::TestFindRobotAngle::Request & request,
 
 bool Kinocto::testFindRobotPosition(kinocto::TestFindRobotPosition::Request & request, kinocto::TestFindRobotPosition::Response & response) {
     ROS_INFO("TESTING FindRobotPosition");
+
+    Pos robotPos = requestRobotPosition();
+    response.x = robotPos.x;
+    response.y = robotPos.y;
+
     return true;
 }
 
@@ -127,6 +195,14 @@ bool Kinocto::testGetAntennaParam(kinocto::TestGetAntennaParam::Request & reques
 
 bool Kinocto::testFindObstacles(kinocto::TestFindObstacles::Request & request, kinocto::TestFindObstacles::Response & response) {
     ROS_INFO("TESTING FindObstacles");
+
+    vector<Pos> obsPos = requestObstaclesPosition();
+
+    response.obs1x = obsPos[0].x;
+    response.obs1y = obsPos[0].y;
+    response.obs2x = obsPos[1].x;
+    response.obs2y = obsPos[1].y;
+
     return true;
 }
 
@@ -136,7 +212,8 @@ bool Kinocto::testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto
     return true;
 }
 
-bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Request & request, kinocto::TestGoToGreenFrameAndDraw::Response & response) {
+bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Request & request,
+        kinocto::TestGoToGreenFrameAndDraw::Response & response) {
     ROS_INFO("TESTING GoToGreenFrameAndDraw");
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
     return true;

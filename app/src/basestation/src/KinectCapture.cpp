@@ -9,9 +9,9 @@ KinectCapture::~KinectCapture() {
 }
 
 Mat KinectCapture::captureDepthMatrix() {
-    VideoCapture capture;
     Mat world;
 
+    VideoCapture capture;
     capture.open(CV_CAP_OPENNI);
     capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 0);
 

@@ -3,6 +3,7 @@
 using namespace basestation;
 using namespace std;
 using namespace boost;
+using namespace cv;
 
 BaseStation::BaseStation(int argc, char** argv) :
         init_argc(argc), init_argv(argv) {
@@ -69,14 +70,14 @@ void BaseStation::run() {
     ss << "hello world ";
     msg.data = ss.str();
 
-    int count = 0;
+    //int count = 0;
     ros::Rate loop_rate(10);
     while (ros::ok()) {
-        ROS_INFO("%s", msg.data.c_str());
-        startKinoctoPublisher.publish(msg);
+        //ROS_INFO("%s", msg.data.c_str());
+        //startKinoctoPublisher.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();
-        ++count;
+        //++count;
     }
 
     std::cout << "Ros shutdown, proceeding to close the gui." << std::endl;
@@ -84,25 +85,36 @@ void BaseStation::run() {
 }
 
 bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request, FindObstaclesPosition::Response & response) {
-    array<float, 2> posX; //TODO Hardcoded value
-    posX[0] = 2.0;
-    posX[1] = 20.0;
+    Mat depthMatrix = kinectCapture.captureDepthMatrix();
+    if (!depthMatrix.data) {
+        return false;
+    }
 
-    array<float, 2> posY; //TODO Hardcoded value
-    posY[0] = 24.0;
-    posY[1] = 23.0;
+    kinect.findCenteredObstacle(depthMatrix);
+    Vec2f obs1 = kinect.getObstacle1();
+    Vec2f obs2 = kinect.getObstacle2();
 
-    response.x = posX;
-    response.y = posY;
+    response.x1 = obs1[0];
+    response.y1 = obs1[1];
+    response.x2 = obs2[0];
+    response.y2 = obs2[1];
 
-    ROS_INFO( "%s x1:%f y1:%f  x2:%f y2:%f", "Request Find Obstacles Position. Sending values ", posX[0], posY[0], posX[1], posY[1]);
+    ROS_INFO( "%s x:%f y:%f  x:%f y:%f", "Request Find Obstacles Position. Sending values ", response.x1, response.y1, response.x2, response.y2);
 
     return true;
 }
 
 bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRobotPosition::Response & response) {
-    response.x = 20.0f; //TODO Hardcoded value
-    response.y = 30.0f;
+    Mat depthMatrix = kinectCapture.captureDepthMatrix();
+    if (!depthMatrix.data) {
+        return false;
+    }
+
+    kinect.findRobot(depthMatrix);
+    Vec2f robot = kinect.getRobot();
+
+    response.x = robot[0];
+    response.y = robot[1];
 
     ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", response.x, response.y);
 

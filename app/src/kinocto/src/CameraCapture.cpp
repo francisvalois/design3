@@ -11,21 +11,16 @@ CameraCapture::~CameraCapture() {
 }
 
 Mat CameraCapture::takePicture() {
-    Mat picture;
-
     VideoCapture cap(0);
-
     cap.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
     cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1200);
-
     cap.set(CV_CAP_PROP_BRIGHTNESS, 0.509803);
     cap.set(CV_CAP_PROP_CONTRAST, 0.196078);
     cap.set(CV_CAP_PROP_SATURATION, 0.176470);
-    //cap.set(CV_CAP_PROP_GAIN, 0);
 
-    if (!cap.isOpened()) {
-        ROS_INFO("%s", "ERROR, COULD NOT TAKE A PICTURE");
-        cout << "ERROR, COULD NOT TAKE A PICTURE" << endl;
+    Mat picture;
+    if (cap.isOpened() == true) {
+        ROS_ERROR("%s", "ERROR, COULD NOT TAKE A PICTURE");
         return picture;
     }
 

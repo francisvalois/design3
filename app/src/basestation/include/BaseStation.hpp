@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include <QThread>
+#include "opencv2/core/core.hpp"
 
 //Services
 #include "std_msgs/String.h"
@@ -14,10 +15,11 @@
 #include "basestation/UpdateRobotPosition.h"
 #include "basestation/LoopEnded.h"
 
+#include "Kinect.h"
+#include "KinectCapture.h"
+
 //Objets de la classe
 #include "../../build/basestation/ui_mainwindow.h"
-
-#include <Kinect.h>
 
 class BaseStation: public QThread {
 Q_OBJECT
@@ -35,12 +37,16 @@ public:
     bool updateRobotPosition(basestation::UpdateRobotPosition::Request & request, basestation::UpdateRobotPosition::Response & response);
     bool loopEnded(basestation::LoopEnded::Request & request, basestation::LoopEnded::Response & response);
 
+
 Q_SIGNALS:
     void rosShutdown();
 
 private:
     int init_argc;
     char** init_argv;
+
+    KinectCapture kinectCapture;
+    Kinect kinect;
 
     ros::Publisher startKinoctoPublisher;
 
