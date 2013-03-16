@@ -34,23 +34,22 @@ Vec2f Kinect::getRobot() {
     return _robot;
 }
 
-Kinect::Kinect(){
+Kinect::Kinect() {
 
 }
 
-Kinect::Kinect(Vec2f obstacle1, Vec2f obstacle2){
+Kinect::Kinect(Vec2f obstacle1, Vec2f obstacle2) {
     _obstacle1 = obstacle1;
     _obstacle2 = obstacle2;
 }
 
-Kinect::Kinect(Vec2f obstacle1, Vec2f obstacle2, Vec2f robot){
+Kinect::Kinect(Vec2f obstacle1, Vec2f obstacle2, Vec2f robot) {
     _obstacle1 = obstacle1;
     _obstacle2 = obstacle2;
     _robot = robot;
 }
 
-Kinect::Kinect(Vec2f robot)
-{
+Kinect::Kinect(Vec2f robot) {
     _robot = robot;
 }
 
@@ -81,7 +80,6 @@ Vec2f Kinect::translateXZCoordtoKinect(Vec2f positionXZ) {
     return modifiedXZPosition;
 }
 
-
 Vec2f Kinect::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
     Vec2f rotPosition = getRotatedXZCoordFromKinectCoord(depthXYZ);
     Vec2f realPosition = translateXZCoordtoOrigin(rotPosition);
@@ -96,8 +94,7 @@ Vec2f Kinect::addObstacleRadiusToDistance(Vec2f distanceExtObstacle) {
         float angle = atan(distanceExtObstacle[0] / distanceExtObstacle[1]);
         distanceCenterObstacle[0] = sin(angle) * (hyp + OBSTACLE_RADIUS);
         distanceCenterObstacle[1] = cos(angle) * (hyp + OBSTACLE_RADIUS);
-    }
-    else {
+    } else {
         distanceCenterObstacle = distanceExtObstacle;
     }
 
@@ -117,8 +114,7 @@ Vec2f Kinect::getAverageDistanceForPointLine(list<Vec2f> allDistances) {
             if (abs(distance[0] / allDistances.front()[0]) >= 0.95 && distance[0] <= allDistances.front()[0]) {
                 averageXPosition += distance[0];
                 countAverageX++;
-            }
-            else if (abs(distance[0] / allDistances.front()[0]) <= 1.05 && distance[0] >= allDistances.front()[0]) {
+            } else if (abs(distance[0] / allDistances.front()[0]) <= 1.05 && distance[0] >= allDistances.front()[0]) {
                 averageXPosition += distance[0];
                 countAverageX++;
             }
@@ -126,8 +122,7 @@ Vec2f Kinect::getAverageDistanceForPointLine(list<Vec2f> allDistances) {
             if (abs(distance[1] / allDistances.front()[1]) >= 0.95 && distance[1] <= allDistances.front()[1]) {
                 averageZPosition += distance[1];
                 countAverageZ++;
-            }
-            else if (abs(distance[1] / allDistances.front()[1]) <= 1.05 && distance[1] >= allDistances.front()[1]) {
+            } else if (abs(distance[1] / allDistances.front()[1]) <= 1.05 && distance[1] >= allDistances.front()[1]) {
                 averageZPosition += distance[1];
                 countAverageZ++;
             }
@@ -148,7 +143,7 @@ list<Vec2f> Kinect::getSomeYDistanceAssociatedWithXForObstacle(int obstaclePosit
         Vec3f kinectCoord = depthMatrix.at<Vec3f>(i, obstaclePositionX);
         Vec2f depthXYZ = getTrueCoordFromKinectCoord(kinectCoord);
         if (depthXYZ[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && depthXYZ[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD) {
-            if(kinectCoord[1] >= OBSTACLE_HEIGHT * 0.80 && kinectCoord[1] <= OBSTACLE_HEIGHT * 1.25)
+            if (kinectCoord[1] >= OBSTACLE_HEIGHT * 0.80 && kinectCoord[1] <= OBSTACLE_HEIGHT * 1.25)
                 allDistances.push_back(Vec2f(kinectCoord[0], kinectCoord[2]));
         }
     }
@@ -255,18 +250,18 @@ void Kinect::findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point>
             tempPosition = getTrueCoordFromKinectCoord(position);
 
             //If obstacle is in the obstacle zone and if it's higher than the black walls
-            if (tempPosition[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && tempPosition[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD){
-                if (position[1] >= OBSTACLE_HEIGHT * 0.80 && position[1] <= OBSTACLE_HEIGHT * 1.25){
+            if (tempPosition[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && tempPosition[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD) {
+                if (position[1] >= OBSTACLE_HEIGHT * 0.80 && position[1] <= OBSTACLE_HEIGHT * 1.25) {
                     obstaclePoint = true;
-                }
-                else obstaclePoint = false;
+                } else
+                    obstaclePoint = false;
             }
         }
 
         if (obstaclePoint) {
             if (validObstaclePosition.size() > 0) {
                 if ((i - validObstaclePosition.back().x) > 5) // Separate first obstacle from second
-                {
+                        {
                     obstacle1 = validObstaclePosition;
                     validObstaclePosition.clear();
                 }
@@ -277,8 +272,7 @@ void Kinect::findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point>
 
     if (validObstaclePosition.size() > 0 && obstacle1.size() > 0) {
         obstacle2 = validObstaclePosition;
-    }
-    else if (validObstaclePosition.size() > 0) {
+    } else if (validObstaclePosition.size() > 0) {
         obstacle1 = validObstaclePosition;
     }
 }
@@ -304,35 +298,29 @@ vector<Point> Kinect::findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obs
 
             //Verify if the point is a obstacle
 
-            if(truePosition[1] >= ROBOT_MIN_DISTANCE && truePosition[1] <= ROBOT_MAX_DISTANCE){
-                if(((truePosition[0] >= obstacle1[0] - OBSTACLE_RADIUS && truePosition[0] <= obstacle1[0] + OBSTACLE_RADIUS) &&
-                        (truePosition[1] >= obstacle1[1] - OBSTACLE_RADIUS && truePosition[1] <= obstacle1[1]  + OBSTACLE_RADIUS)) ||
-                   ((truePosition[0] >= obstacle2[0] - OBSTACLE_RADIUS && truePosition[0] <= obstacle2[0]  + OBSTACLE_RADIUS) &&
-                        (truePosition[1] >= obstacle2[1] - OBSTACLE_RADIUS && truePosition[1] <= obstacle2[1] + OBSTACLE_RADIUS)))
-                {
+            if (truePosition[1] >= ROBOT_MIN_DISTANCE && truePosition[1] <= ROBOT_MAX_DISTANCE) {
+                if (((truePosition[0] >= obstacle1[0] - OBSTACLE_RADIUS && truePosition[0] <= obstacle1[0] + OBSTACLE_RADIUS)
+                        && (truePosition[1] >= obstacle1[1] - OBSTACLE_RADIUS && truePosition[1] <= obstacle1[1] + OBSTACLE_RADIUS))
+                        || ((truePosition[0] >= obstacle2[0] - OBSTACLE_RADIUS && truePosition[0] <= obstacle2[0] + OBSTACLE_RADIUS)
+                                && (truePosition[1] >= obstacle2[1] - OBSTACLE_RADIUS && truePosition[1] <= obstacle2[1] + OBSTACLE_RADIUS))) {
                     validPosition = 0;
                     break;
-                }
-                else if(((truePositionWithRadius[0] >= obstacle1[0] - 0.01 && truePositionWithRadius[0] <= obstacle1[0] + 0.01) &&
-                       (truePositionWithRadius[1] >= obstacle1[1] - 0.01 && truePositionWithRadius[1] <= obstacle1[1]  + 0.01)) ||
-                        ((truePositionWithRadius[0] >= obstacle2[0] - 0.01 && truePositionWithRadius[0] <= obstacle2[0]  + 0.01) &&
-                        (truePositionWithRadius[1] >= obstacle2[1] - 0.01 && truePositionWithRadius[1] <= obstacle2[1] + 0.01)))
-                {
+                } else if (((truePositionWithRadius[0] >= obstacle1[0] - 0.01 && truePositionWithRadius[0] <= obstacle1[0] + 0.01)
+                        && (truePositionWithRadius[1] >= obstacle1[1] - 0.01 && truePositionWithRadius[1] <= obstacle1[1] + 0.01))
+                        || ((truePositionWithRadius[0] >= obstacle2[0] - 0.01 && truePositionWithRadius[0] <= obstacle2[0] + 0.01)
+                                && (truePositionWithRadius[1] >= obstacle2[1] - 0.01 && truePositionWithRadius[1] <= obstacle2[1] + 0.01))) {
                     validPosition = 0;
                     break;
                 }
 
-                else if (truePosition[0] >= 0.75)
-                {
+                else if (truePosition[0] >= 0.75) {
                     validPosition = 0;
                     break;
-                }
-                else if (position[1] < ROBOT_HEIGHT && position[1] > ROBOT_HEIGHT * 0.65) {
+                } else if (position[1] < ROBOT_HEIGHT && position[1] > ROBOT_HEIGHT * 0.65) {
                     validPosition++;
                     distanceAverage += position[2];
                     count++;
-                }
-                else if (position[2] >= 0.95 * (distanceAverage/count) && position[2] <= 1.05 * (distanceAverage/count)){
+                } else if (position[2] >= 0.95 * (distanceAverage / count) && position[2] <= 1.05 * (distanceAverage / count)) {
                     validPosition = 0;
                     break;
                 }
@@ -360,8 +348,7 @@ int Kinect::getAverageFromPointList(list<Point> obstacle) {
     if (obstacleSize > 0) {
         averagePointObstacle /= obstacleSize;
         return averagePointObstacle;
-    }
-    else {
+    } else {
         return 0;
     }
 }

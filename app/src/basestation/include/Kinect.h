@@ -47,10 +47,6 @@ private:
 
     list<Vec2f> getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, Mat depthMatrix);
 
-
-
-
-
     static Vec2f translateXZCoordtoKinect(Vec2f positionXZ);
 
     Vec2f getAverageDistanceForPointLine(list<Vec2f> allDistances);
@@ -77,7 +73,7 @@ public:
 
     static Vec2f getTrueCoordFromKinectCoord(Vec3f depthXYZ);
 
-       static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
+    static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
 
     static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
 
