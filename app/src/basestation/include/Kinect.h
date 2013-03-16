@@ -6,6 +6,9 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+using namespace cv;
+using namespace std;
+
 class Kinect {
 
 private:
@@ -30,47 +33,59 @@ private:
     static float const ROBOT_MIN_DISTANCE;
     static float const ROBOT_HEIGHT;
 
-    cv::Vec2f obstacle1;
-    cv::Vec2f obstacle2;
-    cv::Vec2f robot;
+    Vec2f _obstacle1;
+    Vec2f _obstacle2;
+    Vec2f _robot;
 
-    int getAverageFromPointList(std::list<cv::Point> obstacle);
+    int getAverageFromPointList(list<Point> obstacle);
 
-    void findAllPossiblePositionForEachObstacle(cv::Mat depthMatrix, std::list<cv::Point> *obstacle1, std::list<cv::Point> *obstacle2);
+    void findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point> &obstacle1, list<Point> &obstacle2);
 
-    std::vector<cv::Point> findAllPossiblePositionForRobot(cv::Mat depthMatrix, cv::Vec2f obstacle1, cv::Vec2f obstacle2);
+    vector<Point> findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle2);
 
-    std::list<cv::Vec2f> getSomeYDistanceAssociatedWithXForObstacle(int obstaclePositionX, cv::Mat depthMatrix);
+    list<Vec2f> getSomeYDistanceAssociatedWithXForObstacle(int obstaclePositionX, Mat depthMatrix);
 
-    std::list<cv::Vec2f> getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, cv::Mat depthMatrix);
+    list<Vec2f> getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, Mat depthMatrix);
 
-    static cv::Vec2f getRotatedXZCoordFromKinectCoord(cv::Vec3f depthXYZ);
 
-    static cv::Vec2f addObstacleRadiusToDistance(cv::Vec2f distanceExtObstacle);
 
-    static cv::Vec2f translateXZCoordtoOrigin(cv::Vec2f rotatedXZ);
 
-    static cv::Vec2f translateXZCoordtoKinect(cv::Vec2f positionXZ);
 
-    cv::Vec2f getAverageDistanceForPointLine(std::list<cv::Vec2f> allDistances);
+    static Vec2f translateXZCoordtoKinect(Vec2f positionXZ);
 
-    cv::Vec2f getAveragePositionForObstacle(cv::Mat depthMatrix, std::list<cv::Point> obstacle);
+    Vec2f getAverageDistanceForPointLine(list<Vec2f> allDistances);
 
-    int getAverageFromPointListWithConditions(std::vector<cv::Point> robotPositions, float minCondition, float maxCondition);
+    Vec2f getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle);
+
+    int getAverageFromPointListWithConditions(vector<Point> robotPositions, float minCondition, float maxCondition);
 
 public:
 
-    cv::Vec2f getObstacle1();
+    Kinect();
 
-    cv::Vec2f getObstacle2();
+    Kinect(Vec2f robot);
 
-    std::vector<cv::Vec2f> findCenteredObstacle(cv::Mat depthMatrix);
+    Kinect(Vec2f obstacle1, Vec2f obstacle2);
 
-    static cv::Vec2f getTrueCoordFromKinectCoord(cv::Vec3f depthXYZ);
+    Kinect(Vec2f obstacle1, Vec2f obstacle2, Vec2f robot);
 
-    cv::Vec2f findRobot(cv::Mat depthMatrix);
+    Vec2f getObstacle1();
 
-    cv::Vec2f getRobot();
+    Vec2f getObstacle2();
+
+    vector<Vec2f> findCenteredObstacle(Mat depthMatrix);
+
+    static Vec2f getTrueCoordFromKinectCoord(Vec3f depthXYZ);
+
+       static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
+
+    static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
+
+    static Vec2f addObstacleRadiusToDistance(Vec2f distanceExtObstacle);
+
+    Vec2f findRobot(Mat depthMatrix);
+
+    Vec2f getRobot();
 
 };
 
