@@ -10,19 +10,10 @@ class NumberReaderIT: public ::testing::Test {
 public:
 
 protected:
-	NumberReader * numberReader;
-
-	virtual void SetUp() {
-		numberReader = new NumberReader();
-	}
-
-	virtual void TearDown() {
-		delete numberReader;
-		numberReader = NULL;
-	}
+	NumberReader numberReader;
 };
 
-int getNumberOfWrongDetectionFor(NumberReader * numberReader, int no) {
+int getNumberOfWrongDetectionFor(NumberReader & numberReader, int no) {
 	char filename[255];
 	int nbOfWrongNumber = 0;
 
@@ -34,7 +25,7 @@ int getNumberOfWrongDetectionFor(NumberReader * numberReader, int no) {
 		}
 
 		cvtColor(number, number, COLOR_BGR2GRAY);
-		if (numberReader->identifyNumber(number) != no) {
+		if (numberReader.identifyNumber(number) != no) {
 			nbOfWrongNumber++;
 		}
 
@@ -51,7 +42,7 @@ TEST_F(NumberReaderIT, trainedDataAreValid) {
 
 			Mat numberImg = imread(filename, 1);
 			cvtColor(numberImg, numberImg, COLOR_BGR2GRAY);
-			int number = numberReader->identifyNumber(numberImg);
+			int number = numberReader.identifyNumber(numberImg);
 
 			ASSERT_TRUE(number == i);
 		}
