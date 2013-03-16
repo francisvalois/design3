@@ -22,6 +22,7 @@ add_service_files(
   TestGoToSudocubeX.srv
   TestFindObstacles.srv
   TestDrawNumber.srv
+  TestGoToGreenFrameAndDraw.srv
   MoveRobotToSudocube.srv
 )
 

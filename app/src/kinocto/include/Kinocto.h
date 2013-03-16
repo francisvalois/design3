@@ -16,6 +16,7 @@
 #include "kinocto/TestGetAntennaParam.h"
 #include "kinocto/TestFindObstacles.h"
 #include "kinocto/TestDrawNumber.h"
+#include "kinocto/TestGoToGreenFrameAndDraw.h"
 
 #include "microcontroller/PutPen.h"
 #include "basestation/FindRobotPosition.h"
@@ -48,7 +49,6 @@ private:
 public:
     Kinocto(ros::NodeHandle node);
     ~Kinocto();
-
     void start();
     void startLoop(const std_msgs::String::ConstPtr& msg);
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request, kinocto::TestExtractSudocubeAndSolve::Response & response);
@@ -57,7 +57,8 @@ public:
     bool testFindRobotPosition(kinocto::TestFindRobotPosition::Request & request, kinocto::TestFindRobotPosition::Response & response);
     bool testGetAntennaParam(kinocto::TestGetAntennaParam::Request & request, kinocto::TestGetAntennaParam::Response & response);
     bool testFindObstacles(kinocto::TestFindObstacles::Request & request, kinocto::TestFindObstacles::Response & response);
-    bool testDrawNumer(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response);
+    bool testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response);
+    bool testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Request & request, kinocto::TestGoToGreenFrameAndDraw::Response & response);
 };
 
 #endif
