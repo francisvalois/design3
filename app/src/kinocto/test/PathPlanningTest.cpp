@@ -402,7 +402,7 @@ namespace {
 
 		pathPlanning.getPath(SUDOKUBE1, SUDOKUBE1_ANGLE, start, STARTING_ANGLE);
 
-		pathPlanning.printTable();
+//		pathPlanning.printTable();
   }
 
   TEST_F(PathPlanningTest, IntegrationTest9) {
@@ -418,6 +418,6 @@ namespace {
 
 		pathPlanning.getPath(start, 19.0f, SUDOKUBE1, SUDOKUBE1_ANGLE);
 
-		pathPlanning.printTable();
+//		pathPlanning.printTable();
   }
 }
