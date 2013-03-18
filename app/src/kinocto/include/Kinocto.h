@@ -13,6 +13,8 @@
 #include "Sudokube.h"
 #include "SudocubeExtractor.h"
 #include "SudokubeSolver.h"
+#include "Position.h"
+#include "Move.h"
 #include "PathPlanning.h"
 #include "AntennaParam.h"
 #include "Workspace.h"
@@ -31,9 +33,6 @@
 #include "kinocto/TestFindObstacles.h"
 #include "kinocto/TestDrawNumber.h"
 #include "kinocto/TestGoToGreenFrameAndDraw.h"
-
-//TODO Temporaire
-#include "Node.h"
 
 #define INITIATED 1
 #define START_LOOP 2
