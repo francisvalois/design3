@@ -90,9 +90,7 @@ vector<Position> PathPlanning::getPath(Position start, Position destination) {
 
     constructGraph();
 
-    vector<Position> positions = findPathInGraph();
-
-    return positions; //convertToMoves(positions, startAngle, destinationAngle);
+    return findPathInGraph();
 }
 
 void PathPlanning::cleanGoalNodes() {
@@ -146,7 +144,7 @@ vector<Move> PathPlanning::convertToMoves(vector<Position> positions, float star
 
         moves.push_back(move);
     }
-    Move move((destinationAngle - robotCurrentAngle), 0);
+    Move move((destinationAngle - robotCurrentAngle), 0, endPosition);
     moves.push_back(move);
     return moves;
 }
@@ -200,36 +198,27 @@ float PathPlanning::calculateCost(Position p1, Position p2) {
 }
 
 float PathPlanning::calculateAngle(float robotCurrentAngle, Position p1, Position p2) {
-//	cout << "robot current angle : " << robotCurrentAngle << endl;
-//	cout << "    position : (" << p1.x << "," << p1.y << ") (" << p2.x << "," << p2.y << ")" << endl;
-
-    int x = p1.x - p2.x;
     int multFactor = -1;
     int addFactor = -180;
-//	cout << "    x : " << x << endl;
+
+    int x = p1.x - p2.x;
     if (x < 0) {
         addFactor = 0;
         multFactor *= -1;
         x *= -1;
     }
     int y = p1.y - p2.y;
-//	cout << "    y : " << y << endl;
     if (y < 0) {
         multFactor *= -1;
         y *= -1;
     }
+
     float ratio = (float) y / (float) x;
-//	cout << "    ratio : " << ratio << endl;
     float angle = atan(ratio) * 180 / PI;
-//	cout << "    angle : " << angle << endl;
-//	cout << "    addfactor : " << addFactor << endl;
-//	cout << "    multfactor : " << multFactor << endl;
     angle += addFactor;
     angle *= multFactor;
-//	cout << "    angle : " << angle << endl;
-//	cout << "    robot current angle : " << robotCurrentAngle << endl;
+
     float result = (angle - robotCurrentAngle);
-//	cout << "    result angle move : " << result << endl;
 
     if (result > 180) {
         result -= 360;
@@ -320,24 +309,20 @@ void PathPlanning::connectNodes() {
         for (unsigned int j = 0; j < listOfNodes.size(); j++) {
             if (i < j) {
                 if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition())) {
-//					cout << "    adding connection between : (" << listOfNodes[i]->getPosition().x << "," << listOfNodes[i]->getPosition().y << ") and (" << listOfNodes[j]->getPosition().x << "," << listOfNodes[j]->getPosition().y << ")" << endl;
                     listOfNodes[i]->addNeighbor(listOfNodes[j]);
                     listOfNodes[j]->addNeighbor(listOfNodes[i]);
                 }
             }
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), startNode->getPosition())) {
-//			cout << "    adding connection between : (" << listOfNodes[i]->getPosition().x << "," << listOfNodes[i]->getPosition().y << ") and (" << startNode->getPosition().x << "," << startNode->getPosition().y << ")" << endl;
             listOfNodes[i]->addNeighbor(startNode);
             startNode->addNeighbor(listOfNodes[i]);
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), destinationNode->getPosition())) {
-//			cout << "    adding connection between : (" << listOfNodes[i]->getPosition().x << "," << listOfNodes[i]->getPosition().y << ") and (" << destinationNode->getPosition().x << "," << destinationNode->getPosition().y << ")" << endl;
             listOfNodes[i]->addNeighbor(destinationNode);
             destinationNode->addNeighbor(listOfNodes[i]);
         }
         if (!linePassesThroughObstacle(startNode->getPosition(), destinationNode->getPosition())) {
-//			cout << "    adding connection between : (" << startNode->getPosition().x << "," << startNode->getPosition().y << ") and (" << destinationNode->getPosition().x << "," << destinationNode->getPosition().y << ")" << endl;
             startNode->addNeighbor(destinationNode);
             destinationNode->addNeighbor(startNode);
         }
@@ -345,33 +330,14 @@ void PathPlanning::connectNodes() {
 }
 
 bool PathPlanning::linePassesThroughObstacle(Position p1, Position p2) {
-    if ((p2.x - p1.x) == 0)
-        return true;
-
-    Position upperLeftObstacle1;
-    upperLeftObstacle1.x = obstacle1.x - TOTAL_OBSTACLE_RADIUS;
-    upperLeftObstacle1.y = obstacle1.y + TOTAL_OBSTACLE_RADIUS;
-    Position upperRightObstacle1;
-    upperRightObstacle1.x = obstacle1.x + TOTAL_OBSTACLE_RADIUS;
-    upperRightObstacle1.y = obstacle1.y + TOTAL_OBSTACLE_RADIUS;
-    Position lowerLeftObstacle1;
-    lowerLeftObstacle1.x = obstacle1.x - TOTAL_OBSTACLE_RADIUS;
-    lowerLeftObstacle1.y = obstacle1.y - TOTAL_OBSTACLE_RADIUS;
-    Position lowerRightObstacle1;
-    lowerRightObstacle1.x = obstacle1.x + TOTAL_OBSTACLE_RADIUS;
-    lowerRightObstacle1.y = obstacle1.y - TOTAL_OBSTACLE_RADIUS;
-    Position upperLeftObstacle2;
-    upperLeftObstacle2.x = obstacle2.x - TOTAL_OBSTACLE_RADIUS;
-    upperLeftObstacle2.y = obstacle2.y + TOTAL_OBSTACLE_RADIUS;
-    Position upperRightObstacle2;
-    upperRightObstacle2.x = obstacle2.x + TOTAL_OBSTACLE_RADIUS;
-    upperRightObstacle2.y = obstacle2.y + TOTAL_OBSTACLE_RADIUS;
-    Position lowerLeftObstacle2;
-    lowerLeftObstacle2.x = obstacle2.x - TOTAL_OBSTACLE_RADIUS;
-    lowerLeftObstacle2.y = obstacle2.y - TOTAL_OBSTACLE_RADIUS;
-    Position lowerRightObstacle2;
-    lowerRightObstacle2.x = obstacle2.x + TOTAL_OBSTACLE_RADIUS;
-    lowerRightObstacle2.y = obstacle2.y - TOTAL_OBSTACLE_RADIUS;
+    Position upperLeftObstacle1(obstacle1.x - TOTAL_OBSTACLE_RADIUS, obstacle1.y + TOTAL_OBSTACLE_RADIUS);
+    Position upperRightObstacle1(obstacle1.x + TOTAL_OBSTACLE_RADIUS, obstacle1.y + TOTAL_OBSTACLE_RADIUS);
+    Position lowerLeftObstacle1(obstacle1.x - TOTAL_OBSTACLE_RADIUS, obstacle1.y - TOTAL_OBSTACLE_RADIUS);
+    Position lowerRightObstacle1(obstacle1.x + TOTAL_OBSTACLE_RADIUS, obstacle1.y - TOTAL_OBSTACLE_RADIUS);
+    Position upperLeftObstacle2(obstacle2.x - TOTAL_OBSTACLE_RADIUS, obstacle2.y + TOTAL_OBSTACLE_RADIUS);
+    Position upperRightObstacle2(obstacle2.x + TOTAL_OBSTACLE_RADIUS, obstacle2.y + TOTAL_OBSTACLE_RADIUS);
+    Position lowerLeftObstacle2(obstacle2.x - TOTAL_OBSTACLE_RADIUS, obstacle2.y - TOTAL_OBSTACLE_RADIUS);
+    Position lowerRightObstacle2(obstacle2.x + TOTAL_OBSTACLE_RADIUS, obstacle2.y - TOTAL_OBSTACLE_RADIUS);
 
     if (linesCrosses(p1, p2, upperLeftObstacle1, upperRightObstacle1))
         return true;
