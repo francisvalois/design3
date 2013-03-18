@@ -2,51 +2,51 @@
 
 Workspace::Workspace() {
     //Valeur à redéfinir dynamiquement;
-    robot.x = 0.0f;
-    robot.y = 0.0f;
+    robot.x = 0;
+    robot.y = 0;
     robotAngle = 0.0f;
 
-    obstacles[0].x = 0.0f;
-    obstacles[0].y = 0.0f;
+    obstacles[0].x = 0;
+    obstacles[0].y = 0;
 
-    obstacles[1].x = 0.0f;
-    obstacles[1].y = 0.0f;
+    obstacles[1].x = 0;
+    obstacles[1].y = 0;
 
     //Valeurs fixes
-    sudocubesPos[0].x = 176.0f;
-    sudocubesPos[0].y = 78.0f;
+    sudocubesPos[0].x = 176;
+    sudocubesPos[0].y = 78;
     sudocubesAngle[0] = -90.0f;
 
-    sudocubesPos[1].x = 209.0f;
-    sudocubesPos[1].y = 78.0f;
+    sudocubesPos[1].x = 209;
+    sudocubesPos[1].y = 78;
     sudocubesAngle[1] = -90.0f;
 
-    sudocubesPos[2].x = 197.0f;
-    sudocubesPos[2].y = 96.0f;
+    sudocubesPos[2].x = 197;
+    sudocubesPos[2].y = 96;
     sudocubesAngle[2] = 0.0f;
 
-    sudocubesPos[3].x = 197.0f;
-    sudocubesPos[3].y = 70.0f;
+    sudocubesPos[3].x = 197;
+    sudocubesPos[3].y = 70;
     sudocubesAngle[3] = 0.0f;
 
-    sudocubesPos[4].x = 197.0f;
-    sudocubesPos[4].y = 44.0f;
+    sudocubesPos[4].x = 197;
+    sudocubesPos[4].y = 44;
     sudocubesAngle[4] = 0.0f;
 
-    sudocubesPos[5].x = 197.0f;
-    sudocubesPos[5].y = 18.0f;
+    sudocubesPos[5].x = 197;
+    sudocubesPos[5].y = 18;
     sudocubesAngle[5] = 0.0f;
 
-    sudocubesPos[6].x = 209.0f;
-    sudocubesPos[6].y = 36.0f;
+    sudocubesPos[6].x = 209;
+    sudocubesPos[6].y = 36;
     sudocubesAngle[6] = 90.0f;
 
-    sudocubesPos[7].x = 176.0f;
-    sudocubesPos[7].y = 36.0f;
+    sudocubesPos[7].x = 176;
+    sudocubesPos[7].y = 36;
     sudocubesAngle[7] = 90.0f;
 
-    antenna.x = 60.0f;
-    antenna.y = 57.0f;
+    antenna.x = 60;
+    antenna.y = 57;
 
     poleAngle[0] = -90.0f;
     poleAngle[1] = 90.0f;

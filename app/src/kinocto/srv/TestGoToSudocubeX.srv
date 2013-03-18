@@ -1,6 +1,6 @@
 int8 sudocubeNo
-float32 obs1x
-float32 obs1y
-float32 obs2x
-float32 obs2y
+int16 obs1x
+int16 obs1y
+int16 obs2x
+int16 obs2y
 ---

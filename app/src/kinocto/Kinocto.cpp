@@ -138,25 +138,25 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
 
     //Harcoding de la position du robot pour les tests
     Position robotPos;
-    robotPos.x = 18.0f;
-    robotPos.y = 57.0f;
+    robotPos.x = 19;
+    robotPos.y = 57;
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos.x, robotPos.y);
 
     //Initialisation rapide des obstacles pour les tests
-    if (request.obs1x == request.obs1y == request.obs2x == request.obs2y == 0) {
-        vector<Position> obstacles = baseStation->requestObstaclesPosition();
-        workspace.setObstaclesPos(obstacles[0], obstacles[1]);
-    } else {
-        Position obs1, obs2;
-        obs1.x = request.obs1x;
-        obs1.y = request.obs1y;
-        obs2.x = request.obs2x;
-        obs2.y = request.obs2y;
+    //if (request.obs1x == request.obs1y == request.obs2x == request.obs2y == 0) {
+    //vector<Position> obstacles = baseStation->requestObstaclesPosition();
+    //workspace.setObstaclesPos(obstacles[0], obstacles[1]);
+    //} else {
+    Position obs1, obs2;
+    obs1.x = request.obs1x;
+    obs1.y = request.obs1y;
+    obs2.x = request.obs2x;
+    obs2.y = request.obs2y;
 
-        workspace.setObstaclesPos(obs1, obs2);
-    }
+    workspace.setObstaclesPos(obs1, obs2);
+    //}
 
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
@@ -220,19 +220,19 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
 
     //Harcoding de la position du robot pour les tests
     Position robotPos;
-    robotPos.x = 18.0f;
-    robotPos.y = 57.0f;
+    robotPos.x = 19;
+    robotPos.y = 57;
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos.x, robotPos.y);
 
     //Hardcoding de la pos des obstacles pour qu'ils ne soient dans les pattes
     Position obs1;
-    obs1.x = 115.0f;
-    obs1.y = 30.0f;
+    obs1.x = 110;
+    obs1.y = 75;
     Position obs2;
-    obs2.x = 115.0f;
-    obs2.y = 80.0f;
+    obs2.x = 180;
+    obs2.y = 30;
     workspace.setObstaclesPos(obs1, obs2);
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
@@ -320,15 +320,25 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
 
     //Hardcodage de la position du robot pour les tests
     Position robotPos;
-    robotPos.x = 218.0f;
-    robotPos.y = 57.0f;
+    robotPos.x = 213;
+    robotPos.y = 57.;
     workspace.setRobotPos(robotPos);
-    workspace.setRobotAngle(180.0f);
+    workspace.setRobotAngle(-180.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos.x, robotPos.y);
 
     //Détection rapide des obstacles pour les tests
-    vector<Position> obsPos = baseStation->requestObstaclesPosition();
-    workspace.setObstaclesPos(obsPos[0], obsPos[1]);
+    //if (request.obs1x == request.obs1y == request.obs2x == request.obs2y == 0) {
+    //vector<Position> obstacles = baseStation->requestObstaclesPosition();
+    //workspace.setObstaclesPos(obstacles[0], obstacles[1]);
+    //} else {
+    Position obs1, obs2;
+    obs1.x = request.obs1x;
+    obs1.y = request.obs1y;
+    obs2.x = request.obs2x;
+    obs2.y = request.obs2y;
+
+    workspace.setObstaclesPos(obs1, obs2);
+    //}
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     /////

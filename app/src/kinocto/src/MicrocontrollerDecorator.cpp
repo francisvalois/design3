@@ -27,7 +27,7 @@ AntennaParam MicrocontrollerDecorator::decodeAntenna() {
     return antennaParam;
 }
 void MicrocontrollerDecorator::drawNumber(int number, bool isBig) {
-    ROS_INFO("Requesting the microcontroller to draw number:%d and isBig:$d", number, isBig);
+    ROS_INFO("Requesting the microcontroller to draw number:%d and isBig:%d", number, isBig);
 
     ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::DrawNumber>("microcontroller/drawNumber");
     microcontroller::DrawNumber srv;
