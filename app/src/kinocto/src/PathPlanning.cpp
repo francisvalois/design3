@@ -53,25 +53,29 @@ void PathPlanning::setObstacles(Position o1, Position o2) {
 
 bool PathPlanning::obstaclesPositionsOK(Position obstacle1, Position obstacle2) {
     if (obstacle1.x < DRAWING_ZONE || obstacle2.x < DRAWING_ZONE) {
-        cout << "Error : An obstacle is in the drawing zone" << endl;
+//        cout << "Error : An obstacle is in the drawing zone" << endl;
+    	ROS_ERROR("Error : An obstacle is in the drawing zone");
         return false;
     }
     if (obstacle1.x > TABLE_X - OBSTACLE_RADIUS || obstacle2.x > TABLE_X - OBSTACLE_RADIUS) {
-        cout << "Error : An obstacle is in the west wall (x too high)" << endl;
+//        cout << "Error : An obstacle is in the west wall (x too high)" << endl;
+        ROS_ERROR("Error : An obstacle is in the west wall (x too high)");
         return false;
     }
     if (obstacle1.y < OBSTACLE_RADIUS || obstacle2.y < OBSTACLE_RADIUS) {
-        cout << "Error : An obstacle is in the north wall (y too low)" << endl;
+//        cout << "Error : An obstacle is in the north wall (y too low)" << endl;
+        ROS_ERROR("Error : An obstacle is in the north wall (y too low)");
         return false;
     }
     if (obstacle1.y > TABLE_Y - OBSTACLE_RADIUS || obstacle2.y > TABLE_Y - OBSTACLE_RADIUS) {
-        cout << "Error : An obstacle is in the south wall (y too high)" << endl;
+//        cout << "Error : An obstacle is in the south wall (y too high)" << endl;
+        ROS_ERROR("Error : An obstacle is in the south wall (y too high)");
         return false;
     }
     return true;
 }
 
-vector<Move> PathPlanning::getPath(Position start, float startAngle, Position destination, float destinationAngle) {
+vector<Position> PathPlanning::getPath(Position start, Position destination) {
     cleanGoalNodes();
     startNode = new Node(start);
     startNode->setCost(0.0f);
@@ -82,13 +86,7 @@ vector<Move> PathPlanning::getPath(Position start, float startAngle, Position de
 
     vector<Position> positions = findPathInGraph();
 
-    vector<Move> moves = convertToMoves(positions, startAngle, destinationAngle);
-
-//	for(unsigned int i = 0; i < moves.size(); i++) {
-//
-//		cout << "Move " << i << " : Angle = " << moves[i].angle << " , Distance = " << moves[i].distance << endl;
-//	}
-    return moves; //convertToMoves(positions, startAngle, destinationAngle);
+    return positions; //convertToMoves(positions, startAngle, destinationAngle);
 }
 
 void PathPlanning::cleanGoalNodes() {

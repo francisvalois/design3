@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <queue>
+#include <ros/ros.h>
 
 const int TABLE_X = 231;
 const int TABLE_Y = 114;
@@ -27,7 +28,8 @@ public:
     PathPlanning();
     virtual ~PathPlanning();
 
-    std::vector<Move> getPath(Position, float, Position, float);
+    std::vector<Position> getPath(Position, Position);
+    std::vector<Move> convertToMoves(std::vector<Position>, float, float);
     void setObstacles(Position, Position);
     void printTable();
 
@@ -54,7 +56,6 @@ private:
     void applyDijkstra();
     float calculateCost(Position, Position);
     float calculateAngle(float, Position, Position);
-    std::vector<Move> convertToMoves(std::vector<Position>, float, float);
 
     //Helper functions for connectNodes();
     bool linePassesThroughObstacle(Position, Position);
