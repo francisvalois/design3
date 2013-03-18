@@ -18,22 +18,17 @@ BaseStation::~BaseStation() {
 }
 
 bool BaseStation::init() {
-    ros::init(init_argc, init_argv, "testqt");
+    ros::init(init_argc, init_argv, "basestation");
     if (!ros::master::check()) {
         return false;
     }
     ros::start(); // explicitly needed since our nodehandle is going out of scope.
     ros::NodeHandle n;
 
-    //ROSS COMMUNICATION
-    startKinoctoPublisher = n.advertise<std_msgs::String>("kinocto/start", 1);
+    ROS_INFO("Creating services handler for Basestation");
+    initHandlers(n);
 
-    findObstaclesPositionService = n.advertiseService("basestation/findObstaclesPosition", &BaseStation::findObstaclesPosition, this);
-    findRobotPositionService = n.advertiseService("basestation/findRobotPosition", &BaseStation::findRobotPosition, this);
-    showSolvedSudocubeService = n.advertiseService("basestation/showSolvedSudocube", &BaseStation::showSolvedSudocube, this);
-    traceRealTrajectoryService = n.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
-    updateRobotPositionService = n.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
-    loopEndedService = n.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
+    ROS_INFO("Basestation initiated");
 
     start();
     return true;
@@ -43,25 +38,32 @@ bool BaseStation::init(const std::string &master_url, const std::string &host_ur
     std::map<std::string, std::string> remappings;
     remappings["__master"] = master_url;
     remappings["__hostname"] = host_url;
-    ros::init(remappings, "testqt");
+    ros::init(remappings, "basestation");
     if (!ros::master::check()) {
         return false;
     }
     ros::start(); // explicitly needed since our nodehandle is going out of scope.
     ros::NodeHandle n;
 
-    // Add your ros communications here.
-    startKinoctoPublisher = n.advertise<std_msgs::String>("kinocto/start", 1);
+    ROS_INFO("Creating services handler for Basestation");
+    initHandlers(n);
 
-    findObstaclesPositionService = n.advertiseService("basestation/findObstaclesPosition", &BaseStation::findObstaclesPosition, this);
-    findRobotPositionService = n.advertiseService("basestation/findRobotPosition", &BaseStation::findRobotPosition, this);
-    showSolvedSudocubeService = n.advertiseService("basestation/showSolvedSudocube", &BaseStation::showSolvedSudocube, this);
-    traceRealTrajectoryService = n.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
-    updateRobotPositionService = n.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
-    loopEndedService = n.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
+    ROS_INFO("Basestation initiated");
 
     start();
     return true;
+}
+
+void BaseStation::initHandlers(ros::NodeHandle & node) {
+    startKinoctoPublisher = node.advertise<std_msgs::String>("kinocto/start", 1);
+
+    findObstaclesPositionService = node.advertiseService("basestation/findObstaclesPosition", &BaseStation::findObstaclesPosition, this);
+    findRobotPositionService = node.advertiseService("basestation/findRobotPosition", &BaseStation::findRobotPosition, this);
+    showSolvedSudocubeService = node.advertiseService("basestation/showSolvedSudocube", &BaseStation::showSolvedSudocube, this);
+    traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
+    updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
+    loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
+    showConfirmStartRobotMessageService = node.advertiseService("basestation/showConfirmStartRobotMessage", &BaseStation::loopEnded, this);
 }
 
 void BaseStation::run() {
@@ -122,17 +124,21 @@ bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRo
 }
 
 bool BaseStation::showSolvedSudocube(ShowSolvedSudocube::Request & request, ShowSolvedSudocube::Response & response) {
+    ROS_INFO("Show Solved sudocube");
+
     stringstream buff;
     buff << request.solvedSudocube;
     ROS_INFO( "%s\n red square value:%d\n solved sudocube:\n%s", "Show Solved Sudocube", request.redCaseValue, buff.str().c_str());
+
+    //TODO Afficher le sudocube et la valeur de la case rouge dans l'interface
 
     return true;
 }
 
 bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, TraceRealTrajectory::Response & response) {
+    ROS_INFO("Tracing Tracjectory");
     if (request.y.size() != request.x.size()) {
-        cout << "THE TRACJECTORY IS NOT WELL FORMATTED" << endl;
-        ROS_INFO( "%s", "Trace Real Trajectory. THE TRACJECTORY IS NOT WELL FORMATTED ");
+        ROS_ERROR("THE TRACJECTORY IS NOT WELL FORMATTED");
 
         return false;
     }
@@ -142,19 +148,33 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
         buff << "(" << request.x[i] << "," << request.y[i] << ")" << endl;
     }
 
-    ROS_INFO("%s %s", "Trace Real Trajectory. Values :\n", buff.str().c_str());
+    //TODO Afficher les points dans l'interface graphique
+
+    ROS_INFO("%s %s", "Points of the trajectory :\n", buff.str().c_str());
 
     return true;
 }
 
 bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & response) {
-    ROS_INFO("%s", "LOOP JUST ENDED!!! CLEAN WORKSPACE");
+    ROS_INFO("Show Loop Ended Message");
+
+    //TODO Afficher le message dans l'interface
 
     return true;
 }
 
 bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, UpdateRobotPosition::Response & response) {
-    ROS_INFO( "%s\n x:%f\n y:\n%f", "Update Robot Position", request.x, request.y);
+    ROS_INFO( "%s\n x:%f\n y:\n%f", "Updating Robot Position", request.x, request.y);
+
+    //TODO Afficher la nouvelle position dans l'interface
+
+    return true;
+}
+
+bool showConfirmStartRobotdMessage(basestation::ShowConfirmStartRobot::Request & request, basestation::ShowConfirmStartRobot::Response & response) {
+    ROS_INFO("Showing Confirmation of Start Robot");
+
+    //TODO Afficher le message dans l'interface
 
     return true;
 }

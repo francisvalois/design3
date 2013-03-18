@@ -19,12 +19,6 @@
 #include "kinocto/TestDrawNumber.h"
 #include "kinocto/TestGoToGreenFrameAndDraw.h"
 
-#include "microcontroller/PutPen.h"
-
-#include "basestation/FindRobotPosition.h"
-#include "basestation/FindObstaclesPosition.h"
-#include "basestation/ShowSolvedSudocube.h"
-
 #include "CameraCapture.h"
 #include "SudokubeSolver.h"
 #include "Sudokube.h"
@@ -32,6 +26,8 @@
 #include "PathPlanning.h"
 #include "AntennaParam.h"
 #include "Pos.h"
+#include "BaseStationDecorator.h"
+#include "MicrocontrollerDecorator.h"
 
 #define INITIATED 1
 #define START_LOOP 2
@@ -48,14 +44,14 @@ private:
     SudocubeExtractor sudocubeExtractor;
     PathPlanning pathPlanning;
     AntennaParam antennaParam;
-
+    BaseStationDecorator * baseStation;
+    MicrocontrollerDecorator * microcontroller;
 
     void loop();
     std::vector<Sudokube *> extractSudocube();
     void solveSudocube(std::vector<Sudokube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
-    Pos requestRobotPosition();
-    std::vector<Pos> requestObstaclesPosition();
-    void sendSolvedSudocube(std::string sudocube, int redCaseValue);
+
+    void requestDrawNumber(int number, bool isBig);
 
 public:
     Kinocto(ros::NodeHandle node);
@@ -63,7 +59,7 @@ public:
     void start();
     void startLoop(const std_msgs::String::ConstPtr& msg);
 
-
+    //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request, kinocto::TestExtractSudocubeAndSolve::Response & response);
     bool testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, kinocto::TestGoToSudocubeX::Response & response);
     bool testFindRobotAngle(kinocto::TestFindRobotAngle::Request & request, kinocto::TestFindRobotAngle::Response & response);

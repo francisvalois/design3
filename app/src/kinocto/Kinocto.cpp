@@ -7,9 +7,12 @@ using namespace cv;
 Kinocto::Kinocto(NodeHandle node) {
     this->nodeHandle = nodeHandle;
     state = INITIATED;
+    baseStation = new BaseStationDecorator(nodeHandle);
+    microcontroller = new MicrocontrollerDecorator(nodeHandle);
 }
 
 Kinocto::~Kinocto() {
+    delete baseStation;
 }
 
 void Kinocto::start() {
@@ -37,23 +40,23 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
 
     //TODO Test seulement
     /*ServiceClient client = nodeHandle.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
-    microcontroller::PutPen srv;
-    srv.request.down = false;
+     microcontroller::PutPen srv;
+     srv.request.down = false;
 
-    if (client.call(srv)) {
-        ROS_INFO("Received response from service");
-    } else {
-        ROS_ERROR("Failed to call service");
-    }
+     if (client.call(srv)) {
+     ROS_INFO("Received response from service");
+     } else {
+     ROS_ERROR("Failed to call service");
+     }
 
-    ServiceClient client2 = nodeHandle.serviceClient<basestation::FindRobotPosition>("basestation/findRobotPosition");
-    basestation::FindRobotPosition srv2;
+     ServiceClient client2 = nodeHandle.serviceClient<basestation::FindRobotPosition>("basestation/findRobotPosition");
+     basestation::FindRobotPosition srv2;
 
-    if (client2.call(srv2)) {
-        ROS_INFO("Received response from service2");
-    } else {
-        ROS_ERROR("Failed to call service");
-    }*/
+     if (client2.call(srv2)) {
+     ROS_INFO("Received response from service2");
+     } else {
+     ROS_ERROR("Failed to call service");
+     }*/
 }
 
 vector<Sudokube *> Kinocto::extractSudocube() {
@@ -112,58 +115,16 @@ void Kinocto::solveSudocube(vector<Sudokube *> & sudocubes, string & solvedSudoc
     }
 }
 
-Pos Kinocto::requestRobotPosition() {
-    ROS_INFO("Requesting Robot Position");
-
-    Pos pos;
-
-    ros::ServiceClient client = nodeHandle.serviceClient<basestation::FindRobotPosition>("basestation/findRobotPosition");
-    basestation::FindRobotPosition srv;
+void Kinocto::requestDrawNumber(int number, bool isBig) {
+    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::DrawNumber>("microcontroller/drawNumber");
+    microcontroller::DrawNumber srv;
+    srv.request.number = number;
+    srv.request.isBig = isBig;
 
     if (client.call(srv)) {
-        ROS_INFO("The robot position is : x:%f y:%f", srv.response.x, srv.response.y);
-        pos.x = srv.response.x;
-        pos.y = srv.response.y;
-    } else {
-        ROS_ERROR("Failed to call service basestation/findRobotPosition");
-    }
-
-    return pos;
-}
-
-vector<Pos> Kinocto::requestObstaclesPosition() {
-    ROS_INFO("Requesting Obstacles Position");
-
-    vector<Pos> obsPos(2);
-
-    ros::ServiceClient client = nodeHandle.serviceClient<basestation::FindObstaclesPosition>("basestation/findObstaclesPosition");
-    basestation::FindObstaclesPosition srv;
-
-    if (client.call(srv)) {
-        ROS_INFO("The obstacles positions are : (x:%f, y:%f) (x:%f, y:%f)", srv.response.x1, srv.response.y1, srv.response.x2, srv.response.y2);
-        obsPos[0].x = srv.response.x1;
-        obsPos[0].y = srv.response.y1;
-        obsPos[1].x = srv.response.x2;
-        obsPos[1].y = srv.response.y2;
+        ROS_INFO("gsfgsfg");
     } else {
         ROS_ERROR("Failed to call service basestation/findObstaclesPosition");
-    }
-
-    return obsPos;
-}
-
-void Kinocto::sendSolvedSudocube(std::string sudocube, int redCaseValue) {
-    ROS_INFO("Sending Solved Sudocube");
-
-    ros::ServiceClient client = nodeHandle.serviceClient<basestation::ShowSolvedSudocube>("basestation/showSolvedSudocube");
-    basestation::ShowSolvedSudocube srv;
-    srv.request.solvedSudocube = sudocube;
-    srv.request.redCaseValue = redCaseValue;
-
-    if (client.call(srv)) {
-        ROS_INFO("The solved sudocube has been sent");
-    } else {
-        ROS_ERROR("Failed to call service basestation/showSolvedSudocube");
     }
 }
 
@@ -182,7 +143,7 @@ bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::
     solveSudocube(sudocubes, solvedSudocube, redCaseValue);
     //TODO Vérifier si c'est solvé?!
 
-    sendSolvedSudocube(solvedSudocube, redCaseValue);
+    baseStation->sendSolvedSudocube(solvedSudocube, redCaseValue);
 
     response.solvedSudocube = solvedSudocube;
     response.redCaseValue = redCaseValue;
@@ -213,19 +174,20 @@ bool Kinocto::testFindRobotAngle(kinocto::TestFindRobotAngle::Request & request,
 bool Kinocto::testFindRobotPosition(kinocto::TestFindRobotPosition::Request & request, kinocto::TestFindRobotPosition::Response & response) {
     ROS_INFO("TESTING FindRobotPosition");
 
-    Pos robotPos = requestRobotPosition();
+    Pos robotPos = baseStation->requestRobotPosition();
     response.x = robotPos.x;
     response.y = robotPos.y;
 
     return true;
 }
 
-bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Request & request, kinocto::TestGetAntennaParamAndShow::Response & response) {
+bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Request & request,
+        kinocto::TestGetAntennaParamAndShow::Response & response) {
     ROS_INFO("TESTING GetAntennaParam");
 
     //À partir de : dos au mur, centré sur la table(0, 57)
     //Se déplacer vers l'antenne
-    //Décoder le message (à min 5 cm de distance de l'antenne)
+    //Décoder le message (à min 5 cm de distance de l'antenne) *Plusieurs fois selon Diane
     //Afficher le message sur le microcontrolleur
 
     return true;
@@ -234,7 +196,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
 bool Kinocto::testFindObstacles(kinocto::TestFindObstacles::Request & request, kinocto::TestFindObstacles::Response & response) {
     ROS_INFO("TESTING FindObstacles");
 
-    vector<Pos> obsPos = requestObstaclesPosition();
+    vector<Pos> obsPos = baseStation->requestObstaclesPosition();
 
     response.obs1x = obsPos[0].x;
     response.obs1y = obsPos[0].y;

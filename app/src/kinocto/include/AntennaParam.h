@@ -9,17 +9,15 @@ public:
     const static int ORIENTATION_EAST = 3;
     const static int ORIENTATION_WEST = 4;
 
+    int number;
+    bool isBig;
+    int orientation;
+
     AntennaParam();
     virtual ~AntennaParam();
 
-    bool isBig();
-    int getNumber();
-    int getOrientation();
-
 private:
-    int number;
-    bool big;
-    int orientation;
+
 };
 
 #endif /* ANTENNAPARAM_H_ */

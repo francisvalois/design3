@@ -5,15 +5,18 @@
 #include <QThread>
 #include "opencv2/core/core.hpp"
 
-//Services
+//Messages
 #include "std_msgs/String.h"
 #include "kinocto/StartKinocto.h"
+
+//Services
 #include "basestation/FindObstaclesPosition.h"
 #include "basestation/FindRobotPosition.h"
 #include "basestation/ShowSolvedSudocube.h"
 #include "basestation/TraceRealTrajectory.h"
 #include "basestation/UpdateRobotPosition.h"
 #include "basestation/LoopEnded.h"
+#include "basestation/ShowConfirmStartRobot.h"
 
 #include "Kinect.h"
 #include "KinectCapture.h"
@@ -34,9 +37,10 @@ public:
     bool findRobotPosition(basestation::FindRobotPosition::Request & request, basestation::FindRobotPosition::Response & response);
     bool showSolvedSudocube(basestation::ShowSolvedSudocube::Request & request, basestation::ShowSolvedSudocube::Response & response);
     bool traceRealTrajectory(basestation::TraceRealTrajectory::Request & request, basestation::TraceRealTrajectory::Response & response);
-    bool updateRobotPosition(basestation::UpdateRobotPosition::Request & request, basestation::UpdateRobotPosition::Response & response);
     bool loopEnded(basestation::LoopEnded::Request & request, basestation::LoopEnded::Response & response);
-
+    bool updateRobotPosition(basestation::UpdateRobotPosition::Request & request, basestation::UpdateRobotPosition::Response & response);
+    bool showConfirmStartRobotdMessage(basestation::ShowConfirmStartRobot::Request & request,
+            basestation::ShowConfirmStartRobot::Response & response);
 
 Q_SIGNALS:
     void rosShutdown();
@@ -56,6 +60,9 @@ private:
     ros::ServiceServer traceRealTrajectoryService;
     ros::ServiceServer updateRobotPositionService;
     ros::ServiceServer loopEndedService;
+    ros::ServiceServer showConfirmStartRobotMessageService;
+
+    void initHandlers(ros::NodeHandle & node);
 
 };
 

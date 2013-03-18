@@ -23,6 +23,7 @@ add_service_files(
   TraceRealTrajectory.srv
   UpdateRobotPosition.srv
   ShowSolvedSudocube.srv
+  ShowConfirmStartRobot.srv
 )
 
 generate_messages(

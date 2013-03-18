@@ -97,8 +97,21 @@ link_directories(include
 ## Testing ##
 #############
 
-catkin_add_gtest(kinoctoTest test/AllTests.cpp ${PROJ_SOURCES})
+catkin_add_gtest(kinoctoTest test/AllTests.cpp 
+    "src/Case.cpp" 
+    "src/PathPlanning.cpp" 
+    "src/Sudokube.cpp" 
+    "src/Node.cpp"
+    "src/SudokubeSolver.cpp"
+    "src/NumberReader.cpp"
+)
 target_link_libraries(kinoctoTest ${OpenCV_LIBS})
 
-catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp ${PROJ_SOURCES})
+
+catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp 
+    "src/NumberReader.cpp"
+    "src/SudocubeExtractor.cpp"
+    "src/Sudokube.cpp"
+    "src/Case.cpp" 
+)
 target_link_libraries(kinoctoLongTest ${OpenCV_LIBS})
