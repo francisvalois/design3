@@ -4,6 +4,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "Node.h"
+#include "Move.h"
 #include <vector>
 #include <iostream>
 #include <stdio.h>
@@ -21,17 +22,12 @@ const int TOTAL_OBSTACLE_RADIUS = (BUFFER_SIZE + OBSTACLE_RADIUS);
 
 #define PI 3.14159265
 
-struct move {
-    int angle;
-    int distance;
-};
-
 class PathPlanning {
 public:
     PathPlanning();
     virtual ~PathPlanning();
 
-    std::vector<move> getPath(Position, float, Position, float);
+    std::vector<Move> getPath(Position, float, Position, float);
     void setObstacles(Position, Position);
     void printTable();
 
@@ -58,7 +54,7 @@ private:
     void applyDijkstra();
     float calculateCost(Position, Position);
     float calculateAngle(float, Position, Position);
-    std::vector<move> convertToMoves(std::vector<Position>, float, float);
+    std::vector<Move> convertToMoves(std::vector<Position>, float, float);
 
     //Helper functions for connectNodes();
     bool linePassesThroughObstacle(Position, Position);

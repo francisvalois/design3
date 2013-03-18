@@ -4,11 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-
-struct Position {
-    int x;
-    int y;
-};
+#include "Position.h"
 
 class Node {
 public:

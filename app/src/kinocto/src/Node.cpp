@@ -3,8 +3,7 @@
 using namespace std;
 
 Node::Node(int xx, int yy) {
-	position.x = xx;
-	position.y = yy;
+	position.set(xx,yy);
 	cost = 0;
 	predecessor = 0;
 }
@@ -26,8 +25,7 @@ Position Node::getPosition() {
 }
 
 void Node::setPosition(Position p) {
-	position.x = p.x;
-	position.y = p.y;
+	position.set(p.x,p.y);
 }
 
 Node* Node::getPredecessor() {

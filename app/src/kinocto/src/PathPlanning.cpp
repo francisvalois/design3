@@ -71,7 +71,7 @@ bool PathPlanning::obstaclesPositionsOK(Position obstacle1, Position obstacle2) 
     return true;
 }
 
-vector<move> PathPlanning::getPath(Position start, float startAngle, Position destination, float destinationAngle) {
+vector<Move> PathPlanning::getPath(Position start, float startAngle, Position destination, float destinationAngle) {
     cleanGoalNodes();
     startNode = new Node(start);
     startNode->setCost(0.0f);
@@ -82,7 +82,7 @@ vector<move> PathPlanning::getPath(Position start, float startAngle, Position de
 
     vector<Position> positions = findPathInGraph();
 
-    vector<move> moves = convertToMoves(positions, startAngle, destinationAngle);
+    vector<Move> moves = convertToMoves(positions, startAngle, destinationAngle);
 
 //	for(unsigned int i = 0; i < moves.size(); i++) {
 //
@@ -120,17 +120,15 @@ vector<Position> PathPlanning::findPathInGraph() {
         current = predecessor;
         predecessor = current->getPredecessor();
 //		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
-        Position currentPosition;
-        currentPosition.x = current->getPosition().x;
-        currentPosition.y = current->getPosition().y;
+        Position currentPosition(current->getPosition().x,current->getPosition().y);
         nodePositions.push_back(currentPosition);
     }
 //	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
     return nodePositions;
 }
 
-vector<move> PathPlanning::convertToMoves(vector<Position> positions, float startAngle, float destinationAngle) {
-    vector<move> moves;
+vector<Move> PathPlanning::convertToMoves(vector<Position> positions, float startAngle, float destinationAngle) {
+    vector<Move> moves;
     float robotCurrentAngle = startAngle;
     Position startPosition;
     Position endPosition;
@@ -139,16 +137,12 @@ vector<move> PathPlanning::convertToMoves(vector<Position> positions, float star
         startPosition = positions[i];
         endPosition = positions[i - 1];
 
-        move move;
-        move.angle = calculateAngle(robotCurrentAngle, startPosition, endPosition);
+        Move move(calculateAngle(robotCurrentAngle, startPosition, endPosition), calculateCost(startPosition, endPosition));
         robotCurrentAngle += move.angle;
-        move.distance = calculateCost(startPosition, endPosition);
 
         moves.push_back(move);
     }
-    move move;
-    move.angle = destinationAngle - robotCurrentAngle;
-    move.distance = 0;
+    Move move((destinationAngle - robotCurrentAngle), 0);
     moves.push_back(move);
     return moves;
 }
@@ -290,29 +284,21 @@ vector<Position> PathPlanning::getObstacleCorners() {
     vector<Position> corners;
 
     Position p;
-    p.x = obstacle1.x - TOTAL_OBSTACLE_RADIUS;
-    p.y = obstacle1.y + TOTAL_OBSTACLE_RADIUS;
+    p.set(obstacle1.x - TOTAL_OBSTACLE_RADIUS, obstacle1.y + TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.x = obstacle1.x - TOTAL_OBSTACLE_RADIUS;
-    p.y = obstacle1.y - TOTAL_OBSTACLE_RADIUS;
+    p.set(obstacle1.x - TOTAL_OBSTACLE_RADIUS, obstacle1.y - TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.x = obstacle1.x + TOTAL_OBSTACLE_RADIUS;
-    p.y = obstacle1.y + TOTAL_OBSTACLE_RADIUS;
+    p.set(obstacle1.x + TOTAL_OBSTACLE_RADIUS, obstacle1.y + TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.x = obstacle1.x + TOTAL_OBSTACLE_RADIUS;
-    p.y = obstacle1.y - TOTAL_OBSTACLE_RADIUS;
+    p.set(obstacle1.x + TOTAL_OBSTACLE_RADIUS, obstacle1.y - TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.x = obstacle2.x - TOTAL_OBSTACLE_RADIUS;
-    p.y = obstacle2.y + TOTAL_OBSTACLE_RADIUS;
+    p.set(obstacle2.x - TOTAL_OBSTACLE_RADIUS, obstacle2.y + TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.x = obstacle2.x - TOTAL_OBSTACLE_RADIUS;
-    p.y = obstacle2.y - TOTAL_OBSTACLE_RADIUS;
+    p.set(obstacle2.x - TOTAL_OBSTACLE_RADIUS, obstacle2.y - TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.x = obstacle2.x + TOTAL_OBSTACLE_RADIUS;
-    p.y = obstacle2.y + TOTAL_OBSTACLE_RADIUS;
+    p.set(obstacle2.x + TOTAL_OBSTACLE_RADIUS, obstacle2.y + TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.x = obstacle2.x + TOTAL_OBSTACLE_RADIUS;
-    p.y = obstacle2.y - TOTAL_OBSTACLE_RADIUS;
+    p.set(obstacle2.x + TOTAL_OBSTACLE_RADIUS, obstacle2.y - TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
 
     return corners;
