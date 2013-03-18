@@ -140,7 +140,7 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     Position robotPos(19, 57);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
-    baseStation->sendUpdateRobotPositionMessage(robotPos.x, robotPos.y);
+    baseStation->sendUpdateRobotPositionMessage(robotPos);
 
     //Initialisation rapide des obstacles pour les tests
     //if (request.obs1x == request.obs1y == request.obs2x == request.obs2y == 0) {
@@ -155,17 +155,17 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     /////
-    vector<Move> moves = pathPlanning.getPath(workspace.getRobotPos(), workspace.getRobotAngle(), workspace.getSudocubePos(request.sudocubeNo),
-            workspace.getSudocubeAngle(request.sudocubeNo));
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(request.sudocubeNo));
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(request.sudocubeNo));
     pathPlanning.printTable();
 
-    //baseStation->sendTrajectory(); //TODO À décider du format
+    baseStation->sendTrajectory(positions);
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
-        //TODO update de la position dans le workspace
-        //baseStation->sendUpdateRobotPositionMessage(x, y); //TODO À décider du format
+        workspace.setRobotPos(moves[i].destination);
+        baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
         //TODO Vérifier la position du robot pour boucler la boucle (si dans la zone optimale de la kinect)
     }
     /////
@@ -197,7 +197,7 @@ bool Kinocto::testFindRobotPosition(kinocto::TestFindRobotPosition::Request & re
     /////
     Position robotPos = baseStation->requestRobotPosition();
     workspace.setRobotPos(robotPos);
-    baseStation->sendUpdateRobotPositionMessage(robotPos.x, robotPos.y);
+    baseStation->sendUpdateRobotPositionMessage(robotPos);
     /////
 
     response.x = robotPos.x;
@@ -217,7 +217,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     Position robotPos(19, 57);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
-    baseStation->sendUpdateRobotPositionMessage(robotPos.x, robotPos.y);
+    baseStation->sendUpdateRobotPositionMessage(robotPos);
 
     //Hardcoding de la pos des obstacles pour qu'ils ne soient dans les pattes
     Position obs1(110, 75);
@@ -226,23 +226,22 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     /////
-    vector<Move> moves = pathPlanning.getPath(workspace.getRobotPos(), workspace.getRobotAngle(), workspace.getAntennaPos(), 0.0f);
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
     pathPlanning.printTable();
 
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
+
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
-        //TODO Update de la position dans le workspace
-        //baseStation->sendUpdateRobotPositionMessage(x, y); //TODO À décider du format
+        workspace.setRobotPos(moves[i].destination);
+        baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
         //TODO Retrouver la position du robot si on n'est pas trop loin de la Kinect
     }
 
-    AntennaParam antennaParam = microcontroller->decodeAntenna();
-
-    this->antennaParam.isBig = antennaParam.isBig;
-    this->antennaParam.number = antennaParam.number;
-    this->antennaParam.orientation = antennaParam.orientation;
+    AntennaParam antennaParamdecoded = microcontroller->decodeAntenna();
+    antennaParam.set(antennaParamdecoded.number, antennaParamdecoded.isBig, antennaParamdecoded.orientation);
 
     microcontroller->writeToLCD("Un message"); //TODO Déterminer la forme du message à envoyer
     /////
@@ -312,36 +311,35 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
     Position robotPos(213, 57);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(-180.0f);
-    baseStation->sendUpdateRobotPositionMessage(robotPos.x, robotPos.y);
+    baseStation->sendUpdateRobotPositionMessage(robotPos);
 
-    //Détection rapide des obstacles pour les tests
-    //if (request.obs1x == request.obs1y == request.obs2x == request.obs2y == 0) {
-    //vector<Position> obstacles = baseStation->requestObstaclesPosition();
-    //workspace.setObstaclesPos(obstacles[0], obstacles[1]);
-    //} else {
+    //Hardcodage des obstacles pour les tests
     Position obs1(request.obs1x, request.obs1y);
     Position obs2(request.obs2x, request.obs2y);
-
     workspace.setObstaclesPos(obs1, obs2);
-    //}
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     /////
-    vector<Move> moves = pathPlanning.getPath(workspace.getRobotPos(), workspace.getRobotAngle(), workspace.getAntennaPos(), 0.0f);
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
     pathPlanning.printTable();
+
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
+
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
-        //TODO Update de la position dans le workspace
-        //baseStation->sendUpdateRobotPositionMessage(x, y); //TODO À décider du format
+        workspace.setRobotPos(moves[i].destination);
+        baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
         //TODO Retrouver la position du robot si on n'est pas trop loin de la Kinect
     }
 
+    //TODO Gestion différente à faire pour placer le robot au point de départ du dessin...
     microcontroller->rotate(workspace.getPoleAngle(antennaParam.orientation));
-    microcontroller->move(-13.0f);
-    workspace.setRobotAngle(workspace.getPoleAngle(antennaParam.orientation));
-    //TODO Update de la position dans le workspace
+    microcontroller->move(-25.0f); //Placement du préhenseur
+    //workspace.setRobotAngle(workspace.getPoleAngle(antennaParam.orientation));
+    //workspace.setRobotPos(moves[i].destination);
+    //baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
 
     microcontroller->putPen(true);
     microcontroller->drawNumber(request.number, request.isBig);

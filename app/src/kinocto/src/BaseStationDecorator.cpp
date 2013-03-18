@@ -73,26 +73,29 @@ void BaseStationDecorator::sendLoopEndedMessage() {
     }
 }
 
-void BaseStationDecorator::sendTrajectory() {
+void BaseStationDecorator::sendTrajectory(vector<Position> positions) {
     ROS_INFO("Sending Trajectory to the basestation");
 
     ros::ServiceClient client = nodeHandle.serviceClient<basestation::TraceRealTrajectory>("basestation/traceRealTrajectory");
     basestation::TraceRealTrajectory srv;
 
-    //TODO Définir les éléments de base d'un trajet
+    for (int i = 0; i < positions.size(); i++) {
+        srv.request.x.push_back(positions[i].x);
+        srv.request.y.push_back(positions[i].y);
+    }
 
     if (client.call(srv) == false) {
         ROS_ERROR("Failed to call service basestation/traceRealTrajectory");
     }
 }
 
-void BaseStationDecorator::sendUpdateRobotPositionMessage(float x, float y) {
+void BaseStationDecorator::sendUpdateRobotPositionMessage(Position position) {
     ROS_INFO("Sending Robot new Position to the basestation");
 
     ros::ServiceClient client = nodeHandle.serviceClient<basestation::UpdateRobotPosition>("basestation/updateRobotPosition");
     basestation::UpdateRobotPosition srv;
-    srv.request.x = x;
-    srv.request.y = y;
+    srv.request.x = position.x;
+    srv.request.y = position.y;
 
     if (client.call(srv) == false) {
         ROS_ERROR("Failed to call service basestation/updateRobotPosition");

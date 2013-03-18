@@ -15,6 +15,7 @@ public:
 
     AntennaParam();
     virtual ~AntennaParam();
+    void set(int number, bool isBig, int orientation);
 
 private:
 

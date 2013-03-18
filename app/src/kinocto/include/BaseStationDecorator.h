@@ -24,8 +24,8 @@ public:
     //Messsages
     void sendSolvedSudocube(std::string sudocube, int redCaseValue);
     void sendLoopEndedMessage();
-    void sendTrajectory();
-    void sendUpdateRobotPositionMessage(float x, float y);
+    void sendTrajectory(std::vector<Position> positions);
+    void sendUpdateRobotPositionMessage(Position position);
     void sendConfirmRobotStarted();
 private:
     ros::NodeHandle nodeHandle;
