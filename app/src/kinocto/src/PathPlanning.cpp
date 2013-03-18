@@ -244,20 +244,24 @@ void PathPlanning::createNodes() {
     vector<Position> obstacleCornerValues = getObstacleCorners();
 
     for (unsigned int i = 0; i < obstacleCornerValues.size(); i++) {
-        if (table[obstacleCornerValues[i].x][(obstacleCornerValues[i].y + 1)] == 1) {
+    	int obstacleCornerValueX = (int) obstacleCornerValues[i].x;
+    	int obstacleCornerValueYplus = (int) (obstacleCornerValues[i].y + 1);
+    	int obstacleCornerValueYminus = (int) (obstacleCornerValues[i].y - 1);
+
+        if (table[obstacleCornerValueX][obstacleCornerValueYplus] == 1) {
             int nextObstacleY = obstacleCornerValues[i].y + 1;
             do {
                 nextObstacleY++;
-            } while (table[obstacleCornerValues[i].x][nextObstacleY] == 1);
-            int nodeY = obstacleCornerValues[i].y + ((nextObstacleY - obstacleCornerValues[i].y) / 2);
+            } while (table[obstacleCornerValueX][nextObstacleY] == 1);
+            float nodeY = (float)(obstacleCornerValues[i].y + ((nextObstacleY - obstacleCornerValues[i].y) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
             addNode(newNode);
-        } else if (table[obstacleCornerValues[i].x][obstacleCornerValues[i].y - 1] == 1) {
+        } else if (table[obstacleCornerValueX][obstacleCornerValueYminus] == 1) {
             int nextObstacleY = obstacleCornerValues[i].y - 1;
             do {
                 nextObstacleY--;
-            } while (table[obstacleCornerValues[i].x][nextObstacleY] == 1);
-            int nodeY = obstacleCornerValues[i].y - ((obstacleCornerValues[i].y - nextObstacleY) / 2);
+            } while (table[obstacleCornerValueX][nextObstacleY] == 1);
+            float nodeY = (float)(obstacleCornerValues[i].y - ((obstacleCornerValues[i].y - nextObstacleY) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
             addNode(newNode);
         }
@@ -421,13 +425,19 @@ void PathPlanning::updateMatrixTable() {
     }
 //	NODES IN BLUE
     for (unsigned int i = 0; i < listOfNodes.size(); i++) {
-        table[listOfNodes[i]->getPosition().x][listOfNodes[i]->getPosition().y] = 2;
+        int x = (int) listOfNodes[i]->getPosition().x;
+        int y = (int) listOfNodes[i]->getPosition().y;
+    	table[x][y] = 2;
     }
     if (startNode != 0) {
-        table[startNode->getPosition().x][startNode->getPosition().y] = 2;
+        int x = (int) startNode->getPosition().x;
+        int y = (int) startNode->getPosition().y;
+    	table[x][y] = 2;
     }
     if (destinationNode != 0) {
-        table[destinationNode->getPosition().x][destinationNode->getPosition().y] = 2;
+        int x = (int) destinationNode->getPosition().x;
+        int y = (int) destinationNode->getPosition().y;
+    	table[x][y] = 2;
     }
 }
 

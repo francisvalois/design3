@@ -4,12 +4,12 @@
 class Position {
 public:
 	Position() {x = 0; y = 0;};
-	Position(int xx, int yy) {x = xx; y = yy;};
+	Position(float xx, float yy) {x = xx; y = yy;};
 
-	void set(int xx, int yy) {x = xx; y = yy;};
+	void set(float xx, float yy) {x = xx; y = yy;};
 
-	int x;
-	int y;
+	float x;
+	float y;
 };
 
 
