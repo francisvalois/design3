@@ -48,9 +48,9 @@ Workspace::Workspace() {
     antenna.x = 60;
     antenna.y = 57;
 
-    poleAngle[0] = -90.0f;
-    poleAngle[1] = 90.0f;
-    poleAngle[2] = 180.0f;
+    poleAngle[0] = 90.0f;
+    poleAngle[1] = -90.0f;
+    poleAngle[2] = -180.0f;
     poleAngle[3] = 0.0f;
 }
 
