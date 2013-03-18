@@ -141,7 +141,7 @@ vector<Move> PathPlanning::convertToMoves(vector<Position> positions, float star
         startPosition = positions[i];
         endPosition = positions[i - 1];
 
-        Move move(calculateAngle(robotCurrentAngle, startPosition, endPosition), calculateCost(startPosition, endPosition));
+        Move move(calculateAngle(robotCurrentAngle, startPosition, endPosition), calculateCost(startPosition, endPosition), endPosition);
         robotCurrentAngle += move.angle;
 
         moves.push_back(move);
