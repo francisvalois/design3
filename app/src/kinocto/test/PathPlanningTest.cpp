@@ -16,14 +16,15 @@ namespace {
   class PathPlanningTest : public ::testing::Test {
   protected:
     PathPlanning pathPlanning;
-    Position obs1, obs2, start;
+    Position obs1;
+    Position obs2;
+    Position start;
     Workspace workspace;
 
 	float STARTING_ANGLE;
 
     virtual void SetUp() {
-		start.x = 36;
-		start.y = 85;
+    	start.set(36,85);
 
 		STARTING_ANGLE = 0.0f;
     }
@@ -42,36 +43,15 @@ namespace {
 //	  xx000000000000000xxxxxx00000000000000xx
 //	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	  	obs1.x = 90;
-		obs1.y = 85;
-		obs2.x = 120;
-		obs2.y = 25;
+		obs1.set(90,85);
+		obs2.set(120,25);
 
 		pathPlanning.setObstacles(obs1,obs2);
 
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(2));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(3));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(4));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(5));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(6));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(7));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(8));
-//		pathPlanning.printTable();
+		for(int i = 1; i <=8; i++) {
+			pathPlanning.getPath(start, workspace.getSudocubePos(i));
+//			pathPlanning.printTable();
+		}
   }
 
   TEST_F(PathPlanningTest, IntegrationTest2) {
@@ -87,36 +67,15 @@ namespace {
 //	  xx00000000000000000000000000000000000xx
 //	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	  	obs1.x = 90;
-		obs1.y = 85;
-		obs2.x = 110;
-		obs2.y = 85;
+    	obs1.set(90,85);
+    	obs2.set(110,85);
 
 		pathPlanning.setObstacles(obs1,obs2);
 
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(2));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(3));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(4));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(5));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(6));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(7));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(8));
-//		pathPlanning.printTable();
+		for(int i = 1; i <=8; i++) {
+			pathPlanning.getPath(start, workspace.getSudocubePos(i));
+//			pathPlanning.printTable();
+		}
   }
 
   TEST_F(PathPlanningTest, IntegrationTest3) {
@@ -132,36 +91,15 @@ namespace {
 //	  xx00000000000000000000000000000000000xx
 //	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	  	obs1.x = 90;
-		obs1.y = 65;
-		obs2.x = 110;
-		obs2.y = 65;
+	    obs1.set(90,65);
+    	obs2.set(110,65);
 
 		pathPlanning.setObstacles(obs1,obs2);
 
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(2));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(3));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(4));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(5));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(6));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(7));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(8));
-//		pathPlanning.printTable();
+		for(int i = 1; i <=8; i++) {
+			pathPlanning.getPath(start, workspace.getSudocubePos(i));
+//			pathPlanning.printTable();
+		}
   }
 
   TEST_F(PathPlanningTest, IntegrationTest4) {
@@ -177,36 +115,15 @@ namespace {
 //	  	  xx00000000000000000000000000000000000xx
 //	  	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	  	obs1.x = 90;
-		obs1.y = 55;
-		obs2.x = 150;
-		obs2.y = 55;
+    	obs1.set(90,55);
+    	obs2.set(150,55);
 
 		pathPlanning.setObstacles(obs1,obs2);
 
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(2));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(3));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(4));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(5));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(6));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(7));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(8));
-//		pathPlanning.printTable();
+		for(int i = 1; i <=8; i++) {
+			pathPlanning.getPath(start, workspace.getSudocubePos(i));
+//			pathPlanning.printTable();
+		}
   }
 
   TEST_F(PathPlanningTest, IntegrationTest5) {
@@ -222,36 +139,15 @@ namespace {
 //	  xx00000000000000000000000000000000000xx
 //	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-	  	obs1.x = 90;
-		obs1.y = 65;
-		obs2.x = 150;
-		obs2.y = 45;
+    	obs1.set(90,65);
+    	obs2.set(150,45);
 
 		pathPlanning.setObstacles(obs1,obs2);
 
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(2));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(3));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(4));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(5));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(6));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(7));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(8));
-//		pathPlanning.printTable();
+		for(int i = 1; i <=8; i++) {
+			pathPlanning.getPath(start, workspace.getSudocubePos(i));
+//			pathPlanning.printTable();
+		}
   }
 
   TEST_F(PathPlanningTest, IntegrationTest6) {
@@ -267,39 +163,16 @@ namespace {
   //	  xx00000000000000000000000000000000000xx
   //	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-  	  	obs1.x = 90;
-  		obs1.y = 65;
-  		obs2.x = 150;
-  		obs2.y = 45;
-
-		start.x = 36;
-		start.y = 55;
+    	obs1.set(90,65);
+    	obs2.set(150,45);
+    	start.set(36,55);
 
   		pathPlanning.setObstacles(obs1,obs2);
 
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(2));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(3));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(4));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(5));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(6));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(7));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(8));
-//		pathPlanning.printTable();
+		for(int i = 1; i <=8; i++) {
+			pathPlanning.getPath(start, workspace.getSudocubePos(i));
+//			pathPlanning.printTable();
+		}
     }
 
   TEST_F(PathPlanningTest, IntegrationTest7) {
@@ -315,99 +188,40 @@ namespace {
   //	  xx00000000000000000000000000000000000xx
   //	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-  	  	obs1.x = 90;
-  		obs1.y = 65;
-  		obs2.x = 150;
-  		obs2.y = 45;
-
-		start.x = 40;
-		start.y = 25;
+		obs1.set(90,65);
+		obs2.set(150,45);
+		start.set(40,25);
 
   		pathPlanning.setObstacles(obs1,obs2);
 
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(2));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(3));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(4));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(5));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(6));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(7));
-//		pathPlanning.printTable();
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(8));
-//		pathPlanning.printTable();
+		for(int i = 1; i <=8; i++) {
+			pathPlanning.getPath(start, workspace.getSudocubePos(i));
+//			pathPlanning.printTable();
+		}
     }
 
-  TEST_F(PathPlanningTest, IntegrationTest8) {
-	  	obs1.x = 90;
-		obs1.y = 65;
-		obs2.x = 150;
-		obs2.y = 45;
 
-		start.x = 40;
-		start.y = 25;
-
-		pathPlanning.setObstacles(obs1,obs2);
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-}
-
-  TEST_F(PathPlanningTest, IntegrationTest9) {
-	  	obs1.x = 90;
-		obs1.y = 65;
-		obs2.x = 150;
-		obs2.y = 45;
-
-		start.x = 40;
-		start.y = 25;
-
-		pathPlanning.setObstacles(obs1,obs2);
-
-		pathPlanning.getPath(start, workspace.getSudocubePos(1));
-//		pathPlanning.printTable();
-  }
-
-  TEST_F(PathPlanningTest, IntegrationTest10) {
-	  	obs1.x = 90;
-		obs1.y = 65;
-		obs2.x = 150;
-		obs2.y = 45;
-
-		pathPlanning.setObstacles(obs1,obs2);
-
-	  	obs1.x = 91;
-		obs1.y = 66;
-		obs2.x = 151;
-		obs2.y = 46;
-
-		pathPlanning.setObstacles(obs1,obs2);
-		//TO ASSERT NO SEG FAULT
-  }
-
-  TEST_F(PathPlanningTest, IntegrationTest11) {
+  TEST_F(PathPlanningTest, IntegrationTestAntenna) {
 	  	obs1.set(110,75);
 		obs2.set(180,30);
-
-		start.x = 19;
-		start.y = 57;
+		start.set(19,57);
 
 		pathPlanning.setObstacles(obs1,obs2);
 
 		pathPlanning.getPath(start, workspace.getAntennaPos());
-		pathPlanning.printTable();
+//		pathPlanning.printTable();
   }
 
+  TEST_F(PathPlanningTest, SegFaultTest) {
+		obs1.set(90,65);
+		obs2.set(150,45);
+
+		pathPlanning.setObstacles(obs1,obs2);
+
+		obs1.set(91,66);
+		obs2.set(151,46);
+
+		pathPlanning.setObstacles(obs1,obs2);
+		//TO ASSERT NO SEG FAULT
+  }
 }
