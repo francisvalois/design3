@@ -3,7 +3,7 @@
 
 class Move {
 public:
-	Move() {angle = 0; distance = 0; destination = 0;};
+	Move() {angle = 0; distance = 0;};
 	Move(int a, float d, Position dest) {angle = a; distance = d; destination = dest;};
 
 	void set(int a, float d, Position dest) {angle = a; distance = d; destination = dest;};
