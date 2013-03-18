@@ -36,6 +36,7 @@ void PathPlanning::deleteAllNodes() {
         delete node;
         node = 0;
     }
+
     listOfNodes.clear();
 }
 

@@ -104,8 +104,9 @@ catkin_add_gtest(kinoctoTest test/AllTests.cpp
     "src/Node.cpp"
     "src/SudokubeSolver.cpp"
     "src/NumberReader.cpp"
+    "src/Workspace.cpp"
 )
-target_link_libraries(kinoctoTest ${OpenCV_LIBS})
+target_link_libraries(kinoctoTest ${OpenCV_LIBS} ${catkin_LIBRARIES})
 
 
 catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp 

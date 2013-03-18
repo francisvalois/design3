@@ -8,6 +8,8 @@
 #include "PathPlanning.h"
 #include "Workspace.h"
 
+using namespace std;
+
 namespace {
 
 
@@ -378,7 +380,7 @@ namespace {
 //		pathPlanning.printTable();
   }
 
-  TEST_F(PathPlanningTest, IntegrationTest9) {
+  TEST_F(PathPlanningTest, IntegrationTest10) {
 	  	obs1.x = 90;
 		obs1.y = 65;
 		obs2.x = 150;
@@ -392,8 +394,6 @@ namespace {
 		obs2.y = 46;
 
 		pathPlanning.setObstacles(obs1,obs2);
-
-		EXPECT_NO_THROW(pathPlanning.setObstacles(obs1,obs2));
   }
 
 }
