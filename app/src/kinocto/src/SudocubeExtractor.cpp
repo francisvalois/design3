@@ -30,6 +30,12 @@ Sudokube * SudocubeExtractor::extractSudocube(Mat & src) {
     }
 
     Mat frameCroppedGray = srcGray(frameRect);
+   /* Mat frameCroppedGray2 = frameCroppedGray.clone();
+
+    Size newSize;
+    newSize.width = 750;
+    newSize.height = (frameCroppedGray2.size().width * 750) / frameCroppedGray2.size().width;
+    resize(frameCroppedGray2, frameCroppedGray2, newSize); //750 min*/
 
     vector<SquarePair> squaresPair;
     Mat frameCroppedThresholded;
@@ -145,7 +151,7 @@ bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> &
 
     for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
         threshold(srcGray, srcThresholded, threshValue, 500, THRESH_BINARY);
-        sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
+        //sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
         //saveImage(srcThresholded, filename);
 
         vector<vector<Point> > squaresContours;
@@ -164,6 +170,7 @@ bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> &
 
         if (squaresPair.size() == 47) {
             isExtracted = true;
+            //cout << threshValue << endl;
         }
     }
 

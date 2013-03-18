@@ -24,7 +24,7 @@ private:
     const static int FRAME_ERODE_SIZE = 1;
     const static int FRAME_DILATE_SIZE = 15;
 
-    const static int SQUARE_THRESHOLD_MIN = 140;
+    const static int SQUARE_THRESHOLD_MIN = 165;
     const static int SQUARE_THRESHOLD_MAX = 215;
     const static int SQUARE_AREA_MIN = 5000;
     const static int SQUARE_AREA_MAX = 160000;
