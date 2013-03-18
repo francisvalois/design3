@@ -2,7 +2,7 @@
 #define BASESTATIONDECORATION_H_
 
 #include "ros/ros.h"
-#include "Pos.h"
+#include "Node.h"
 
 #include "basestation/FindRobotPosition.h"
 #include "basestation/FindObstaclesPosition.h"
@@ -18,8 +18,8 @@ public:
     virtual ~BaseStationDecorator();
 
     //Request
-    Pos requestRobotPosition();
-    std::vector<Pos> requestObstaclesPosition();
+    Position requestRobotPosition();
+    std::vector<Position> requestObstaclesPosition();
 
     //Messsages
     void sendSolvedSudocube(std::string sudocube, int redCaseValue);

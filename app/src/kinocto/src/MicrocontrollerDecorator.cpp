@@ -34,9 +34,7 @@ void MicrocontrollerDecorator::drawNumber(int number, bool isBig) {
     srv.request.number = number;
     srv.request.isBig = isBig;
 
-    if (client.call(srv)) {
-        ROS_INFO("The drawing command has been sent");
-    } else {
+    if (client.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/drawNumber");
     }
 }
@@ -48,9 +46,7 @@ void MicrocontrollerDecorator::move(float distance) {
     microcontroller::Move srv;
     srv.request.distance = distance;
 
-    if (client.call(srv)) {
-        ROS_INFO("The move command has been sent");
-    } else {
+    if (client.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/move");
     }
 }
@@ -62,9 +58,7 @@ void MicrocontrollerDecorator::rotate(float angle) {
     microcontroller::Rotate srv;
     srv.request.angle = angle;
 
-    if (client.call(srv)) {
-        ROS_INFO("The rotate command has been sent");
-    } else {
+    if (client.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/rotate");
     }
 }
@@ -76,9 +70,7 @@ void MicrocontrollerDecorator::putPen(bool down) {
     microcontroller::PutPen srv;
     srv.request.down = down;
 
-    if (client.call(srv)) {
-        ROS_INFO("The putPen command has been sent");
-    } else {
+    if (client.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/putPen");
     }
 }
@@ -90,9 +82,7 @@ void MicrocontrollerDecorator::turnLED(bool on) {
     microcontroller::TurnLED srv;
     srv.request.on = on;
 
-    if (client.call(srv)) {
-        ROS_INFO("The turnLED command has been sent");
-    } else {
+    if (client.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/turnLED");
     }
 }
@@ -104,9 +94,7 @@ void MicrocontrollerDecorator::writeToLCD(std::string message) {
     microcontroller::WriteToLCD srv;
     srv.request.message = message;
 
-    if (client.call(srv)) {
-        ROS_INFO("The writeToLCD command has been sent");
-    } else {
+    if (client.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/writeToLCD");
     }
 }

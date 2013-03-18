@@ -63,7 +63,7 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
     updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
-    showConfirmStartRobotMessageService = node.advertiseService("basestation/showConfirmStartRobotMessage", &BaseStation::loopEnded, this);
+    showConfirmStartRobotMessageService = node.advertiseService("basestation/showConfirmStartRobotMessage", &BaseStation::showConfirmStartRobotdMessage, this);
 }
 
 void BaseStation::run() {
@@ -164,14 +164,14 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
 }
 
 bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, UpdateRobotPosition::Response & response) {
-    ROS_INFO( "%s\n x:%f\n y:\n%f", "Updating Robot Position", request.x, request.y);
+    ROS_INFO( "%s\n x:%f\n y:%f", "Updating Robot Position", request.x, request.y);
 
     //TODO Afficher la nouvelle position dans l'interface
 
     return true;
 }
 
-bool showConfirmStartRobotdMessage(basestation::ShowConfirmStartRobot::Request & request, basestation::ShowConfirmStartRobot::Response & response) {
+bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request & request, ShowConfirmStartRobot::Response & response) {
     ROS_INFO("Showing Confirmation of Start Robot");
 
     //TODO Afficher le message dans l'interface

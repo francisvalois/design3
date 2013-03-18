@@ -28,6 +28,10 @@
 #include "Pos.h"
 #include "BaseStationDecorator.h"
 #include "MicrocontrollerDecorator.h"
+#include "Workspace.h"
+
+//TODO Temporaire
+#include "Node.h"
 
 #define INITIATED 1
 #define START_LOOP 2
@@ -42,16 +46,18 @@ private:
     CameraCapture cameraCapture;
     SudokubeSolver sudokubeSolver;
     SudocubeExtractor sudocubeExtractor;
-    PathPlanning pathPlanning;
-    AntennaParam antennaParam;
     BaseStationDecorator * baseStation;
     MicrocontrollerDecorator * microcontroller;
+
+    //Informations concernant la loop actuelle
+    AntennaParam antennaParam;
+    int numberToDraw;
+    Workspace workspace;
+    PathPlanning pathPlanning;
 
     void loop();
     std::vector<Sudokube *> extractSudocube();
     void solveSudocube(std::vector<Sudokube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
-
-    void requestDrawNumber(int number, bool isBig);
 
 public:
     Kinocto(ros::NodeHandle node);
@@ -60,7 +66,8 @@ public:
     void startLoop(const std_msgs::String::ConstPtr& msg);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
-    bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request, kinocto::TestExtractSudocubeAndSolve::Response & response);
+    bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
+            kinocto::TestExtractSudocubeAndSolve::Response & response);
     bool testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, kinocto::TestGoToSudocubeX::Response & response);
     bool testFindRobotAngle(kinocto::TestFindRobotAngle::Request & request, kinocto::TestFindRobotAngle::Response & response);
     bool testFindRobotPosition(kinocto::TestFindRobotPosition::Request & request, kinocto::TestFindRobotPosition::Response & response);
