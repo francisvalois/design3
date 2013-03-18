@@ -143,15 +143,9 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     baseStation->sendUpdateRobotPositionMessage(robotPos);
 
     //Initialisation rapide des obstacles pour les tests
-    //if (request.obs1x == request.obs1y == request.obs2x == request.obs2y == 0) {
-    //vector<Position> obstacles = baseStation->requestObstaclesPosition();
-    //workspace.setObstaclesPos(obstacles[0], obstacles[1]);
-    //} else {
     Position obs1(request.obs1x, request.obs1y);
     Position obs2(request.obs2x, request.obs2y);
     workspace.setObstaclesPos(obs1, obs2);
-    //}
-
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     /////
@@ -160,6 +154,7 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     pathPlanning.printTable();
 
     baseStation->sendTrajectory(positions);
+
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
@@ -280,9 +275,7 @@ bool Kinocto::testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
 
     //Initialisation de l'objet antennaParam pour les tests
-    antennaParam.isBig = request.isBig;
-    antennaParam.number = request.number;
-    antennaParam.orientation = request.orientation;
+    antennaParam.set(request.number, request.isBig, request.orientation);
 
     /////
     microcontroller->putPen(true);
@@ -303,9 +296,7 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
 
     //Init de l'Objet antennaParam
-    antennaParam.isBig = request.isBig;
-    antennaParam.number = request.number;
-    antennaParam.orientation = request.orientation;
+    antennaParam.set(request.number, request.isBig, request.orientation);
 
     //Hardcodage de la position du robot pour les tests
     Position robotPos(213, 57);
@@ -324,6 +315,7 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
     pathPlanning.printTable();
 
+    baseStation->sendTrajectory(positions);
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);

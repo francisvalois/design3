@@ -13,7 +13,6 @@
 #include "microcontroller/TurnLED.h"
 #include "microcontroller/WriteToLCD.h"
 
-
 class MicrocontrollerDecorator {
 public:
     MicrocontrollerDecorator(ros::NodeHandle & nodeHandle);
