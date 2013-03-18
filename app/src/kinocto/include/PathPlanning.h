@@ -38,6 +38,7 @@ private:
     Position obstacle1;
     Position obstacle2;
     bool obstaclesPositionsOK(Position, Position);
+    void deleteAllNodes();
 
     //GRAPH
     std::vector<Node*> listOfNodes;

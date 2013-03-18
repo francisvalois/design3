@@ -25,7 +25,10 @@ PathPlanning::PathPlanning() {
 
 PathPlanning::~PathPlanning() {
     cleanGoalNodes();
+    deleteAllNodes();
+}
 
+void PathPlanning::deleteAllNodes() {
     for (int i = 0; i < listOfNodes.size(); i++) {
         Node * node = listOfNodes[i];
         listOfNodes[i] = 0;
@@ -33,10 +36,12 @@ PathPlanning::~PathPlanning() {
         delete node;
         node = 0;
     }
+    listOfNodes.clear();
 }
 
 void PathPlanning::setObstacles(Position o1, Position o2) {
-    listOfNodes.clear();
+    deleteAllNodes();
+
     if (obstaclesPositionsOK(o1, o2)) {
         if (o2.x < o1.x) {
             obstacle1.x = o2.x;
@@ -118,7 +123,7 @@ vector<Position> PathPlanning::findPathInGraph() {
         current = predecessor;
         predecessor = current->getPredecessor();
 //		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
-        Position currentPosition(current->getPosition().x,current->getPosition().y);
+        Position currentPosition(current->getPosition().x, current->getPosition().y);
         nodePositions.push_back(currentPosition);
     }
 //	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
