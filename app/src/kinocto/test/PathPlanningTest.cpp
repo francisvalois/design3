@@ -394,6 +394,20 @@ namespace {
 		obs2.y = 46;
 
 		pathPlanning.setObstacles(obs1,obs2);
+		//TO ASSERT NO SEG FAULT
+  }
+
+  TEST_F(PathPlanningTest, IntegrationTest11) {
+	  	obs1.set(110,75);
+		obs2.set(180,30);
+
+		start.x = 19;
+		start.y = 57;
+
+		pathPlanning.setObstacles(obs1,obs2);
+
+		pathPlanning.getPath(start, workspace.getAntennaPos());
+		pathPlanning.printTable();
   }
 
 }

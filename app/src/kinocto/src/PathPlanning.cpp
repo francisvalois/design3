@@ -336,6 +336,11 @@ void PathPlanning::connectNodes() {
             listOfNodes[i]->addNeighbor(destinationNode);
             destinationNode->addNeighbor(listOfNodes[i]);
         }
+        if (!linePassesThroughObstacle(startNode->getPosition(), destinationNode->getPosition())) {
+//			cout << "    adding connection between : (" << startNode->getPosition().x << "," << startNode->getPosition().y << ") and (" << destinationNode->getPosition().x << "," << destinationNode->getPosition().y << ")" << endl;
+            startNode->addNeighbor(destinationNode);
+            destinationNode->addNeighbor(startNode);
+        }
     }
 }
 
