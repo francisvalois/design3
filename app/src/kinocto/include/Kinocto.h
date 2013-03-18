@@ -7,9 +7,22 @@
 #include <string>
 #include "opencv2/opencv.hpp"
 
-#include "ros/ros.h"
+#include <ros/ros.h>
+
+#include "CameraCapture.h"
+#include "Sudokube.h"
+#include "SudocubeExtractor.h"
+#include "SudokubeSolver.h"
+#include "PathPlanning.h"
+#include "AntennaParam.h"
+#include "Workspace.h"
+#include "BaseStationDecorator.h"
+#include "MicrocontrollerDecorator.h"
+
 #include "std_msgs/String.h"
 #include "kinocto/StartKinocto.h"
+
+//Services de test
 #include "kinocto/TestGoToSudocubeX.h"
 #include "kinocto/TestExtractSudocubeAndSolve.h"
 #include "kinocto/TestFindRobotAngle.h"
@@ -18,17 +31,6 @@
 #include "kinocto/TestFindObstacles.h"
 #include "kinocto/TestDrawNumber.h"
 #include "kinocto/TestGoToGreenFrameAndDraw.h"
-
-#include "CameraCapture.h"
-#include "SudokubeSolver.h"
-#include "Sudokube.h"
-#include "SudocubeExtractor.h"
-#include "PathPlanning.h"
-#include "AntennaParam.h"
-#include "Pos.h"
-#include "BaseStationDecorator.h"
-#include "MicrocontrollerDecorator.h"
-#include "Workspace.h"
 
 //TODO Temporaire
 #include "Node.h"
@@ -39,19 +41,22 @@
 class Kinocto {
 
 private:
-    int state;
-    ros::Timer loopTimer;
-    ros::NodeHandle nodeHandle;
-
+    //Pour la résolution des sudocubes
     CameraCapture cameraCapture;
     SudokubeSolver sudokubeSolver;
     SudocubeExtractor sudocubeExtractor;
+
+    //Pour la communication
+    ros::NodeHandle nodeHandle;
     BaseStationDecorator * baseStation;
     MicrocontrollerDecorator * microcontroller;
 
     //Informations concernant la loop actuelle
+    int state;
     AntennaParam antennaParam;
     int numberToDraw;
+
+    //Pour les déplacements
     Workspace workspace;
     PathPlanning pathPlanning;
 

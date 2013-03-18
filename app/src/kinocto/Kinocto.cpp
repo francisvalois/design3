@@ -169,7 +169,8 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
-        //TODO update de l'angle et de la position dans le workspace
+        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
+        //TODO update de la position dans le workspace
         //baseStation->sendUpdateRobotPositionMessage(x, y); //TODO À décider du format
         //TODO Vérifier la position du robot pour boucler la boucle (si dans la zone optimale de la kinect)
     }
@@ -243,7 +244,8 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
-        //TODO Update de l'angle et de la position dans le workspace
+        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
+        //TODO Update de la position dans le workspace
         //baseStation->sendUpdateRobotPositionMessage(x, y); //TODO À décider du format
         //TODO Retrouver la position du robot si on n'est pas trop loin de la Kinect
     }
@@ -347,7 +349,8 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
-        //TODO Update de l'angle et de la position dans le workspace
+        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
+        //TODO Update de la position dans le workspace
         //baseStation->sendUpdateRobotPositionMessage(x, y); //TODO À décider du format
         //TODO Retrouver la position du robot si on n'est pas trop loin de la Kinect
     }
