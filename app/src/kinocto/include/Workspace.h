@@ -1,7 +1,7 @@
 #ifndef WORKSPACE_H_
 #define WORKSPACE_H_
 
-#include "Node.h"
+#include "Position.h"
 
 class Workspace {
 
@@ -30,6 +30,7 @@ private:
     Position sudocubesPos[8];
     float sudocubesAngle[8];
     float poleAngle[4];
+    Position drawNumberInit[8];
 
     //Dynamiques
     Position robot;
