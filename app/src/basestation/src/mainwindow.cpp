@@ -17,6 +17,5 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_StartSequenceButton_clicked() {
-    cout << "wooopidou" << endl;
     baseStation.init();
 }

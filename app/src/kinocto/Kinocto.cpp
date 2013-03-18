@@ -138,7 +138,7 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
 
     //Harcoding de la position du robot pour les tests
     Position robotPos;
-    robotPos.x = 13.0f;
+    robotPos.x = 18.0f;
     robotPos.y = 57.0f;
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
@@ -163,6 +163,7 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     /////
     vector<move> moves = pathPlanning.getPath(workspace.getRobotPos(), workspace.getRobotAngle(), workspace.getSudocubePos(request.sudocubeNo),
             workspace.getSudocubeAngle(request.sudocubeNo));
+    pathPlanning.printTable();
 
     //baseStation->sendTrajectory(); //TODO À décider du format
     for (int i = 0; i < moves.size(); i++) {
@@ -219,7 +220,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
 
     //Harcoding de la position du robot pour les tests
     Position robotPos;
-    robotPos.x = 13.0f;
+    robotPos.x = 18.0f;
     robotPos.y = 57.0f;
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
@@ -228,7 +229,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     //Hardcoding de la pos des obstacles pour qu'ils ne soient dans les pattes
     Position obs1;
     obs1.x = 115.0f;
-    obs1.y = 24.0f;
+    obs1.y = 30.0f;
     Position obs2;
     obs2.x = 115.0f;
     obs2.y = 80.0f;
@@ -237,6 +238,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
 
     /////
     vector<move> moves = pathPlanning.getPath(workspace.getRobotPos(), workspace.getRobotAngle(), workspace.getAntennaPos(), 0.0f);
+    pathPlanning.printTable();
 
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
@@ -331,7 +333,7 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
 
     /////
     vector<move> moves = pathPlanning.getPath(workspace.getRobotPos(), workspace.getRobotAngle(), workspace.getAntennaPos(), 0.0f);
-
+    pathPlanning.printTable();
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
