@@ -151,7 +151,7 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     /////
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(request.sudocubeNo));
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(request.sudocubeNo));
-    pathPlanning.printTable();
+    //pathPlanning.printTable();
 
     baseStation->sendTrajectory(positions);
 
@@ -223,7 +223,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     /////
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-    pathPlanning.printTable();
+    //pathPlanning.printTable();
 
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
@@ -313,7 +313,7 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
     /////
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-    pathPlanning.printTable();
+    //pathPlanning.printTable();
 
     baseStation->sendTrajectory(positions);
     for (int i = 0; i < moves.size(); i++) {
