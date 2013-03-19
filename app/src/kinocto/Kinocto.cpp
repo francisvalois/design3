@@ -299,7 +299,7 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
     antennaParam.set(request.number, request.isBig, request.orientation);
 
     //Hardcodage de la position du robot pour les tests
-    Position robotPos(213, 57);
+    Position robotPos(201, 58);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(-180.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
