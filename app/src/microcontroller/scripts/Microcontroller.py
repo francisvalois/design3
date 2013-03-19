@@ -35,24 +35,34 @@ def handleTurnLED(req):
     return TurnLEDResponse()
 
 def handleMove(req):
-    rospy.loginfo("Executing Move Of:%f", req.distance)
+    rospy.loginfo("Executing Move Of:%f and %f", req.distance) #req.distancex, req.distancey)
 
     commande = " 0000000"
-    if(req.distance != 0):
+    #req.distancex = req.distancex/21.7*6533
+    #if(req.distancex != 0):
+    #    sign = ' '
+    #    if(req.distancex < 0):
+    #        sign = '-'
+    #    dist_string = str(req.distancex)
+    #    while(len(dist_string) < 7):
+    #        dist_string = '0' + dist_string
+    #    commande = sign + dist_string
+    
+    sendCommandToController(commande)
+
+    commande = " 0000000"
+    distance = req.distance/21.7*6533
+    if(distance != 0):
         sign = ' '
-        if(req.distance < 0):
+        if(distance < 0):
             sign = '-'
-        dist_string = str(req.distance)
+        dist_string = str(distance)
         while(len(dist_string) < 7):
             dist_string = '0' + dist_string
         commande = sign + dist_string
-    
+      
     sendCommandToController(commande)
-    time.sleep(5)
-    
-    sendCommandToController(' 0000000')
-    time.sleep(5)
-    
+      
     return MoveResponse()
 
 def handleRotate(req):
@@ -75,7 +85,6 @@ def handleRotate(req):
         commande += "000"
         
     sendCommandToController(commande)
-    time.sleep(2)
     
     return RotateResponse()
 
@@ -104,9 +113,10 @@ def sendCommandToController(commande):
     if ser.isOpen():
         try:
             ser.write(bytes(commande))
-            time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
-        
-            response = ser.readline()  # Boucle while ici?? 
+            response = None
+            #time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
+            while(response != '1'):
+                response = ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
             
         except Exception, e1:
@@ -138,7 +148,7 @@ def Microcontroller():
     ser.stopbits = 1
     ser.timeout = 0
     ser.bytesize = serial.EIGHTBITS
-    ser.writeTimeout = 2
+    ser.writeTimeout = 0
     
     rospy.loginfo("Microcontroller initiated")
     
