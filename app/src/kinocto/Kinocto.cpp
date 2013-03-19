@@ -137,7 +137,7 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     ROS_INFO("%s", "Calculating optimal path");
 
     //Harcoding de la position du robot pour les tests
-    Position robotPos(37.5, 37.5);
+    Position robotPos(36.5, 38.5);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
