@@ -15,7 +15,7 @@ Workspace::Workspace() {
     sudocubesPos[1].set(209, 78);
     sudocubesAngle[1] = -90.0f;
 
-    sudocubesPos[2].set(197, 96);
+    sudocubesPos[2].set(200, 95);
     sudocubesAngle[2] = 0.0f;
 
     sudocubesPos[3].set(197, 70);
