@@ -35,7 +35,7 @@ def handleTurnLED(req):
     return TurnLEDResponse()
 
 def handleMove(req):
-    rospy.loginfo("Executing Move Of:%f and %f", req.distance) #req.distancex, req.distancey)
+    rospy.loginfo("Executing Move Of:%f", req.distance) #req.distancex, req.distancey)
 
     commande = " 0000000"
     #req.distancex = req.distancex/21.7*6533
@@ -51,12 +51,12 @@ def handleMove(req):
     sendCommandToController(commande)
 
     commande = " 0000000"
-    distance = req.distance/21.7*6533
+    distance = int(req.distance/21.7*6533)
     if(distance != 0):
         sign = ' '
         if(distance < 0):
             sign = '-'
-        dist_string = str(distance)
+        dist_string = str(abs(distance))
         while(len(dist_string) < 7):
             dist_string = '0' + dist_string
         commande = sign + dist_string
