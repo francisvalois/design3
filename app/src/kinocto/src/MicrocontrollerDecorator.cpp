@@ -98,3 +98,28 @@ void MicrocontrollerDecorator::writeToLCD(std::string message) {
         ROS_ERROR("Failed to call service microcontroller/writeToLCD");
     }
 }
+
+void MicrocontrollerDecorator::translate(Position position) {
+    ROS_INFO("Requesting the microcontroller to translate the robot of x:%f y:%f", position.x, position.y);
+
+    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::Translate>("microcontroller/translate");
+    microcontroller::Translate srv;
+    srv.request.x = position.x;
+    srv.request.y = position.y;
+
+    if (client.call(srv) == false) {
+        ROS_ERROR("Failed to call service microcontroller/translate");
+    }
+}
+
+void MicrocontrollerDecorator::rotateVerticallyCam(int angle) {
+    ROS_INFO("Requesting the microcontroller to rotate webcam vertically of angle:%d", angle);
+
+    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::RotateVerticallyCam>("microcontroller/rotateVerticallyCam");
+    microcontroller::RotateVerticallyCam srv;
+    srv.request.angle = angle;
+
+    if (client.call(srv) == false) {
+        ROS_ERROR("Failed to call service microcontroller/rotateVerticallyCam");
+    }
+}

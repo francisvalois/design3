@@ -26,6 +26,8 @@ add_service_files(
     Move.srv
     Rotate.srv
     DecodeAntenna.srv
+    RotateVerticallyCam.srv
+    Translate.srv
 )
 
 generate_messages(

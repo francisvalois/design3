@@ -41,6 +41,30 @@ Workspace::Workspace() {
     poleAngle[3] = 0.0f;
 
     kinectDeadAngle.set(89, 22);
+
+    numbersInitDrawPos[0][0].set(0, 0);
+    numbersInitDrawPos[0][1].set(0, 0);
+
+    numbersInitDrawPos[1][0].set(0, 0);
+    numbersInitDrawPos[1][1].set(0, 0);
+
+    numbersInitDrawPos[2][0].set(0, 0);
+    numbersInitDrawPos[2][1].set(0, 0);
+
+    numbersInitDrawPos[3][0].set(0, 0);
+    numbersInitDrawPos[3][1].set(0, 0);
+
+    numbersInitDrawPos[4][0].set(0, 0);
+    numbersInitDrawPos[4][1].set(0, 0);
+
+    numbersInitDrawPos[5][0].set(0, 0);
+    numbersInitDrawPos[5][1].set(0, 0);
+
+    numbersInitDrawPos[6][0].set(0, 0);
+    numbersInitDrawPos[6][1].set(0, 0);
+
+    numbersInitDrawPos[7][0].set(0, 0);
+    numbersInitDrawPos[7][1].set(0, 0);
 }
 
 Workspace::~Workspace() {
@@ -105,4 +129,17 @@ float Workspace::getPoleAngle(int pole) {
 
 Position Workspace::getKinectDeadAngle() {
     return kinectDeadAngle;
+}
+
+Position Workspace::getNumberInitDrawPos(int number, bool isBig) {
+    Position pos;
+    if (number < 1 && number > 8) {
+        return pos;
+    }
+
+    if (isBig) {
+        return numbersInitDrawPos[number - 1][1];
+    }
+
+    return numbersInitDrawPos[number - 1][0];
 }

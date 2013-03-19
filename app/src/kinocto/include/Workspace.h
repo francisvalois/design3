@@ -26,6 +26,8 @@ public:
 
     float getPoleAngle(int pole);
 
+    Position getNumberInitDrawPos(int number, bool isBig);
+
 private:
     //Fixe
     Position antenna;
@@ -34,6 +36,7 @@ private:
     float poleAngle[4];
     Position drawNumberInit[8];
     Position kinectDeadAngle;
+    Position numbersInitDrawPos[8][2]; // x = number et [x][0] pour petite taille [x][1] pour grande taille
 
     //Dynamiques
     Position robot;

@@ -4,6 +4,7 @@
 #include "ros/ros.h"
 
 #include "AntennaParam.h"
+#include "Position.h"
 
 #include "microcontroller/DecodeAntenna.h"
 #include "microcontroller/DrawNumber.h"
@@ -12,6 +13,8 @@
 #include "microcontroller/Rotate.h"
 #include "microcontroller/TurnLED.h"
 #include "microcontroller/WriteToLCD.h"
+#include "microcontroller/RotateVerticallyCam.h"
+#include "microcontroller/Translate.h"
 
 class MicrocontrollerDecorator {
 public:
@@ -25,6 +28,8 @@ public:
     void putPen(bool down);
     void turnLED(bool on);
     void writeToLCD(std::string message);
+    void translate(Position position);
+    void rotateVerticallyCam(int angle);
 
 private:
     ros::NodeHandle nodeHandle;

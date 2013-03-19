@@ -34,6 +34,21 @@ def handleTurnLED(req):
     
     return TurnLEDResponse()
 
+def handleTurnLED(req):
+    rospy.loginfo("Turn LED on?:%s", req.on)
+    
+    return TurnLEDResponse()
+
+def handleTranslate(req):
+    rospy.loginfo("Translate Robot of x:%d y:%d", req.x, req.y)
+    
+    return TranslateResponse()
+
+def handleRotateVerticallyCam(req):
+    rospy.loginfo("Rotating cam of angle:%d", req.angle)
+    
+    return RotateVerticallyCamResponse()
+
 def handleMove(req):
     rospy.loginfo("Executing Move Of:%f", req.distance) #req.distancex, req.distancey)
 
@@ -139,6 +154,8 @@ def Microcontroller():
     s = rospy.Service('microcontroller/move', Move, handleMove)
     s = rospy.Service('microcontroller/rotate', Rotate, handleRotate)
     s = rospy.Service('microcontroller/decodeAntenna', DecodeAntenna, handleDecodeAntenna)
+    s = rospy.Service('microcontroller/translate', Translate, handleTranslate)
+    s = rospy.Service('microcontroller/rotateVerticallyCam', RotateVerticallyCam, handleRotateVerticallyCam)
     
     rospy.loginfo("Creating Serial Communication")
     ser = serial.Serial()
