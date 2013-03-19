@@ -155,26 +155,26 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
 
     vector<Move> moves;
     Position position(0,0);
-    Move move(0.0, 100.0, position);
-    moves.push_back(move);
-    Move move(180.0, 100.0, position);
-    moves.push_back(move);
-    Move move(180.0, 100.0, position);
-	moves.push_back(move);
-	Move move(180.0, 100.0, position);
-	moves.push_back(move);
-	Move move(180.0, 100.0, position);
-	moves.push_back(move);
-	Move move(180.0, 100.0, position);
-	moves.push_back(move);
-	Move move(180.0, 100.0, position);
-	moves.push_back(move);
-	Move move(180.0, 100.0, position);
-	moves.push_back(move);
-	Move move(180.0, 100.0, position);
-	moves.push_back(move);
-	Move move(180.0, 100.0, position);
-	moves.push_back(move);
+    Move themove(0.0, 100.0, position);
+    moves.push_back(themove);
+    themove.set(180.0, 100.0, position);
+    moves.push_back(themove);
+    themove.set(180.0, 100.0, position);
+	moves.push_back(themove);
+	themove.set(180.0, 100.0, position);
+	moves.push_back(themove);
+	themove.set(180.0, 100.0, position);
+	moves.push_back(themove);
+	themove.set(180.0, 100.0, position);
+	moves.push_back(themove);
+	themove.set(180.0, 100.0, position);
+	moves.push_back(themove);
+	themove.set(180.0, 100.0, position);
+	moves.push_back(themove);
+	themove.set(180.0, 100.0, position);
+	moves.push_back(themove);
+	themove.set(180.0, 100.0, position);
+	moves.push_back(themove);
 
     baseStation->sendTrajectory(positions);
 
