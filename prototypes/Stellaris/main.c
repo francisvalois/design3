@@ -44,6 +44,7 @@ extern tBoolean is_drawing;
 //Variables globales
 volatile CircularBuffer receive_buffer;
 volatile CircularBuffer send_buffer;
+volatile tBoolean is_waiting_for_action;
 
 
 
@@ -182,6 +183,8 @@ int main(void)
     Kp3_d = 1.2;
     dt = 0.1;
     
+    is_waiting_for_action = false;
+    
     
     
 
@@ -229,6 +232,11 @@ int main(void)
 			CommandHandler();
 		}
 		
+		if(is_waiting_for_action && a_atteint_consigne){
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = '1';
+			is_waiting_for_action = false;
+		}
+		
 		//Vérifier si doit dessiner
 		if(is_drawing && a_atteint_consigne && !est_en_mouvement){
 			switch(number_to_draw){
@@ -249,6 +257,7 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -269,6 +278,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -301,6 +311,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -333,6 +344,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -367,6 +379,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -401,6 +414,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -425,6 +439,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -449,6 +464,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -478,6 +494,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;	
@@ -507,6 +524,7 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -543,6 +561,7 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -579,6 +598,7 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;		
@@ -607,6 +627,7 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -635,6 +656,7 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;		
@@ -680,6 +702,7 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 							break;
 					}
 					break;
@@ -725,7 +748,8 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							break;
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+ 							break;
 					}
 					break;
 				default:

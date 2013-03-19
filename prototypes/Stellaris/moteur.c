@@ -344,7 +344,7 @@ void asservirMoteurs(void){
 	}else if(fraction1 < 0){
 		fraction1 = 0;
 	}
-	fraction2 = (((output2-640)*0.5)/7700);
+	fraction2 = (((output2)*0.5)/7700);
 	if(fraction2 > 0.99){
 		fraction2 = 0.99;
 	}else if(fraction2 < 0){

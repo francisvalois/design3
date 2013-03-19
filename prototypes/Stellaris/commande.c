@@ -15,6 +15,8 @@ typedef struct {
 //Variables globales extern
 //main.c
 extern volatile CircularBuffer receive_buffer;
+extern volatile tBoolean is_waiting_for_action;
+extern volatile CircularBuffer send_buffer;
 //commande.c
 extern tBoolean est_en_mouvement;
 extern tBoolean a_atteint_consigne;
@@ -140,7 +142,7 @@ tBoolean CommandHandler(void){
 	 		deplacement_x_abs -= 1891;
 	 	}
 	 	else if(deplacement_y > 1745 && deplacement_x == 0){
-	 		consigne = 6400;
+	 		consigne = 3200;
 	 		deplacement_y -= 524;
 	 	}
 	 	else if(deplacement_x_abs > 1745 && deplacement_y == 0){
@@ -165,6 +167,7 @@ tBoolean CommandHandler(void){
 	 	moveFront(deplacement_y, consigne);
 	 	moveLateral(deplacement_x, consigne);
 	 	initCommande();
+	 	is_waiting_for_action = true;
 	 	return true;
 	}
 	else{
@@ -184,6 +187,7 @@ tBoolean CommandHandler(void){
 	 	}
 		is_waiting_for_y = true;
 		captured_index = index;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
 		return true;
 	}
 	else if(commande[0] == 'T'){
@@ -191,16 +195,18 @@ tBoolean CommandHandler(void){
 		degree = (commande[2]-'0')*100;
 		degree += (commande[3]-'0')*10;
 		degree += (commande[4]-'0');
-		degree = degree*16000/360-200;
-		if(commande[1] == 'N'){
+		degree = degree*16333/360*1.05;
+		if(commande[1] == 'P'){
 			degree = -degree;
 		}
-		else if(commande[1] != 'P'){
+		else if(commande[1] != 'N'){
 			initCommande();
+			is_waiting_for_action = true;
 			return false;
 		}
 		turn(degree, 1600);
 		initCommande();
+		is_waiting_for_action = true;
 		return true;	
 	}
 	else if(commande[0] == 'D'){
