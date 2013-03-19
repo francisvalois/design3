@@ -137,7 +137,7 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     ROS_INFO("%s", "Calculating optimal path");
 
     //Harcoding de la position du robot pour les tests
-    Position robotPos(19, 57);
+    Position robotPos(36.5, 38.5);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
@@ -151,7 +151,7 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
     /////
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(request.sudocubeNo));
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(request.sudocubeNo));
-    pathPlanning.printTable();
+    //pathPlanning.printTable();
 
     baseStation->sendTrajectory(positions);
 
@@ -209,7 +209,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     ROS_INFO("TESTING GetAntennaParam");
 
     //Harcoding de la position du robot pour les tests
-    Position robotPos(19, 57);
+    Position robotPos(37.5, 37.5);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
@@ -223,7 +223,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     /////
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-    pathPlanning.printTable();
+    //pathPlanning.printTable();
 
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
@@ -313,7 +313,7 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
     /////
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-    pathPlanning.printTable();
+    //pathPlanning.printTable();
 
     baseStation->sendTrajectory(positions);
     for (int i = 0; i < moves.size(); i++) {

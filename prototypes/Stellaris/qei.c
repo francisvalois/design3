@@ -4,19 +4,18 @@
 #include "inc/hw_types.h"
 #include "driverlib/debug.h"
 #include "driverlib/gpio.h"
-#include "driverlib/interrupt.h"
 #include "driverlib/rom.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/uart.h"
 #include "driverlib/qei.h"
 
 volatile unsigned long state, state_m2, state_m3; //États des encodeurs (m2 = moteur2, m3=moteur3)
 volatile unsigned long previous_status, previous_state_m2, previous_state_m3; //Pour le traitement des encodeurs
-volatile long position_m0, position_m1, position_m2, position_m3; //Position des moteurs m2, m3
+volatile long position_m2, position_m3; //Position des moteurs m2, m3
 
 extern volatile float dt;
 
-void EncoderHandler();
+void EncoderHandler(void);
+void resetQEIs(void);
 
 // IMPORTANT: Moteur 0 et 1 utilisent les QEI, tandis que les moteurs 2 et 3
 //			  utilisent le decodeur logiciels plus bas.
@@ -60,12 +59,9 @@ void initQEI(void){
 	GPIOPinTypeGPIOInput(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
 	GPIOIntTypeSet(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7, GPIO_BOTH_EDGES);
 	GPIOPinIntEnable(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
-	IntEnable(INT_GPIOE);
+	ROM_IntEnable(INT_GPIOE);
 	
-	position_m0 = 0;
-	position_m1 = 0;
-	position_m2 = 0;
-	position_m3 = 0;
+	resetQEIs();
 }
 
 //Gère les interruptions des encodeurs en quadrature des moteurs 2 et 3
