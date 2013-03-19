@@ -1,6 +1,12 @@
 // Pierre-Luc Buhler 910 098 468
 // & Simon Grenier 910 102 197
-#include "uart.h"
+#include "inc/lm3s9b92.h"
+#include "inc/hw_types.h"
+#include "inc/hw_memmap.h"
+#include "inc/hw_ints.h"
+#include "driverlib/rom.h"
+#include "driverlib/gpio.h"
+#include "driverlib/sysctl.h"
 //*****************************************************************************
 //
 // Main de Kinocto
@@ -10,29 +16,29 @@
 
 //Type def
 typedef struct {
-    volatile short        buffer[BUFFER_LEN];   // buffer
-    volatile long         read;  // prochain élément à lire
-    volatile long         write;   // prochain endroit où écrire
+    volatile long        buffer[BUFFER_LEN];   // buffer
+    long         read;  // prochain élément à lire
+    long         write;   // prochain endroit où écrire
 } CircularBuffer;
 
 //Variables globales externes
-extern volatile unsigned long state, state_m2, state_m3; //États des encodeurs (m2 = moteur2, m3=moteur3)
-extern volatile unsigned long previous_status, previous_state_m2, previous_state_m3; //Pour le traitement des encodeurs
-extern volatile long position_m2, position_m3; //Position des moteurs m2, m3
-extern volatile long pos0, pos1, pos2, pos3;
-extern volatile long previous_error0, previous_error1, previous_error2, previous_error3;
-extern volatile float I0, I1, I2, I3;
-extern volatile long consigne0, consigne1, consigne2, consigne3; 
-extern volatile float Kd0, Ki0, Kp0, Kd1, Ki1, Kp1, Kd2, Ki2, Kp2, Kd3, Ki3, Kp3;
-extern volatile float Kd0_m, Ki0_m, Kp0_m, Kd1_m, Ki1_m, Kp1_m, Kd2_m, Ki2_m, Kp2_m, Kd3_m, Ki3_m, Kp3_m;
-extern volatile float Kd0_s, Ki0_s, Kp0_s, Kd1_s, Ki1_s, Kp1_s, Kd2_s, Ki2_s, Kp2_s, Kd3_s, Ki3_s, Kp3_s;
-extern volatile float Kd0_d, Ki0_d, Kp0_d, Kd1_d, Ki1_d, Kp1_d, Kd2_d, Ki2_d, Kp2_d, Kd3_d, Ki3_d, Kp3_d;
-extern volatile float dt;
+extern unsigned long state, state_m2, state_m3; //États des encodeurs (m2 = moteur2, m3=moteur3)
+extern unsigned long previous_status, previous_state_m2, previous_state_m3; //Pour le traitement des encodeurs
+extern long position_m2, position_m3; //Position des moteurs m2, m3
+extern long pos0, pos1, pos2, pos3;
+extern long previous_error0, previous_error1, previous_error2, previous_error3;
+extern float I0, I1, I2, I3;
+extern long consigne0, consigne1, consigne2, consigne3; 
+extern float Kd0, Ki0, Kp0, Kd1, Ki1, Kp1, Kd2, Ki2, Kp2, Kd3, Ki3, Kp3;
+extern float Kd0_m, Ki0_m, Kp0_m, Kd1_m, Ki1_m, Kp1_m, Kd2_m, Ki2_m, Kp2_m, Kd3_m, Ki3_m, Kp3_m;
+extern float Kd0_s, Ki0_s, Kp0_s, Kd1_s, Ki1_s, Kp1_s, Kd2_s, Ki2_s, Kp2_s, Kd3_s, Ki3_s, Kp3_s;
+extern float Kd0_d, Ki0_d, Kp0_d, Kd1_d, Ki1_d, Kp1_d, Kd2_d, Ki2_d, Kp2_d, Kd3_d, Ki3_d, Kp3_d;
+extern float dt;
 extern volatile CircularBuffer buffer_commande;
 extern tBoolean a_atteint_consigne;
 extern tBoolean est_en_mouvement;
-extern short number_to_draw;
-extern short segment_to_draw;
+extern long number_to_draw;
+extern long segment_to_draw;
 extern tBoolean is_drawing;
 
 //Variables globales
@@ -69,19 +75,18 @@ void EncoderIntHandler(void);
 void EncoderHandler(void);
 //command.c
 void initCommande(void);
-void traiterNouvelleCommande(short commande_a_traiter[8]);
+void traiterNouvelleCommande(long commande_a_traiter[8]);
 tBoolean CommandHandler(void);
 //moteur.c
 void initMotorCommand(void);
-void motorTurnCCW(volatile long mnumber);
-void motorTurnCW(volatile long mnumber);
-void motorBrake(volatile long mnumber);
 void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
 //uart.c
 void initUART(void);
 //prehenseur.c
 void initPrehenseur(void);
+void descendrePrehenseur(void);
+void monterPrehenseur(void);
 //led.c
 void initLED(void);
 
@@ -92,7 +97,7 @@ int main(void)
     volatile unsigned long ulLoop;
     
     // Initialisation des ports
-    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
@@ -100,13 +105,13 @@ int main(void)
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
     
     //Enable les GPIO pour les timings des interrupts et autres	
-	ROM_GPIOPadConfigSet(GPIO_PORTA_BASE, GPIO_PIN_2, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
-	ROM_GPIOPinTypeGPIOOutput(GPIO_PORTA_BASE, GPIO_PIN_2);
+	ROM_GPIOPadConfigSet(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
+	ROM_GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
 
 	//Mettre les interrupts du port E en haute prorités: évite collisions avec QEI logiciel
-	IntPrioritySet(INT_GPIOE,0); 
+	ROM_IntPrioritySet(INT_GPIOE,0); 
 	//Activer les interruptions
-	IntMasterEnable();
+	ROM_IntMasterEnable();
 
  
     //Initialisation des variables globales
@@ -123,19 +128,6 @@ int main(void)
     state_m3=0;
     position_m2=0;
     position_m3=0;
-    //Asservissement
-    previous_error0=0;
-    previous_error1=0;
-    previous_error2=0;
-    previous_error3=0;
-    I0=0;
-    I1=0;
-    I2=0;
-    I3=0;
-    consigne0=0;
-    consigne1=0;
-    consigne2=0;
-    consigne3=0;
     //Pour les déplacements rapides @6400
     Kd0 = 0.1;
     Ki0 = 7;
@@ -213,7 +205,9 @@ int main(void)
 		if(!(UART0_FR_R & UART_FR_RXFE)) //&& (send_buffer.read > send_buffer.write-256))
 		{
 			receive_buffer.buffer[receive_buffer.write%BUFFER_LEN] = UART0_DR_R;
-			receive_buffer.write++;
+			if(!(receive_buffer.buffer[receive_buffer.write%BUFFER_LEN] > 90 || 32 > receive_buffer.buffer[receive_buffer.write%BUFFER_LEN])){
+				receive_buffer.write++;
+			}
 		}
 		
 	
@@ -224,23 +218,24 @@ int main(void)
 		}
 		if(receive_buffer.write - receive_buffer.read > 7){
 			long i;
-			short commande[8];
+			long commande[8];
 			for(i=0; i < 8; i++){
 				commande[i] = receive_buffer.buffer[receive_buffer.read%BUFFER_LEN];
 				receive_buffer.read++;
 			}
 			traiterNouvelleCommande(commande); //Traitement des commandes
 		}
-		if(buffer_commande.write - buffer_commande.read >= 8){
+		if(buffer_commande.write - buffer_commande.read >= 8 && !is_drawing && a_atteint_consigne && !est_en_mouvement){
 			CommandHandler();
 		}
 		
 		//Vérifier si doit dessiner
 		if(is_drawing && a_atteint_consigne && !est_en_mouvement){
 			switch(number_to_draw){
-				/*case 10: // 1 Large
+				case 10: // 1 Large
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							descendrePrehenseur();
 							moveFront(3613, 803);
 							moveLateral(4817, 1070);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
@@ -250,6 +245,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 3:
+							monterPrehenseur();
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -259,6 +255,7 @@ int main(void)
 				case 1:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveFront(1806, 803);
 							moveLateral(2408, 1070);
 							segment_to_draw++;
@@ -268,6 +265,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 3:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -277,6 +275,7 @@ int main(void)
 				case 20:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveFront(1806, 800);
 							segment_to_draw++;
 							break;
@@ -298,6 +297,7 @@ int main(void)
 							segment_to_draw++;	
 							break;
 						case 6:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -307,6 +307,7 @@ int main(void)
 				case 2:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveFront(903, 800);
 							segment_to_draw++;
 							break;
@@ -328,6 +329,7 @@ int main(void)
 							segment_to_draw++;	
 							break;
 						case 6:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -337,6 +339,7 @@ int main(void)
 				case 30:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveLateral(10838, 800);
 							segment_to_draw++;
 							break;
@@ -360,6 +363,7 @@ int main(void)
 							segment_to_draw++;	
 							break;
 						case 6:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -369,6 +373,7 @@ int main(void)
 				case 3:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveLateral(5419, 800);
 							segment_to_draw++;
 							break;
@@ -392,6 +397,7 @@ int main(void)
 							segment_to_draw++;	
 							break;
 						case 6:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -401,6 +407,7 @@ int main(void)
 				case 40:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveFront(13247, 1656);
 							segment_to_draw++;
 							break;
@@ -414,6 +421,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 4:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -423,6 +431,7 @@ int main(void)
 				case 4:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveFront(6632, 828);
 							segment_to_draw++;
 							break;
@@ -436,6 +445,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 4:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -445,6 +455,7 @@ int main(void)
 				case 50:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveLateral(-10638, 1667);
 							segment_to_draw++;
 							break;
@@ -463,6 +474,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 5:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -472,6 +484,7 @@ int main(void)
 				case 5:
 					switch(segment_to_draw){
 						case 1:
+							descendrePrehenseur();
 							moveLateral(-5319, 1667);
 							segment_to_draw++;
 							break;
@@ -490,15 +503,17 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 5:
+							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
 							break;
 					}
-					break;*/
+					break;
 				case 60:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							descendrePrehenseur();
 							moveLateral(-5821, 1000);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
@@ -524,6 +539,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 7:
+							monterPrehenseur();
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -533,6 +549,7 @@ int main(void)
 				case 6:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							descendrePrehenseur();
 							moveLateral(-2771, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
@@ -558,6 +575,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 7:
+							monterPrehenseur();
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -567,6 +585,7 @@ int main(void)
 				case 70:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							descendrePrehenseur();
 							moveFront(1204, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
@@ -584,6 +603,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 5:
+							monterPrehenseur();
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -593,6 +613,7 @@ int main(void)
 				case 7:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							descendrePrehenseur();
 							moveFront(602, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
@@ -610,6 +631,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 5:
+							monterPrehenseur();
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -619,6 +641,7 @@ int main(void)
 				case 80:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							descendrePrehenseur();
 							moveFront(1806, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
@@ -653,6 +676,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 9:
+							monterPrehenseur();
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
@@ -662,6 +686,7 @@ int main(void)
 				case 8:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							descendrePrehenseur();
 							moveFront(903, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
@@ -696,6 +721,7 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 9:
+							monterPrehenseur();
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;

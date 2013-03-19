@@ -8,7 +8,7 @@
 //Variables globales externes
 extern volatile long position_m2, position_m3; //Position du moteur 2 et 3
 extern volatile unsigned long periodPWM; //Période du PWM
-//extern volatile unsigned long index; //temps en ms/index du timer
+extern volatile unsigned long index; //temps en ms/index du timer
 
 
 //Variables globales
@@ -28,13 +28,9 @@ volatile float Kd0_s, Ki0_s, Kp0_s, Kd1_s, Ki1_s, Kp1_s, Kd2_s, Ki2_s, Kp2_s, Kd
 volatile float Kd0_d, Ki0_d, Kp0_d, Kd1_d, Ki1_d, Kp1_d, Kd2_d, Ki2_d, Kp2_d, Kd3_d, Ki3_d, Kp3_d;
 volatile float Tf0, Tf1, Tf2, Tf3; //Cste du filtre de commande de sortie
 volatile float dt; //periode d'asservissement
-long tolerancePID;
-long tolerancePos; //Tolerance en position avant de stopper le robot
 tBoolean est_demi_consigne;
 tBoolean est_en_mouvement;
 tBoolean a_atteint_consigne;
-
-long ouput0_table[10], ouput1_table[10], ouput2_table[10], ouput3_table[10];
 
 //Pour tests
 /*long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
@@ -46,8 +42,6 @@ long fraction0_table[300], fraction1_table[300], fraction2_table[300], fraction3
 //moteur.c
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
-void motorBrake(volatile long mnumber);
-void motorHardBrake(volatile long mnumber);
 void ajustementVitesse(void);
 //qei
 void resetQEIs(void);
@@ -250,10 +244,10 @@ long DPIDHandler3(volatile long *consigne, volatile long *measured_value, volati
 
 // Asservissement en vitesse des moteurs pour qu'il atteignent leur propre consigne
 void asservirMoteurs(void){
-	pos0 = position_m3; //pas inversé
-	pos1 = pos1 + QEIVelocityGet(QEI1_BASE)*QEIDirectionGet(QEI1_BASE); //pas inversé
-	pos2 = position_m2;//pas inversé
-	pos3 =  pos3 - QEIVelocityGet(QEI0_BASE)*QEIDirectionGet(QEI0_BASE); //inversé
+	pos0 = pos0 - QEIVelocityGet(QEI0_BASE)*QEIDirectionGet(QEI0_BASE); //inversé
+	pos1 = pos1 + QEIVelocityGet(QEI1_BASE)*QEIDirectionGet(QEI1_BASE);
+	pos2 = position_m2;
+	pos3 = position_m3;
 	
 	ajustementVitesse();
 	
@@ -367,8 +361,21 @@ void asservirMoteurs(void){
 	PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, (periodPWM*fraction2));
 	PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, (periodPWM*fraction3));
 	
-	/*pos0_table[index%300]=GPIOPinRead(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
-	pos1_table[index%300]=GPIOPinRead(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5);
+	//Si le robot est immobile
+	if(a_atteint_consigne && measured_speed0==0 && measured_speed1==0 && measured_speed2==0 && measured_speed3==0){
+		resetVariables();
+		resetQEIs();
+		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, 0);//periodPWM / 4);
+		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, 0);
+		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, 0);
+		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, 0);
+		est_en_mouvement = false;
+	}
+	else{
+		est_en_mouvement = true;
+	}
+	/*pos0_table[index%300]=pos0;
+	pos1_table[index%300]=pos1;
 	pos2_table[index%300]=pos2;
 	pos3_table[index%300]=pos3;
 	speed0_table[index%300]=measured_speed0;
@@ -384,19 +391,6 @@ void asservirMoteurs(void){
 	fraction2_table[index%300]=fraction2;
 	fraction3_table[index%300]=fraction3;*/
 	
-	//Si le robot est immobile
-	if(a_atteint_consigne && measured_speed0==0 && measured_speed1==0 && measured_speed2==0 && measured_speed3==0){
-		resetVariables();
-		resetQEIs();
-		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, 0);//periodPWM / 4);
-		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, 0);
-		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, 0);
-		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, 0);
-		est_en_mouvement = false;
-	}
-	else{
-		est_en_mouvement = true;
-	}
 }
 
 
@@ -427,28 +421,12 @@ void ajustementVitesse(void){
 	else{
 		abs_dist_cible1 = dist_cible1;
 	}
-	/*if(!est_demi_consigne && (((abs_dist_cible3 != 0) && ((abs_dist_cible3 - abs_pos3) < 3000)) || ((abs_dist_cible1 != 0) && ((abs_dist_cible1 - abs_pos1) < 3000)))){
-		float demi_consigne0=consigne0*0.5;
-		float demi_consigne1=consigne1*0.5;
-		float demi_consigne2=consigne2*0.5;
-		float demi_consigne3=consigne3*0.5;
-		consigne0=(long)(demi_consigne0);
-		consigne1=(long)(demi_consigne1);
-		consigne2=(long)(demi_consigne2);
-		consigne3=(long)(demi_consigne3);
-		est_demi_consigne = true;
-	}*/
-	if((abs_dist_cible3 != 0 && abs_pos3 > (abs_dist_cible3-tolerancePos))
-			|| (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1-tolerancePos))){
+	if((abs_dist_cible3 != 0 && abs_pos3 > (abs_dist_cible3))
+			|| (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){
 		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
 		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
 		a_atteint_consigne = true;
-		/*PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, 0);
-		PWMPulseWidthSet(PWM_BASE, PWM_OUT_1, 0);
-		PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, 0);
-		PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, 0);*/
-		//resetVariables();
 	}
 }
 
@@ -463,12 +441,12 @@ void initMotorCommand(void){
 	GPIOPinTypeGPIOOutput(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7);
 	GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 	GPIOPadConfigSet(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
-	GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE,GPIO_PIN_5 | GPIO_PIN_7);
+	GPIOPinTypeGPIOOutput(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7);
 	GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
 	GPIOPadConfigSet(GPIO_PORTE_BASE,GPIO_PIN_4 | GPIO_PIN_5, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
 	GPIOPinTypeGPIOOutput(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5);
 	GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
-	resetVariables();	
+	resetVariables();
 }
 
 // Commandes a transmettre aux moteurs
@@ -481,10 +459,10 @@ void motorTurnCCW(volatile long mnumber){
 		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7, 0x40);
 	}
 	else if(mnumber == 2){
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x80); //Inversé
+		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x80); //inversé
 	}
 	else if(mnumber == 3){
-			GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x20); //Inversé
+		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x20);
 	}
 }
 
@@ -498,84 +476,10 @@ void motorTurnCW(volatile long mnumber){
 		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7, 0x80);
 	}
 	else if(mnumber == 2){
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x20); //Inversé
+		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x20); //inversé
 	}
 	else if(mnumber == 3){
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x10); //Inversé
-	}
-}
-
-// Commandes a transmettre aux moteurs
-// \param mnumber : numero du moteur
-void motorBrake(volatile long mnumber){
-	if(mnumber == 0){ //M1
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x00);
-		/*consigne0=0;
-		I0=0;
-		previous_error0=0;
-		dist_cible0=0;*/
-		//position_m3=0;
-	}
-	else if(mnumber == 1){ //M2
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7, 0x00);
-		/*consigne1=0;
-		I1=0;
-		previous_error1=0;
-		dist_cible1=0;*/
-		//QEIPositionSet(QEI1_BASE, 0);
-	}
-	else if(mnumber == 2){ //M3
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x00);
-		/*consigne2=0;
-		I2=0;
-		previous_error2=0;
-		dist_cible2=0;*/
-		//position_m2=0;
-	}
-	else if(mnumber == 3){//M4
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x00);
-		/*consigne3=0;
-		I3=0;
-		previous_error3=0;
-		dist_cible3=0;*/
-		//QEIPositionSet(QEI0_BASE, 0);
-	}
-}
-
-// Freinage sec du moteur
-// \param mnumber : numero du moteur
-void motorHardBrake(volatile long mnumber){
-	if(mnumber == 0){ //M1
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
-		/*consigne0=0;
-		I0=0;
-		previous_error0=0;
-		dist_cible0=0;*/
-		//position_m3=0;
-	}
-	else if(mnumber == 1){ //M2
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_6 | GPIO_PIN_7, 0xC0);
-		/*consigne1=0;
-		I1=0;
-		previous_error1=0;
-		dist_cible1=0;*/
-		//QEIPositionSet(QEI1_BASE, 0);
-	}
-	else if(mnumber == 2){ //M3
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
-		/*consigne2=0;
-		I2=0;
-		previous_error2=0;
-		dist_cible2=0;*/
-		//position_m2=0;
-	}
-	else if(mnumber == 3){//M4
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
-		/*consigne3=0;
-		I3=0;
-		previous_error3=0;
-		dist_cible3=0;*/
-		//QEIPositionSet(QEI0_BASE, 0);
+		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x10);
 	}
 }
 

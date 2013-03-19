@@ -7,7 +7,7 @@
 #define BUFFER_LEN          256
 
 typedef struct {
-    volatile short        buffer[BUFFER_LEN];   // buffer
+    volatile long        buffer[BUFFER_LEN];   // buffer
     volatile long         read;  // prochain élément à lire
     volatile long         write;   // prochain endroit où écrire
 } CircularBuffer;
@@ -22,7 +22,7 @@ extern tBoolean a_atteint_consigne;
 extern volatile unsigned long index;
 
 //Variables globales
-volatile short commande[8];
+volatile long commande[8];
 volatile unsigned long captured_index;
 volatile long deplacement_x;
 volatile long deplacement_y;
@@ -30,18 +30,18 @@ tBoolean is_waiting_for_y;
 volatile CircularBuffer buffer_commande;
 
 tBoolean is_drawing;
-short number_to_draw;
-short segment_to_draw;
+long number_to_draw;
+long segment_to_draw;
 
 
 
 //Declaration de fonctions
 //commande.c
+void draw(volatile long number);
+//motor.c
 void resetVariables(void);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
-void motorBrake(volatile long mnumber);
-void motorHardBrake(volatile long mnumber);
 void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
 void turn(long distance, long vitesse);
@@ -68,15 +68,15 @@ void initCommande(void){
  
 
 // Fonction qui traite les nouvelles commandes.
-void traiterNouvelleCommande(short commande_a_traiter[8]){
+void traiterNouvelleCommande(long commande_a_traiter[8]){
 	//Checker si nouvelle commande est un Reset ou un brake, prend alors le dessus sur les autres commandes.
 	if(commande_a_traiter[0] == 'R'){
 		SysCtlReset();
 	}
 	else if(commande_a_traiter[0] == 'b'){
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0x00);
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x00);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x00);
+		ROM_GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0x00);
+		ROM_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x00);
+		ROM_GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x00);
 		a_atteint_consigne = true; //Indiquer comme si la consigne a été atteinte
 		initCommande();
 		buffer_commande.read = 0;
@@ -84,9 +84,9 @@ void traiterNouvelleCommande(short commande_a_traiter[8]){
 		
 	}
 	else if(commande_a_traiter[0] == 'B'){
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
+		ROM_GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
+		ROM_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
+		ROM_GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
 		a_atteint_consigne = true; //Indiquer comme si la consigne a été atteinte
 		initCommande();
 		buffer_commande.read = 0;
@@ -204,22 +204,29 @@ tBoolean CommandHandler(void){
 		return true;	
 	}
 	else if(commande[0] == 'D'){
-		//descendrePrehenseur();
+		draw(commande[1]-'0');
+	}
+	else if(commande[0] == 'P'){
+		monterPrehenseur();
+		return true;
+	}
+	else if(commande[0] == 'D'){
+		descendrePrehenseur();
 		return true;
 	}
 	else if(commande[0] == 'M'){
-		//monterPrehenseur();
+		monterPrehenseur();
 		return true;
 	}
 	else if(commande[0] == 'A'){
 		return true;
 	}
 	else if(commande[0] == 'O'){
-		//openLED();
+		openLED();
 		return true;
 	}
 	else if(commande[0] == 'C'){
-		//closeLED();
+		closeLED();
 		return true;
 	}
 	initCommande();
@@ -227,7 +234,7 @@ tBoolean CommandHandler(void){
 }
 
 
-void draw(volatile short number){
+void draw(volatile long number){
 	if(!is_drawing){
 		number_to_draw = number;
 		segment_to_draw = 1; //Commencer par le segment 1
