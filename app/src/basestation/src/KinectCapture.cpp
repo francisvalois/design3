@@ -1,6 +1,7 @@
 #include "KinectCapture.h"
 
 using namespace cv;
+using namespace std;
 
 KinectCapture::KinectCapture() {
 }
@@ -28,5 +29,5 @@ Mat KinectCapture::captureDepthMatrix() {
         ROS_ERROR("COULD NOT CAPTURE A PICTURE WITH THE KINECT");
     }
 
-    return world;
+    return world.clone();
 }
