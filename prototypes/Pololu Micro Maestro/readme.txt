@@ -15,3 +15,10 @@ Servo5
 
 /* Note si alimenté et fonctionnel LED ROUGE SUR MICRO FLASH */
 /* ATTENTION SVP PAS POUSSER/BOUGER LA CAMERA PENDANT MOTEURS ALIMENTÉ SINON FAIT FORCER MOTEURS ET PEUT FAIRE PETER LES ENTRÉES ET L'ALIM*/
+
+
+Avec le Command Protocol du Pololu:
+pour position normal (straight), transmettre au COM 4 (en hex):
+84 05 30 34 && 84 04 00 31
+pour position penché, transmettre( en hex):
+84 05 70 2E && 84 04 00 31
