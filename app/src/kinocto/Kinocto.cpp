@@ -150,8 +150,31 @@ bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, k
 
     /////
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(request.sudocubeNo));
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(request.sudocubeNo));
+    //vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(request.sudocubeNo));
     //pathPlanning.printTable();
+
+    vector<Move> moves;
+    Position position(0,0);
+    Move move(0.0, 100.0, position);
+    moves.push_back(move);
+    Move move(180.0, 100.0, position);
+    moves.push_back(move);
+    Move move(180.0, 100.0, position);
+	moves.push_back(move);
+	Move move(180.0, 100.0, position);
+	moves.push_back(move);
+	Move move(180.0, 100.0, position);
+	moves.push_back(move);
+	Move move(180.0, 100.0, position);
+	moves.push_back(move);
+	Move move(180.0, 100.0, position);
+	moves.push_back(move);
+	Move move(180.0, 100.0, position);
+	moves.push_back(move);
+	Move move(180.0, 100.0, position);
+	moves.push_back(move);
+	Move move(180.0, 100.0, position);
+	moves.push_back(move);
 
     baseStation->sendTrajectory(positions);
 
