@@ -13,6 +13,8 @@ public:
     Position getSudocubePos(int sudocubeNo);
     float getSudocubeAngle(int sudocubeNo);
 
+    Position getKinectDeadAngle();
+
     Position getObstaclePos(int obsNo);
     void setObstaclesPos(Position obs1, Position obs2);
 
@@ -31,6 +33,7 @@ private:
     float sudocubesAngle[8];
     float poleAngle[4];
     Position drawNumberInit[8];
+    Position kinectDeadAngle;
 
     //Dynamiques
     Position robot;

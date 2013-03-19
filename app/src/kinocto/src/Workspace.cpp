@@ -39,6 +39,8 @@ Workspace::Workspace() {
     poleAngle[1] = -90.0f;
     poleAngle[2] = -180.0f;
     poleAngle[3] = 0.0f;
+
+    kinectDeadAngle.set(89, 22);
 }
 
 Workspace::~Workspace() {
@@ -99,4 +101,8 @@ float Workspace::getPoleAngle(int pole) {
     }
 
     return 0;
+}
+
+Position Workspace::getKinectDeadAngle() {
+    return kinectDeadAngle;
 }
