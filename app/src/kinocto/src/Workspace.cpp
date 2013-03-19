@@ -9,28 +9,28 @@ Workspace::Workspace() {
     obstacles[1].set(0, 0);
 
     //Valeurs fixes
-    sudocubesPos[0].set(176, 78);
+    sudocubesPos[0].set(176, 64);
     sudocubesAngle[0] = -90.0f;
 
-    sudocubesPos[1].set(209, 78);
+    sudocubesPos[1].set(209, 64);
     sudocubesAngle[1] = -90.0f;
 
-    sudocubesPos[2].set(197, 96);
+    sudocubesPos[2].set(183, 96);
     sudocubesAngle[2] = 0.0f;
 
-    sudocubesPos[3].set(197, 70);
+    sudocubesPos[3].set(183, 70);
     sudocubesAngle[3] = 0.0f;
 
-    sudocubesPos[4].set(197, 44);
+    sudocubesPos[4].set(183, 44);
     sudocubesAngle[4] = 0.0f;
 
-    sudocubesPos[5].set(197, 18);
+    sudocubesPos[5].set(183, 18);
     sudocubesAngle[5] = 0.0f;
 
-    sudocubesPos[6].set(209, 36);
+    sudocubesPos[6].set(209, 50);
     sudocubesAngle[6] = 90.0f;
 
-    sudocubesPos[7].set(176, 36);
+    sudocubesPos[7].set(176, 50);
     sudocubesAngle[7] = 90.0f;
 
     antenna.set(60, 54);
