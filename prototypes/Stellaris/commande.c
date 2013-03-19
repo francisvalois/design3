@@ -22,6 +22,8 @@ extern tBoolean est_en_mouvement;
 extern tBoolean a_atteint_consigne;
 //timer.c
 extern volatile unsigned long index;
+//moteur.c
+extern volatile long offset, offset2;
 
 //Variables globales
 volatile long commande[8];
@@ -72,10 +74,10 @@ void initCommande(void){
 // Fonction qui traite les nouvelles commandes.
 void traiterNouvelleCommande(long commande_a_traiter[8]){
 	//Checker si nouvelle commande est un Reset ou un brake, prend alors le dessus sur les autres commandes.
-	if(commande_a_traiter[0] == 'R'){
+	if(commande_a_traiter[0] == 'R'){ //Reset du micro
 		SysCtlReset();
 	}
-	else if(commande_a_traiter[0] == 'b'){
+	else if(commande_a_traiter[0] == 'b'){ //Brake de base
 		ROM_GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0x00);
 		ROM_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0x00);
 		ROM_GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x00);
@@ -83,9 +85,10 @@ void traiterNouvelleCommande(long commande_a_traiter[8]){
 		initCommande();
 		buffer_commande.read = 0;
 		buffer_commande.write = 0;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		
 	}
-	else if(commande_a_traiter[0] == 'B'){
+	else if(commande_a_traiter[0] == 'B'){ //Brake moteur
 		ROM_GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 		ROM_GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
 		ROM_GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
@@ -93,6 +96,7 @@ void traiterNouvelleCommande(long commande_a_traiter[8]){
 		initCommande();
 		buffer_commande.read = 0;
 		buffer_commande.write = 0;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 	}
 	else{	//Sinon on la met dans le buffer des commandes en attentes
 		long i;
@@ -134,23 +138,35 @@ tBoolean CommandHandler(void){
 	 	}
 	 	//Ajustement de la consigne de vitesse selon le déplacement
 	 	if(deplacement_y > 4363 && deplacement_x == 0){
+	 		offset = 0; //Offset sur commande des moteurs
+	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 6400;
-	 		deplacement_y -= 1891;
+	 		deplacement_y -= 1591;
 	 	}
 	 	else if(deplacement_x_abs > 4363 && deplacement_y == 0){
+	 		offset = 0; //Offset sur commande des moteurs
+	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 6400;
-	 		deplacement_x_abs -= 1891;
+	 		deplacement_x_abs -= 1591;
 	 	}
 	 	else if(deplacement_y > 1745 && deplacement_x == 0){
+	 		offset = 0; //Offset sur commande des moteurs
+	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 3200;
-	 		deplacement_y -= 524;
+	 		deplacement_y -= 504;
 	 	}
 	 	else if(deplacement_x_abs > 1745 && deplacement_y == 0){
+	 		offset = 0; //Offset sur commande des moteurs
+	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 3200;
-	 		deplacement_x_abs -= 524;
+	 		deplacement_x_abs -= 504;
 	 	}
 	 	else{
+	 		offset = 0; //Offset sur commande des moteurs
+	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 1600;
+	 		deplacement_x_abs *= 0.84;
+	 		deplacement_y *= 0.84;
 	 	}
 	 	
 	 	//Remettre x négatif si était négatif
@@ -187,7 +203,7 @@ tBoolean CommandHandler(void){
 	 	}
 		is_waiting_for_y = true;
 		captured_index = index;
-		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
 	else if(commande[0] == 'T'){
@@ -195,7 +211,7 @@ tBoolean CommandHandler(void){
 		degree = (commande[2]-'0')*100;
 		degree += (commande[3]-'0')*10;
 		degree += (commande[4]-'0');
-		degree = degree*17402/360;
+		degree = degree*17250/360;
 		if(commande[1] == 'P'){
 			degree = -degree;
 		}
@@ -204,35 +220,46 @@ tBoolean CommandHandler(void){
 			is_waiting_for_action = true;
 			return false;
 		}
+		offset = 0; //Offset sur commande des moteurs
+	 	offset2 = -640; //Offset sur commande moteur 2 (moteur plus brusque)
 		turn(degree, 1600);
 		initCommande();
 		is_waiting_for_action = true;
 		return true;	
 	}
-	else if(commande[0] == 'D'){
-		draw(commande[1]-'0');
+	else if(commande[0] == 'D'){ //dessiner numero
+		if(commande[1] == 'G'){ //dessin grand
+			draw((commande[2]-'0')*10);
+		}
+		else{
+			draw(commande[2]-'0');
+		}
 	}
-	else if(commande[0] == 'P'){
-		monterPrehenseur();
-		return true;
-	}
-	else if(commande[0] == 'D'){
+	else if(commande[0] == 'P'){ //Descendre préhenseur
 		descendrePrehenseur();
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
-	else if(commande[0] == 'M'){
+	else if(commande[0] == 'M'){ //Monter préhenseur
 		monterPrehenseur();
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
-	else if(commande[0] == 'A'){
+	else if(commande[0] == 'A'){ //Demander donnée antenne
 		return true;
 	}
-	else if(commande[0] == 'O'){
+	else if(commande[0] == 'O'){ //Ouvrir LED
 		openLED();
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
-	else if(commande[0] == 'C'){
+	else if(commande[0] == 'C'){ //Fermer (Close) LED
 		closeLED();
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
+		return true;
+	}
+	else if(commande[0] == 'L'){ // afficher sur LCD
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
 	initCommande();

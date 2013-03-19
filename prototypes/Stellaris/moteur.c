@@ -21,6 +21,7 @@ volatile float I0, I1, I2, I3; //Integrale de l'asservissement
 volatile long consigne0, consigne1, consigne2, consigne3; //Consigne de vitesse
 volatile long dist_cible0, dist_cible1, dist_cible2, dist_cible3; //Consigne de position
 volatile long output0, output1, output2, output3; //Commande
+volatile long offset, offset2;
 //Variable de PID
 volatile float Kd0, Ki0, Kp0, Kd1, Ki1, Kp1, Kd2, Ki2, Kp2, Kd3, Ki3, Kp3;
 volatile float Kd0_m, Ki0_m, Kp0_m, Kd1_m, Ki1_m, Kp1_m, Kd2_m, Ki2_m, Kp2_m, Kd3_m, Ki3_m, Kp3_m;
@@ -93,6 +94,8 @@ void resetQEIs(void);
    	est_demi_consigne = false;
    	est_en_mouvement = false;
    	a_atteint_consigne = true;
+   	offset=0;
+   	offset2=-640;
  }
 
 //Filtre PID, ref: http://www.telecom-robotics.org/node/326
@@ -331,26 +334,26 @@ void asservirMoteurs(void){
 	float fraction2;
 	float fraction3;
 	//Une équation linéaire est utilisée x*0.5/7700 = % du duty cycle
-	fraction0 = (((output0)*0.5)/7700);
+	fraction0 = (((output0+offset)*0.5)/7700);
 	if(fraction0 > 0.99){
 		fraction0 = 0.99;
 	}
 	else if(fraction0 < 0){
 		fraction0 = 0;
 	}
-	fraction1 = (((output1)*0.5)/7700);
+	fraction1 = (((output1+offset)*0.5)/7700);
 	if(fraction1 > 0.99){
 		fraction1 = 0.99;
 	}else if(fraction1 < 0){
 		fraction1 = 0;
 	}
-	fraction2 = (((output2)*0.5)/7700);
+	fraction2 = (((output2+offset2)*0.5)/7700);
 	if(fraction2 > 0.99){
 		fraction2 = 0.99;
 	}else if(fraction2 < 0){
 		fraction2 = 0;
 	}
-	fraction3 = (((output3)*0.5)/7700);
+	fraction3 = (((output3+offset)*0.5)/7700);
 	if(fraction3 > 0.99){
 		fraction3 = 0.99;
 	}else if(fraction3 < 0){
@@ -396,18 +399,18 @@ void asservirMoteurs(void){
 
 //Fonction qui ajuste la vitesse selon la position.
 void ajustementVitesse(void){
-	long abs_pos3, abs_pos1, abs_dist_cible3, abs_dist_cible1;
-	if(pos3 < 0){
-		abs_pos3 = - pos3;
+	long abs_pos0, abs_pos1, abs_dist_cible0, abs_dist_cible1;
+	if(pos0 < 0){
+		abs_pos0 = - pos0;
 	}
 	else{
-		abs_pos3 = pos3;
+		abs_pos0 = pos0;
 	}
-	if(dist_cible3 < 0){
-		abs_dist_cible3 = - dist_cible3;
+	if(dist_cible0 < 0){
+		abs_dist_cible0 = - dist_cible0;
 	}
 	else{
-		abs_dist_cible3 = dist_cible3;
+		abs_dist_cible0 = dist_cible0;
 	}
 	if(pos1 < 0){
 		abs_pos1 = - pos1;
@@ -421,7 +424,7 @@ void ajustementVitesse(void){
 	else{
 		abs_dist_cible1 = dist_cible1;
 	}
-	if((abs_dist_cible3 != 0 && abs_pos3 > (abs_dist_cible3))
+	if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0))
 			|| (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){
 		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);

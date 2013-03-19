@@ -40,6 +40,7 @@ extern tBoolean est_en_mouvement;
 extern long number_to_draw;
 extern long segment_to_draw;
 extern tBoolean is_drawing;
+extern volatile long offset, offset2;
 
 //Variables globales
 volatile CircularBuffer receive_buffer;
@@ -233,7 +234,7 @@ int main(void)
 		}
 		
 		if(is_waiting_for_action && a_atteint_consigne){
-			send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = '1';
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = 'E';
 			is_waiting_for_action = false;
 		}
 		
@@ -243,6 +244,8 @@ int main(void)
 				case 10: // 1 Large
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveFront(3613, 803);
 							moveLateral(4817, 1070);
@@ -257,13 +260,15 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 1:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveFront(1806, 803);
 							moveLateral(2408, 1070);
@@ -278,13 +283,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 20:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveFront(1806, 800);
 							segment_to_draw++;
@@ -311,13 +318,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 2:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveFront(903, 800);
 							segment_to_draw++;
@@ -344,13 +353,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 30:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveLateral(10838, 800);
 							segment_to_draw++;
@@ -379,13 +390,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 3:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveLateral(5419, 800);
 							segment_to_draw++;
@@ -414,13 +427,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 40:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveFront(13247, 1656);
 							segment_to_draw++;
@@ -439,13 +454,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 4:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveFront(6632, 828);
 							segment_to_draw++;
@@ -464,13 +481,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 50:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveLateral(-10638, 1667);
 							segment_to_draw++;
@@ -494,13 +513,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;	
 				case 5:
 					switch(segment_to_draw){
 						case 1:
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveLateral(-5319, 1667);
 							segment_to_draw++;
@@ -524,13 +545,15 @@ int main(void)
 							is_drawing = false;
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 60:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							offset=0;
+							offset2=-640;
 							descendrePrehenseur();
 							moveLateral(-5821, 1000);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
@@ -561,13 +584,15 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 6:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							offset=0;
+							offset2=-640;
 							descendrePrehenseur();
 							moveLateral(-2771, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
@@ -598,13 +623,15 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;		
 				case 70:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							offset=0;
+							offset2=-640;
 							descendrePrehenseur();
 							moveFront(1204, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
@@ -627,13 +654,15 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 7:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							offset=0;
+							offset2=-640;
 							descendrePrehenseur();
 							moveFront(602, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
@@ -656,13 +685,15 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;		
 				case 80:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							offset=0;
+							offset2=-640;
 							descendrePrehenseur();
 							moveFront(1806, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
@@ -702,13 +733,15 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 							break;
 					}
 					break;
 				case 8:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
+							offset=0;
+							offset2=-640;
 							descendrePrehenseur();
 							moveFront(903, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
@@ -748,7 +781,7 @@ int main(void)
 							is_drawing = false; //Fin du dessin, reset les variables
 							number_to_draw = 0;
 							segment_to_draw = 0;
-							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+							send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
  							break;
 					}
 					break;
