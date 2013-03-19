@@ -195,7 +195,7 @@ tBoolean CommandHandler(void){
 		degree = (commande[2]-'0')*100;
 		degree += (commande[3]-'0')*10;
 		degree += (commande[4]-'0');
-		degree = degree*16333/360*1.05;
+		degree = degree*17402/360;
 		if(commande[1] == 'P'){
 			degree = -degree;
 		}
