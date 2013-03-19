@@ -31,21 +31,62 @@ def handleDrawNumber(req):
 
 def handleTurnLED(req):
     rospy.loginfo("Turn LED on?:%s", req.on)
-    
-    return TurnLEDResponse()
 
-def handleTurnLED(req):
-    rospy.loginfo("Turn LED on?:%s", req.on)
+    if(req.on):
+        commande = "O0000000"
+    else:
+        commande = "C0000000"
     
     return TurnLEDResponse()
 
 def handleTranslate(req):
     rospy.loginfo("Translate Robot of x:%d y:%d", req.x, req.y)
+
+    commande = " 0000000"
+    req.x = int(req.x/21.7*6533)
+    if(req.x != 0):
+        sign = ' '
+        if(req.x < 0):
+            sign = '-'
+        dist_string = str(abs(req.x))
+        while(len(dist_string) < 7):
+            dist_string = '0' + dist_string
+        commande = sign + dist_string
+    
+    sendCommandToController(commande)
+
+    commande = " 0000000"
+    req.y = int(req.y/21.7*6533)
+    if(req.y != 0):
+        sign = ' '
+        if(req.y < 0):
+            sign = '-'
+        dist_string = str(abs(req.y))
+        while(len(dist_string) < 7):
+            dist_string = '0' + dist_string
+        commande = sign + dist_string
+      
+    sendCommandToController(commande)
     
     return TranslateResponse()
 
 def handleRotateVerticallyCam(req):
     rospy.loginfo("Rotating cam of angle:%d", req.angle)
+
+    serCam.open()
+    if req.angle:
+        commande = "8405702E".decode("hex")
+        serCam.write(bytes(commande))
+        time.sleep(0.1)
+        commande = "84040031".decode("hex")
+        serCam.write(bytes(commande))
+    else:
+        commande = "84053034".decode("hex")
+        serCam.write(bytes(commande))
+        time.sleep(0.1)
+        commande = "84040031".decode("hex")
+        serCam.write(bytes(commande))
+    serCam.close()
     
     return RotateVerticallyCamResponse()
 
@@ -130,7 +171,7 @@ def sendCommandToController(commande):
             ser.write(bytes(commande))
             response = None
             #time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
-            while(response != '1'):
+            while(response != 'E'):
                 response = ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
             
@@ -143,6 +184,7 @@ def sendCommandToController(commande):
 
 def Microcontroller():
     global ser
+    global serCam
     
     rospy.init_node('microcontroller')
     
@@ -166,6 +208,16 @@ def Microcontroller():
     ser.timeout = 0
     ser.bytesize = serial.EIGHTBITS
     ser.writeTimeout = 0
+
+    rospy.loginfo("Creating Serial Communication with Camera")
+    serCam = serial.Serial()
+    serCam.port = ('/dev/ttyACM0') 
+    serCam.baudrate = 19200
+    serCam.parity = serial.PARITY_NONE
+    serCam.stopbits = 1
+    serCam.timeout = 0
+    serCam.bytesize = serial.EIGHTBITS
+    serCam.writeTimeout = 0   
     
     rospy.loginfo("Microcontroller initiated")
     
