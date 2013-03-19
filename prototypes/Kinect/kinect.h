@@ -15,9 +15,13 @@ private:
 
     const static float OBSTACLE_RADIUS;
     static float const OBSTACLE_HEIGHT;
-    const static float KINECTANGLE;
-    const static float X_KINECT_POSITION;
-    const static float Z_KINECT_POSITION;
+    static float KINECTANGLE;
+    static float X_KINECT_POSITION;
+    static float Z_KINECT_POSITION;
+    const static float KINECTANGLE2;
+    const static float X_KINECT_POSITION2;
+    const static float Z_KINECT_POSITION2;
+    
     const static int X_OBSTACLE_LEFT_THRESHOLD;
     const static int X_OBSTACLE_RIGHT_THRESHOLD;
     const static int Y_OBSTACLE_TOP_THRESHOLD;
@@ -32,6 +36,7 @@ private:
     static float const ROBOT_MAX_DISTANCE;
     static float const ROBOT_MIN_DISTANCE;
     static float const ROBOT_HEIGHT;
+    static float const TABLE_WIDTH;
 
     Vec2f _obstacle1;
     Vec2f _obstacle2;
@@ -46,10 +51,6 @@ private:
     list<Vec2f> getSomeYDistanceAssociatedWithXForObstacle(int obstaclePositionX, Mat depthMatrix);
 
     list<Vec2f> getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, Mat depthMatrix);
-
-    
-
- 
 
     static Vec2f translateXZCoordtoKinect(Vec2f positionXZ);
 
@@ -77,7 +78,7 @@ public:
 
     static Vec2f getTrueCoordFromKinectCoord(Vec3f depthXYZ);
     
-       static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
+    static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
     
     static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
     
@@ -86,7 +87,6 @@ public:
     Vec2f findRobot(Mat depthMatrix);
 
     Vec2f getRobot();
-
 };
 
 #endif //__kinect_H_

@@ -1,0 +1,3 @@
+Right Position : (41.5f, 77.5f);
+
+Left Position : (57f, 77.5f);

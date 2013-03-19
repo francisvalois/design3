@@ -31,13 +31,13 @@ int main( /*int argc, char* argv[]*/ ) {
     Mat depthMap, show, showRGB;
 
     
-    for (int i = 9; i <= 9; i++) {
+    for (int i = 2; i <= 2; i++) {
         capture.open(CV_CAP_OPENNI);
         capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 0);
 
         if (!capture.isOpened()) {
-            //cout << "Can not open a capture object." << endl;
-            //cout << "Loading from file matrix3.yml" << endl;
+            cout << "Can not open a capture object." << endl;
+            cout << "Loading from file matrix3.yml" << endl;
             
             std::stringstream file;
             file << "matrixRobot" << i << ".xml";
@@ -71,6 +71,9 @@ int main( /*int argc, char* argv[]*/ ) {
         cout << "Obstacle 1 : (" << obstacle1[0] << "m en x, " << obstacle1[1] << "m en z)" << endl;
         cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
         cout << "Robot : (" << robot[0] << "m en x, " << robot[1] << "m en z)" << endl;
+
+        imwrite("calibration3.jpg", show);
+        Utility::saveToFile(world, "calibration3.xml");
 
         imshow("depth", world);
     }
