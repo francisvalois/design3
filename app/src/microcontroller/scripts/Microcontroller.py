@@ -130,14 +130,20 @@ def handleRotate(req):
         if(req.angle > 0):  # Si angle positif
             if(abs(req.angle) > 99):  # Si un angle de plus de 2 digits
                 commande = "TP" + str(angle_abs)
-            else:
+            elif (abs(req.angle) >=10 and abs(req.angle) <= 99):
                 print(angle_abs)
                 commande = "TP0" + str(angle_abs)
+            else:
+                print(angle_abs)
+                commande = "TP00" + str(angle_abs)
         else: 
             if(abs(req.angle) > 99):
                 commande = "TN" + str(angle_abs)
-            else:
+            elif (abs(req.angle) >=10 and abs(req.angle) <= 99):
                 commande = "TN0" + str(angle_abs)
+            else:
+                commande = "TN00" + str(angle_abs)
+                
         commande += "000"
         
     sendCommandToController(commande)
