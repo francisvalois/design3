@@ -124,7 +124,7 @@ def handleMove(req):
 def handleRotate(req):
     rospy.loginfo("Executing Rotation With Angle:%f", req.angle)
     
-    commande = "00000000"
+    commande = "TN000000"
     if(req.angle != 0):
         angle_abs = int(abs(req.angle))
         if(req.angle > 0):  # Si angle positif
@@ -160,10 +160,10 @@ def sendCommandToController(commande):
     
     rospy.loginfo("Sending command to microcontroller %s", commande)
     
-    try: 
-        ser.open()
-    except Exception, e:
-        rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
+    #try: 
+        
+    #except Exception, e:
+        #rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
         #exit()
     
     if ser.isOpen():
@@ -175,10 +175,10 @@ def sendCommandToController(commande):
                 response = ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
             
-        except Exception, e1:
+        except Exception, e:
             rospy.logerr("LA COMMANDE %s NE S'EST PAS RENDU: %s", commande, str(e))
     
-        ser.close()
+        #ser.close()
     else:
         rospy.logerr("LE PORT DU MICROCONTROLLEUR N'EST PAS OUVERT")
 
@@ -209,6 +209,8 @@ def Microcontroller():
     ser.bytesize = serial.EIGHTBITS
     ser.writeTimeout = 0
 
+    ser.open()
+
     rospy.loginfo("Creating Serial Communication with Camera")
     serCam = serial.Serial()
     serCam.port = ('/dev/ttyACM0') 
@@ -222,6 +224,8 @@ def Microcontroller():
     rospy.loginfo("Microcontroller initiated")
     
     rospy.spin()
+    
+    ser.close()
         
 if __name__ == '__main__':
     Microcontroller()
