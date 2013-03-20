@@ -117,6 +117,8 @@ def main(argv=None):
 # --------------- Commenter / Decommenter selon systeme d'exploitation -------------
 
 		# Linux
+		# Trouver le port sur lequel est branché le Stellaris
+		listePorts = os.popen("ls -l /dev/serial/by-id")
 		ser.port = ('/dev/ttyUSB0')
 
 		# Windows
