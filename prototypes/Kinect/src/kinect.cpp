@@ -3,9 +3,10 @@
 #include "kinect.h"
 
 const float Kinect::OBSTACLE_RADIUS = 0.055f;
-float Kinect::KINECTANGLE = (float) (23.5 / 360.0 * 2.0 * M_PI);
+float Kinect::KINECTANGLE = 21.5f;
+float Kinect::KINECTANGLERAD = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);
 float Kinect::X_KINECT_POSITION = 0.135f;
-float Kinect::Z_KINECT_POSITION = -0.57f;
+float Kinect::Z_KINECT_POSITION = -0.56f;
 
 const int Kinect::X_OBSTACLE_LEFT_THRESHOLD = 180;
 const int Kinect::X_OBSTACLE_RIGHT_THRESHOLD = 610;
@@ -58,17 +59,26 @@ Kinect::Kinect(Vec2f robot)
     _robot = robot;
 }
 
-bool Kinect::setNewKinectConstant(float angle, float x, float y){
-    if(angle > 0 && angle < 90){
-        Kinect::KINECTANGLE = angle;
+bool Kinect::incrementKinectConstants(float angle, float x, float y){
+
+    if(KINECTANGLE+angle <= 90 && KINECTANGLE+angle >= 0){
+        KINECTANGLE += angle;
+        KINECTANGLERAD = (KINECTANGLE / 360.0 * 2.0 * M_PI);
     }
 
-    if(x > 0 && x < 90){
-        Kinect::X_KINECT_POSITION = x;
+    if(x != 0){
+        Kinect::X_KINECT_POSITION += x;
     }
 
-    if(y > 0 && y < 90){
-        Kinect::Z_KINECT_POSITION = y;
+    if(y != 0){
+        Kinect::Z_KINECT_POSITION += y;
+    }
+}
+
+bool Kinect::incrementKinectAngle(float increment){
+    if(KINECTANGLE+increment <= 90 && KINECTANGLE+increment >= 0){
+        KINECTANGLE += increment;
+        KINECTANGLERAD = (KINECTANGLE / 360.0 * 2.0 * M_PI);
     }
 }
 
@@ -76,8 +86,8 @@ bool Kinect::setNewKinectConstant(float angle, float x, float y){
 Vec2f Kinect::getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ) {
     float depthZ = depthXYZ[2];
     float depthX = depthXYZ[0];
-    float trueDepthX = sin(KINECTANGLE) * depthZ - cos(KINECTANGLE) * depthX;
-    float trueDepthZ = sin(KINECTANGLE) * depthX + cos(KINECTANGLE) * depthZ;
+    float trueDepthX = sin(KINECTANGLERAD) * depthZ - cos(KINECTANGLERAD) * depthX;
+    float trueDepthZ = sin(KINECTANGLERAD) * depthX + cos(KINECTANGLERAD) * depthZ;
     Vec2f trueDepth(trueDepthX, trueDepthZ);
 
     return trueDepth;

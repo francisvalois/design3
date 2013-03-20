@@ -18,11 +18,16 @@ using namespace cv;
 
 class KinectCalibration{
     private:
-        static Vec2f SQUARE_LEFT_POINT;
-        static std::vector<Vec2f> findCalibrationSquare(Mat depthMatrix);
+        static Vec2f LEFT_DISTANCE;
+        static Vec2f RIGHT_DISTANCE;
+        static std::vector<Point> squarePositions;
+        static std::vector<Point> findCalibrationSquare(Mat depthMatrix);
+        static Vec2f verifyIfDistancesFromKinectAreCorrect(Mat depthMatrix);
+        static void modifyKinectAngleConstant(Vec2f errorAverage);
     public:
         static bool calibrate(Mat depthMatrix);
-        static std::vector<Vec2f> mat1;
+        static std::vector<Point> getSquarePositions();
+
     
 };
 

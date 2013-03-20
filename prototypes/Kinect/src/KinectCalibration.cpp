@@ -8,13 +8,19 @@
 
 #include "KinectCalibration.h"
 
-Vec2f KinectCalibration::SQUARE_LEFT_POINT;
-std::vector<Vec2f> KinectCalibration::mat1;
+Vec2f KinectCalibration::LEFT_DISTANCE(0.57f, 0.775f);
+Vec2f KinectCalibration::RIGHT_DISTANCE(0.415f, 0.775f);
 
-std::vector<Vec2f> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
-    std:vector<Vec2f> test;
-    Vec2f tempPosition;
-    std::list<Vec3f> tempList;
+std::vector<Point> KinectCalibration::squarePositions;
+
+
+std::vector<Point> KinectCalibration::getSquarePositions(){
+    return KinectCalibration::squarePositions;
+}
+
+std::vector<Point> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
+    std:vector<Point> squarePosition;
+    std::list<Vec3f> tempLineOfPointsOnSquare;
 
     for(int i = 0; i < 640; i++){
         int lastLength = 0;
@@ -23,42 +29,122 @@ std::vector<Vec2f> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
         int highPoint = 0;
         for(int j = 300; j>= 160; j--){
             Vec3f position = depthMatrix.at<Vec3f>(j, i);
-            tempPosition = Kinect::getTrueCoordFromKinectCoord(position);
+            Vec2f trueCoordFromPosition = Kinect::getTrueCoordFromKinectCoord(position);
 
-            if(tempPosition[1] > 0.6 && tempPosition[1] <= 0.85){
-                if((tempPosition[1] > lastPoint[1] *0.95 && tempPosition[1] < lastPoint[1]*1.05) ||
+            if(trueCoordFromPosition[1] > 0.6 && trueCoordFromPosition[1] <= 0.85){
+                if((trueCoordFromPosition[1] > lastPoint[1] *0.95 && trueCoordFromPosition[1] < lastPoint[1]*1.05) ||
                         (lastPoint[1] == 0 && lastPoint[0] == 0)){
                     if(lowPoint == 0){
                         lowPoint = j;
                     }
 
                     lastLength++;
-                    lastPoint = tempPosition;
+                    lastPoint = trueCoordFromPosition;
                     highPoint = j;
                 }
                 else if(lastLength < 60 || lastLength > 90){
                     lastLength = 0;
                     lowPoint = j;
-                    lastPoint = tempPosition;
+                    lastPoint = trueCoordFromPosition;
                 }
             }
         }
 
         if(lastLength > 60 && lastLength < 90){
-            tempList.push_back(Vec3f(i,lowPoint, highPoint));
+            tempLineOfPointsOnSquare.push_back(Vec3f(i,lowPoint, highPoint));
         }
     }
 
-    Vec3f test2 = tempList.front();
-    Vec3f test3 = tempList.back();
+    Vec3f leftVertice = tempLineOfPointsOnSquare.front();
+    Vec3f rightVertice = tempLineOfPointsOnSquare.back();
 
-    test.push_back(Vec2f(test2[0]+2,test2[2]+4));
-    test.push_back(Vec2f(test3[0]-2,test2[1]-4));
+    squarePosition.push_back(Point(leftVertice[0]+8,leftVertice[2]+8));
+    squarePosition.push_back(Point(rightVertice[0]-8,leftVertice[1]-8));
 
-    return test;
+    return squarePosition;
+}
+
+//Return error between Kinect distances and true distances
+Vec2f KinectCalibration::verifyIfDistancesFromKinectAreCorrect(Mat depthMatrix){
+    Point left = KinectCalibration::squarePositions[0];
+    Point right = KinectCalibration::squarePositions[1];
+
+    Vec3f leftPointDistance = depthMatrix.at<Vec3f>(left.y, left.x);
+    Vec3f rightPointDistance = depthMatrix.at<Vec3f>(right.y, right.x);
+
+    Vec2f trueLeftCoord = Kinect::getTrueCoordFromKinectCoord(leftPointDistance);
+    Vec2f truerightCoord = Kinect::getTrueCoordFromKinectCoord(rightPointDistance);
+
+    if(trueLeftCoord[0] < 0.3 || trueLeftCoord[1] < 0.3){
+        leftPointDistance = depthMatrix.at<Vec3f>(left.y, left.x+1);
+        trueLeftCoord = Kinect::getTrueCoordFromKinectCoord(leftPointDistance);
+    }
+
+    if(truerightCoord[0] < 0.3 || truerightCoord[1] < 0.3){
+        rightPointDistance = depthMatrix.at<Vec3f>(left.y, left.x+1);
+        truerightCoord = Kinect::getTrueCoordFromKinectCoord(rightPointDistance);
+    }
+
+    if((trueLeftCoord[0] > LEFT_DISTANCE[0] * 0.98 && trueLeftCoord[0] < LEFT_DISTANCE[0] * 1.02) &&
+           (trueLeftCoord[1] > LEFT_DISTANCE[1] * 0.98 && trueLeftCoord[1] < LEFT_DISTANCE[1] * 1.02) &&
+           (truerightCoord[0] > RIGHT_DISTANCE[0] * 0.98 && truerightCoord[0] < RIGHT_DISTANCE[0] * 1.02) &&
+           (truerightCoord[1] > RIGHT_DISTANCE[1] * 0.98 && truerightCoord[1] < RIGHT_DISTANCE[1] * 1.02)){
+        return 0.0f;
+    }
+
+    Vec2f errorAverage(((trueLeftCoord[0] - LEFT_DISTANCE[0]) + (truerightCoord[1] - RIGHT_DISTANCE[1])),
+                       ((truerightCoord[1] - LEFT_DISTANCE[1]) + (truerightCoord[1] - RIGHT_DISTANCE[1])));
+
+    cout << errorAverage << endl;
+    return errorAverage;
+
 }
 
 
+void KinectCalibration::modifyKinectAngleConstant(Vec2f errorAverage){
+
+    if(fabs(errorAverage[0]/errorAverage[1]) > 0.25){
+        if(errorAverage[1] > 0){
+            Kinect::incrementKinectConstants(0,0,-0.01);
+        }
+        else{
+            Kinect::incrementKinectConstants(0,0,0.01);
+        }
+    }
+
+    if(fabs(errorAverage[1]/errorAverage[0]) > 0.25){
+        if(errorAverage[0] > 0){
+            Kinect::incrementKinectConstants(0,-0.01,0);
+        }
+        else{
+            Kinect::incrementKinectConstants(0,0.01,0);
+        }
+    }
+
+    if((errorAverage[0] > 0 && errorAverage[1] < 0) /*|| (errorAverage[0] < 0 && errorAverage[1] < 0)*/){
+        Kinect::incrementKinectAngle(-0.1);
+    }
+    else {
+        Kinect::incrementKinectAngle(0.1);
+    }
+}
+
 bool KinectCalibration::calibrate(Mat depthMatrix){
-    KinectCalibration::mat1 = KinectCalibration::findCalibrationSquare(depthMatrix);
+    KinectCalibration::squarePositions = KinectCalibration::findCalibrationSquare(depthMatrix);
+
+    bool calibrated = false;
+    int iteration = 0;
+        do{
+            Vec2f errorAverage = KinectCalibration::verifyIfDistancesFromKinectAreCorrect(depthMatrix);
+
+            if(fabs(errorAverage[0]) < 0.01 && fabs(errorAverage[1]) < 0.01){
+                calibrated == true;
+                break;
+            }
+
+            KinectCalibration::modifyKinectAngleConstant(errorAverage);
+            iteration++;
+        }while(calibrated || iteration < 1000);
+
+    return calibrated;
 }

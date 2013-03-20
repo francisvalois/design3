@@ -32,7 +32,7 @@ int main( /*int argc, char* argv[]*/ ) {
     Mat depthMap, show, showRGB;
 
     
-    for (int i = 1; i <= 1; i++) {
+    for (int i = 2; i <= 2; i++) {
         capture.open(CV_CAP_OPENNI);
         capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 0);
 
@@ -43,7 +43,6 @@ int main( /*int argc, char* argv[]*/ ) {
             std::stringstream file;
             file << "donnees/calibration" << i << ".xml";
             string fileString = file.str();
-            cout << fileString;
             world =  Utility::readFromFile(fileString);
         }
         else{
@@ -57,8 +56,8 @@ int main( /*int argc, char* argv[]*/ ) {
         namedWindow("depth", 1);
         setMouseCallback("depth", onMouse, 0);
 
-          KinectCalibration::calibrate(world);
-          std:vector<Vec2f> test = KinectCalibration::mat1;
+        KinectCalibration::calibrate(world);
+        std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
         clock_t tStart = clock();
 
         //        Kinect model;
@@ -78,7 +77,7 @@ int main( /*int argc, char* argv[]*/ ) {
 
 
         world.convertTo(show, CV_8UC1, 0.05f);
-       rectangle(world, cvPoint((int)test[0][0],(int)test[0][1]), cvPoint((int)test[1][0],(int)test[1][1]), CV_RGB(0.1, 0.2, 0.3));
+        rectangle(world, cvPoint((int)squarePoints[0].x,(int)squarePoints[0].y), cvPoint((int)squarePoints[1].x,(int)squarePoints[1].y), CV_RGB(0.1, 0.2, 0.3));
         imshow("depth", world);
 
     }

@@ -15,6 +15,7 @@ private:
 
     const static float OBSTACLE_RADIUS;
     static float const OBSTACLE_HEIGHT;
+    static float KINECTANGLERAD;
     static float KINECTANGLE;
     static float X_KINECT_POSITION;
     static float Z_KINECT_POSITION;
@@ -74,7 +75,9 @@ public:
 
     Vec2f getObstacle2();
 
-    static bool setNewKinectConstant(float angle, float x, float y);
+    static bool incrementKinectConstants(float angle=0, float x=0, float y=0);
+
+    static bool incrementKinectAngle(float increment);
 
     vector<Vec2f> findCenteredObstacle(Mat depthMatrix);
 
