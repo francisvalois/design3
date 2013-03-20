@@ -489,6 +489,7 @@ void motorTurnCW(volatile long mnumber){
 void moveLateral(long distance, long vitesse){
 	a_atteint_consigne = false;
 	if(distance > 0){ //A droite
+		
 		dist_cible1 = distance;
 		dist_cible2 = -distance; //La rotation est inversé par rapport à l'autre roue et donc la distance est opposée
 		consigne1=vitesse;
@@ -497,6 +498,7 @@ void moveLateral(long distance, long vitesse){
 		motorTurnCCW(2);
 	}
 	if(distance < 0){ //A gauche
+		
 		dist_cible1 = distance;
 		dist_cible2 = -distance;
 		consigne1=vitesse;
@@ -508,6 +510,7 @@ void moveLateral(long distance, long vitesse){
 void moveFront(long distance, long vitesse){
 	a_atteint_consigne = false;
 	if(distance > 0){ //Avance
+		
 		dist_cible0 = distance;
 		dist_cible3 = -distance;
 		consigne0=vitesse;
@@ -516,6 +519,7 @@ void moveFront(long distance, long vitesse){
 		motorTurnCCW(3);
 	}
 	else if(distance < 0){ //Recule
+		
 		dist_cible0 = distance;
 		dist_cible3 = -distance;
 		consigne0=vitesse;
@@ -527,6 +531,7 @@ void moveFront(long distance, long vitesse){
 void turn(long distance, long vitesse){
 	a_atteint_consigne = false;
 	if(distance > 0){//Si distance positive tourner dans le sens horaire
+		
 		motorTurnCW(0);
 		motorTurnCW(1);
 		motorTurnCW(2);
@@ -541,6 +546,7 @@ void turn(long distance, long vitesse){
 		dist_cible3 = distance;
 	}
 	else if(distance < 0){ //Si distance négative tourner dans le sens anti-horaire
+		
 		motorTurnCCW(0);
 		motorTurnCCW(1);
 		motorTurnCCW(2);

@@ -137,7 +137,7 @@ tBoolean CommandHandler(void){
 	 		deplacement_x_abs = deplacement_x;
 	 	}
 	 	//Ajustement de la consigne de vitesse selon le déplacement
-	 	if(deplacement_y > 4363 && deplacement_x == 0){
+	 	/*if(deplacement_y > 4363 && deplacement_x == 0){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 6400;
@@ -148,8 +148,8 @@ tBoolean CommandHandler(void){
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 6400;
 	 		deplacement_x_abs -= 1591;
-	 	}
-	 	else if(deplacement_y > 1745 && deplacement_x == 0){
+	 	}*/
+	 	if(deplacement_y > 1745 && deplacement_x == 0){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 3200;
@@ -221,7 +221,7 @@ tBoolean CommandHandler(void){
 			return false;
 		}
 		offset = 0; //Offset sur commande des moteurs
-	 	offset2 = -640; //Offset sur commande moteur 2 (moteur plus brusque)
+	 	offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 		turn(degree, 1600);
 		initCommande();
 		is_waiting_for_action = true;
