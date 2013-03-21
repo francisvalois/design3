@@ -7,6 +7,7 @@
 #include "driverlib/rom.h"
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
+#include "ecran.h"
 //*****************************************************************************
 //
 // Main de Kinocto
@@ -53,13 +54,12 @@ volatile tBoolean is_waiting_for_action;
 
 //Fonction externe provenant de lcd.c: TODO supprimer et utiliser plutôt celles de ecran.c/.h
 void init_lcd(void);
+void afficher_param(char sudocube, char orient, char T);
 void write_position(void);
 void wait(void);
 void write_char(char mychar);
 void clear(void);
 void write(char mychar);
-void afficher_pos(volatile unsigned long secondes);
-void afficher_speed(volatile unsigned long secondes);
 
 //Déclaration des fonctions externes
 //pwm.c
@@ -187,8 +187,9 @@ int main(void)
     is_waiting_for_action = false;
     
     
-    
-
+    init_lcd();
+    afficher_param('2', 'S', 'G');
+	//ecranInit();
 	initCommande();
 	initMotorCommand();
 	initLED();
@@ -196,7 +197,6 @@ int main(void)
 	initPWM();
     initUART();   
     initQEI();
-    //init_lcd();
     initTimer();
     
 
