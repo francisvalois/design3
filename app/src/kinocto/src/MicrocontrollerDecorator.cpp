@@ -1,7 +1,19 @@
 #include "MicrocontrollerDecorator.h"
 
+using namespace microcontroller;
+
 MicrocontrollerDecorator::MicrocontrollerDecorator(ros::NodeHandle & nodeHandle) {
     this->nodeHandle = nodeHandle;
+
+    decodeAntennaClient = nodeHandle.serviceClient<DecodeAntenna>("microcontroller/decodeAntenna");
+    drawNumberClient = nodeHandle.serviceClient<DrawNumber>("microcontroller/drawNumber");
+    moveClient = nodeHandle.serviceClient<Move>("microcontroller/move");
+    putPenClient = nodeHandle.serviceClient<Rotate>("microcontroller/rotate");
+    rotateClient = nodeHandle.serviceClient<PutPen>("microcontroller/putPen");
+    turnLEDClient = nodeHandle.serviceClient<TurnLED>("microcontroller/turnLED");
+    writeToLCDClient = nodeHandle.serviceClient<WriteToLCD>("microcontroller/writeToLCD");
+    rotateVerticallyCamClient = nodeHandle.serviceClient<RotateVerticallyCam>("microcontroller/rotateVerticallyCam");
+    translateClient = nodeHandle.serviceClient<Translate>("microcontroller/translate");
 }
 
 MicrocontrollerDecorator::~MicrocontrollerDecorator() {
@@ -11,15 +23,11 @@ AntennaParam MicrocontrollerDecorator::decodeAntenna() {
     ROS_INFO("Requesting the microcontroller to decode the antenna");
 
     AntennaParam antennaParam;
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::DecodeAntenna>("microcontroller/decodeAntenna");
-    microcontroller::DecodeAntenna srv;
+    DecodeAntenna srv;
 
-    if (client.call(srv)) {
+    if (decodeAntennaClient.call(srv) == true) {
         ROS_INFO("The decoded information are number:%d isBig:%d orientation:%d", srv.response.number, srv.response.isBig, srv.response.orientation);
-
-        antennaParam.isBig = srv.response.isBig;
-        antennaParam.number = srv.response.number;
-        antennaParam.orientation = srv.response.orientation;
+        antennaParam.set(srv.response.number, srv.response.isBig, srv.response.orientation);
     } else {
         ROS_ERROR("Failed to call service microcontroller/decodeAntenna");
     }
@@ -29,12 +37,11 @@ AntennaParam MicrocontrollerDecorator::decodeAntenna() {
 void MicrocontrollerDecorator::drawNumber(int number, bool isBig) {
     ROS_INFO("Requesting the microcontroller to draw number:%d and isBig:%d", number, isBig);
 
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::DrawNumber>("microcontroller/drawNumber");
-    microcontroller::DrawNumber srv;
+    DrawNumber srv;
     srv.request.number = number;
     srv.request.isBig = isBig;
 
-    if (client.call(srv) == false) {
+    if (drawNumberClient.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/drawNumber");
     }
 }
@@ -42,12 +49,11 @@ void MicrocontrollerDecorator::drawNumber(int number, bool isBig) {
 void MicrocontrollerDecorator::move(float distance) {
     ROS_INFO("Requesting the microcontroller to move:%f", distance);
 
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::Move>("microcontroller/move");
-    microcontroller::Move srv;
+    Move srv;
     srv.request.distance = distance;
 
-    if (distance < -1 || distance > 1) {
-        if (client.call(srv) == false) {
+    if (distance < -1 || distance > 1) { // TODO vérifier conditions
+        if (moveClient.call(srv) == false) {
             ROS_ERROR("Failed to call service microcontroller/move");
         }
     }
@@ -56,12 +62,11 @@ void MicrocontrollerDecorator::move(float distance) {
 void MicrocontrollerDecorator::rotate(float angle) {
     ROS_INFO("Requesting the microncontroller to rotate of :%f", angle);
 
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::Rotate>("microcontroller/rotate");
-    microcontroller::Rotate srv;
+    Rotate srv;
     srv.request.angle = angle;
 
     if (angle < -1 || angle > 1) {
-        if (client.call(srv) == false) {
+        if (rotateClient.call(srv) == false) {
             ROS_ERROR("Failed to call service microcontroller/rotate");
         }
     }
@@ -71,11 +76,10 @@ void MicrocontrollerDecorator::rotate(float angle) {
 void MicrocontrollerDecorator::putPen(bool down) {
     ROS_INFO("Requesting the microcontroller to put the pen down?:%d", down);
 
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::PutPen>("microcontroller/putPen");
-    microcontroller::PutPen srv;
+    PutPen srv;
     srv.request.down = down;
 
-    if (client.call(srv) == false) {
+    if (putPenClient.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/putPen");
     }
 }
@@ -83,11 +87,10 @@ void MicrocontrollerDecorator::putPen(bool down) {
 void MicrocontrollerDecorator::turnLED(bool on) {
     ROS_INFO("Requesting the microcontroller to turn the LED on?:%d", on);
 
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::TurnLED>("microcontroller/turnLED");
-    microcontroller::TurnLED srv;
+    TurnLED srv;
     srv.request.on = on;
 
-    if (client.call(srv) == false) {
+    if (turnLEDClient.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/turnLED");
     }
 }
@@ -95,11 +98,10 @@ void MicrocontrollerDecorator::turnLED(bool on) {
 void MicrocontrollerDecorator::writeToLCD(std::string message) {
     ROS_INFO("Requesting the microcontroller to write on the LCD the message:%s", message.c_str());
 
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::WriteToLCD>("microcontroller/writeToLCD");
-    microcontroller::WriteToLCD srv;
+    WriteToLCD srv;
     srv.request.message = message;
 
-    if (client.call(srv) == false) {
+    if (writeToLCDClient.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/writeToLCD");
     }
 }
@@ -107,12 +109,11 @@ void MicrocontrollerDecorator::writeToLCD(std::string message) {
 void MicrocontrollerDecorator::translate(Position position) {
     ROS_INFO("Requesting the microcontroller to translate the robot of x:%f y:%f", position.x, position.y);
 
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::Translate>("microcontroller/translate");
-    microcontroller::Translate srv;
+    Translate srv;
     srv.request.x = position.x;
     srv.request.y = position.y;
 
-    if (client.call(srv) == false) {
+    if (translateClient.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/translate");
     }
 }
@@ -120,11 +121,10 @@ void MicrocontrollerDecorator::translate(Position position) {
 void MicrocontrollerDecorator::rotateVerticallyCam(int angle) {
     ROS_INFO("Requesting the microcontroller to rotate webcam vertically of angle:%d", angle);
 
-    ros::ServiceClient client = nodeHandle.serviceClient<microcontroller::RotateVerticallyCam>("microcontroller/rotateVerticallyCam");
-    microcontroller::RotateVerticallyCam srv;
+    RotateVerticallyCam srv;
     srv.request.angle = angle;
 
-    if (client.call(srv) == false) {
+    if (rotateVerticallyCamClient.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/rotateVerticallyCam");
     }
 }

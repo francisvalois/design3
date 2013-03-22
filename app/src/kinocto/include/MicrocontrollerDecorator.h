@@ -33,6 +33,16 @@ public:
 
 private:
     ros::NodeHandle nodeHandle;
+
+    ros::ServiceClient decodeAntennaClient;
+    ros::ServiceClient drawNumberClient;
+    ros::ServiceClient moveClient;
+    ros::ServiceClient putPenClient;
+    ros::ServiceClient rotateClient;
+    ros::ServiceClient turnLEDClient;
+    ros::ServiceClient writeToLCDClient;
+    ros::ServiceClient rotateVerticallyCamClient;
+    ros::ServiceClient translateClient;
 };
 
 #endif /* MICROCONTROLLERDECORATOR_H_ */
