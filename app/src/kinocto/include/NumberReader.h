@@ -31,6 +31,9 @@ private:
     char filename[255];
 
     void learnFromImages(CvMat* trainData, CvMat* trainClasses);
+    cv::Mat loadNumberSample(int classNo, int trainNo);
+    void addSampleToClassifier(cv::Mat & numberSample, int i, int j, int classNo);
+
     bool isTrainedDataValid();
     void copyData(cv::Mat & src, CvMat * dst);
 };
