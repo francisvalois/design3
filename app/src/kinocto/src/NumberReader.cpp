@@ -58,14 +58,12 @@ void NumberReader::copyData(Mat & src, CvMat * dst) {
 }
 
 /**
- * Nécessite que l'image soit en ton de gris
+ * ATTENTION Nécessite que l'image soit en ton de gris
  */
 int NumberReader::identifyNumber(Mat & src) {
     int number = -1;
-    Mat srcGray = src.clone();
-
     CvMat* sample = cvCreateMat(1, NUMBER_IMAGE_SIZE, CV_32FC1);
-    copyData(srcGray, sample);
+    copyData(src, sample);
 
     int detectedNumber = (int) knearest.find_nearest(sample, 1);
     if (detectedNumber >= 1 || detectedNumber <= 8) {
