@@ -12,11 +12,7 @@ CameraCapture::~CameraCapture() {
 
 Mat CameraCapture::takePicture() {
     VideoCapture cap(0);
-    cap.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
-    cap.set(CV_CAP_PROP_FRAME_HEIGHT, 1200);
-    cap.set(CV_CAP_PROP_BRIGHTNESS, 0.509803);
-    cap.set(CV_CAP_PROP_CONTRAST, 0.196078);
-    cap.set(CV_CAP_PROP_SATURATION, 0.176470);
+    setConfig(cap);
 
     Mat picture;
     if (cap.isOpened() == false) {
@@ -27,6 +23,14 @@ Mat CameraCapture::takePicture() {
     cap >> picture;
 
     return picture.clone();
+}
+
+void setConfig(cv::VideoCapture & videoCapture) {
+    videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
+    videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 1200);
+    videoCapture.set(CV_CAP_PROP_BRIGHTNESS, 0.509803);
+    videoCapture.set(CV_CAP_PROP_CONTRAST, 0.196078);
+    videoCapture.set(CV_CAP_PROP_SATURATION, 0.176470);
 }
 
 void CameraCapture::saveImage(Mat &pict, char* filename) {

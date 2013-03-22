@@ -8,6 +8,7 @@
 class CameraCapture {
 
 private:
+    void setConfig(cv::VideoCapture & videoCapture);
 
 public:
     CameraCapture();
