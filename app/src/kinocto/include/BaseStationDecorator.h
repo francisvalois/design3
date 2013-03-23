@@ -29,6 +29,14 @@ public:
     void sendConfirmRobotStarted();
 private:
     ros::NodeHandle nodeHandle;
+
+    ros::ServiceClient findRobotPositionClient;
+    ros::ServiceClient findObstaclesPositionClient;
+    ros::ServiceClient showSolvedSudocubeClient;
+    ros::ServiceClient loopEndedClient;
+    ros::ServiceClient traceRealTrajectoryClient;
+    ros::ServiceClient updateRobotPositionClient;
+    ros::ServiceClient showConfirmStartRobotClient;
 };
 
 #endif /* BASESTATIONDECORATION_H_ */

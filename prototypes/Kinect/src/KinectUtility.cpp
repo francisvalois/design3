@@ -5,7 +5,7 @@
 //
 
 
-#include "Utility.h"
+#include "KinectUtility.h"
 
 void Utility::saveToFile(Mat matrix, string fileName){
     FileStorage fs(fileName, FileStorage::WRITE);
@@ -18,6 +18,9 @@ Mat Utility::readFromFile(string fileName){
     FileStorage f;
     Mat matrix;
     f.open(fileName, FileStorage::READ);
+    if(!f.isOpened()){
+        throw string("Unable to open the file");
+    }
     f["cameraMatrix"] >> matrix;
     f.release();
 

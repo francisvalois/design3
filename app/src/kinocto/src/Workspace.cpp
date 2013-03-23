@@ -2,69 +2,69 @@
 
 Workspace::Workspace() {
     //Valeur à redéfinir dynamiquement;
-    robot.set(0, 0);
+    robot.set(0.0f, 0.0f);
     robotAngle = 0.0f;
 
-    obstacles[0].set(0, 0);
-    obstacles[1].set(0, 0);
+    obstacles[0].set(0.0f, 0.0f);
+    obstacles[1].set(0.0f, 0.0f);
 
     //Valeurs fixes
-    sudocubesPos[0].set(176, 64);
+    sudocubesPos[0].set(176.0f, 64.0f);
     sudocubesAngle[0] = -90.0f;
 
-    sudocubesPos[1].set(209, 64);
+    sudocubesPos[1].set(209.0f, 64.0f);
     sudocubesAngle[1] = -90.0f;
 
-    sudocubesPos[2].set(186, 95);
+    sudocubesPos[2].set(186.0f, 95.0f);
     sudocubesAngle[2] = 0.0f;
 
-    sudocubesPos[3].set(183, 70);
+    sudocubesPos[3].set(183.0f, 70.0f);
     sudocubesAngle[3] = 0.0f;
 
-    sudocubesPos[4].set(183, 44);
+    sudocubesPos[4].set(183.0f, 44.0f);
     sudocubesAngle[4] = 0.0f;
 
-    sudocubesPos[5].set(183, 18);
+    sudocubesPos[5].set(183.0f, 18.0f);
     sudocubesAngle[5] = 0.0f;
 
-    sudocubesPos[6].set(209, 50);
+    sudocubesPos[6].set(209.0f, 50.0f);
     sudocubesAngle[6] = 90.0f;
 
-    sudocubesPos[7].set(176, 50);
+    sudocubesPos[7].set(176.0f, 50.0f);
     sudocubesAngle[7] = 90.0f;
 
-    antenna.set(60, 54);
+    antenna.set(60.0f, 54.0f);
 
     poleAngle[0] = 90.0f;
     poleAngle[1] = -90.0f;
     poleAngle[2] = -180.0f;
     poleAngle[3] = 0.0f;
 
-    kinectDeadAngle.set(89, 22);
+    kinectDeadAngle.set(89.0f, 22.0f);
 
-    numbersInitDrawPos[0][0].set(0, 0);
-    numbersInitDrawPos[0][1].set(0, 0);
+    numbersInitDrawPos[0][0].set(0.0f, 0.0f);
+    numbersInitDrawPos[0][1].set(0.0f, 0.0f);
 
-    numbersInitDrawPos[1][0].set(0, 0);
-    numbersInitDrawPos[1][1].set(0, 0);
+    numbersInitDrawPos[1][0].set(0.0f, 0.0f);
+    numbersInitDrawPos[1][1].set(0.0f, 0.0f);
 
-    numbersInitDrawPos[2][0].set(0, 0);
-    numbersInitDrawPos[2][1].set(0, 0);
+    numbersInitDrawPos[2][0].set(0.0f, 0.0f);
+    numbersInitDrawPos[2][1].set(0.0f, 0.0f);
 
-    numbersInitDrawPos[3][0].set(0, 0);
-    numbersInitDrawPos[3][1].set(0, 0);
+    numbersInitDrawPos[3][0].set(0.0f, 0.0f);
+    numbersInitDrawPos[3][1].set(0.0f, 0.0f);
 
-    numbersInitDrawPos[4][0].set(0, 0);
-    numbersInitDrawPos[4][1].set(0, 0);
+    numbersInitDrawPos[4][0].set(0.0f, 0.0f);
+    numbersInitDrawPos[4][1].set(0.0f, 0.0f);
 
-    numbersInitDrawPos[5][0].set(0, 0);
-    numbersInitDrawPos[5][1].set(0, 0);
+    numbersInitDrawPos[5][0].set(0.0f, 0.0f);
+    numbersInitDrawPos[5][1].set(0.0f, 0.0f);
 
-    numbersInitDrawPos[6][0].set(0, 0);
-    numbersInitDrawPos[6][1].set(0, 0);
+    numbersInitDrawPos[6][0].set(0.0f, 0.0f);
+    numbersInitDrawPos[6][1].set(0.0f, 0.0f);
 
-    numbersInitDrawPos[7][0].set(0, 0);
-    numbersInitDrawPos[7][1].set(0, 0);
+    numbersInitDrawPos[7][0].set(0.0f, 0.0f);
+    numbersInitDrawPos[7][1].set(0.0f, 0.0f);
 }
 
 Workspace::~Workspace() {
@@ -124,7 +124,7 @@ float Workspace::getPoleAngle(int pole) {
         return poleAngle[pole - 1];
     }
 
-    return 0;
+    return 0.0f;
 }
 
 Position Workspace::getKinectDeadAngle() {

@@ -1,21 +1,26 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
-#include "kinect.h"
-#include "Utility.h"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/calib3d/calib3d.hpp"
+#include "ObstaclesDetection.h"
+#include "RobotDetection.h"
+#include "KinectUtility.h"
 #include "KinectCalibration.h"
+#include "KinectTransformation.h"
+#define _USE_MATH_DEFINES
+#include "Math.h"
 
 using namespace cv;
 using namespace std;
-
 Mat world;
 
 void onMouse(int event, int x, int y, int flags, void *) {
     if (event == CV_EVENT_LBUTTONUP) {
         Vec3f s = world.at<Vec3f>(y, x);
-        Vec2f realPosition = Kinect::getTrueCoordFromKinectCoord(s);
-        Vec2f rotatedPosition = Kinect::getRotatedXZCoordFromKinectCoord(s);
-        Vec2f radius = Kinect::addObstacleRadiusToDistance(rotatedPosition);
-        Vec2f trueradius = Kinect::translateXZCoordtoOrigin(radius);
+        Vec2f realPosition = KinectTransformation::getTrueCoordFromKinectCoord(s);
+        Vec2f rotatedPosition = KinectTransformation::getRotatedXZCoordFromKinectCoord(s);
+        Vec2f radius = ObstaclesDetection::addObstacleRadiusToDistance(rotatedPosition);
+        Vec2f trueradius = KinectTransformation::translateXZCoordtoOrigin(radius);
         cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
         cout << "Position X :" << realPosition[0] << " Position Y :" << s[1] << " Position Z:" << realPosition[1] << endl;
         cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[1] << endl;
@@ -34,16 +39,23 @@ int main( /*int argc, char* argv[]*/ ) {
     
     for (int i = 2; i <= 2; i++) {
         capture.open(CV_CAP_OPENNI);
-        capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 0);
+        capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
 
         if (!capture.isOpened()) {
             cout << "Cannot open a capture object." << endl;
-            cout << "Loading from file matrix3.yml" << endl;
-            
             std::stringstream file;
-            file << "donnees/calibration" << i << ".xml";
+            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration" << i << ".xml";
+            //file << "matrixRobot4.xml";
             string fileString = file.str();
-            world =  Utility::readFromFile(fileString);
+            cout << "Loading from file " << fileString << endl;
+
+            try{
+                world =  Utility::readFromFile(fileString);
+            }
+            catch(string e){
+                cout << e;
+                return 1;
+            }          
         }
         else{
             capture.grab();
@@ -53,32 +65,76 @@ int main( /*int argc, char* argv[]*/ ) {
                 depthMap.convertTo(show, CV_8UC1, 0.05f);
         }
 
+       Mat test = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+        //Mat test = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+
+
+
         namedWindow("depth", 1);
+        namedWindow("chess", 1);
         setMouseCallback("depth", onMouse, 0);
 
-        KinectCalibration::calibrate(world);
-        std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
-        clock_t tStart = clock();
+        //KinectCalibration::calibrate(world);
+        //std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
+      
+        //double tStart = clock();
+        RobotDetection model;
+        ObstaclesDetection model2;
+        
+        model.findRobotWithAngle(world, test);
+        //printf("Time taken: %.4fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
+        model2.findCenteredObstacle(world);
 
-        //        Kinect model;
-        //        model.findCenteredObstacle(world);
-        //        model.findRobot(world);
+        Mat test3;
 
-        //        //printf("Time taken: %.2fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
+        
+        //Proof of concept with FindContours !
+        Canny(test,test3, 0,120, 3);
+        float size = 3;
 
-        //        Vec2f obstacle1 = model.getObstacle1();
-        //        Vec2f obstacle2 = model.getObstacle2();
-        //        Vec2f robot = model.getRobot();
+        Point dilatePoint(size, size);
+        Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * size + 1, 2 * size + 1), dilatePoint);
 
-        //        cout << "Matrix " << i<< endl;
-        //        cout << "Obstacle 1 : (" << obstacle1[0] << "m en x, " << obstacle1[1] << "m en z)" << endl;
-        //        cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
-        //        cout << "Robot : (" << robot[0] << "m en x, " << robot[1] << "m en z)" << endl;;
+        dilate( test3, test3, dilateElem);
+        Mat test4;
+         //add(test3, Scalar(1,1,1), test3);
+        vector<vector<Point> > frameContours;
+        vector<Vec4i> frameHierarchy;
+        //erode( test3, test3, dilateElem);
+        findContours(test3, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+        vector<vector<Point> > frameContoursPoly(frameContours.size());
+        vector<Rect> frameBoundingRect(0);
+        for (int i = 0; i < frameContours.size(); i++) {
+            approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
+            Rect rect = boundingRect(Mat(frameContoursPoly[i]));
+
+            if (rect.area() > 200 && rect.area() < 650 && 
+                ((rect.width >= rect.height * 0.95) && (rect.width <= rect.height * 1.05))) {
+                frameBoundingRect.push_back(rect);
+            }
+        }
+
+        Vec2f obstacle1 = model2.getObstacle1();
+        Vec2f obstacle2 = model2.getObstacle2();
+        Vec2f robotPosition = model.getRobotPosition();
+        float robotAngle = model.getRobotAngle();
+
+        cout << "Matrix " << i << endl;
+        cout << "Obstacle 1 : (" << obstacle1[0] << "m en x, " << obstacle1[1] << "m en z)" << endl;
+        cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
+        cout << "Robot : (" << robotPosition[0] << "m en x, " << robotPosition[1] << "m en z) et "
+             << robotAngle/M_PI*180 << " degre avec l'axe X" << endl;
 
 
         world.convertTo(show, CV_8UC1, 0.05f);
-        rectangle(world, cvPoint((int)squarePoints[0].x,(int)squarePoints[0].y), cvPoint((int)squarePoints[1].x,(int)squarePoints[1].y), CV_RGB(0.1, 0.2, 0.3));
         imshow("depth", world);
+        for(int i = 0; i < frameBoundingRect.size(); i++){
+             rectangle(test, frameBoundingRect[i],Scalar(0,133,133));
+        }
+      
+        imshow("chess", test);
+        imshow("chess2", test3);
 
     }
     do{
