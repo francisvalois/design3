@@ -43,8 +43,8 @@ int main( /*int argc, char* argv[]*/ ) {
         if (!capture.isOpened()) {
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
-            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration" << i << ".xml";
-            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/OpenCV_Chessboard.png";
+            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration" << i << ".xml";
+            file << "matrixRobot4.xml";
             string fileString = file.str();
             cout << "Loading from file " << fileString << endl;
 
@@ -64,53 +64,39 @@ int main( /*int argc, char* argv[]*/ ) {
                 depthMap.convertTo(show, CV_8UC1, 0.05f);
         }
 
-       Mat test = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-       
+       //Mat test = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+        Mat test = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+
 
 
         namedWindow("depth", 1);
         namedWindow("chess", 1);
         setMouseCallback("depth", onMouse, 0);
 
-        KinectCalibration::calibrate(world);
-        std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
+        //KinectCalibration::calibrate(world);
+        //std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
       
+        double tStart = clock();
         RobotDetection model;
         ObstaclesDetection model2;
-        vector<Point2f> pointBuf = model.findChessboard(test);
+        
+        model.findRobotWithAngle(world, test);
+        printf("Time taken: %.4fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
         model2.findCenteredObstacle(world);
-        model.findRobot(world, test);
-
-        //        //printf("Time taken: %.2fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
 
         Vec2f obstacle1 = model2.getObstacle1();
         Vec2f obstacle2 = model2.getObstacle2();
-        Vec2f robot = model.getRobot();
+        Vec2f robotPosition = model.getRobotPosition();
+        float robotAngle = model.getRobotAngle();
 
-         cout << "Matrix " << i<< endl;
+        cout << "Matrix " << i << endl;
         cout << "Obstacle 1 : (" << obstacle1[0] << "m en x, " << obstacle1[1] << "m en z)" << endl;
         cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
-        cout << "Robot : (" << robot[0] << "m en x, " << robot[1] << "m en z)" << endl;;
+        cout << "Robot : (" << robotPosition[0] << "m en x, " << robotPosition[1] << "m en z) avec "
+             << robotAngle/M_PI*180 << " degré avec l'axe X" << endl;
 
-        for(int i=0; i < pointBuf.size(); i++){
-            circle( test,
-                pointBuf[i],
-                4,
-                Scalar( 0, 0, 255 ),
-                -1,
-                8 );
-            if(i > 0){
-                line( test,
-                    Point(ceil(pointBuf[i-1].x), ceil(pointBuf[i-1].y)),
-                    Point(ceil(pointBuf[i].x), ceil(pointBuf[i].y)),
-                    Scalar( 0, 0, 255 ),
-                    2,
-                    8 );
-            }            
-        }
 
         world.convertTo(show, CV_8UC1, 0.05f);
-        rectangle(world, cvPoint((int)squarePoints[0].x,(int)squarePoints[0].y), cvPoint((int)squarePoints[1].x,(int)squarePoints[1].y), CV_RGB(0.1, 0.2, 0.3));
         imshow("depth", world);
         imshow("chess", test);
 
