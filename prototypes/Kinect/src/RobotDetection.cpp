@@ -28,24 +28,15 @@ RobotDetection::RobotDetection(Vec2f robot)
     _robot = robot;
 }
 
-list<Vec2f> RobotDetection::getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, Mat depthMatrix) {
-    list<Vec2f> allDistances;
-    for (int i = Y_ROBOT_TOP_THRESHOLD; i <= Y_ROBOT_BOTTOM_THRESHOLD; i += 25) {
-        Vec3f kinectCoord = depthMatrix.at<Vec3f>(i, robotPositionX);
-        Vec2f depthXYZ = KinectTransformation::getTrueCoordFromKinectCoord(kinectCoord);
-        if (depthXYZ[1] > ROBOT_MIN_DISTANCE && depthXYZ[1] < ROBOT_MAX_DISTANCE) {
-            allDistances.push_back(Vec2f(kinectCoord[0], kinectCoord[2]));
-        }
-    }
+Vec2f RobotDetection::findRobot(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1, Vec2f obstacle2) {
+    vector<Point2f> validRobotPosition = findChessboard(rgbMatrix);
 
-    return allDistances;
-}
+    if(validRobotPosition.size() > 5){
+        
 
-Vec2f RobotDetection::findRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle2) {
-    vector<Point> validRobotPosition = findAllPossiblePositionForRobot(depthMatrix, obstacle1, obstacle2);
-
-    if (validRobotPosition.size() > 5) {
-        int leftAveragePosition = getAverageFromPointListWithConditions(validRobotPosition, 0.1f, 0.25f);
+        
+        
+        /*int leftAveragePosition = getAverageFromPointListWithConditions(validRobotPosition, 0.1f, 0.25f);
         int rightAveragePosition = getAverageFromPointListWithConditions(validRobotPosition, 0.75f, 0.9f);
 
         list<Vec2f> allDistancesLeft = getSomeYDistanceAssociatedWithXForRobot(leftAveragePosition, depthMatrix);
@@ -58,9 +49,9 @@ Vec2f RobotDetection::findRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle
         float averageZCenteredPosition = (RobotLeftPosition[1] + RobotRightPosition[1] + (2 * ROBOT_RADIUS)) / 2;
         Vec3f averageCenteredPosition(averageXCenteredPosition, 0, averageZCenteredPosition);
 
-        _robot = KinectTransformation::getTrueCoordFromKinectCoord(averageCenteredPosition);
+        _robot = KinectTransformation::getTrueCoordFromKinectCoord(averageCenteredPosition);*/
     }
-
+    
     return _robot;
 }
 

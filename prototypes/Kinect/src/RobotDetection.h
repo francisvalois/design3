@@ -27,11 +27,12 @@ private:
     list<Vec2f> getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, Mat depthMatrix);
     vector<Point> findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle2);
 
+
 public:
 
     RobotDetection();
     RobotDetection(Vec2f robot);
-    Vec2f findRobot(Mat depthMatrix, Vec2f obstacle1 = Vec2f(), Vec2f obstacle2 = Vec2f());
+    Vec2f findRobot(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1 = Vec2f(), Vec2f obstacle2 = Vec2f());
     Vec2f getRobot();
     vector<Point2f> findChessboard(Mat img);
     

@@ -12,11 +12,11 @@
 Vec2f KinectCalibration::LEFT_DISTANCE(0.57f, 0.775f);
 Vec2f KinectCalibration::RIGHT_DISTANCE(0.415f, 0.775f);
 
-std::vector<Point> KinectCalibration::squarePositions;
+std::vector<Point> KinectCalibration::_squarePositions;
 
 
 std::vector<Point> KinectCalibration::getSquarePositions(){
-    return KinectCalibration::squarePositions;
+    return KinectCalibration::_squarePositions;
 }
 
 std::vector<Point> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
@@ -67,8 +67,8 @@ std::vector<Point> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
 
 //Return error between Kinect distances and true distances
 Vec2f KinectCalibration::verifyIfDistancesFromKinectAreCorrect(Mat depthMatrix){
-    Point left = KinectCalibration::squarePositions[0];
-    Point right = KinectCalibration::squarePositions[1];
+    Point left = KinectCalibration::_squarePositions[0];
+    Point right = KinectCalibration::_squarePositions[1];
 
     Vec3f leftPointDistance = depthMatrix.at<Vec3f>(left.y, left.x);
     Vec3f rightPointDistance = depthMatrix.at<Vec3f>(right.y, right.x);
@@ -129,7 +129,7 @@ void KinectCalibration::modifyKinectAngleConstant(Vec2f errorAverage){
 }
 
 bool KinectCalibration::calibrate(Mat depthMatrix){
-    KinectCalibration::squarePositions = KinectCalibration::findCalibrationSquare(depthMatrix);
+    KinectCalibration::_squarePositions = KinectCalibration::findCalibrationSquare(depthMatrix);
 
     bool calibrated = false;
     int iteration = 0;
