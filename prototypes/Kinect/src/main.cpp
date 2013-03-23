@@ -7,6 +7,7 @@
 #include "KinectUtility.h"
 #include "KinectCalibration.h"
 #include "KinectTransformation.h"
+#define _USE_MATH_DEFINES
 #include "Math.h"
 
 using namespace cv;
@@ -43,8 +44,8 @@ int main( /*int argc, char* argv[]*/ ) {
         if (!capture.isOpened()) {
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
-            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration" << i << ".xml";
-            file << "matrixRobot4.xml";
+            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration" << i << ".xml";
+            //file << "matrixRobot4.xml";
             string fileString = file.str();
             cout << "Loading from file " << fileString << endl;
 
@@ -64,8 +65,8 @@ int main( /*int argc, char* argv[]*/ ) {
                 depthMap.convertTo(show, CV_8UC1, 0.05f);
         }
 
-       //Mat test = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-        Mat test = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+       Mat test = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+        //Mat test = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
 
 
 
@@ -76,13 +77,43 @@ int main( /*int argc, char* argv[]*/ ) {
         //KinectCalibration::calibrate(world);
         //std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
       
-        double tStart = clock();
+        //double tStart = clock();
         RobotDetection model;
         ObstaclesDetection model2;
         
         model.findRobotWithAngle(world, test);
-        printf("Time taken: %.4fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
+        //printf("Time taken: %.4fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
         model2.findCenteredObstacle(world);
+
+        Mat test3;
+
+        
+        //Proof of concept with FindContours !
+        Canny(test,test3, 0,120, 3);
+        float size = 3;
+
+        Point dilatePoint(size, size);
+        Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * size + 1, 2 * size + 1), dilatePoint);
+
+        dilate( test3, test3, dilateElem);
+        Mat test4;
+         //add(test3, Scalar(1,1,1), test3);
+        vector<vector<Point> > frameContours;
+        vector<Vec4i> frameHierarchy;
+        //erode( test3, test3, dilateElem);
+        findContours(test3, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+        vector<vector<Point> > frameContoursPoly(frameContours.size());
+        vector<Rect> frameBoundingRect(0);
+        for (int i = 0; i < frameContours.size(); i++) {
+            approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
+            Rect rect = boundingRect(Mat(frameContoursPoly[i]));
+
+            if (rect.area() > 200 && rect.area() < 650 && 
+                ((rect.width >= rect.height * 0.95) && (rect.width <= rect.height * 1.05))) {
+                frameBoundingRect.push_back(rect);
+            }
+        }
 
         Vec2f obstacle1 = model2.getObstacle1();
         Vec2f obstacle2 = model2.getObstacle2();
@@ -92,13 +123,18 @@ int main( /*int argc, char* argv[]*/ ) {
         cout << "Matrix " << i << endl;
         cout << "Obstacle 1 : (" << obstacle1[0] << "m en x, " << obstacle1[1] << "m en z)" << endl;
         cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
-        cout << "Robot : (" << robotPosition[0] << "m en x, " << robotPosition[1] << "m en z) avec "
-             << robotAngle/M_PI*180 << " degré avec l'axe X" << endl;
+        cout << "Robot : (" << robotPosition[0] << "m en x, " << robotPosition[1] << "m en z) et "
+             << robotAngle/M_PI*180 << " degre avec l'axe X" << endl;
 
 
         world.convertTo(show, CV_8UC1, 0.05f);
         imshow("depth", world);
+        for(int i = 0; i < frameBoundingRect.size(); i++){
+             rectangle(test, frameBoundingRect[i],Scalar(0,133,133));
+        }
+      
         imshow("chess", test);
+        imshow("chess2", test3);
 
     }
     do{
