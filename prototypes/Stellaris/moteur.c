@@ -424,7 +424,12 @@ void ajustementVitesse(void){
 	else{
 		abs_dist_cible1 = dist_cible1;
 	}
-	if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0))
+	if(abs_pos0 > abs_dist_cible0 -1000 && abs_dist_cible0 != 0 ){
+		consigne0 = 800;
+		consigne3 = 800;
+	}
+	
+	else if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0))
 			|| (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){
 		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
@@ -432,7 +437,6 @@ void ajustementVitesse(void){
 		a_atteint_consigne = true;
 	}
 }
-
 
 /*
  * MOTEUR
