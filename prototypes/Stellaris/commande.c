@@ -149,24 +149,29 @@ tBoolean CommandHandler(void){
 	 		consigne = 6400;
 	 		deplacement_x_abs -= 1591;
 	 	}*/
-	 	if(deplacement_y > 1745 && deplacement_x == 0){
+	 	if(deplacement_y > 0 && deplacement_y < 1745 && deplacement_x == 0){
+	 		offset = 0; //Offset sur commande des moteurs
+	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
+	 		consigne = 1600;
+	 		//deplacement_y -= 504;
+	 	else if(deplacement_y > 1745 && deplacement_y < 6000 && deplacement_x == 0){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 3200;
-	 		deplacement_y -= 504;
+	 		//deplacement_y -= 504;
 	 	}
-	 	else if(deplacement_x_abs > 1745 && deplacement_y == 0){
+	 	else if(deplacement_x_abs > 6000 && deplacement_y == 0){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
-	 		consigne = 3200;
-	 		deplacement_x_abs -= 504;
+	 		consigne = 6400;
+	 		//deplacement_x_abs -= 504;
 	 	}
 	 	else{
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 1600;
-	 		deplacement_x_abs *= 0.84;
-	 		deplacement_y *= 0.84;
+	 		//deplacement_x_abs *= 0.84;
+	 		//deplacement_y *= 0.84;
 	 	}
 	 	
 	 	//Remettre x négatif si était négatif
