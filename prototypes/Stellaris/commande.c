@@ -33,7 +33,7 @@ volatile long deplacement_y;
 tBoolean is_waiting_for_y;
 volatile CircularBuffer buffer_commande;
 
-tBoolean is_drawing;
+extern tBoolean is_drawing;
 long number_to_draw;
 long segment_to_draw;
 
@@ -154,6 +154,7 @@ tBoolean CommandHandler(void){
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 1600;
 	 		//deplacement_y -= 504;
+	 	}
 	 	else if(deplacement_y > 1745 && deplacement_y < 6000 && deplacement_x == 0){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)

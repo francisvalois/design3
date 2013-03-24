@@ -5,6 +5,7 @@
 #include "driverlib/qei.h"
 #include "driverlib/pwm.h"
 #include "driverlib/sysctl.h"
+
 //Variables globales externes
 extern volatile long position_m2, position_m3; //Position du moteur 2 et 3
 extern volatile unsigned long periodPWM; //Période du PWM
@@ -33,6 +34,7 @@ volatile long time = 0;
 tBoolean est_demi_consigne;
 tBoolean est_en_mouvement;
 tBoolean a_atteint_consigne;
+tBoolean is_drawing;
 
 //Pour tests
 long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
@@ -427,7 +429,7 @@ void ajustementVitesse(void){
 		abs_dist_cible1 = dist_cible1;
 	}
 	
-	if(abs_pos0 > abs_dist_cible0 -4000 && abs_dist_cible0 != 0 ){
+	if(abs_pos0 > abs_dist_cible0 -4000 && abs_dist_cible0 != 0 && !is_drawing){
 		if(time >= 0){//0ms depuis que abs_pos0 > abs_dist_cible0 -4000
 			if(consigne0 >4000 && consigne3 >4000){
 				consigne0 = consigne0*0.875;
@@ -451,6 +453,15 @@ void ajustementVitesse(void){
 		time++;
 	
 	
+		if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0)) || (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){ 
+				GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
+				GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
+				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
+				a_atteint_consigne = true;
+		}
+		
+	}
+	else{
 		if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0)) || (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){ 
 				GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 				GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
