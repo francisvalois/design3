@@ -4,7 +4,7 @@
 #include "driverlib/rom.h"
 #include "driverlib/qei.h"
 #include "driverlib/pwm.h"
-
+#include "driverlib/sysctl.h"
 //Variables globales externes
 extern volatile long position_m2, position_m3; //Position du moteur 2 et 3
 extern volatile unsigned long periodPWM; //Période du PWM
@@ -34,10 +34,10 @@ tBoolean est_en_mouvement;
 tBoolean a_atteint_consigne;
 
 //Pour tests
-/*long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
+long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
 long speed0_table[300], speed1_table[300], speed2_table[300], speed3_table[300];
 long output0_table[300], output1_table[300], output2_table[300], output3_table[300];
-long fraction0_table[300], fraction1_table[300], fraction2_table[300], fraction3_table[300];*/
+long fraction0_table[300], fraction1_table[300], fraction2_table[300], fraction3_table[300];
 
 //Declaration de fonctions
 //moteur.c
@@ -377,7 +377,7 @@ void asservirMoteurs(void){
 	else{
 		est_en_mouvement = true;
 	}
-	/*pos0_table[index%300]=pos0;
+	pos0_table[index%300]=pos0;
 	pos1_table[index%300]=pos1;
 	pos2_table[index%300]=pos2;
 	pos3_table[index%300]=pos3;
@@ -392,7 +392,7 @@ void asservirMoteurs(void){
 	fraction0_table[index%300]=fraction0;
 	fraction1_table[index%300]=fraction1;
 	fraction2_table[index%300]=fraction2;
-	fraction3_table[index%300]=fraction3;*/
+	fraction3_table[index%300]=fraction3;
 	
 }
 
@@ -424,19 +424,52 @@ void ajustementVitesse(void){
 	else{
 		abs_dist_cible1 = dist_cible1;
 	}
-	if(abs_pos0 > abs_dist_cible0 -1000 && abs_dist_cible0 != 0 ){
-		consigne0 = 800;
-		consigne3 = 800;
-	}
+	if(abs_pos0 > abs_dist_cible0 -4000 && abs_dist_cible0 != 0 ){
+		volatile long time =0; // variable temporelle
+		
+		long int consigne0A = consigne0;
+		long int consigne3A = consigne3;
+		long int step = 0.2*(consigne0A-800);
+		if(time == 0){//0ms depuis que abs_pos0 > abs_dist_cible0 -4000
+			
+			consigne0 = consigne0A - step*time;
+			consigne3 = consigne3A - step*time;
+		}
+		else if(time == 1){//100ms depuis que abs_pos0 > abs_dist_cible0 -4000
+			
+			consigne0 = consigne0A - step*time;
+			consigne3 = consigne3A - step*time;
+		}
+		else if(time == 2){//200ms depuis que abs_pos0 > abs_dist_cible0 -4000
+			
+			consigne0 = consigne0A - step*time;
+			consigne3 = consigne3A - step*time;
+		}
+		else if(time == 3){//300ms depuis que abs_pos0 > abs_dist_cible0 -4000
+			
+			consigne0 = consigne0A - step*time;
+			consigne3 = consigne3A - step*time;
+		}
+		else if(time == 4){//400ms depuis que abs_pos0 > abs_dist_cible0 -4000
+			
+			consigne0 = consigne0A - step*time;
+			consigne3 = consigne3A - step*time;
+		}
+		time++;
 	
-	else if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0))
-			|| (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){
-		GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
-		GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
-		GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
-		a_atteint_consigne = true;
+		if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0)) || (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){ 
+				GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
+				GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
+				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
+				a_atteint_consigne = true;
+		}
 	}
 }
+
+	
+	
+	
+
 
 /*
  * MOTEUR
