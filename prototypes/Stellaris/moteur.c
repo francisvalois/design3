@@ -29,6 +29,7 @@ volatile float Kd0_s, Ki0_s, Kp0_s, Kd1_s, Ki1_s, Kp1_s, Kd2_s, Ki2_s, Kp2_s, Kd
 volatile float Kd0_d, Ki0_d, Kp0_d, Kd1_d, Ki1_d, Kp1_d, Kd2_d, Ki2_d, Kp2_d, Kd3_d, Ki3_d, Kp3_d;
 volatile float Tf0, Tf1, Tf2, Tf3; //Cste du filtre de commande de sortie
 volatile float dt; //periode d'asservissement
+volatile long time = 0;
 tBoolean est_demi_consigne;
 tBoolean est_en_mouvement;
 tBoolean a_atteint_consigne;
@@ -63,6 +64,7 @@ void resetQEIs(void);
  	consigne1=0;
  	consigne2=0;
  	consigne3=0;
+ 	time=0;
  	output0=0;
  	output1=0;
  	output2=0;
@@ -424,38 +426,30 @@ void ajustementVitesse(void){
 	else{
 		abs_dist_cible1 = dist_cible1;
 	}
+	
 	if(abs_pos0 > abs_dist_cible0 -4000 && abs_dist_cible0 != 0 ){
-		volatile long time =0; // variable temporelle
-		
-		long int consigne0A = consigne0;
-		long int consigne3A = consigne3;
-		long int step = 0.2*(consigne0A-800);
-		if(time == 0){//0ms depuis que abs_pos0 > abs_dist_cible0 -4000
-			
-			consigne0 = consigne0A - step*time;
-			consigne3 = consigne3A - step*time;
-		}
-		else if(time == 1){//100ms depuis que abs_pos0 > abs_dist_cible0 -4000
-			
-			consigne0 = consigne0A - step*time;
-			consigne3 = consigne3A - step*time;
-		}
-		else if(time == 2){//200ms depuis que abs_pos0 > abs_dist_cible0 -4000
-			
-			consigne0 = consigne0A - step*time;
-			consigne3 = consigne3A - step*time;
-		}
-		else if(time == 3){//300ms depuis que abs_pos0 > abs_dist_cible0 -4000
-			
-			consigne0 = consigne0A - step*time;
-			consigne3 = consigne3A - step*time;
-		}
-		else if(time == 4){//400ms depuis que abs_pos0 > abs_dist_cible0 -4000
-			
-			consigne0 = consigne0A - step*time;
-			consigne3 = consigne3A - step*time;
+		if(time >= 0){//0ms depuis que abs_pos0 > abs_dist_cible0 -4000
+			if(consigne0 >4000 && consigne3 >4000){
+				consigne0 = consigne0*0.875;
+				consigne3 = consigne3*0.875;
+			}
+			else if(consigne0 >1400 && consigne0 <4000 && consigne3 <4000&&
+			consigne3 >1400 && abs_pos0 < abs_dist_cible0 -1500){
+				consigne0 = consigne0;
+				consigne3 = consigne3;
+			}
+			else if(consigne0 >1400 && consigne0 <4000 && consigne3 <4000&&
+			consigne3 >1400 && abs_pos0 > abs_dist_cible0 -1500){
+				consigne0 = consigne0*0.875;
+				consigne3 = consigne3*0.875;
+			}
+			else{
+				consigne0 = 1200;
+				consigne3 = 1200;
+			}
 		}
 		time++;
+	
 	
 		if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0)) || (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){ 
 				GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
