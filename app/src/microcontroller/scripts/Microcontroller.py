@@ -17,15 +17,26 @@ ser = None
 def handlePutPen(req):
     rospy.loginfo("Putting Pen Down ?:%s", req.down)
     
+    if(req.down):
+        commande = "P0000000"
+    else:
+        commande = "M0000000"
+
+    sendCommandToController(commande)
+    
     return PutPenResponse()
 
 def handleWriteToLCD(req):
     rospy.loginfo("Write Message To LCD:%s", req.message)
+
+    sendCommandToController("{0}{1}{2}00000".format())#req.sudcube, req.orient, req.taille))
     
     return WriteToLCDResponse()
 
 def handleDrawNumber(req):
     rospy.loginfo("Draw Number:%d Big?:%s ", req.number, req.isBig)
+
+    sendCommandToController("D{0}{1}00000".format(('P', 'G')[req.isBig], req.number))
     
     return DrawNumberResponse()
 
@@ -36,6 +47,8 @@ def handleTurnLED(req):
         commande = "O0000000"
     else:
         commande = "C0000000"
+
+    sendCommandToController(commande)
     
     return TurnLEDResponse()
 
