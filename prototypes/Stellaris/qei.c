@@ -135,3 +135,11 @@ void resetQEIs(void){
 	previous_state_m2 = 0;
 	previous_state_m3 = 0;
 }
+
+void disableQEIs(void){
+	ROM_IntDisable(INT_GPIOE);
+}
+
+void enableQEIs(void){
+	ROM_IntEnable(INT_GPIOE);
+}
