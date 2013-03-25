@@ -91,6 +91,8 @@ void descendrePrehenseur(void);
 void monterPrehenseur(void);
 //led.c
 void initLED(void);
+//sonar.c
+void initSonar(void);
 
 int main(void)
 {
@@ -194,6 +196,7 @@ int main(void)
 	initMotorCommand();
 	initLED();
 	initPrehenseur();
+	initSonar();
 	initPWM();
     initUART();   
     initQEI();

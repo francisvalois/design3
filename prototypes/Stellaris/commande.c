@@ -1,4 +1,4 @@
-#include "inc/hw_memmap.h"
+﻿#include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/gpio.h"
 #include "driverlib/rom.h"
@@ -55,6 +55,9 @@ void openLED(void);
 //prehenseur.c
 void descendrePrehenseur(void);
 void monterPrehenseur(void);
+//sonar.c
+void enableSonar(void);
+void disableSonar(void);
 
 /*
  * COMMANDE
@@ -265,6 +268,22 @@ tBoolean CommandHandler(void){
 		return true;
 	}
 	else if(commande[0] == 'L'){ // afficher sur LCD
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
+		return true;
+	}
+	else if(commande[0] == 'S'){ // envoyer données sonar
+		enableSonar();
+		long average = 0;
+		ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5, 0xFF);
+		while(sonarTimeDelta.write == sonarTimeDelta.read){
+		}
+		average += sonarTimeDelta.buffer[sonarTimeDelta.read++%BUFFER_LEN];
+		ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5, 0x00);
+		disableSonar();
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0xFF000000) >> 24;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0x00FF0000) >> 16;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0x0000FF00) >> 8;
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0x000000FF) >> 0;
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
