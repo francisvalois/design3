@@ -17,15 +17,26 @@ ser = None
 def handlePutPen(req):
     rospy.loginfo("Putting Pen Down ?:%s", req.down)
     
+    if(req.down):
+        commande = "P0000000"
+    else:
+        commande = "M0000000"
+
+    sendCommandToController(commande)
+    
     return PutPenResponse()
 
 def handleWriteToLCD(req):
-    rospy.loginfo("Write Message To LCD:%s", req.message)
+    rospy.loginfo("Write Antenna Param To LCD  number:%d isBig:%s orientation:%s", req.sudocubeNo, req.size, req.orientation)
+
+    sendCommandToController("{0}{1}{2}00000".format(), req.sudocubeNo, req.orientation, req.size)
     
     return WriteToLCDResponse()
 
 def handleDrawNumber(req):
     rospy.loginfo("Draw Number:%d Big?:%s ", req.number, req.isBig)
+
+    sendCommandToController("D{0}{1}00000".format(('P', 'G')[req.isBig], req.number))
     
     return DrawNumberResponse()
 
@@ -36,6 +47,8 @@ def handleTurnLED(req):
         commande = "O0000000"
     else:
         commande = "C0000000"
+
+    sendCommandToController(commande)
     
     return TurnLEDResponse()
 
@@ -70,8 +83,8 @@ def handleTranslate(req):
     
     return TranslateResponse()
 
-def handleRotateVerticallyCam(req):
-    rospy.loginfo("Rotating cam of angle:%d", req.angle)
+def handleRotateCam(req):
+    rospy.loginfo("Rotating cam of vAngle:%d  and hAngle:%d", req.vAngle, req.hAngle)
 
     serCam.open()
     if req.angle:
@@ -91,19 +104,9 @@ def handleRotateVerticallyCam(req):
     return RotateVerticallyCamResponse()
 
 def handleMove(req):
-    rospy.loginfo("Executing Move Of:%f", req.distance) #req.distancex, req.distancey)
+    rospy.loginfo("Executing Move Of:%f", req.distance)
 
     commande = " 0000000"
-    #req.distancex = req.distancex/21.7*6533
-    #if(req.distancex != 0):
-    #    sign = ' '
-    #    if(req.distancex < 0):
-    #        sign = '-'
-    #    dist_string = str(req.distancex)
-    #    while(len(dist_string) < 7):
-    #        dist_string = '0' + dist_string
-    #    commande = sign + dist_string
-    
     sendCommandToController(commande)
 
     commande = " 0000000"
@@ -161,22 +164,31 @@ def handleDecodeAntenna(req):
     
     return response
 
+def handleGetSonarXDistance(req):
+    rospy.loginfo("Getting distance from sonar no:%d", req.sonarNo)
+    
+    #Exemple de reponse
+    response = SonarXDistanceResponse(); 
+    response.distance = 0.0;
+    
+    return response
+
 def sendCommandToController(commande):
     global ser
     
     rospy.loginfo("Sending command to microcontroller %s", commande)
     
-    #try: 
-        
-    #except Exception, e:
-        #rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
+    try: 
+        ser.open()
+    except Exception, e:
+        rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
         #exit()
     
     if ser.isOpen():
         try:
             ser.write(bytes(commande))
             response = None
-            #time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
+            time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
             while(response != 'E'):
                 response = ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
@@ -203,7 +215,8 @@ def Microcontroller():
     s = rospy.Service('microcontroller/rotate', Rotate, handleRotate)
     s = rospy.Service('microcontroller/decodeAntenna', DecodeAntenna, handleDecodeAntenna)
     s = rospy.Service('microcontroller/translate', Translate, handleTranslate)
-    s = rospy.Service('microcontroller/rotateVerticallyCam', RotateVerticallyCam, handleRotateVerticallyCam)
+    s = rospy.Service('microcontroller/rotateCam', RotateCam, handleRotateCam)
+    s = rospy.Service('microcontroller/getSonarXDistance', GetSonarXDistance, handleGetSonarXDistance)
     
     rospy.loginfo("Creating Serial Communication")
     ser = serial.Serial()
@@ -214,8 +227,6 @@ def Microcontroller():
     ser.timeout = 0
     ser.bytesize = serial.EIGHTBITS
     ser.writeTimeout = 0
-
-    ser.open()
 
     rospy.loginfo("Creating Serial Communication with Camera")
     serCam = serial.Serial()

@@ -4,37 +4,21 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-float KinectTransformation::KINECTANGLE = 21.5f;
+const float KinectTransformation::KINECTANGLE = 21.5f;
 float KinectTransformation::KINECTANGLERAD = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);
 float KinectTransformation::X_KINECT_POSITION = 0.135f;
 float KinectTransformation::Z_KINECT_POSITION = -0.56f;
+Vec2f KinectTransformation::BASE_POSITION_FROM_ORIGIN(0.58f, 0.775f);
+Vec3f KinectTransformation::_basePositionFromKinect(0.13f, 0, 1.40f);
 
-void KinectTransformation::incrementKinectConstants(float angle, float x, float y){
-
-    if(KINECTANGLE+angle <= 90 && KINECTANGLE+angle >= 0){
-        KINECTANGLE += angle;
-        KINECTANGLERAD = (float)(KINECTANGLE / 360.0 * 2.0 * M_PI);
+void KinectTransformation::setKinectAngle(float angleRad){
+    if(angleRad > 0 && angleRad < M_PI){
+        KINECTANGLERAD = angleRad;
     }
-
-    if(x != 0){
-        X_KINECT_POSITION += x;
-    }
-
-    if(y != 0){
-        Z_KINECT_POSITION += y;
-    }
-
-
 }
 
-bool KinectTransformation::incrementKinectAngle(float increment){
-    if(KINECTANGLE+increment <= 90 && KINECTANGLE+increment >= 0){
-        KINECTANGLE += increment;
-        KINECTANGLERAD = (float)(KINECTANGLE / 360.0 * 2.0 * M_PI);
-
-        return true;
-    }
-    return false;
+void KinectTransformation::setBasePositionFromKinect(Vec3f basePosition){
+     _basePositionFromKinect = basePosition;
 }
 
 //Rotate depth coords seen from the Kinect to align them with the the XZ plane of the table
@@ -57,7 +41,32 @@ Vec2f KinectTransformation::translateXZCoordtoOrigin(Vec2f rotatedXZ) {
 }
 
 Vec2f KinectTransformation::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
-    Vec2f rotPosition = getRotatedXZCoordFromKinectCoord(depthXYZ);
-    Vec2f realPosition = translateXZCoordtoOrigin(rotPosition);
+    if(depthXYZ[2] < 0.5)
+    {
+        return Vec2f();
+    }
+    float tempAngle = (float)M_PI/2 - KINECTANGLERAD;
+    float zDistance = depthXYZ[2] - _basePositionFromKinect[2];
+    float xDistance = depthXYZ[0] - _basePositionFromKinect[0];
+    float tempAngle2 = atan(zDistance/xDistance);
+    float tempAngle3 = tempAngle2 - tempAngle;
+
+    float hyp = sqrt(pow(zDistance, 2) + pow(xDistance, 2));
+    float trueZDistance;
+    float trueXDistance;
+
+    if(depthXYZ[0] < _basePositionFromKinect[0]){
+        trueZDistance = -hyp * cos(tempAngle3) + BASE_POSITION_FROM_ORIGIN[1];
+        trueXDistance = -hyp * sin(tempAngle3) + BASE_POSITION_FROM_ORIGIN[0];
+    }
+    else{
+        trueZDistance = hyp * cos(tempAngle3) + BASE_POSITION_FROM_ORIGIN[1];
+        trueXDistance = hyp * sin(tempAngle3) + BASE_POSITION_FROM_ORIGIN[0];
+    }
+
+
+    Vec2f realPosition(trueXDistance, trueZDistance);
+//    Vec2f rotPosition = getRotatedXZCoordFromKinectCoord(depthXYZ);
+//    Vec2f realPosition = translateXZCoordtoOrigin(rotPosition);
     return realPosition;
 }

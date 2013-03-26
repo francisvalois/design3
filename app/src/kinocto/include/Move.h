@@ -3,13 +3,13 @@
 
 class Move {
 public:
-	Move() {angle = 0; distance = 0;};
-	Move(int a, float d, Position dest) {angle = a; distance = d; destination = dest;};
+	Move() {angle = 0; distance = 0; destination.set(0,0);};
+	Move(int a, int d, Position dest) {angle = a; distance = d; destination = dest;};
 
-	void set(int a, float d, Position dest) {angle = a; distance = d; destination = dest;};
+	void set(int a, int d, Position dest) {angle = a; distance = d; destination = dest;};
 
 	int angle;
-	float distance;
+	int distance;
 	Position destination;
 };
 

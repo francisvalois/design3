@@ -1,6 +1,8 @@
 #ifndef ANTENNAPARAM_H_
 #define ANTENNAPARAM_H_
 
+#include <iostream>
+
 class AntennaParam {
 
 public:
@@ -16,6 +18,8 @@ public:
     AntennaParam();
     virtual ~AntennaParam();
     void set(int number, bool isBig, int orientation);
+    std::string getOrientationLetter();
+    std::string getIsBigLetter();
 
 private:
 

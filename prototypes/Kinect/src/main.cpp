@@ -18,13 +18,13 @@ void onMouse(int event, int x, int y, int flags, void *) {
     if (event == CV_EVENT_LBUTTONUP) {
         Vec3f s = world.at<Vec3f>(y, x);
         Vec2f realPosition = KinectTransformation::getTrueCoordFromKinectCoord(s);
-        Vec2f rotatedPosition = KinectTransformation::getRotatedXZCoordFromKinectCoord(s);
-        Vec2f radius = ObstaclesDetection::addObstacleRadiusToDistance(rotatedPosition);
-        Vec2f trueradius = KinectTransformation::translateXZCoordtoOrigin(radius);
+//        Vec2f rotatedPosition = KinectTransformation::getRotatedXZCoordFromKinectCoord(s);
+//        Vec2f radius = ObstaclesDetection::addObstacleRadiusToDistance(rotatedPosition);
+//        Vecf trueradius = KinectTransformation::translateXZCoordtoOrigin(radius);
         cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
         cout << "Position X :" << realPosition[0] << " Position Y :" << s[1] << " Position Z:" << realPosition[1] << endl;
-        cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[1] << endl;
-        cout << "From Kinect : Position X :" << trueradius[0] << " Position Z:" << trueradius[1] << endl;
+        cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[2] << endl;
+//        cout << "From Kinect : Position X :" << trueradius[0] << " Position Z:" << trueradius[1] << endl;
 
     }
     if (event == CV_EVENT_RBUTTONUP) {
@@ -34,7 +34,7 @@ void onMouse(int event, int x, int y, int flags, void *) {
 
 int main( /*int argc, char* argv[]*/ ) {
     VideoCapture capture;
-    Mat depthMap, show, showRGB;
+    Mat depthMap, show, showRGB, RGBGray;
 
     
     for (int i = 2; i <= 2; i++) {
@@ -61,6 +61,7 @@ int main( /*int argc, char* argv[]*/ ) {
             capture.grab();
             capture.retrieve(world, CV_CAP_OPENNI_POINT_CLOUD_MAP);
             capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
+            cvtColor(showRGB, RGBGray, CV_RGB2GRAY);
             if (capture.retrieve(depthMap, CV_CAP_OPENNI_DEPTH_MAP))
                 depthMap.convertTo(show, CV_8UC1, 0.05f);
         }
@@ -74,46 +75,24 @@ int main( /*int argc, char* argv[]*/ ) {
         namedWindow("chess", 1);
         setMouseCallback("depth", onMouse, 0);
 
-        //KinectCalibration::calibrate(world);
-        //std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
+        KinectCalibration::calibrate(world);
+        std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
       
         //double tStart = clock();
         RobotDetection model;
         ObstaclesDetection model2;
+        ObjectDetection model3;
         
-        model.findRobotWithAngle(world, test);
+        model.findRobotWithAngle(world, RGBGray);
         //printf("Time taken: %.4fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
         model2.findCenteredObstacle(world);
 
         Mat test3;
-
-        
-        //Proof of concept with FindContours !
-        Canny(test,test3, 0,120, 3);
-        float size = 3;
-
-        Point dilatePoint(size, size);
-        Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * size + 1, 2 * size + 1), dilatePoint);
-
-        dilate( test3, test3, dilateElem);
-        Mat test4;
-         //add(test3, Scalar(1,1,1), test3);
-        vector<vector<Point> > frameContours;
-        vector<Vec4i> frameHierarchy;
-        //erode( test3, test3, dilateElem);
-        findContours(test3, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-        vector<vector<Point> > frameContoursPoly(frameContours.size());
-        vector<Rect> frameBoundingRect(0);
-        for (int i = 0; i < frameContours.size(); i++) {
-            approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
-            Rect rect = boundingRect(Mat(frameContoursPoly[i]));
-
-            if (rect.area() > 200 && rect.area() < 650 && 
-                ((rect.width >= rect.height * 0.95) && (rect.width <= rect.height * 1.05))) {
-                frameBoundingRect.push_back(rect);
-            }
-        }
+        Canny(RGBGray,test3, 50,200, 3);
+        vector<Rect> test1;
+        int test4 = model3.generateQuads(test3, test1);
+        int test5 = model3.removeSingleQuads(test1);
+        model3.sortQuadsByPosition(test1);
 
         Vec2f obstacle1 = model2.getObstacle1();
         Vec2f obstacle2 = model2.getObstacle2();
@@ -128,13 +107,20 @@ int main( /*int argc, char* argv[]*/ ) {
 
 
         world.convertTo(show, CV_8UC1, 0.05f);
+        rectangle(world, squarePoints[0], squarePoints[1],Scalar(0,0,0));
         imshow("depth", world);
-        for(int i = 0; i < frameBoundingRect.size(); i++){
-             rectangle(test, frameBoundingRect[i],Scalar(0,133,133));
-        }
-      
-        imshow("chess", test);
-        imshow("chess2", test3);
+
+        rectangle(showRGB, squarePoints[0], squarePoints[1],Scalar(0,0,255));
+
+        int pt1 = (squarePoints[0].x - squarePoints[1].x)/2 + squarePoints[1].x;
+        Point pt11(pt1, squarePoints[0].y);
+        Point pt22(pt1, squarePoints[1].y);
+
+        line(showRGB,pt11, pt22, Scalar(0,0,225), 1, 8);
+        rectangle(showRGB, test1[0],Scalar(0,0,255));
+        rectangle(showRGB, test1[test1.size()-1],Scalar(0,0,255));
+        imshow("chess", showRGB);
+        //imshow("chess2", test3);
 
     }
     do{

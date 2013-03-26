@@ -38,7 +38,7 @@ public:
     Vec2f getObstacle1();
     Vec2f getObstacle2();    
     vector<Vec2f> findCenteredObstacle(Mat depthMatrix); 
-    static Vec2f addObstacleRadiusToDistance(Vec2f distanceExtObstacle);
+    static Vec3f addObstacleRadiusToDistance(Vec3f distanceExtObstacle);
 };
 
 #endif //__kinect_H_

@@ -238,7 +238,7 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     AntennaParam antennaParamdecoded = microcontroller->decodeAntenna();
     antennaParam.set(antennaParamdecoded.number, antennaParamdecoded.isBig, antennaParamdecoded.orientation);
 
-    microcontroller->writeToLCD("Un message"); //TODO Déterminer la forme du message à envoyer
+    microcontroller->writeToLCD(antennaParamdecoded); //TODO Déterminer la forme du message à envoyer
     /////
 
     response.isBig = antennaParam.isBig;

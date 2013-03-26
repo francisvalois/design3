@@ -91,6 +91,8 @@ void descendrePrehenseur(void);
 void monterPrehenseur(void);
 //led.c
 void initLED(void);
+//sonar.c
+void initSonar(void);
 
 int main(void)
 {
@@ -99,6 +101,7 @@ int main(void)
     volatile unsigned long ulLoop;
     
     // Initialisation des ports
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
@@ -188,12 +191,13 @@ int main(void)
     
     
     init_lcd();
-    afficher_param('2', 'S', 'G');
+    //afficher_param('2', 'S', 'G');
 	//ecranInit();
 	initCommande();
 	initMotorCommand();
 	initLED();
 	initPrehenseur();
+	initSonar();
 	initPWM();
     initUART();   
     initQEI();

@@ -12,8 +12,9 @@ MicrocontrollerDecorator::MicrocontrollerDecorator(ros::NodeHandle & nodeHandle)
     rotateClient = nodeHandle.serviceClient<PutPen>("microcontroller/putPen");
     turnLEDClient = nodeHandle.serviceClient<TurnLED>("microcontroller/turnLED");
     writeToLCDClient = nodeHandle.serviceClient<WriteToLCD>("microcontroller/writeToLCD");
-    rotateVerticallyCamClient = nodeHandle.serviceClient<RotateVerticallyCam>("microcontroller/rotateVerticallyCam");
+    rotateCamClient = nodeHandle.serviceClient<RotateCam>("microcontroller/rotateCam");
     translateClient = nodeHandle.serviceClient<Translate>("microcontroller/translate");
+    sonarXDistanceClient = nodeHandle.serviceClient<GetSonarXDistance>("microcontroller/getSonarXDistance");
 }
 
 MicrocontrollerDecorator::~MicrocontrollerDecorator() {
@@ -95,11 +96,13 @@ void MicrocontrollerDecorator::turnLED(bool on) {
     }
 }
 
-void MicrocontrollerDecorator::writeToLCD(std::string message) {
-    ROS_INFO("Requesting the microcontroller to write on the LCD the message:%s", message.c_str());
+void MicrocontrollerDecorator::writeToLCD(AntennaParam & antennaParam) {
+    ROS_INFO("Requesting the microcontroller to write the antennaParam to the LCD screen");
 
     WriteToLCD srv;
-    srv.request.message = message;
+    srv.request.sudocubeNo = antennaParam.number;
+    srv.request.orientation = antennaParam.getOrientationLetter();
+    srv.request.size = antennaParam.getIsBigLetter();
 
     if (writeToLCDClient.call(srv) == false) {
         ROS_ERROR("Failed to call service microcontroller/writeToLCD");
@@ -118,13 +121,29 @@ void MicrocontrollerDecorator::translate(Position position) {
     }
 }
 
-void MicrocontrollerDecorator::rotateVerticallyCam(int angle) {
-    ROS_INFO("Requesting the microcontroller to rotate webcam vertically of angle:%d", angle);
+void MicrocontrollerDecorator::rotateCam(int vAngle, int hAngle) {
+    ROS_INFO("Requesting the microcontroller to rotate webcam vertically of vAngle:%d and hAngle:%d", vAngle, hAngle);
 
-    RotateVerticallyCam srv;
-    srv.request.angle = angle;
+    RotateCam srv;
+    srv.request.vAngle = vAngle;
+    srv.request.hAngle = hAngle;
 
-    if (rotateVerticallyCamClient.call(srv) == false) {
-        ROS_ERROR("Failed to call service microcontroller/rotateVerticallyCam");
+    if (rotateCamClient.call(srv) == false) {
+        ROS_ERROR("Failed to call service microcontroller/rotateCam");
     }
+}
+
+float MicrocontrollerDecorator::getSonarDistance(int sonarNo) {
+    ROS_INFO("Requesting the microcontroller to send the distance of the sonar no:%d", sonarNo);
+
+    GetSonarXDistance srv;
+    srv.request.sonarNo = sonarNo;
+
+    if (sonarXDistanceClient.call(srv) == true) {
+        return srv.response.distance;
+    } else {
+        ROS_ERROR("Failed to call service microcontroller/getSonarXDistance");
+    }
+
+    return 0.0f;
 }

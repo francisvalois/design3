@@ -224,4 +224,20 @@ namespace {
 		pathPlanning.setObstacles(obs1,obs2);
 		//TO ASSERT NO SEG FAULT
   }
+
+  TEST_F(PathPlanningTest, IntegrationTesta) {
+	  	obs1.set(131,27);
+		obs2.set(106,57);
+		start.set(36,38);
+
+		pathPlanning.setObstacles(obs1,obs2);
+
+		vector<Position> pos = pathPlanning.getPath(start, workspace.getSudocubePos(3));
+		vector<Move> mov = pathPlanning.convertToMoves(pos,0,0);
+		for(unsigned int i = 0; i < mov.size(); i++) {
+			cout << "Move " << i << " :" << " angle : "  << mov[i].angle <<  " distance : "  << mov[i].distance << endl;
+
+		}
+		pathPlanning.printTable();
+  }
 }

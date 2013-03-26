@@ -12,13 +12,16 @@ class KinectCalibration{
     private:
         static Vec2f LEFT_DISTANCE;
         static Vec2f RIGHT_DISTANCE;
+        static Vec2f CENTER_DISTANCE;
         static std::vector<Point> _squarePositions;
         static std::vector<Point> findCalibrationSquare(Mat depthMatrix);
-        static Vec2f verifyIfDistancesFromKinectAreCorrect(Mat depthMatrix);
-        static void modifyKinectAngleConstant(Vec2f errorAverage);
+        static float findAndSetKinectAngle(Mat depthMatrix);
     public:
         static bool calibrate(Mat depthMatrix);
-        static std::vector<Point> getSquarePositions();    
+        static std::vector<Point> getSquarePositions();
+
+
+
 };
 
 #endif /* defined(__OpenCVTest__KinectCalibration__) */

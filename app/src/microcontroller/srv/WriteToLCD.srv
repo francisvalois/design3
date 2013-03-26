@@ -1,2 +1,4 @@
-string message
+string orientation
+int8 sudocubeNo
+string size
 ---

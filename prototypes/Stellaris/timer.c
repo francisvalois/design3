@@ -83,3 +83,11 @@ void initTimer(void){
 
     ROM_TimerEnable(TIMER0_BASE, TIMER_A);
 }
+
+void disableTimer(void){
+	ROM_TimerDisable(TIMER0_BASE, TIMER_A);
+}
+
+void enableTimer(void){
+    ROM_TimerEnable(TIMER0_BASE, TIMER_A);
+}

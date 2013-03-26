@@ -26,8 +26,9 @@ add_service_files(
     Move.srv
     Rotate.srv
     DecodeAntenna.srv
-    RotateVerticallyCam.srv
+    RotateCam.srv
     Translate.srv
+    GetSonarXDistance.srv
 )
 
 generate_messages(

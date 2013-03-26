@@ -174,7 +174,7 @@ void PathPlanning::applyDijkstra() {
 
         for (unsigned int i = 0; i < neighbors.size(); i++) {
             float cost = node->getCost();
-            cost += calculateCost(node->getPosition(), neighbors[i]->getPosition());
+            cost += (float)calculateCost(node->getPosition(), neighbors[i]->getPosition());
             if (cost < neighbors[i]->getCost()) {
                 neighbors[i]->setPredecessor(node);
                 neighbors[i]->setCost(cost);
@@ -185,7 +185,7 @@ void PathPlanning::applyDijkstra() {
     } while (nodesToVisit.size() > 0);
 }
 
-float PathPlanning::calculateCost(Position p1, Position p2) {
+int PathPlanning::calculateCost(Position p1, Position p2) {
     int x = p1.x - p2.x;
     if (x < 0) {
         x *= -1;
