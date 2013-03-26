@@ -15,7 +15,6 @@ public:
     ~CameraCapture();
     cv::Mat takePicture();
     void saveImage(cv::Mat &pict, char* filename);
-
 };
 
 #endif /* CAMERACAPTURE_H_ */

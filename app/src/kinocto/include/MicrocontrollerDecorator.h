@@ -13,8 +13,9 @@
 #include "microcontroller/Rotate.h"
 #include "microcontroller/TurnLED.h"
 #include "microcontroller/WriteToLCD.h"
-#include "microcontroller/RotateVerticallyCam.h"
+#include "microcontroller/RotateCam.h"
 #include "microcontroller/Translate.h"
+#include "microcontroller/GetSonarXDistance.h"
 
 class MicrocontrollerDecorator {
 public:
@@ -27,9 +28,10 @@ public:
     void rotate(float angle);
     void putPen(bool down);
     void turnLED(bool on);
-    void writeToLCD(std::string message);
+    void writeToLCD(AntennaParam & antennaParam);
     void translate(Position position);
-    void rotateVerticallyCam(int angle);
+    void rotateCam(int vAngle, int hAngle);
+    float getSonarDistance(int sonarNo);
 
 private:
     ros::NodeHandle nodeHandle;
@@ -41,8 +43,9 @@ private:
     ros::ServiceClient rotateClient;
     ros::ServiceClient turnLEDClient;
     ros::ServiceClient writeToLCDClient;
-    ros::ServiceClient rotateVerticallyCamClient;
+    ros::ServiceClient rotateCamClient;
     ros::ServiceClient translateClient;
+    ros::ServiceClient sonarXDistanceClient;
 };
 
 #endif /* MICROCONTROLLERDECORATOR_H_ */

@@ -25,7 +25,7 @@ Mat CameraCapture::takePicture() {
     return picture.clone();
 }
 
-void setConfig(cv::VideoCapture & videoCapture) {
+void CameraCapture::setConfig(cv::VideoCapture & videoCapture) {
     videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
     videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 1200);
     videoCapture.set(CV_CAP_PROP_BRIGHTNESS, 0.509803);
