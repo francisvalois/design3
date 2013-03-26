@@ -42,29 +42,14 @@ Workspace::Workspace() {
 
     kinectDeadAngle.set(89.0f, 22.0f);
 
-    numbersInitDrawPos[0][0].set(0.0f, 0.0f);
-    numbersInitDrawPos[0][1].set(0.0f, 0.0f);
-
-    numbersInitDrawPos[1][0].set(0.0f, 0.0f);
-    numbersInitDrawPos[1][1].set(0.0f, 0.0f);
-
-    numbersInitDrawPos[2][0].set(0.0f, 0.0f);
-    numbersInitDrawPos[2][1].set(0.0f, 0.0f);
-
-    numbersInitDrawPos[3][0].set(0.0f, 0.0f);
-    numbersInitDrawPos[3][1].set(0.0f, 0.0f);
-
-    numbersInitDrawPos[4][0].set(0.0f, 0.0f);
-    numbersInitDrawPos[4][1].set(0.0f, 0.0f);
-
-    numbersInitDrawPos[5][0].set(0.0f, 0.0f);
-    numbersInitDrawPos[5][1].set(0.0f, 0.0f);
-
-    numbersInitDrawPos[6][0].set(0.0f, 0.0f);
-    numbersInitDrawPos[6][1].set(0.0f, 0.0f);
-
-    numbersInitDrawPos[7][0].set(0.0f, 0.0f);
-    numbersInitDrawPos[7][1].set(0.0f, 0.0f);
+    numbersInitDrawPos[0].set(-3.0f, 5.0f);
+    numbersInitDrawPos[1].set(-7.0f, 7.0f);
+    numbersInitDrawPos[2].set(-9.0f, 9.0f);
+    numbersInitDrawPos[3].set(3.0f, -10.0f);
+    numbersInitDrawPos[4].set(9.0f, 10.0f);
+    numbersInitDrawPos[5].set(9.0f, 9.0f);
+    numbersInitDrawPos[6].set(-10.0f, 8.0f);
+    numbersInitDrawPos[7].set(-8.0f, 6.0f);
 }
 
 Workspace::~Workspace() {

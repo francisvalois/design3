@@ -36,7 +36,7 @@ private:
     float poleAngle[4];
     Position drawNumberInit[8];
     Position kinectDeadAngle;
-    Position numbersInitDrawPos[8][2]; // x = number et [x][0] pour petite taille [x][1] pour grande taille
+    Position numbersInitDrawPos[8]; //Vecteur pour les chiffres de petite taille, *2 chaques composantes pr grande taille
 
     //Dynamiques
     Position robot;
