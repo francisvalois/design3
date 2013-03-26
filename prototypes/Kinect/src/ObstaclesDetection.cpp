@@ -5,7 +5,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-const float ObstaclesDetection::OBSTACLE_RADIUS = 0.055f;
+const float ObstaclesDetection::OBSTACLE_RADIUS = 0.0565f;
 
 const int ObstaclesDetection::X_OBSTACLE_LEFT_THRESHOLD = 180;
 const int ObstaclesDetection::X_OBSTACLE_RIGHT_THRESHOLD = 610;
@@ -31,14 +31,14 @@ ObstaclesDetection::ObstaclesDetection(Vec2f obstacle1, Vec2f obstacle2){
     _obstacle2 = obstacle2;
 }
 
-Vec2f ObstaclesDetection::addObstacleRadiusToDistance(Vec2f distanceExtObstacle) {
-    Vec2f distanceCenterObstacle;
+Vec3f ObstaclesDetection::addObstacleRadiusToDistance(Vec3f distanceExtObstacle) {
+    Vec3f distanceCenterObstacle;
 
-    if ((distanceExtObstacle[0] + distanceExtObstacle[1]) != 0) {
-        float hyp = sqrt(pow(distanceExtObstacle[0], 2) + pow(distanceExtObstacle[1], 2));
-        float angle = atan(distanceExtObstacle[0] / distanceExtObstacle[1]);
+    if ((distanceExtObstacle[0] + distanceExtObstacle[2]) != 0) {
+        float hyp = sqrt(pow(distanceExtObstacle[0], 2) + pow(distanceExtObstacle[2], 2));
+        float angle = atan(distanceExtObstacle[0] / distanceExtObstacle[2]);
         distanceCenterObstacle[0] = sin(angle) * (hyp + OBSTACLE_RADIUS);
-        distanceCenterObstacle[1] = cos(angle) * (hyp + OBSTACLE_RADIUS);
+        distanceCenterObstacle[2] = cos(angle) * (hyp + OBSTACLE_RADIUS);
     }
     else {
         distanceCenterObstacle = distanceExtObstacle;
@@ -94,10 +94,11 @@ Vec2f ObstaclesDetection::getAveragePositionForObstacle(Mat depthMatrix, list<Po
 
     //Rotate to add Radius with trigonometry operation and then translate to 0.0
     Vec3f positionObstacle3(positionObstacle[0], 0, positionObstacle[1]);
-    Vec2f kinectRotatedPosition = KinectTransformation::getRotatedXZCoordFromKinectCoord(positionObstacle3);
-    Vec2f obstaclePositionWithRadius = addObstacleRadiusToDistance(kinectRotatedPosition);
-    Vec2f truePositionObstacle = KinectTransformation::translateXZCoordtoOrigin(obstaclePositionWithRadius);
+//    Vec2f kinectRotatedPosition = KinectTransformation::getRotatedXZCoordFromKinectCoord(positionObstacle3);
+    Vec3f positionObstacleWithRadius = addObstacleRadiusToDistance(positionObstacle3);
+//    Vec2f truePositionObstacle = KinectTransformation::translateXZCoordtoOrigin(obstaclePositionWithRadius);
 
+    Vec2f truePositionObstacle = KinectTransformation::getTrueCoordFromKinectCoord(positionObstacleWithRadius);
     return truePositionObstacle;
 }
 
@@ -129,6 +130,7 @@ void ObstaclesDetection::findAllPossiblePositionForEachObstacle(Mat depthMatrix,
                     validObstaclePosition.clear();
                 }
             }
+            cout << i << endl;
             validObstaclePosition.push_back(Point(i, middleYPoint));
         }
     }

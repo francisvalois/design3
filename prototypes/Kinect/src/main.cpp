@@ -18,13 +18,13 @@ void onMouse(int event, int x, int y, int flags, void *) {
     if (event == CV_EVENT_LBUTTONUP) {
         Vec3f s = world.at<Vec3f>(y, x);
         Vec2f realPosition = KinectTransformation::getTrueCoordFromKinectCoord(s);
-        Vec2f rotatedPosition = KinectTransformation::getRotatedXZCoordFromKinectCoord(s);
-        Vec2f radius = ObstaclesDetection::addObstacleRadiusToDistance(rotatedPosition);
-        Vec2f trueradius = KinectTransformation::translateXZCoordtoOrigin(radius);
+//        Vec2f rotatedPosition = KinectTransformation::getRotatedXZCoordFromKinectCoord(s);
+//        Vec2f radius = ObstaclesDetection::addObstacleRadiusToDistance(rotatedPosition);
+//        Vecf trueradius = KinectTransformation::translateXZCoordtoOrigin(radius);
         cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
         cout << "Position X :" << realPosition[0] << " Position Y :" << s[1] << " Position Z:" << realPosition[1] << endl;
-        cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[1] << endl;
-        cout << "From Kinect : Position X :" << trueradius[0] << " Position Z:" << trueradius[1] << endl;
+        cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[2] << endl;
+//        cout << "From Kinect : Position X :" << trueradius[0] << " Position Z:" << trueradius[1] << endl;
 
     }
     if (event == CV_EVENT_RBUTTONUP) {
@@ -87,12 +87,12 @@ int main( /*int argc, char* argv[]*/ ) {
         //printf("Time taken: %.4fs\n", (double) (clock() - tStart) / CLOCKS_PER_SEC);
         model2.findCenteredObstacle(world);
 
-//        Mat test3;
-//        Canny(RGBGray,test3, 50,200, 3);
-//        vector<Rect> test1;
-//        int test4 = model3.generateQuads(test3, test1);
-//        int test5 = model3.removeSingleQuads(test1);
-//        model3.sortQuadsByPosition(test1);
+        Mat test3;
+        Canny(RGBGray,test3, 50,200, 3);
+        vector<Rect> test1;
+        int test4 = model3.generateQuads(test3, test1);
+        int test5 = model3.removeSingleQuads(test1);
+        model3.sortQuadsByPosition(test1);
 
         Vec2f obstacle1 = model2.getObstacle1();
         Vec2f obstacle2 = model2.getObstacle2();
@@ -117,7 +117,8 @@ int main( /*int argc, char* argv[]*/ ) {
         Point pt22(pt1, squarePoints[1].y);
 
         line(showRGB,pt11, pt22, Scalar(0,0,225), 1, 8);
-        //rectangle(showRGB, test1[test1.size()-1],Scalar(0,0,255));
+        rectangle(showRGB, test1[0],Scalar(0,0,255));
+        rectangle(showRGB, test1[test1.size()-1],Scalar(0,0,255));
         imshow("chess", showRGB);
         //imshow("chess2", test3);
 

@@ -78,6 +78,7 @@ float KinectCalibration::findAndSetKinectAngle(Mat depthMatrix){
     float xDistance = leftPointDistance[2] - rightPointDistance[2];
     float angleRad = atan(xDistance/yDistance);
 
+    KinectTransformation::setBasePositionFromKinect(leftPointDistance);
     KinectTransformation::setKinectAngle(angleRad);
 
     return angleRad;
