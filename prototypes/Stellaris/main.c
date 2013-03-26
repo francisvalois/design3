@@ -101,6 +101,7 @@ int main(void)
     volatile unsigned long ulLoop;
     
     // Initialisation des ports
+    ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
     ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
@@ -190,7 +191,7 @@ int main(void)
     
     
     init_lcd();
-    afficher_param('2', 'S', 'G');
+    //afficher_param('2', 'S', 'G');
 	//ecranInit();
 	initCommande();
 	initMotorCommand();

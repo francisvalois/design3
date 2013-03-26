@@ -34,7 +34,7 @@ volatile long time = 0;
 tBoolean est_demi_consigne;
 tBoolean est_en_mouvement;
 tBoolean a_atteint_consigne;
-tBoolean is_drawing;
+extern tBoolean is_drawing;
 
 //Pour tests
 long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
@@ -454,9 +454,9 @@ void ajustementVitesse(void){
 	
 	
 		if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0)) || (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){ 
-				GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
-				GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
-				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
+				GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xFF);
+				GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xFF);
+				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0xFF);
 				a_atteint_consigne = true;
 		}
 		

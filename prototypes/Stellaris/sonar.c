@@ -30,7 +30,7 @@ void initSonar(void){
 	ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5, 0x00);
 	ROM_GPIOIntTypeSet(GPIO_PORTA_BASE, GPIO_PIN_6, GPIO_BOTH_EDGES);
 	ROM_GPIOPinIntEnable(GPIO_PORTA_BASE, GPIO_PIN_6);
-	//ROM_IntEnable(INT_GPIOA);
+	ROM_IntEnable(INT_GPIOA);
 	
 	
 	ROM_SysTickPeriodSet(ROM_SysCtlClockGet());
@@ -58,11 +58,11 @@ void disableSonar(void){
 void sonarIntHandler(void){
 	time_sonar = ROM_SysTickValueGet();
 	ROM_GPIOPinIntClear(GPIO_PORTA_BASE, GPIO_PIN_6);
-	if(ROM_GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_5) == GPIO_PIN_5 || !waiting_for_falling_edge){
+	if(ROM_GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6) == GPIO_PIN_6 || !waiting_for_falling_edge){
 		previous_time_sonar = time_sonar;
 		waiting_for_falling_edge=true;
 	}
-	else if(ROM_GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_5) == 0x00 || waiting_for_falling_edge){
+	else if(ROM_GPIOPinRead(GPIO_PORTA_BASE, GPIO_PIN_6) == 0x00 || waiting_for_falling_edge){
 		if(previous_time_sonar > time_sonar){
 			sonarTimeDelta.buffer[sonarTimeDelta.write++%BUFFER_LEN] = previous_time_sonar - time_sonar;
 		}

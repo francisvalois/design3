@@ -55,6 +55,7 @@ extern unsigned long __STACK_TOP;
 
 extern void EncoderIntHandler(void);
 extern void TimerInt(void);
+extern void sonarIntHandler(void);
 //void UARTIntHandler(void);
 
 //*****************************************************************************
@@ -84,7 +85,7 @@ void (* const g_pfnVectors[])(void) =
     0,                                      // Reserved
     IntDefaultHandler,                      // The PendSV handler
     IntDefaultHandler,                      // The SysTick handler
-    IntDefaultHandler,                      // GPIO Port A
+    sonarIntHandler,                      // GPIO Port A
     IntDefaultHandler,                      // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
     IntDefaultHandler,                      // GPIO Port D

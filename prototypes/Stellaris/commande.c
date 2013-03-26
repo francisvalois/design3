@@ -34,7 +34,7 @@ tBoolean is_waiting_for_y;
 volatile CircularBuffer buffer_commande;
 extern volatile CircularBuffer sonarTimeDelta;
 
-extern tBoolean is_drawing;
+tBoolean is_drawing;
 long number_to_draw;
 long segment_to_draw;
 
@@ -298,7 +298,7 @@ tBoolean CommandHandler(void){
 				time_trigger = time_trigger_start - time_systick;
 			}
 			else{ //Si le systick a bouclé
-				time_trigger = time_trigger_start + time_systick - time_systick;
+				time_trigger = time_trigger_start + ROM_SysTickPeriodGet() - time_systick;
 			}
 		}
 		//Fin attente 10 us
