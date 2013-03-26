@@ -1,4 +1,4 @@
-ï»¿#include "inc/hw_memmap.h"
+#include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
 #include "driverlib/gpio.h"
 #include "driverlib/rom.h"
@@ -32,6 +32,7 @@ volatile long deplacement_x;
 volatile long deplacement_y;
 tBoolean is_waiting_for_y;
 volatile CircularBuffer buffer_commande;
+extern volatile CircularBuffer sonarTimeDelta;
 
 extern tBoolean is_drawing;
 long number_to_draw;
@@ -58,6 +59,14 @@ void monterPrehenseur(void);
 //sonar.c
 void enableSonar(void);
 void disableSonar(void);
+//lcd.c
+void afficher_param(char sudocube, char orient, char T);
+//timer.c
+void disableTimer(void);
+void enableTimer(void);
+//qei.c
+void disableQEIs(void);
+void enableQEIs(void);
 
 /*
  * COMMANDE
@@ -268,18 +277,39 @@ tBoolean CommandHandler(void){
 		return true;
 	}
 	else if(commande[0] == 'L'){ // afficher sur LCD
+		afficher_param(commande[1], commande[2], commande[3]);
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
-	else if(commande[0] == 'S'){ // envoyer donnÃ©es sonar
+	else if(commande[0] == 'S'){ // envoyer données sonar
+		disableTimer(); //Arrêter le timer  de l'asservissement
+		disableQEIs(); //Arrêter les calculs des QEIs
 		enableSonar();
 		long average = 0;
+		long time_trigger = 0;
+		long time_trigger_start = 0;
+		long time_systick = 0;
 		ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5, 0xFF);
+		//Attend 10 us
+		time_trigger_start = ROM_SysTickValueGet();
+		while(time_trigger < 16000000/100000){
+			time_systick = ROM_SysTickValueGet();
+			if(time_systick < time_trigger_start){
+				time_trigger = time_trigger_start - time_systick;
+			}
+			else{ //Si le systick a bouclé
+				time_trigger = time_trigger_start + time_systick - time_systick;
+			}
+		}
+		//Fin attente 10 us
+		ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5, 0x00);
 		while(sonarTimeDelta.write == sonarTimeDelta.read){
 		}
 		average += sonarTimeDelta.buffer[sonarTimeDelta.read++%BUFFER_LEN];
 		ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5, 0x00);
 		disableSonar();
+		enableQEIs(); //Permettre les calculs des QEIs
+		enableTimer(); //Enabler le timer  de l'asservissement
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0xFF000000) >> 24;
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0x00FF0000) >> 16;
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0x0000FF00) >> 8;

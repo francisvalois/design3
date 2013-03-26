@@ -17,15 +17,26 @@ ser = None
 def handlePutPen(req):
     rospy.loginfo("Putting Pen Down ?:%s", req.down)
     
+    if(req.down):
+        commande = "P0000000"
+    else:
+        commande = "M0000000"
+
+    sendCommandToController(commande)
+    
     return PutPenResponse()
 
 def handleWriteToLCD(req):
     rospy.loginfo("Write Antenna Param To LCD  number:%d isBig:%s orientation:%s", req.sudocubeNo, req.size, req.orientation)
+
+    sendCommandToController("{0}{1}{2}00000".format(), req.sudocubeNo, req.orientation, req.size)
     
     return WriteToLCDResponse()
 
 def handleDrawNumber(req):
     rospy.loginfo("Draw Number:%d Big?:%s ", req.number, req.isBig)
+
+    sendCommandToController("D{0}{1}00000".format(('P', 'G')[req.isBig], req.number))
     
     return DrawNumberResponse()
 
@@ -36,6 +47,8 @@ def handleTurnLED(req):
         commande = "O0000000"
     else:
         commande = "C0000000"
+
+    sendCommandToController(commande)
     
     return TurnLEDResponse()
 
@@ -151,12 +164,12 @@ def handleDecodeAntenna(req):
     
     return response
 
-def handleGetSonarXDistance(req)
+def handleGetSonarXDistance(req):
     rospy.loginfo("Getting distance from sonar no:%d", req.sonarNo)
     
-    #Exemple de réponse
+    #Exemple de reponse
     response = SonarXDistanceResponse(); 
-    response.distance = 0.0f;
+    response.distance = 0.0;
     
     return response
 
@@ -165,10 +178,10 @@ def sendCommandToController(commande):
     
     rospy.loginfo("Sending command to microcontroller %s", commande)
     
-    #try: 
-        
-    #except Exception, e:
-        #rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
+    try: 
+        ser.open()
+    except Exception, e:
+        rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
         #exit()
     
     if ser.isOpen():
@@ -214,8 +227,6 @@ def Microcontroller():
     ser.timeout = 0
     ser.bytesize = serial.EIGHTBITS
     ser.writeTimeout = 0
-
-    ser.open()
 
     rospy.loginfo("Creating Serial Communication with Camera")
     serCam = serial.Serial()
