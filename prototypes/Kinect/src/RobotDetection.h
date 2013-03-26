@@ -28,7 +28,7 @@ private:
 
     list<Vec2f> getSomeYDistanceAssociatedWithXForRobot(int robotPositionX, Mat depthMatrix);
     vector<Point> findAllPossiblePositionForRobot(Mat depthMatrix, Vec2f obstacle1, Vec2f obstacle2);
-    float getAngleFrom2Distances(float distance1, float distance2);
+    float getAngleFrom2Distances(Vec2f distance1, Vec2f distance2);
     void get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition, Vec2f &trueLeftPosition, Vec2f &trueRightPosition);
     float findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> validRobotPosition);
     Vec2f findRobotCenterPosition(Mat depthMatrix, vector<Point2f> validRobotPosition, float angleRad);

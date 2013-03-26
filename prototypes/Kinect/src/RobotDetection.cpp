@@ -11,7 +11,7 @@ const int RobotDetection::Y_ROBOT_TOP_THRESHOLD = 164;
 const int RobotDetection::Y_ROBOT_BOTTOM_THRESHOLD = 292;
 const float RobotDetection::ROBOT_MIN_DISTANCE = 0.4f;
 const float RobotDetection::ROBOT_MAX_DISTANCE = 1.95f;
-const float RobotDetection::ROBOT_RADIUS = 0.0625f;
+const float RobotDetection::ROBOT_RADIUS = 0.095f;
 const float RobotDetection::ROBOT_HEIGHT = 0.10f;
 const float RobotDetection::ROBOT_CHESSBOARD_WIDTH = 0.172f;
 
@@ -32,9 +32,11 @@ RobotDetection::RobotDetection(Vec2f robotPosition)
     _robotPosition = robotPosition;
 }
 
-float RobotDetection::getAngleFrom2Distances(float distance1, float distance2){    
-    if(distance1 > 0 && distance2 > 0){
-        float angle = asin((distance2 - distance1) / ROBOT_CHESSBOARD_WIDTH);
+float RobotDetection::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2){
+    if(distance1[1] > 0 && distance2[1] > 0 && distance1[0] > 0 && distance2[0] > 0){
+        float opp = distance2[1] - distance1[1];
+        float adj = fabs(distance2[0] - distance1[0]);
+        float angle = atan(opp/adj);
         return angle;
     }
     return 0;
@@ -43,16 +45,13 @@ float RobotDetection::getAngleFrom2Distances(float distance1, float distance2){
 void RobotDetection::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition,
                                              Vec2f &trueLeftPosition, Vec2f &trueRightPosition){    
     //TODO: Check if it works with the chessboard
-    //Point2f leftPoint = validRobotPosition[5];
-    //Point2f rightPoint = validRobotPosition[validRobotPosition.size()-5];
-    
-    Point2f leftPoint(405,242);
-    Point2f rightPoint(441,241);
+    Point2f leftPoint = validRobotPosition[0];
+    Point2f rightPoint = validRobotPosition[validRobotPosition.size()-1];
     
     Vec3f leftPosition = depthMatrix.at<Vec3f>((int)leftPoint.y, (int)leftPoint.x);
     trueLeftPosition = KinectTransformation::getTrueCoordFromKinectCoord(leftPosition);
     if(trueLeftPosition[1] <= 0){
-        leftPoint = validRobotPosition[4];
+        leftPoint = validRobotPosition[1];
         leftPosition = depthMatrix.at<Vec3f>((int)leftPoint.y, (int)leftPoint.x);
         trueLeftPosition = KinectTransformation::getTrueCoordFromKinectCoord(leftPosition);
     }
@@ -60,7 +59,7 @@ void RobotDetection::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> va
     Vec3f rightPosition = depthMatrix.at<Vec3f>((int)rightPoint.y, (int)rightPoint.x);
     trueRightPosition = KinectTransformation::getTrueCoordFromKinectCoord(rightPosition);
     if(trueRightPosition[1] <= 0){
-        rightPoint = validRobotPosition[validRobotPosition.size()-4];
+        rightPoint = validRobotPosition[validRobotPosition.size()-2];
         rightPosition = depthMatrix.at<Vec3f>((int)rightPoint.y, (int)rightPoint.x);
         trueRightPosition = KinectTransformation::getTrueCoordFromKinectCoord(rightPosition);
     }
@@ -73,7 +72,7 @@ float RobotDetection::findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> v
     
     get2MajorPointsDistance(depthMatrix, validRobotPosition, trueLeftPosition, trueRightPosition);
     
-    float angleRad = getAngleFrom2Distances(trueLeftPosition[1], trueRightPosition[1]);
+    float angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
     
     if(angleRad == 0 || isnan(angleRad)){
         throw string("Unable to find the angle of the robot from the depthMap and the rgbMap");
@@ -109,9 +108,17 @@ Vec2f RobotDetection::findRobotCenterPosition(Mat depthMatrix, vector<Point2f> v
 }
 
 void RobotDetection::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1, Vec2f obstacle2) {
-    vector<Point2f> validRobotPosition = findChessboard(rgbMatrix);
+    vector<Rect> validRectPosition;
+    Mat test3;
+    Canny(rgbMatrix,test3, 50,200, 3);
+    int generatedCount = generateQuads(test3, validRectPosition);
 
-    if(validRobotPosition.size() > 5){
+    if(generatedCount > 5){
+        vector<Point2f> validRobotPosition;
+        for (int i = 0; i < validRectPosition.size(); i++){
+            validRobotPosition.push_back(Point2f(validRectPosition[i].x, validRectPosition[i].y));
+        }
+
         float angleRad;
         Vec2f centerPosition;
         
@@ -135,13 +142,13 @@ void RobotDetection::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f ob
 }
 
 vector<Point2f> RobotDetection::findChessboard(Mat img){
-    Size size(9,6);
+    Size size(3,3);
     vector<Point2f> pointBuf;
     bool found  = findChessboardCorners(img, size, pointBuf,
-        CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FAST_CHECK | CV_CALIB_CB_NORMALIZE_IMAGE); 
+        CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE); 
     if(!found){
         cout << "No Chessboard found" << endl;
     }
-
+    cout << pointBuf.size() << endl;
     return pointBuf;
 }

@@ -11,6 +11,7 @@
 
 Vec2f KinectCalibration::LEFT_DISTANCE(0.57f, 0.775f);
 Vec2f KinectCalibration::RIGHT_DISTANCE(0.415f, 0.775f);
+Vec2f KinectCalibration::CENTER_DISTANCE(0.47f, 0.775f);
 
 std::vector<Point> KinectCalibration::_squarePositions;
 
@@ -51,7 +52,7 @@ std::vector<Point> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
             }
         }
 
-        if(lastLength > 60 && lastLength < 90){
+        if(lastLength > 40 && lastLength < 90){
             tempLineOfPointsOnSquare.push_back(Vec3f(i,lowPoint, highPoint));
         }
     }
@@ -59,91 +60,37 @@ std::vector<Point> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
     Vec3f leftVertice = tempLineOfPointsOnSquare.front();
     Vec3f rightVertice = tempLineOfPointsOnSquare.back();
 
-    squarePosition.push_back(Point(leftVertice[0]+8,leftVertice[2]+8));
-    squarePosition.push_back(Point(rightVertice[0]-8,leftVertice[1]-8));
+    squarePosition.push_back(Point(leftVertice[0]+2,leftVertice[2]+2));
+    squarePosition.push_back(Point(rightVertice[0]-2,leftVertice[1]-2));
 
     return squarePosition;
 }
 
-//Return error between Kinect distances and true distances
-Vec2f KinectCalibration::verifyIfDistancesFromKinectAreCorrect(Mat depthMatrix){
-    Point left = KinectCalibration::_squarePositions[0];
-    Point right = KinectCalibration::_squarePositions[1];
+float KinectCalibration::findAndSetKinectAngle(Mat depthMatrix){
+    int pt1x = _squarePositions[0].x;
+    int pt2x = _squarePositions[1].x;
+    int pty = (_squarePositions[1].y - _squarePositions[0].y)/2 + _squarePositions[0].y;
 
-    Vec3f leftPointDistance = depthMatrix.at<Vec3f>(left.y, left.x);
-    Vec3f rightPointDistance = depthMatrix.at<Vec3f>(right.y, right.x);
+    Vec3f leftPointDistance = depthMatrix.at<Vec3f>(pty, pt1x);
+    Vec3f rightPointDistance = depthMatrix.at<Vec3f>(pty, pt2x);
 
-    Vec2f trueLeftCoord = KinectTransformation::getTrueCoordFromKinectCoord(leftPointDistance);
-    Vec2f truerightCoord = KinectTransformation::getTrueCoordFromKinectCoord(rightPointDistance);
+    float yDistance = rightPointDistance[0] - leftPointDistance[0];
+    float xDistance = leftPointDistance[2] - rightPointDistance[2];
+    float angleRad = atan(xDistance/yDistance);
 
-    if(trueLeftCoord[0] < 0.3 || trueLeftCoord[1] < 0.3){
-        leftPointDistance = depthMatrix.at<Vec3f>(left.y, left.x+1);
-        trueLeftCoord = KinectTransformation::getTrueCoordFromKinectCoord(leftPointDistance);
-    }
+    KinectTransformation::setKinectAngle(angleRad);
 
-    if(truerightCoord[0] < 0.3 || truerightCoord[1] < 0.3){
-        rightPointDistance = depthMatrix.at<Vec3f>(left.y, left.x+1);
-        truerightCoord = KinectTransformation::getTrueCoordFromKinectCoord(rightPointDistance);
-    }
-
-    if((trueLeftCoord[0] > LEFT_DISTANCE[0] * 0.98 && trueLeftCoord[0] < LEFT_DISTANCE[0] * 1.02) &&
-           (trueLeftCoord[1] > LEFT_DISTANCE[1] * 0.98 && trueLeftCoord[1] < LEFT_DISTANCE[1] * 1.02) &&
-           (truerightCoord[0] > RIGHT_DISTANCE[0] * 0.98 && truerightCoord[0] < RIGHT_DISTANCE[0] * 1.02) &&
-           (truerightCoord[1] > RIGHT_DISTANCE[1] * 0.98 && truerightCoord[1] < RIGHT_DISTANCE[1] * 1.02)){
-        return 0.0f;
-    }
-
-    Vec2f errorAverage(((trueLeftCoord[0] - LEFT_DISTANCE[0]) + (truerightCoord[1] - RIGHT_DISTANCE[1])),
-                       ((truerightCoord[1] - LEFT_DISTANCE[1]) + (truerightCoord[1] - RIGHT_DISTANCE[1])));
-    return errorAverage;
-
-}
-
-
-void KinectCalibration::modifyKinectAngleConstant(Vec2f errorAverage){
-
-    if(fabs(errorAverage[0]/errorAverage[1]) > 0.25){
-        if(errorAverage[1] > 0){
-            KinectTransformation::incrementKinectConstants(0,0,-0.01f);
-        }
-        else{
-            KinectTransformation::incrementKinectConstants(0,0,0.01f);
-        }
-    }
-
-    if(fabs(errorAverage[1]/errorAverage[0]) > 0.25){
-        if(errorAverage[0] > 0){
-            KinectTransformation::incrementKinectConstants(0,-0.01f,0);
-        }
-        else{
-            KinectTransformation::incrementKinectConstants(0,0.01f,0);
-        }
-    }
-
-    if((errorAverage[0] > 0 && errorAverage[1] < 0) /*|| (errorAverage[0] < 0 && errorAverage[1] < 0)*/){
-        KinectTransformation::incrementKinectAngle(-0.1f);
-    }
-    else {
-        KinectTransformation::incrementKinectAngle(0.1f);
-    }
+    return angleRad;
 }
 
 bool KinectCalibration::calibrate(Mat depthMatrix){
     KinectCalibration::_squarePositions = KinectCalibration::findCalibrationSquare(depthMatrix);
 
-    bool calibrated = false;
-    int iteration = 0;
-        do{
-            Vec2f errorAverage = KinectCalibration::verifyIfDistancesFromKinectAreCorrect(depthMatrix);
+    float angle = findAndSetKinectAngle(depthMatrix);
 
-            if(fabs(errorAverage[0]) < 0.01 && fabs(errorAverage[1]) < 0.01){
-                calibrated = true;
-                break;
-            }
+    if (angle > 0 && !isnan(angle)){
+        return true;
+    }
 
-            KinectCalibration::modifyKinectAngleConstant(errorAverage);
-            iteration++;
-        }while(calibrated || iteration < 1000);
-
-    return calibrated;
+    return false;
 }

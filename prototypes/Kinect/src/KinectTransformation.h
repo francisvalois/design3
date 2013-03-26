@@ -21,8 +21,7 @@ public:
     static Vec2f getTrueCoordFromKinectCoord(Vec3f depthXYZ);
     static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
     static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
-    static void incrementKinectConstants(float angle=0, float x=0, float y=0);
-    static bool incrementKinectAngle(float increment);
+    static void setKinectAngle(float angleRad);
 };
 
 #endif //__kinect_transformation_

@@ -9,32 +9,10 @@ float KinectTransformation::KINECTANGLERAD = (float) (KINECTANGLE / 360.0 * 2.0 
 float KinectTransformation::X_KINECT_POSITION = 0.135f;
 float KinectTransformation::Z_KINECT_POSITION = -0.56f;
 
-void KinectTransformation::incrementKinectConstants(float angle, float x, float y){
-
-    if(KINECTANGLE+angle <= 90 && KINECTANGLE+angle >= 0){
-        KINECTANGLE += angle;
-        KINECTANGLERAD = (float)(KINECTANGLE / 360.0 * 2.0 * M_PI);
+void KinectTransformation::setKinectAngle(float angleRad){
+    if(angleRad > 0 && angleRad < M_PI){
+        KINECTANGLERAD = angleRad;
     }
-
-    if(x != 0){
-        X_KINECT_POSITION += x;
-    }
-
-    if(y != 0){
-        Z_KINECT_POSITION += y;
-    }
-
-
-}
-
-bool KinectTransformation::incrementKinectAngle(float increment){
-    if(KINECTANGLE+increment <= 90 && KINECTANGLE+increment >= 0){
-        KINECTANGLE += increment;
-        KINECTANGLERAD = (float)(KINECTANGLE / 360.0 * 2.0 * M_PI);
-
-        return true;
-    }
-    return false;
 }
 
 //Rotate depth coords seen from the Kinect to align them with the the XZ plane of the table
