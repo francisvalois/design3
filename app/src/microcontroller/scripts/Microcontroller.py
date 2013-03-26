@@ -56,7 +56,7 @@ def handleTranslate(req):
     rospy.loginfo("Translate Robot of x:%d y:%d", req.x, req.y)
 
     commande = " 0000000"
-    req.x = int(req.x/21.7*6533)
+    req.x = int(req.x / 21.7 * 6533)
     if(req.x != 0):
         sign = ' '
         if(req.x < 0):
@@ -69,7 +69,7 @@ def handleTranslate(req):
     sendCommandToController(commande)
 
     commande = " 0000000"
-    req.y = int(req.y/21.7*6533)
+    req.y = int(req.y / 21.7 * 6533)
     if(req.y != 0):
         sign = ' '
         if(req.y < 0):
@@ -110,7 +110,7 @@ def handleMove(req):
     sendCommandToController(commande)
 
     commande = " 0000000"
-    distance = int(req.distance/21.7*6533)
+    distance = int(req.distance / 21.7 * 6533)
     if(distance != 0):
         sign = ' '
         if(distance < 0):
@@ -133,7 +133,7 @@ def handleRotate(req):
         if(req.angle > 0):  # Si angle positif
             if(abs(req.angle) > 99):  # Si un angle de plus de 2 digits
                 commande = "TP" + str(angle_abs)
-            elif (abs(req.angle) >=10 and abs(req.angle) <= 99):
+            elif (abs(req.angle) >= 10 and abs(req.angle) <= 99):
                 print(angle_abs)
                 commande = "TP0" + str(angle_abs)
             else:
@@ -142,7 +142,7 @@ def handleRotate(req):
         else: 
             if(abs(req.angle) > 99):
                 commande = "TN" + str(angle_abs)
-            elif (abs(req.angle) >=10 and abs(req.angle) <= 99):
+            elif (abs(req.angle) >= 10 and abs(req.angle) <= 99):
                 commande = "TN0" + str(angle_abs)
             else:
                 commande = "TN00" + str(angle_abs)
@@ -167,7 +167,7 @@ def handleDecodeAntenna(req):
 def handleGetSonarXDistance(req):
     rospy.loginfo("Getting distance from sonar no:%d", req.sonarNo)
     
-    #Exemple de reponse
+    # Exemple de reponse
     response = SonarXDistanceResponse(); 
     response.distance = 0.0;
     
@@ -214,7 +214,7 @@ def Microcontroller():
     
     rospy.loginfo("Creating Serial Communication")
     ser = serial.Serial()
-    #ser.port = ('/dev/ttyUSB0') 
+    # ser.port = ('/dev/ttyUSB0') 
     ser.port = ('/dev/serial/by-id/usb-TXI_Luminary_Micro_ICDI_Board_0B01015D-if01-port0')
     ser.baudrate = 19200
     ser.parity = serial.PARITY_EVEN

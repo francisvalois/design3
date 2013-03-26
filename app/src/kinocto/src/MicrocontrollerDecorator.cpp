@@ -8,8 +8,8 @@ MicrocontrollerDecorator::MicrocontrollerDecorator(ros::NodeHandle & nodeHandle)
     decodeAntennaClient = nodeHandle.serviceClient<DecodeAntenna>("microcontroller/decodeAntenna");
     drawNumberClient = nodeHandle.serviceClient<DrawNumber>("microcontroller/drawNumber");
     moveClient = nodeHandle.serviceClient<Move>("microcontroller/move");
-    putPenClient = nodeHandle.serviceClient<Rotate>("microcontroller/rotate");
-    rotateClient = nodeHandle.serviceClient<PutPen>("microcontroller/putPen");
+    putPenClient = nodeHandle.serviceClient<PutPen>("microcontroller/putPen");
+    rotateClient = nodeHandle.serviceClient<Rotate>("microcontroller/rotate");
     turnLEDClient = nodeHandle.serviceClient<TurnLED>("microcontroller/turnLED");
     writeToLCDClient = nodeHandle.serviceClient<WriteToLCD>("microcontroller/writeToLCD");
     rotateCamClient = nodeHandle.serviceClient<RotateCam>("microcontroller/rotateCam");
