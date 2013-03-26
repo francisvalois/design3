@@ -37,10 +37,10 @@ tBoolean a_atteint_consigne;
 extern tBoolean is_drawing;
 
 //Pour tests
-long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
+/*long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
 long speed0_table[300], speed1_table[300], speed2_table[300], speed3_table[300];
 long output0_table[300], output1_table[300], output2_table[300], output3_table[300];
-long fraction0_table[300], fraction1_table[300], fraction2_table[300], fraction3_table[300];
+long fraction0_table[300], fraction1_table[300], fraction2_table[300], fraction3_table[300];*/
 
 //Declaration de fonctions
 //moteur.c
@@ -381,7 +381,7 @@ void asservirMoteurs(void){
 	else{
 		est_en_mouvement = true;
 	}
-	pos0_table[index%300]=pos0;
+	/*pos0_table[index%300]=pos0;
 	pos1_table[index%300]=pos1;
 	pos2_table[index%300]=pos2;
 	pos3_table[index%300]=pos3;
@@ -396,7 +396,7 @@ void asservirMoteurs(void){
 	fraction0_table[index%300]=fraction0;
 	fraction1_table[index%300]=fraction1;
 	fraction2_table[index%300]=fraction2;
-	fraction3_table[index%300]=fraction3;
+	fraction3_table[index%300]=fraction3;*/
 	
 }
 
@@ -429,7 +429,8 @@ void ajustementVitesse(void){
 		abs_dist_cible1 = dist_cible1;
 	}
 	
-	if(abs_pos0 > abs_dist_cible0 -4000 && abs_dist_cible0 != 0 && !is_drawing){
+	/*if(abs_pos0 > abs_dist_cible0 -4000 && abs_dist_cible0 != 0 && !is_drawing && consigne1==0
+	 &&consigne2 ==0){
 		if(time >= 0){//0ms depuis que abs_pos0 > abs_dist_cible0 -4000
 			if(consigne0 >4000 && consigne3 >4000){
 				consigne0 = consigne0*0.875;
@@ -460,15 +461,15 @@ void ajustementVitesse(void){
 				a_atteint_consigne = true;
 		}
 		
-	}
-	else{
+	}*/
+	//else{
 		if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0)) || (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){ 
 				GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 				GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
 				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
 				a_atteint_consigne = true;
 		}
-	}
+	//}
 }
 
 	
