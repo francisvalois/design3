@@ -180,25 +180,19 @@ def sendCommandToController(commande):
     
     try: 
         ser.open()
-    except Exception, e:
-        rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
-        #exit()
-    
-    if ser.isOpen():
-        try:
+        
+        if ser.isOpen():
             ser.write(bytes(commande))
-            response = None
             time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
+
+            response = None
             while(response != 'E'):
                 response = ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
-            
-        except Exception, e:
-            rospy.logerr("LA COMMANDE %s NE S'EST PAS RENDU: %s", commande, str(e))
     
-        #ser.close()
-    else:
-        rospy.logerr("LE PORT DU MICROCONTROLLEUR N'EST PAS OUVERT")
+            ser.close()
+    except Exception, e:
+        rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
 
 def Microcontroller():
     global ser
