@@ -2,8 +2,10 @@
 
 using namespace std;
 
+const string AntennaParam::ORIENTATION_LETTER[] = { "N", "S", "E", "W" };
+
 AntennaParam::AntennaParam() {
-    isBig = false;
+    big = false;
     number = 1;
     orientation = AntennaParam::ORIENTATION_NORTH;
 }
@@ -13,33 +15,44 @@ AntennaParam::~AntennaParam() {
 
 void AntennaParam::set(int number, bool isBig, int orientation) {
     this->number = number;
-    this->isBig = isBig;
+    this->big = isBig;
     this->orientation = orientation;
 }
 
 string AntennaParam::getOrientationLetter() {
-    switch (orientation) {
-    case 1:
-        return "N";
-        break;
-    case 2:
-        return "S";
-        break;
-    case 3:
-        return "E";
-        break;
-    case 4:
-        return "W";
-        break;
-    default:
-        return "N";
-    }
+    return ORIENTATION_LETTER[orientation - 1];
 }
 
 string AntennaParam::getIsBigLetter() {
-    if (isBig == true) {
+    if (big == true) {
         return "B";
     }
 
-   return "P";
+    return "P";
+}
+
+int AntennaParam::getNumber() {
+    return number;
+}
+
+bool AntennaParam::isBig() {
+    return big;
+}
+
+int AntennaParam::getOrientation() {
+    return orientation;
+}
+
+void AntennaParam::setOrientation(int orientation) {
+    if (orientation >= 1 && orientation <= 4) {
+        this->orientation = orientation;
+    }
+}
+
+void AntennaParam::setNumber(int sudocubeNumber) {
+    number = sudocubeNumber;
+}
+
+void AntennaParam::setIsBig(bool isBig) {
+    big = isBig;
 }
