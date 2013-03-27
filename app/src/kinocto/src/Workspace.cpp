@@ -116,15 +116,12 @@ Position Workspace::getKinectDeadAngle() {
     return kinectDeadAngle;
 }
 
-Position Workspace::getNumberInitDrawPos(int number, bool isBig) {
-    Position pos;
-    if (number < 1 && number > 8) {
-        return pos;
-    }
-
-    if (isBig) {
+Position Workspace::getNumberInitDrawPos(int number) {
+    if (number >= 1 && number <= 8) {
         return numbersInitDrawPos[number - 1];
+
     }
 
-    return numbersInitDrawPos[number - 1];
+    Position pos;
+    return pos;
 }

@@ -26,7 +26,7 @@ public:
 
     float getPoleAngle(int pole);
 
-    Position getNumberInitDrawPos(int number, bool isBig);
+    Position getNumberInitDrawPos(int number);
 
 private:
     //Fixe
