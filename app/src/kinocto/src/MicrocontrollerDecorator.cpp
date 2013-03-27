@@ -71,7 +71,6 @@ void MicrocontrollerDecorator::rotate(float angle) {
             ROS_ERROR("Failed to call service microcontroller/rotate");
         }
     }
-
 }
 
 void MicrocontrollerDecorator::putPen(bool down) {
