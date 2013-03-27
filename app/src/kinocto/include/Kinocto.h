@@ -60,6 +60,9 @@ private:
     PathPlanning pathPlanning;
 
     void loop();
+    void goToAntenna();
+    void decodeAntennaParam();
+    void showAntennaParam();
     std::vector<Sudokube *> extractSudocube();
     void solveSudocube(std::vector<Sudokube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
     void goToSudocubeX();

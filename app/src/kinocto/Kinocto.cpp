@@ -142,6 +142,30 @@ void Kinocto::drawNumber() {
     microcontroller->putPen(false);
 }
 
+void Kinocto::goToAntenna() {
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+
+    for (int i = 0; i < moves.size(); i++) {
+        microcontroller->rotate(moves[i].angle);
+        microcontroller->move(moves[i].distance);
+
+        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
+        workspace.setRobotPos(moves[i].destination);
+        baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
+    }
+}
+
+void Kinocto::decodeAntennaParam() {
+    AntennaParam antennaParamdecoded = microcontroller->decodeAntenna();
+    antennaParam.set(antennaParamdecoded.getNumber(), antennaParamdecoded.isBig(), antennaParamdecoded.getOrientation());
+}
+
+void Kinocto::showAntennaParam() {
+    microcontroller->writeToLCD(antennaParam);
+    sleep(5); //On dors 5 sec, le temps de lire les informations sur l'écran LCD
+}
+
 bool Kinocto::testExtractSudocubeAndSolve(TestExtractSudocubeAndSolve::Request & request, TestExtractSudocubeAndSolve::Response & response) {
     ROS_INFO("TESTING ExtractSudocubeAndSolve");
 
@@ -174,24 +198,24 @@ bool Kinocto::testGoToSudocubeX(TestGoToSudocubeX::Request & request, TestGoToSu
     ROS_INFO("TESTING Go To Sudocube No:%d", request.sudocubeNo);
     ROS_INFO("%s", "Calculating optimal path");
 
-//Harcoding de la position du robot pour les tests
+    //Harcoding de la position du robot pour les tests
     Position robotPos(36.5, 38.5);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
 
-//Initialisation rapide des obstacles pour les tests
+    //Initialisation rapide des obstacles pour les tests
     Position obs1(request.obs1x, request.obs1y);
     Position obs2(request.obs2x, request.obs2y);
     workspace.setObstaclesPos(obs1, obs2);
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
-//Spécification du sudocube
+    //Spécification du sudocube
     antennaParam.setNumber(request.sudocubeNo);
 
-/////
+    /////
     goToSudocubeX();
-/////
+    /////
 
     return true;
 }
@@ -239,23 +263,9 @@ bool Kinocto::testGetAntennaParamAndShow(TestGetAntennaParamAndShow::Request & r
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
 /////
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-
-    for (int i = 0; i < moves.size(); i++) {
-        microcontroller->rotate(moves[i].angle);
-        microcontroller->move(moves[i].distance);
-
-        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
-        workspace.setRobotPos(moves[i].destination);
-        baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
-        //TODO Retrouver la position du robot si on n'est pas trop loin de la Kinect
-    }
-
-    AntennaParam antennaParamdecoded = microcontroller->decodeAntenna();
-    antennaParam.set(antennaParamdecoded.getNumber(), antennaParamdecoded.isBig(), antennaParamdecoded.getOrientation());
-
-    microcontroller->writeToLCD(antennaParamdecoded); //TODO Déterminer la forme du message à envoyer
+    goToAntenna();
+    decodeAntennaParam();
+    showAntennaParam();
 /////
 
     response.isBig = antennaParam.isBig();
@@ -285,13 +295,12 @@ bool Kinocto::testDrawNumber(TestDrawNumber::Request & request, TestDrawNumber::
     ROS_INFO("TESTING DrawNumber");
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
 
-//Initialisation de l'objet antennaParam pour les tests
+    //Initialisation de l'objet antennaParam pour les tests
     antennaParam.set(request.number, request.isBig, request.orientation);
 
-/////
+    /////
     drawNumber();
-//TODO trouver la position et l'angle à la fin pour repartir la boucle
-/////
+    /////
 
     return true;
 }
@@ -316,7 +325,8 @@ bool Kinocto::testGoToGreenFrameAndDraw(TestGoToGreenFrameAndDraw::Request & req
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     /////
-
+    goToDrawingZone();
+    drawNumber();
     /////
 
     return true;

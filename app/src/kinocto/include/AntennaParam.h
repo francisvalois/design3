@@ -12,12 +12,10 @@ public:
     const static int ORIENTATION_WEST = 4;
     const static std::string ORIENTATION_LETTER[4];
 
-    int number;
-    bool big;
-    int orientation;
-
     AntennaParam();
     virtual ~AntennaParam();
+
+    void set(AntennaParam & antennaParam);
     void set(int number, bool isBig, int orientation);
 
     std::string getOrientationLetter();
@@ -32,7 +30,9 @@ public:
     void setOrientation(int orientation);
 
 private:
-
+    int number;
+    bool big;
+    int orientation;
 };
 
 #endif /* ANTENNAPARAM_H_ */

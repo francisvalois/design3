@@ -13,6 +13,12 @@ AntennaParam::AntennaParam() {
 AntennaParam::~AntennaParam() {
 }
 
+void AntennaParam::set(AntennaParam & antennaParam) {
+    number = antennaParam.getNumber();
+    big = antennaParam.isBig();
+    orientation = antennaParam.getOrientation();
+}
+
 void AntennaParam::set(int number, bool isBig, int orientation) {
     this->number = number;
     this->big = isBig;
