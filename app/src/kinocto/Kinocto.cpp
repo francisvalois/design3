@@ -4,6 +4,8 @@ using namespace std;
 using namespace ros;
 using namespace cv;
 
+using namespace kinocto;
+
 Kinocto::Kinocto(NodeHandle node) {
     this->nodeHandle = nodeHandle;
     state = INITIATED;
@@ -97,14 +99,53 @@ void Kinocto::solveSudocube(vector<Sudokube *> & sudocubes, string & solvedSudoc
     }
 }
 
-/**
- * Placer le robot devant un sudocube pour activer correctement ce service
- */
-bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
-        kinocto::TestExtractSudocubeAndSolve::Response & response) {
+void Kinocto::goToSudocubeX() {
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(antennaParam.getNumber()));
+
+    baseStation->sendTrajectory(positions);
+
+    for (int i = 0; i < moves.size(); i++) {
+        microcontroller->rotate(moves[i].angle);
+        microcontroller->move(moves[i].distance);
+        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
+        workspace.setRobotPos(moves[i].destination);
+        baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
+    }
+}
+
+void Kinocto::goToDrawingZone() {
+    float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
+
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
+
+    for (int i = 0; i < moves.size(); i++) {
+        microcontroller->rotate(moves[i].angle);
+        microcontroller->move(moves[i].distance);
+
+        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
+        workspace.setRobotPos(moves[i].destination);
+    }
+}
+
+void Kinocto::drawNumber() {
+    Position translateTo = workspace.getNumberInitDrawPos(antennaParam.getNumber());
+    if (antennaParam.isBig() == true) {
+        translateTo.set(translateTo.x * 2, translateTo.y * 2);
+    }
+
+    microcontroller->translate(translateTo);
+
+    microcontroller->putPen(true);
+    microcontroller->drawNumber(antennaParam.getNumber(), antennaParam.isBig());
+    microcontroller->putPen(false);
+}
+
+bool Kinocto::testExtractSudocubeAndSolve(TestExtractSudocubeAndSolve::Request & request, TestExtractSudocubeAndSolve::Response & response) {
     ROS_INFO("TESTING ExtractSudocubeAndSolve");
 
-    /////
+/////
     vector<Sudokube *> sudocubes = extractSudocube();
     if (sudocubes.size() == 0) {
         ROS_ERROR("DID NOT FIND ENOUGTH SUDOCUBES TO CHOOSE");
@@ -121,7 +162,7 @@ bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::
     }
 
     baseStation->sendSolvedSudocube(solvedSudocube, redCaseValue);
-    /////
+/////
 
     response.solvedSudocube = solvedSudocube;
     response.redCaseValue = redCaseValue;
@@ -129,71 +170,52 @@ bool Kinocto::testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::
     return true;
 }
 
-/**
- * Le robot doit-être placé à la position (13,57)(collé au mur) et être orienté vers le mur des sudocubes
- */
-bool Kinocto::testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, kinocto::TestGoToSudocubeX::Response & response) {
+bool Kinocto::testGoToSudocubeX(TestGoToSudocubeX::Request & request, TestGoToSudocubeX::Response & response) {
     ROS_INFO("TESTING Go To Sudocube No:%d", request.sudocubeNo);
     ROS_INFO("%s", "Calculating optimal path");
 
-    //Harcoding de la position du robot pour les tests
+//Harcoding de la position du robot pour les tests
     Position robotPos(36.5, 38.5);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
 
-    //Initialisation rapide des obstacles pour les tests
+//Initialisation rapide des obstacles pour les tests
     Position obs1(request.obs1x, request.obs1y);
     Position obs2(request.obs2x, request.obs2y);
     workspace.setObstaclesPos(obs1, obs2);
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
-    /////
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(request.sudocubeNo));
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(request.sudocubeNo));
-    //pathPlanning.printTable();
+//Spécification du sudocube
+    antennaParam.setNumber(request.sudocubeNo);
 
-    baseStation->sendTrajectory(positions);
-
-    for (int i = 0; i < moves.size(); i++) {
-        microcontroller->rotate(moves[i].angle);
-        microcontroller->move(moves[i].distance);
-        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
-        workspace.setRobotPos(moves[i].destination);
-        baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
-        //TODO Vérifier la position du robot pour boucler la boucle (si dans la zone optimale de la kinect)
-    }
-    /////
+/////
+    goToSudocubeX();
+/////
 
     return true;
 }
 
-/**
- * Le robot doit être placé quelquepart dans le carré vert
- */
-bool Kinocto::testFindRobotAngle(kinocto::TestFindRobotAngle::Request & request, kinocto::TestFindRobotAngle::Response & response) {
+bool Kinocto::testFindRobotAngle(TestFindRobotAngle::Request & request, TestFindRobotAngle::Response & response) {
     ROS_INFO("TESTING FindRobotAngle");
 
-    /////
-    //TODO à venir
-    // algoPourTrouverRotation()
+/////
+//TODO à venir
+// algoPourTrouverRotation()
     workspace.setRobotAngle(0.0f);
-    /////
+/////
 
     return true;
 }
 
-/**
- * Le robot peut-être placé n'importe ou sur la table
- */
-bool Kinocto::testFindRobotPosition(kinocto::TestFindRobotPosition::Request & request, kinocto::TestFindRobotPosition::Response & response) {
+bool Kinocto::testFindRobotPosition(TestFindRobotPosition::Request & request, TestFindRobotPosition::Response & response) {
     ROS_INFO("TESTING FindRobotPosition");
 
-    /////
+/////
     Position robotPos = baseStation->requestRobotPosition();
     workspace.setRobotPos(robotPos);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
-    /////
+/////
 
     response.x = robotPos.x;
     response.y = robotPos.y;
@@ -201,29 +223,24 @@ bool Kinocto::testFindRobotPosition(kinocto::TestFindRobotPosition::Request & re
     return true;
 }
 
-/**
- * Le robot doit-être placé à la position (13,57)(collé au mur) et être orienté vers le mur des sudocubes
- */
-bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Request & request,
-        kinocto::TestGetAntennaParamAndShow::Response & response) {
+bool Kinocto::testGetAntennaParamAndShow(TestGetAntennaParamAndShow::Request & request, kinocto::TestGetAntennaParamAndShow::Response & response) {
     ROS_INFO("TESTING GetAntennaParam");
 
-    //Harcoding de la position du robot pour les tests
+//Harcoding de la position du robot pour les tests
     Position robotPos(37.5, 37.5);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
 
-    //Hardcoding de la pos des obstacles pour qu'ils ne soient dans les pattes
+//Hardcoding de la pos des obstacles pour qu'ils ne soient dans les pattes
     Position obs1(110, 75);
     Position obs2(180, 30);
     workspace.setObstaclesPos(obs1, obs2);
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
-    /////
+/////
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-    //pathPlanning.printTable();
 
     for (int i = 0; i < moves.size(); i++) {
         microcontroller->rotate(moves[i].angle);
@@ -236,28 +253,25 @@ bool Kinocto::testGetAntennaParamAndShow(kinocto::TestGetAntennaParamAndShow::Re
     }
 
     AntennaParam antennaParamdecoded = microcontroller->decodeAntenna();
-    antennaParam.set(antennaParamdecoded.number, antennaParamdecoded.isBig, antennaParamdecoded.orientation);
+    antennaParam.set(antennaParamdecoded.getNumber(), antennaParamdecoded.isBig(), antennaParamdecoded.getOrientation());
 
     microcontroller->writeToLCD(antennaParamdecoded); //TODO Déterminer la forme du message à envoyer
-    /////
+/////
 
-    response.isBig = antennaParam.isBig;
-    response.number = antennaParam.number;
-    response.orientation = antennaParam.orientation;
+    response.isBig = antennaParam.isBig();
+    response.number = antennaParam.getNumber();
+    response.orientation = antennaParam.getOrientation();
 
     return true;
 }
 
-/**
- * Les obstacles et le robot peuvent être placés n'importe ou sur la table
- */
-bool Kinocto::testFindObstacles(kinocto::TestFindObstacles::Request & request, kinocto::TestFindObstacles::Response & response) {
+bool Kinocto::testFindObstacles(TestFindObstacles::Request & request, TestFindObstacles::Response & response) {
     ROS_INFO("TESTING FindObstacles");
 
-    ////
+////
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
-    ///
+///
 
     response.obs1x = obsPos[0].x;
     response.obs1y = obsPos[0].y;
@@ -267,31 +281,22 @@ bool Kinocto::testFindObstacles(kinocto::TestFindObstacles::Request & request, k
     return true;
 }
 
-/**
- * Le robot doit être placé sur le rebord du carré vert
- */
-bool Kinocto::testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response) {
+bool Kinocto::testDrawNumber(TestDrawNumber::Request & request, TestDrawNumber::Response & response) {
     ROS_INFO("TESTING DrawNumber");
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
 
-    //Initialisation de l'objet antennaParam pour les tests
+//Initialisation de l'objet antennaParam pour les tests
     antennaParam.set(request.number, request.isBig, request.orientation);
 
-    /////
-    microcontroller->putPen(true);
-    microcontroller->drawNumber(antennaParam.number, antennaParam.isBig);
-    microcontroller->putPen(false);
-    //TODO trouver la position et l'angle à la fin pour repartir la boucle
-    /////
+/////
+    drawNumber();
+//TODO trouver la position et l'angle à la fin pour repartir la boucle
+/////
 
     return true;
 }
 
-/**
- * Le robot doit être placé sur le mur des sudocubes (218, 57) orienté vers le carré vert(180 degré)
- */
-bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Request & request,
-        kinocto::TestGoToGreenFrameAndDraw::Response & response) {
+bool Kinocto::testGoToGreenFrameAndDraw(TestGoToGreenFrameAndDraw::Request & request, TestGoToGreenFrameAndDraw::Response & response) {
     ROS_INFO("TESTING GoToGreenFrameAndDraw");
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
 
@@ -311,31 +316,7 @@ bool Kinocto::testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Requ
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     /////
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-    //pathPlanning.printTable();
 
-    baseStation->sendTrajectory(positions);
-    for (int i = 0; i < moves.size(); i++) {
-        microcontroller->rotate(moves[i].angle);
-        microcontroller->move(moves[i].distance);
-
-        workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
-        workspace.setRobotPos(moves[i].destination);
-        baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
-        //TODO Retrouver la position du robot si on n'est pas trop loin de la Kinect
-    }
-
-    //TODO Gestion différente à faire pour placer le robot au point de départ du dessin...
-    microcontroller->rotate(workspace.getPoleAngle(antennaParam.orientation));
-    microcontroller->move(-25.0f); //Placement du préhenseur
-    //workspace.setRobotAngle(workspace.getPoleAngle(antennaParam.orientation));
-    //workspace.setRobotPos(moves[i].destination);
-    //baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
-
-    microcontroller->putPen(true);
-    microcontroller->drawNumber(request.number, request.isBig);
-    microcontroller->putPen(false);
     /////
 
     return true;

@@ -62,6 +62,9 @@ private:
     void loop();
     std::vector<Sudokube *> extractSudocube();
     void solveSudocube(std::vector<Sudokube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
+    void goToSudocubeX();
+    void goToDrawingZone();
+    void drawNumber();
 
 public:
     Kinocto(ros::NodeHandle node);
