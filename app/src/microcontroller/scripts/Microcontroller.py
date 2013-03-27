@@ -29,7 +29,7 @@ def handlePutPen(req):
 def handleWriteToLCD(req):
     rospy.loginfo("Write Antenna Param To LCD  number:%d isBig:%s orientation:%s", req.sudocubeNo, req.size, req.orientation)
 
-    sendCommandToController("{0}{1}{2}00000".format(), req.sudocubeNo, req.orientation, req.size)
+    sendCommandToController("{0}{1}{2}00000".format(req.sudocubeNo, req.orientation, req.size))
     
     return WriteToLCDResponse()
 
