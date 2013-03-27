@@ -9,10 +9,10 @@ Workspace::Workspace() {
     obstacles[1].set(0.0f, 0.0f);
 
     //Valeurs fixes
-    sudocubesPos[0].set(176.0f, 64.0f);
+    sudocubesPos[0].set(176.0f, 68.0f);
     sudocubesAngle[0] = -90.0f;
 
-    sudocubesPos[1].set(209.0f, 64.0f);
+    sudocubesPos[1].set(209.0f, 68.0f);
     sudocubesAngle[1] = -90.0f;
 
     sudocubesPos[2].set(186.0f, 95.0f);
@@ -27,10 +27,10 @@ Workspace::Workspace() {
     sudocubesPos[5].set(183.0f, 18.0f);
     sudocubesAngle[5] = 0.0f;
 
-    sudocubesPos[6].set(209.0f, 50.0f);
+    sudocubesPos[6].set(209.0f, 45.0f);
     sudocubesAngle[6] = 90.0f;
 
-    sudocubesPos[7].set(176.0f, 50.0f);
+    sudocubesPos[7].set(174.0f, 45.0f);
     sudocubesAngle[7] = 90.0f;
 
     antenna.set(60.0f, 54.0f);
@@ -123,8 +123,8 @@ Position Workspace::getNumberInitDrawPos(int number, bool isBig) {
     }
 
     if (isBig) {
-        return numbersInitDrawPos[number - 1][1];
+        return numbersInitDrawPos[number - 1];
     }
 
-    return numbersInitDrawPos[number - 1][0];
+    return numbersInitDrawPos[number - 1];
 }
