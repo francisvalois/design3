@@ -101,5 +101,5 @@ target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_
 ## Testing ##
 #############
 
-catkin_add_gtest(baseStationTest test/AllTests.cpp src/Kinect.cpp src/KinectUtility.cpp )
-target_link_libraries(baseStationTest ${catkin_LIBRARIES} ${OpenCV_LIBS})
+#catkin_add_gtest(baseStationTest test/AllTests.cpp src/Kinect.cpp src/KinectUtility.cpp )
+#target_link_libraries(baseStationTest ${catkin_LIBRARIES} ${OpenCV_LIBS})

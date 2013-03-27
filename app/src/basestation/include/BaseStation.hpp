@@ -18,8 +18,10 @@
 #include "basestation/LoopEnded.h"
 #include "basestation/ShowConfirmStartRobot.h"
 
-#include "Kinect.h"
+#include "KinectCalibration.h"
 #include "KinectCapture.h"
+#include "ObstaclesDetection.h"
+#include "RobotDetection.h"
 
 //Objets de la classe
 #include "../../build/basestation/ui_mainwindow.h"
@@ -50,7 +52,8 @@ private:
     char** init_argv;
 
     KinectCapture kinectCapture;
-    Kinect kinect;
+    ObstaclesDetection obstaclesDetection;
+    RobotDetection robotDetection;
 
     ros::Publisher startKinoctoPublisher;
 

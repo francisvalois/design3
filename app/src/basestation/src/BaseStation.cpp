@@ -63,7 +63,8 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
     updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
-    showConfirmStartRobotMessageService = node.advertiseService("basestation/showConfirmStartRobotMessage", &BaseStation::showConfirmStartRobotdMessage, this);
+    showConfirmStartRobotMessageService = node.advertiseService("basestation/showConfirmStartRobotMessage",
+            &BaseStation::showConfirmStartRobotdMessage, this);
 }
 
 void BaseStation::run() {
@@ -92,9 +93,9 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
         return false;
     }
 
-    kinect.findCenteredObstacle(depthMatrix);
-    Vec2f obs1 = kinect.getObstacle1();
-    Vec2f obs2 = kinect.getObstacle2();
+    obstaclesDetection.findCenteredObstacle(depthMatrix);
+    Vec2f obs1 = obstaclesDetection.getObstacle1();
+    Vec2f obs2 = obstaclesDetection.getObstacle2();
 
     response.x1 = obs1[0];
     response.y1 = obs1[1];
@@ -108,12 +109,13 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
 
 bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRobotPosition::Response & response) {
     Mat depthMatrix = kinectCapture.captureDepthMatrix();
-    if (!depthMatrix.data) {
+    Mat rgbMatrix = kinectCapture.captureRGBMatrix();
+    if (!rgbMatrix.data || !depthMatrix.data) {
         return false;
     }
 
-    kinect.findRobot(depthMatrix);
-    Vec2f robot = kinect.getRobot();
+    robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
+    Vec2f robot = robotDetection.getRobotPosition();
 
     response.x = robot[0];
     response.y = robot[1];

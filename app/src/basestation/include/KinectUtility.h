@@ -6,7 +6,7 @@
 
 using namespace cv;
 
-class KinectUtility {
+class Utility {
 public:
     static void saveToFile(Mat matrix, string fileName);
     static Mat readFromFile(string fileName);

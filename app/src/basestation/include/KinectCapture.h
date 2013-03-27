@@ -12,6 +12,7 @@ public:
     KinectCapture();
     ~KinectCapture();
     cv::Mat captureDepthMatrix();
+    cv::Mat captureRGBMatrix();
 };
 
 #endif /* KINECTCAPTURE_H_ */
