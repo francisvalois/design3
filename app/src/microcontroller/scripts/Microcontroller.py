@@ -166,10 +166,12 @@ def handleDecodeAntenna(req):
 
 def handleGetSonarXDistance(req):
     rospy.loginfo("Getting distance from sonar no:%d", req.sonarNo)
-    
+
+    rep = sendCommandToController("S0000000")
+    valeur = ord(bytes(response[0]))*pow(2,24) + ord(bytes(response[1]))*pow(2,16) + ord(bytes(response[2]))*pow(2,8) + ord(bytes(response[3]))
     # Exemple de reponse
     response = SonarXDistanceResponse(); 
-    response.distance = 0.0;
+    response.distance = float(valeur)/16/58;
     
     return response
 
@@ -193,6 +195,7 @@ def sendCommandToController(commande):
             ser.close()
     except Exception, e:
         rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
+    return response
 
 def Microcontroller():
     global ser
