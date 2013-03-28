@@ -87,8 +87,8 @@ def handleRotateCam(req):
     rospy.loginfo("Rotating cam of vAngle:%d  and hAngle:%d", req.vAngle, req.hAngle)
     #Limité entre 38.27 et -51.73 pour hAngle et entre 27.63 et 062.37  
     serCam.open()
-    anglex_res = int(146+float(hAngle)/45*127)
-    angley_res = int(176+float(vAngle)/45*127)
+    anglex_res = int(146+float(req.hAngle)/45*127)
+    angley_res = int(176+float(req.vAngle)/45*127)
     if(anglex_res> 254 or anglex_res < 0 or
        angley_res> 254 or angley_res < 0):
         print("!!!!!!!VALEUR DÉPASSE 254 OU MOINS 0!!!!!!!!")
