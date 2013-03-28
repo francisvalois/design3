@@ -23,6 +23,7 @@ private:
     const static int Y_OBSTACLE_BOTTOM_THRESHOLD;
     const static float OBSTACLE_DISTANCE_MIN_THRESHOLD;
     const static float OBSTACLE_DISTANCE_MAX_THRESHOLD;
+    const static float OBSTACLE_HEIGHT_THRESHOLD_PERCENT;
 
     Vec2f _obstacle1;
     Vec2f _obstacle2;

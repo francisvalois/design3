@@ -21,7 +21,7 @@ protected:
 
 public:
     int generateQuads(Mat &image, vector<Rect>&outQuads);
-    int removeSingleQuads(vector<Rect>  & outQuads);
+    int removeQuadsNotOnChessboard(vector<Rect>  & outQuads);
     void sortQuadsByPosition(vector<Rect>  & outQuads);
     int removeDoubleSquare(vector<Rect>  & outQuads);
 };

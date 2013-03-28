@@ -85,7 +85,7 @@ bool KinectCalibration::calibrate(Mat depthMatrix){
 
     float angle = findAndSetKinectAngle(depthMatrix);
 
-    if (angle > 0 && !isnan(angle)){
+    if (angle > 0 /*&& !isnan(angle)*/){
         return true;
     }
 

@@ -83,7 +83,7 @@ int ObjectDetection::generateQuads(Mat &image, vector<Rect>&outQuads){
     
     vector<vector<Point> > frameContours;
     vector<Vec4i> frameHierarchy;
-    Mat test  = image.clone();
+
     Canny(image,image, 50,200, 3);
     findContours(image, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
     
@@ -117,7 +117,7 @@ int ObjectDetection::generateQuads(Mat &image, vector<Rect>&outQuads){
                 
                 double d1, d2;
                 double p = rect2.width*2+rect2.height*2;
-                double area = fabs(rect2.area());
+                double area = fabs((float)rect2.area());
                 double dx, dy;
                 
                 
@@ -156,28 +156,15 @@ int ObjectDetection::generateQuads(Mat &image, vector<Rect>&outQuads){
         }
     }
 
-
-
-    //A two time pass is better
     removeDoubleSquare(outQuads);
-    removeSingleQuads(outQuads);
-
-
-    for(int k=0; k < outQuads.size(); k++){
-        rectangle(test, outQuads[k],Scalar(0,0,255));
-
-    }
-
-    imshow("depth5", test);
-
-    removeSingleQuads(outQuads);
+    removeQuadsNotOnChessboard(outQuads);
     sortQuadsByPosition(outQuads);
 
     return outQuads.size();
 }
 
 int ObjectDetection::removeDoubleSquare(vector<Rect> &outQuads){
-    float acceptablePercent = 0.30;
+    float acceptablePercent = 0.70;
     vector<Rect> tempList;
 
     for(int i = 0; i< outQuads.size(); i++){
@@ -185,10 +172,11 @@ int ObjectDetection::removeDoubleSquare(vector<Rect> &outQuads){
         for(int j = 0; j < outQuads.size(); j++){
             if(i != j){
                 Rect interesect  = outQuads[i] & outQuads[j];
-                int rectArea1 = outQuads[j].width * outQuads[j].height;
-                int intersectArea = interesect.width * interesect.height;
-                if(intersectArea/rectArea1 > acceptablePercent)
-                {
+                float rectArea1 = outQuads[j].width * outQuads[j].height;
+                float intersectArea = interesect.width * interesect.height;
+
+                if(intersectArea/rectArea1 > acceptablePercent && intersectArea != 0)
+                {                    
                     singleSquare = false;
                     break;
                 }
@@ -198,14 +186,13 @@ int ObjectDetection::removeDoubleSquare(vector<Rect> &outQuads){
         if(singleSquare){
             tempList.push_back(outQuads[i]);
         }
-
     }
 
     outQuads = tempList;
     return outQuads.size();
 }
 
-int ObjectDetection::removeSingleQuads(vector<Rect> &outQuads){
+int ObjectDetection::removeQuadsNotOnChessboard(vector<Rect> &outQuads){
     int maxRange = 10;
     vector<Rect> tempList;
     for(int i = 0; i< outQuads.size(); i++){

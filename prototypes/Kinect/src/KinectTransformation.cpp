@@ -1,6 +1,8 @@
 //TODO : Faire des tests avec plusieurs positions de robot
 
 #include "KinectTransformation.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 const float KinectTransformation::KINECTANGLE = 21.5f;
 float KinectTransformation::KINECTANGLERAD = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);

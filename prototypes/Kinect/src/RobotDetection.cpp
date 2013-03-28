@@ -62,7 +62,7 @@ float RobotDetection::findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> v
     
     float angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
     
-    if(angleRad == 0 || isnan(angleRad)){
+    if(angleRad == 0 /*|| isnan(angleRad)*/){
         throw string("Unable to find the angle of the robot from the depthMap and the rgbMap");
     }
     
@@ -99,7 +99,7 @@ void RobotDetection::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f ob
     vector<Rect> validRectPosition;
     int generatedCount = generateQuads(rgbMatrix, validRectPosition);
 
-    if(generatedCount > 5){
+    if(generatedCount >= 3){
         vector<Point2f> validRobotPosition;
         for (int i = 0; i < validRectPosition.size(); i++){
             validRobotPosition.push_back(Point2f(validRectPosition[i].x, validRectPosition[i].y));
