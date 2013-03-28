@@ -5,12 +5,12 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include <list>
-#include "ObjectDetection.h"
+#include "ObjectDetector.h"
 
 using namespace cv;
 using namespace std;
 
-class RobotDetection : private ObjectDetection{;
+class RobotDetector : private ObjectDetector{;
 
 private:
     Vec2f _robotPosition;
@@ -25,8 +25,8 @@ private:
     Vec2f addRadiusToRobotFaceDistance(Vec2f distance,float angleRad);
 public:
 
-    RobotDetection();
-    RobotDetection(Vec2f robot);
+    RobotDetector();
+    RobotDetector(Vec2f robot);
     void findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1 = Vec2f(), Vec2f obstacle2 = Vec2f());
     Vec2f getRobotPosition();
     float getRobotAngle();

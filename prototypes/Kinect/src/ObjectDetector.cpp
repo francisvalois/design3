@@ -1,9 +1,9 @@
 //TODO : Faire des tests avec plusieurs positions de robot
 
-#include "ObjectDetection.h"
-#include "KinectTransformation.h"
+#include "ObjectDetector.h"
+#include "KinectTransformator.h"
 
-const float ObjectDetection::TABLE_WIDTH = 1.10f;
+const float ObjectDetector::TABLE_WIDTH = 1.10f;
 
 struct SortByXY {
     bool operator() (Rect const & L, Rect const & R) {
@@ -19,7 +19,7 @@ struct SortByXY {
     }
 };
 
-Vec2f ObjectDetection::getAverageDistanceForPointLine(list<Vec2f> allDistances) {
+Vec2f ObjectDetector::getAverageDistanceForPointLine(list<Vec2f> allDistances) {
     float averageXPosition = 0;
     int countAverageX = 0;
     float averageZPosition = 0;
@@ -57,7 +57,7 @@ Vec2f ObjectDetection::getAverageDistanceForPointLine(list<Vec2f> allDistances) 
     return Vec2f(averageXPosition, averageZPosition);
 }
 
-int ObjectDetection::getAverageFromPointList(list<Point> obstacle) {
+int ObjectDetector::getAverageFromPointList(list<Point> obstacle) {
     int averagePointObstacle = 0;
     int obstacleSize = obstacle.size();
 
@@ -75,7 +75,7 @@ int ObjectDetection::getAverageFromPointList(list<Point> obstacle) {
     }
 }
 
-int ObjectDetection::generateQuads(Mat &image, vector<Rect>&outQuads){
+int ObjectDetector::generateQuads(Mat &image, vector<Rect>&outQuads){
     int minSize = 25;
     int maxContourApprox = 7;
     
@@ -163,7 +163,7 @@ int ObjectDetection::generateQuads(Mat &image, vector<Rect>&outQuads){
     return outQuads.size();
 }
 
-int ObjectDetection::removeDoubleSquare(vector<Rect> &outQuads){
+int ObjectDetector::removeDoubleSquare(vector<Rect> &outQuads){
     float acceptablePercent = 0.70;
     vector<Rect> tempList;
 
@@ -192,7 +192,7 @@ int ObjectDetection::removeDoubleSquare(vector<Rect> &outQuads){
     return outQuads.size();
 }
 
-int ObjectDetection::removeQuadsNotOnChessboard(vector<Rect> &outQuads){
+int ObjectDetector::removeQuadsNotOnChessboard(vector<Rect> &outQuads){
     int maxRange = 10;
     vector<Rect> tempList;
     for(int i = 0; i< outQuads.size(); i++){
@@ -238,6 +238,6 @@ int ObjectDetection::removeQuadsNotOnChessboard(vector<Rect> &outQuads){
     return tempList.size();
 }
 
-void ObjectDetection::sortQuadsByPosition(vector<Rect> &outQuads){
+void ObjectDetector::sortQuadsByPosition(vector<Rect> &outQuads){
     sort(outQuads.begin(), outQuads.end(), SortByXY());
 }

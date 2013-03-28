@@ -2,11 +2,11 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
-#include "ObstaclesDetection.h"
-#include "RobotDetection.h"
+#include "ObstaclesDetector.h"
+#include "RobotDetector.h"
 #include "KinectUtility.h"
-#include "KinectCalibration.h"
-#include "KinectTransformation.h"
+#include "KinectCalibrator.h"
+#include "KinectTransformator.h"
 #define _USE_MATH_DEFINES
 #include "Math.h"
 
@@ -17,7 +17,7 @@ Mat world;
 void onMouse(int event, int x, int y, int flags, void *) {
     if (event == CV_EVENT_LBUTTONUP) {
         Vec3f s = world.at<Vec3f>(y, x);
-        Vec2f realPosition = KinectTransformation::getTrueCoordFromKinectCoord(s);
+        Vec2f realPosition = KinectTransformator::getTrueCoordFromKinectCoord(s);
         cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
         cout << "Position X :" << realPosition[0] << " Position Y :" << s[1] << " Position Z:" << realPosition[1] << endl;
         cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[2] << endl;
@@ -39,8 +39,8 @@ int main( /*int argc, char* argv[]*/ ) {
         if (!capture.isOpened()) {
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
-            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection" << i << ".xml";
-            //file << "robotdetection5.xml";
+            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection" << i << ".xml";
+            //file << "RobotDetector5.xml";
             string fileString = file.str();
             cout << "Loading from file " << fileString << endl;
 
@@ -61,8 +61,8 @@ int main( /*int argc, char* argv[]*/ ) {
                 depthMap.convertTo(show, CV_8UC1, 0.05f);
         }
 
-        showRGB = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection5.jpg");
-        //showRGB = imread("robotdetection5.jpg");
+        showRGB = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection5.jpg");
+        //showRGB = imread("RobotDetector5.jpg");
 
         cvtColor(showRGB, RGBGray, CV_RGB2GRAY);
 
@@ -70,12 +70,12 @@ int main( /*int argc, char* argv[]*/ ) {
         namedWindow("chess8", 1);
         setMouseCallback("depth", onMouse, 0);
 
-        //KinectCalibration::calibrate(world);
-        //std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
+        //KinectCalibrator::calibrate(world);
+        //std::vector<Point> squarePoints = KinectCalibrator::getSquarePositions();
 
-        RobotDetection model;
-        ObstaclesDetection model2;
-        ObjectDetection model3;
+        RobotDetector model;
+        ObstaclesDetector model2;
+        ObjectDetector model3;
         
         model.findRobotWithAngle(world, RGBGray.clone());
         model2.findCenteredObstacle(world);

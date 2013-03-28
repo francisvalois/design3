@@ -9,7 +9,7 @@
 using namespace cv;
 using namespace std;
 
-class KinectTransformation {
+class KinectTransformator {
 
 private:
     static float KINECTANGLERAD;

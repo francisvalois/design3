@@ -1,22 +1,22 @@
 //
-//  KinectCalibration.cpp
+//  KinectCalibrator.cpp
 //  OpenCVTest
 //
 //  Created by Francis Valois on 2013-03-19.
 //  Copyright (c) 2013 Francis Valois. All rights reserved.
 //
 
-#include "KinectCalibration.h"
-#include "KinectTransformation.h"
+#include "KinectCalibrator.h"
+#include "KinectTransformator.h"
 
-std::vector<Point> KinectCalibration::_squarePositions;
+std::vector<Point> KinectCalibrator::_squarePositions;
 
 
-std::vector<Point> KinectCalibration::getSquarePositions(){
-    return KinectCalibration::_squarePositions;
+std::vector<Point> KinectCalibrator::getSquarePositions(){
+    return KinectCalibrator::_squarePositions;
 }
 
-std::vector<Point> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
+std::vector<Point> KinectCalibrator::findCalibrationSquare(Mat depthMatrix){
     std:vector<Point> squarePosition;
     std::list<Vec3f> tempLineOfPointsOnSquare;
 
@@ -27,7 +27,7 @@ std::vector<Point> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
         int highPoint = 0;
         for(int j = 300; j>= 160; j--){
             Vec3f position = depthMatrix.at<Vec3f>(j, i);
-            Vec2f trueCoordFromPosition = KinectTransformation::getTrueCoordFromKinectCoord(position);
+            Vec2f trueCoordFromPosition = KinectTransformator::getTrueCoordFromKinectCoord(position);
 
             if(trueCoordFromPosition[1] > 0.6 && trueCoordFromPosition[1] <= 0.85){
                 if((trueCoordFromPosition[1] > lastPoint[1] *0.95 && trueCoordFromPosition[1] < lastPoint[1]*1.05) ||
@@ -62,7 +62,7 @@ std::vector<Point> KinectCalibration::findCalibrationSquare(Mat depthMatrix){
     return squarePosition;
 }
 
-float KinectCalibration::findAndSetKinectAngle(Mat depthMatrix){
+float KinectCalibrator::findAndSetKinectAngle(Mat depthMatrix){
     int pt1x = _squarePositions[0].x;
     int pt2x = _squarePositions[1].x;
     int pty = (_squarePositions[1].y - _squarePositions[0].y)/2 + _squarePositions[0].y;
@@ -74,14 +74,14 @@ float KinectCalibration::findAndSetKinectAngle(Mat depthMatrix){
     float xDistance = leftPointDistance[2] - rightPointDistance[2];
     float angleRad = atan(xDistance/yDistance);
 
-    KinectTransformation::setBasePositionFromKinect(leftPointDistance);
-    KinectTransformation::setKinectAngle(angleRad);
+    KinectTransformator::setBasePositionFromKinect(leftPointDistance);
+    KinectTransformator::setKinectAngle(angleRad);
 
     return angleRad;
 }
 
-bool KinectCalibration::calibrate(Mat depthMatrix){
-    KinectCalibration::_squarePositions = KinectCalibration::findCalibrationSquare(depthMatrix);
+bool KinectCalibrator::calibrate(Mat depthMatrix){
+    KinectCalibrator::_squarePositions = KinectCalibrator::findCalibrationSquare(depthMatrix);
 
     float angle = findAndSetKinectAngle(depthMatrix);
 

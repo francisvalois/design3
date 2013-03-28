@@ -11,7 +11,7 @@
 using namespace cv;
 using namespace std;
 
-class ObjectDetection {
+class ObjectDetector {
 
 protected:
     static float const TABLE_WIDTH;

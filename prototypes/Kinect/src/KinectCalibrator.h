@@ -1,14 +1,14 @@
-#ifndef __OpenCVTest__KinectCalibration__
-#define __OpenCVTest__KinectCalibration__
+#ifndef __OpenCVTest__KinectCalibrator__
+#define __OpenCVTest__KinectCalibrator__
 
 #include <iostream>
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
-#include "ObstaclesDetection.h"
+#include "ObstaclesDetector.h"
 
 using namespace cv;
 
-class KinectCalibration{
+class KinectCalibrator{
     private:
         static std::vector<Point> _squarePositions;
         static std::vector<Point> findCalibrationSquare(Mat depthMatrix);
@@ -18,4 +18,4 @@ class KinectCalibration{
         static std::vector<Point> getSquarePositions();
 };
 
-#endif /* defined(__OpenCVTest__KinectCalibration__) */
+#endif /* defined(__OpenCVTest__KinectCalibrator__) */

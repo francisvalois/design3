@@ -1,25 +1,25 @@
 //TODO : Faire des tests avec plusieurs positions de robot
 
-#include "KinectTransformation.h"
+#include "KinectTransformator.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-const float KinectTransformation::KINECTANGLE = 21.5f;
-float KinectTransformation::KINECTANGLERAD = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);
-Vec2f KinectTransformation::BASE_POSITION_FROM_ORIGIN = Vec2f(0.58f, 0.775f);
-Vec3f KinectTransformation::_basePositionFromKinect = Vec3f(0.13f, 0, 1.40f);
+const float KinectTransformator::KINECTANGLE = 21.5f;
+float KinectTransformator::KINECTANGLERAD = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);
+Vec2f KinectTransformator::BASE_POSITION_FROM_ORIGIN = Vec2f(0.58f, 0.775f);
+Vec3f KinectTransformator::_basePositionFromKinect = Vec3f(0.13f, 0, 1.40f);
 
-void KinectTransformation::setKinectAngle(float angleRad){
+void KinectTransformator::setKinectAngle(float angleRad){
     if(angleRad > 0 && angleRad < M_PI){
         KINECTANGLERAD = angleRad;
     }
 }
 
-void KinectTransformation::setBasePositionFromKinect(Vec3f basePosition){
+void KinectTransformator::setBasePositionFromKinect(Vec3f basePosition){
      _basePositionFromKinect = basePosition;
 }
 
-Vec2f KinectTransformation::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
+Vec2f KinectTransformator::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
     if(depthXYZ[2] < 0.5)
     {
         return Vec2f();

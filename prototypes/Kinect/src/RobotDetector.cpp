@@ -1,28 +1,28 @@
 //TODO : Faire des tests avec plusieurs positions de robot
 
-#include "RobotDetection.h"
-#include "KinectTransformation.h"
+#include "RobotDetector.h"
+#include "KinectTransformator.h"
 
-const float RobotDetection::ROBOT_RADIUS = 0.095f;
+const float RobotDetector::ROBOT_RADIUS = 0.095f;
 
-Vec2f RobotDetection::getRobotPosition() {
+Vec2f RobotDetector::getRobotPosition() {
     return _robotPosition;
 }
 
-float RobotDetection::getRobotAngle() {
+float RobotDetector::getRobotAngle() {
     return _robotAngle;
 }
 
-RobotDetection::RobotDetection(){
+RobotDetector::RobotDetector(){
 
 }
 
-RobotDetection::RobotDetection(Vec2f robotPosition)
+RobotDetector::RobotDetector(Vec2f robotPosition)
 {
     _robotPosition = robotPosition;
 }
 
-float RobotDetection::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2){
+float RobotDetector::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2){
     if(distance1[1] > 0 && distance2[1] > 0 && distance1[0] > 0 && distance2[0] > 0){
         float opp = distance2[1] - distance1[1];
         float adj = fabs(distance2[0] - distance1[0]);
@@ -32,28 +32,28 @@ float RobotDetection::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2){
     return 0;
 }
 
-void RobotDetection::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition,
+void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition,
                                              Vec2f &trueLeftPosition, Vec2f &trueRightPosition){    
     //TODO: Check if it works with the chessboard
     Point2f leftPoint = validRobotPosition[0];
     Point2f rightPoint = validRobotPosition[validRobotPosition.size()-1];
     
     Vec3f leftPosition = depthMatrix.at<Vec3f>((int)leftPoint.y, (int)leftPoint.x);
-    trueLeftPosition = KinectTransformation::getTrueCoordFromKinectCoord(leftPosition);
+    trueLeftPosition = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
     if(trueLeftPosition[1] <= 0){
         leftPosition = depthMatrix.at<Vec3f>((int)leftPoint.y+5, (int)leftPoint.x+5);
-        trueLeftPosition = KinectTransformation::getTrueCoordFromKinectCoord(leftPosition);
+        trueLeftPosition = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
     }
     
     Vec3f rightPosition = depthMatrix.at<Vec3f>((int)rightPoint.y, (int)rightPoint.x);
-    trueRightPosition = KinectTransformation::getTrueCoordFromKinectCoord(rightPosition);
+    trueRightPosition = KinectTransformator::getTrueCoordFromKinectCoord(rightPosition);
     if(trueRightPosition[1] <= 0){
         rightPosition = depthMatrix.at<Vec3f>((int)rightPoint.y-5, (int)rightPoint.x-5);
-        trueRightPosition = KinectTransformation::getTrueCoordFromKinectCoord(rightPosition);
+        trueRightPosition = KinectTransformator::getTrueCoordFromKinectCoord(rightPosition);
     }
 }
 
-float RobotDetection::findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> validRobotPosition){
+float RobotDetector::findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> validRobotPosition){
     
     Vec2f trueLeftPosition;
     Vec2f trueRightPosition;
@@ -69,7 +69,7 @@ float RobotDetection::findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> v
     return angleRad;
 }
 
-Vec2f RobotDetection::addRadiusToRobotFaceDistance(Vec2f distance, float angleRad){
+Vec2f RobotDetector::addRadiusToRobotFaceDistance(Vec2f distance, float angleRad){
     float xDistance = ROBOT_RADIUS * sin(angleRad);
     float yDistance = ROBOT_RADIUS * cos(angleRad);
     
@@ -78,7 +78,7 @@ Vec2f RobotDetection::addRadiusToRobotFaceDistance(Vec2f distance, float angleRa
     return distanceWithRadius;
 }
 
-Vec2f RobotDetection::findRobotCenterPosition(Mat depthMatrix, vector<Point2f> validRobotPosition, float angleRad){
+Vec2f RobotDetector::findRobotCenterPosition(Mat depthMatrix, vector<Point2f> validRobotPosition, float angleRad){
     Vec2f trueLeftPosition;
     Vec2f trueRightPosition;
     
@@ -95,7 +95,7 @@ Vec2f RobotDetection::findRobotCenterPosition(Mat depthMatrix, vector<Point2f> v
     return centerPosition;
 }
 
-void RobotDetection::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1, Vec2f obstacle2) {
+void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1, Vec2f obstacle2) {
     vector<Rect> validRectPosition;
     int generatedCount = generateQuads(rgbMatrix, validRectPosition);
 

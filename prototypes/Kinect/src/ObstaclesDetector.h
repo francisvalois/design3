@@ -4,14 +4,14 @@
 #include <iostream>
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
-#include "ObjectDetection.h"
+#include "ObjectDetector.h"
 #include <list>
 
 
 using namespace cv;
 using namespace std;
 
-class ObstaclesDetection : private ObjectDetection{
+class ObstaclesDetector : private ObjectDetector{
 
 private:
     const static float OBSTACLE_RADIUS;
@@ -33,8 +33,8 @@ private:
     Vec2f getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle);
 
 public:
-    ObstaclesDetection();
-    ObstaclesDetection(Vec2f obstacle1, Vec2f obstacle2);
+    ObstaclesDetector();
+    ObstaclesDetector(Vec2f obstacle1, Vec2f obstacle2);
     Vec2f getObstacle1();
     Vec2f getObstacle2();    
     vector<Vec2f> findCenteredObstacle(Mat depthMatrix); 
