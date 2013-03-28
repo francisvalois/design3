@@ -9,10 +9,6 @@
 #include "KinectCalibration.h"
 #include "KinectTransformation.h"
 
-Vec2f KinectCalibration::LEFT_DISTANCE(0.57f, 0.775f);
-Vec2f KinectCalibration::RIGHT_DISTANCE(0.415f, 0.775f);
-Vec2f KinectCalibration::CENTER_DISTANCE(0.47f, 0.775f);
-
 std::vector<Point> KinectCalibration::_squarePositions;
 
 

@@ -75,17 +75,6 @@ int ObjectDetection::getAverageFromPointList(list<Point> obstacle) {
     }
 }
 
-int ObjectDetection::getAverageFromPointListWithConditions(vector<Point> positions, float minCondition, float maxCondition) {
-    int min = (int)floor(positions.size() * minCondition);
-    int max = (int)floor(positions.size() * maxCondition);
-
-    vector<Point>::const_iterator first = positions.begin() + min;
-    vector<Point>::const_iterator last = positions.begin() + max;
-    list<Point> pointList(first, last);
-
-    return getAverageFromPointList(pointList);
-}
-
 int ObjectDetection::generateQuads(Mat &image, vector<Rect>&outQuads){
     int minSize = 25;
     int maxContourApprox = 7;
@@ -94,7 +83,8 @@ int ObjectDetection::generateQuads(Mat &image, vector<Rect>&outQuads){
     
     vector<vector<Point> > frameContours;
     vector<Vec4i> frameHierarchy;
-    
+    Mat test  = image.clone();
+    Canny(image,image, 50,200, 3);
     findContours(image, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
     
     // get all the contours one by one
@@ -166,29 +156,53 @@ int ObjectDetection::generateQuads(Mat &image, vector<Rect>&outQuads){
         }
     }
 
+
+
+    //A two time pass is better
+    removeDoubleSquare(outQuads);
+    removeSingleQuads(outQuads);
+
+
+    for(int k=0; k < outQuads.size(); k++){
+        rectangle(test, outQuads[k],Scalar(0,0,255));
+
+    }
+
+    imshow("depth5", test);
+
     removeSingleQuads(outQuads);
     sortQuadsByPosition(outQuads);
-    
+
     return outQuads.size();
 }
 
-bool rectComparator(Rect rect1, Rect rect2){
-    if(rect1.x != rect2.x && rect1.y != rect2.y && rect1.width != rect2.width && rect1.height != rect2.height){
-        return false;
-    }
+int ObjectDetection::removeDoubleSquare(vector<Rect> &outQuads){
+    float acceptablePercent = 0.30;
+    vector<Rect> tempList;
 
-    return true;
-}
-
-bool rectListContainsRect(vector<Rect> rectList, Rect rect){
-    for (int k = 0; k < rectList.size(); k++){
-        Rect quad = rectList[k];
-        if (rectComparator(quad, rect)){
-            return true;
+    for(int i = 0; i< outQuads.size(); i++){
+        bool singleSquare = true;
+        for(int j = 0; j < outQuads.size(); j++){
+            if(i != j){
+                Rect interesect  = outQuads[i] & outQuads[j];
+                int rectArea1 = outQuads[j].width * outQuads[j].height;
+                int intersectArea = interesect.width * interesect.height;
+                if(intersectArea/rectArea1 > acceptablePercent)
+                {
+                    singleSquare = false;
+                    break;
+                }
+            }
         }
+
+        if(singleSquare){
+            tempList.push_back(outQuads[i]);
+        }
+
     }
 
-    return false;
+    outQuads = tempList;
+    return outQuads.size();
 }
 
 int ObjectDetection::removeSingleQuads(vector<Rect> &outQuads){
@@ -225,7 +239,7 @@ int ObjectDetection::removeSingleQuads(vector<Rect> &outQuads){
                     neighborsCount++;
                 }
 
-                if (neighborsCount >= 4){
+                if (neighborsCount >= 3){
                     tempList.push_back(outQuads[i]);
                     break;
                 }
@@ -236,21 +250,6 @@ int ObjectDetection::removeSingleQuads(vector<Rect> &outQuads){
     outQuads = tempList;
     return tempList.size();
 }
-
-int ObjectDetection::removeCopyOfQuadsInList(vector<Rect>&outQuads){
-    vector<Rect> tempList;
-
-    for(int i = 0; i< outQuads.size(); i++){
-        for(int j = 0; j < outQuads.size(); j++){
-            if (outQuads[i].x < (outQuads[j].x + outQuads[j].width) && outQuads[i].x > outQuads[j].x &&
-                    outQuads[i].y < (outQuads[j].y + outQuads[j].height) && outQuads[i].y > outQuads[j].y) {
-
-            }
-        }
-    }
-}
-
-
 
 void ObjectDetection::sortQuadsByPosition(vector<Rect> &outQuads){
     sort(outQuads.begin(), outQuads.end(), SortByXY());

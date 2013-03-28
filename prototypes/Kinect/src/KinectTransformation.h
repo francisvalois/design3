@@ -21,8 +21,6 @@ private:
 
 public:
     static Vec2f getTrueCoordFromKinectCoord(Vec3f depthXYZ);
-    static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
-    static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
     static void setKinectAngle(float angleRad);
     static void setBasePositionFromKinect(Vec3f basePosition);
 

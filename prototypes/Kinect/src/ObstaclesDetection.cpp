@@ -2,8 +2,6 @@
 
 #include "ObstaclesDetection.h"
 #include "KinectTransformation.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
 
 const float ObstaclesDetection::OBSTACLE_RADIUS = 0.0565f;
 
@@ -13,7 +11,6 @@ const int ObstaclesDetection::Y_OBSTACLE_TOP_THRESHOLD = 80;
 const int ObstaclesDetection::Y_OBSTACLE_BOTTOM_THRESHOLD = 272;
 const float ObstaclesDetection::OBSTACLE_DISTANCE_MIN_THRESHOLD = 0.8f;
 const float ObstaclesDetection::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.1F;
-const float ObstaclesDetection::OBSTACLE_HEIGHT = 0.36f;
 
 Vec2f ObstaclesDetection::getObstacle1() {
     return _obstacle1;

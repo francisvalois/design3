@@ -30,7 +30,6 @@ private:
     void findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point> &obstacle1, list<Point> &obstacle2);
     list<Vec2f> getSomeYDistanceAssociatedWithXForObstacle(int obstaclePositionX, Mat depthMatrix);
     Vec2f getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle);
-    int getAverageFromPointListWithConditions(vector<Point> robotPositions, float minCondition, float maxCondition);
 
 public:
     ObstaclesDetection();

@@ -44,8 +44,8 @@ int main( /*int argc, char* argv[]*/ ) {
         if (!capture.isOpened()) {
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
-            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration" << i << ".xml";
-            //file << "matrixRobot4.xml";
+            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration" << i << ".xml";
+            file << "robotdetection5.xml";
             string fileString = file.str();
             cout << "Loading from file " << fileString << endl;
 
@@ -61,23 +61,23 @@ int main( /*int argc, char* argv[]*/ ) {
             capture.grab();
             capture.retrieve(world, CV_CAP_OPENNI_POINT_CLOUD_MAP);
             capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
-            cvtColor(showRGB, RGBGray, CV_RGB2GRAY);
+
             if (capture.retrieve(depthMap, CV_CAP_OPENNI_DEPTH_MAP))
                 depthMap.convertTo(show, CV_8UC1, 0.05f);
         }
 
-       Mat test = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
-        //Mat test = imread("test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+        //Mat test = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/test.jpg", CV_LOAD_IMAGE_GRAYSCALE);
+        showRGB = imread("robotdetection5.jpg");
 
-
+        cvtColor(showRGB, RGBGray, CV_RGB2GRAY);
 
         namedWindow("depth", 1);
         namedWindow("chess", 1);
         setMouseCallback("depth", onMouse, 0);
 
-        KinectCalibration::calibrate(world);
-        std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
-      
+        //KinectCalibration::calibrate(world);
+        //std::vector<Point> squarePoints = KinectCalibration::getSquarePositions();
+
         //double tStart = clock();
         RobotDetection model;
         ObstaclesDetection model2;
@@ -88,11 +88,10 @@ int main( /*int argc, char* argv[]*/ ) {
         model2.findCenteredObstacle(world);
 
         Mat test3;
-        Canny(RGBGray,test3, 50,200, 3);
+        //Canny(RGBGray,test3, 50,200, 3);
         vector<Rect> test1;
-        int test4 = model3.generateQuads(test3, test1);
-        int test5 = model3.removeSingleQuads(test1);
-        model3.sortQuadsByPosition(test1);
+        int test4 = model3.generateQuads(RGBGray, test1);
+        int test5 = model3.removeDoubleSquare(test1);
 
         Vec2f obstacle1 = model2.getObstacle1();
         Vec2f obstacle2 = model2.getObstacle2();
@@ -107,18 +106,19 @@ int main( /*int argc, char* argv[]*/ ) {
 
 
         world.convertTo(show, CV_8UC1, 0.05f);
-        rectangle(world, squarePoints[0], squarePoints[1],Scalar(0,0,0));
+        //rectangle(world, squarePoints[0], squarePoints[1],Scalar(0,0,0));
+
+
+        //rectangle(showRGB, squarePoints[0], squarePoints[1],Scalar(0,0,255));
+
+        //int pt1 = (squarePoints[0].x - squarePoints[1].x)/2 + squarePoints[1].x;
+        //Point pt11(pt1, squarePoints[0].y);
+        //Point pt22(pt1, squarePoints[1].y);
+
+        //line(showRGB,pt11, pt22, Scalar(0,0,225), 1, 8);
+        rectangle(world, test1[0],Scalar(0,0,255));
+        rectangle(world, test1[test1.size()-1],Scalar(0,0,255));
         imshow("depth", world);
-
-        rectangle(showRGB, squarePoints[0], squarePoints[1],Scalar(0,0,255));
-
-        int pt1 = (squarePoints[0].x - squarePoints[1].x)/2 + squarePoints[1].x;
-        Point pt11(pt1, squarePoints[0].y);
-        Point pt22(pt1, squarePoints[1].y);
-
-        line(showRGB,pt11, pt22, Scalar(0,0,225), 1, 8);
-        rectangle(showRGB, test1[0],Scalar(0,0,255));
-        rectangle(showRGB, test1[test1.size()-1],Scalar(0,0,255));
         imshow("chess", showRGB);
         //imshow("chess2", test3);
 
