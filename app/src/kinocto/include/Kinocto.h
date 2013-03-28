@@ -9,15 +9,18 @@
 
 #include <ros/ros.h>
 
-#include "CameraCapture.h"
+#include "vision/CameraCapture.h"
+#include "vision/SudocubeExtractor.h"
+
 #include "Sudokube.h"
-#include "SudocubeExtractor.h"
 #include "SudokubeSolver.h"
+
 #include "Position.h"
 #include "Move.h"
 #include "PathPlanning.h"
 #include "AntennaParam.h"
 #include "Workspace.h"
+
 #include "BaseStationDecorator.h"
 #include "MicrocontrollerDecorator.h"
 

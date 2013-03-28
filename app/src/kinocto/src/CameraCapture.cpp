@@ -1,4 +1,4 @@
-#include "CameraCapture.h"
+#include "vision/CameraCapture.h"
 
 using namespace cv;
 using namespace ros;

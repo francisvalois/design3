@@ -99,7 +99,7 @@ void MicrocontrollerDecorator::writeToLCD(AntennaParam & antennaParam) {
     ROS_INFO("Requesting the microcontroller to write the antennaParam to the LCD screen");
 
     WriteToLCD srv;
-    srv.request.sudocubeNo = antennaParam.number;
+    srv.request.sudocubeNo = antennaParam.getNumber();
     srv.request.orientation = antennaParam.getOrientationLetter();
     srv.request.size = antennaParam.getIsBigLetter();
 

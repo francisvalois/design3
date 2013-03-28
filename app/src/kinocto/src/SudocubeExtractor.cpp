@@ -1,4 +1,4 @@
-#include "SudocubeExtractor.h"
+#include "vision/SudocubeExtractor.h"
 
 using namespace cv;
 using namespace std;
