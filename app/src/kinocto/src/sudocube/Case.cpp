@@ -1,4 +1,4 @@
-#include "Case.h"
+#include "sudocube/Case.h"
 
 using namespace std;
 

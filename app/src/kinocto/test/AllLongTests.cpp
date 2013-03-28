@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "SudocubeExtractorIT.cpp"
+#include "vision/SudocubeExtractorIT.cpp"
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

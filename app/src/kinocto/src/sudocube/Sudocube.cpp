@@ -1,4 +1,4 @@
-#include "Sudokube.h"
+#include "sudocube/Sudocube.h"
 
 const int CUBE_FACES = 3;
 const int CUBE_FACE_HEIGHT = 4;
@@ -6,7 +6,7 @@ const int CUBE_FACE_LENGTH = 4;
 
 using namespace std;
 
-Sudokube::Sudokube() {
+Sudocube::Sudocube() {
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
             for (int k = 0; k < CUBE_FACE_LENGTH; k++) {
@@ -20,7 +20,7 @@ Sudokube::Sudokube() {
     }
 }
 
-Sudokube::~Sudokube() {
+Sudocube::~Sudocube() {
     Case* aCase;
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
@@ -33,7 +33,7 @@ Sudokube::~Sudokube() {
     }
 }
 
-bool Sudokube::equals(Sudokube & s) {
+bool Sudocube::equals(Sudocube & s) {
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
             for (int k = 0; k < CUBE_FACE_LENGTH; k++) {
@@ -49,7 +49,7 @@ bool Sudokube::equals(Sudokube & s) {
     return true;
 }
 
-bool Sudokube::isSolved() {
+bool Sudocube::isSolved() {
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
             for (int k = 0; k < CUBE_FACE_LENGTH; k++) {
@@ -62,20 +62,20 @@ bool Sudokube::isSolved() {
     return true;
 }
 
-bool Sudokube::isEmpty() {
-    Sudokube sudokube;
+bool Sudocube::isEmpty() {
+    Sudocube Sudocube;
 
-    return this->equals(sudokube);
+    return this->equals(Sudocube);
 }
 
-bool Sudokube::caseSolved(int i, int j, int k) {
+bool Sudocube::caseSolved(int i, int j, int k) {
     if (indexesOk(i, j, k)) {
         return container[i - 1][j - 1][k - 1]->isSolved();
     }
     return false;
 }
 
-int Sudokube::remainingCellsToBeSolved() {
+int Sudocube::remainingCellsToBeSolved() {
     int remainingCells = 0;
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
@@ -89,20 +89,20 @@ int Sudokube::remainingCellsToBeSolved() {
     return remainingCells;
 }
 
-void Sudokube::setCaseValue(int i, int j, int k, int value) {
+void Sudocube::setCaseValue(int i, int j, int k, int value) {
     if (indexesOk(i, j, k)) {
         container[i - 1][j - 1][k - 1]->setValue(value);
     }
 }
 
-int Sudokube::getCaseValue(int i, int j, int k) {
+int Sudocube::getCaseValue(int i, int j, int k) {
     if (indexesOk(i, j, k)) {
         return container[i - 1][j - 1][k - 1]->getValue();
     }
     return 0;
 }
 
-void Sudokube::setRedCase(int i, int j, int k) {
+void Sudocube::setRedCase(int i, int j, int k) {
     if (indexesOk(i, j, k)) {
         redCase[0] = i;
         redCase[1] = j;
@@ -110,21 +110,21 @@ void Sudokube::setRedCase(int i, int j, int k) {
     }
 }
 
-int* Sudokube::getRedCase() {
+int* Sudocube::getRedCase() {
     return redCase;
 }
 
-int Sudokube::getRedCaseValue() {
+int Sudocube::getRedCaseValue() {
     return getCaseValue(redCase[0], redCase[1], redCase[2]);
 }
 
-void Sudokube::removePossibility(int i, int j, int k, int value) {
+void Sudocube::removePossibility(int i, int j, int k, int value) {
     if (indexesOk(i, j, k)) {
         container[i - 1][j - 1][k - 1]->removePossibility(value);
     }
 }
 
-vector<int> Sudokube::getPossibilities(int i, int j, int k) {
+vector<int> Sudocube::getPossibilities(int i, int j, int k) {
     vector<int> listOfPossibilities;
     if (indexesOk(i, j, k)) {
         listOfPossibilities = container[i - 1][j - 1][k - 1]->getPossibilities();
@@ -132,20 +132,20 @@ vector<int> Sudokube::getPossibilities(int i, int j, int k) {
     return listOfPossibilities;
 }
 
-void Sudokube::setPossibilities(int i, int j, int k, vector<int> possibilities) {
+void Sudocube::setPossibilities(int i, int j, int k, vector<int> possibilities) {
     if (indexesOk(i, j, k)) {
         container[i - 1][j - 1][k - 1]->setPossibilities(possibilities);
     }
 }
 
-bool Sudokube::indexesOk(int i, int j, int k) {
+bool Sudocube::indexesOk(int i, int j, int k) {
     if (i >= 1 && i <= 3 && j >= 1 && j <= 4 && k >= 1 && k <= 4) {
         return true;
     }
     return false;
 }
 
-string Sudokube::print() {
+string Sudocube::print() {
     stringstream buff;
     for (int k = 3; k >= 0; k--) {
         buff << "     ";
@@ -169,7 +169,7 @@ string Sudokube::print() {
     return buff.str();
 }
 
-vector<vector<Case*> > Sudokube::getListOfAllCaseLinesAndRegions() {
+vector<vector<Case*> > Sudocube::getListOfAllCaseLinesAndRegions() {
     vector<vector<Case*> > allRegions;
 
     allRegions.push_back(getSameLineOfCase(1, 1, 4));
@@ -194,7 +194,7 @@ vector<vector<Case*> > Sudokube::getListOfAllCaseLinesAndRegions() {
     return allRegions;
 }
 
-vector<vector<Case*> > Sudokube::getListOfAllCaseLines() {
+vector<vector<Case*> > Sudocube::getListOfAllCaseLines() {
     vector<vector<Case*> > allColumns;
 
     allColumns.push_back(getSameLineOfCase(1, 1, 1));
@@ -213,7 +213,7 @@ vector<vector<Case*> > Sudokube::getListOfAllCaseLines() {
     return allColumns;
 }
 
-vector<Case*> Sudokube::getSameLineOfCase(int i, int j, int k) {
+vector<Case*> Sudocube::getSameLineOfCase(int i, int j, int k) {
     vector<Case*> sameLineCases;
 
     sameLineCases.push_back(container[i - 1][0][k - 1]);
@@ -242,7 +242,7 @@ vector<Case*> Sudokube::getSameLineOfCase(int i, int j, int k) {
     return sameLineCases;
 }
 
-vector<Case*> Sudokube::getSameColumnOfCase(int i, int j, int k) {
+vector<Case*> Sudocube::getSameColumnOfCase(int i, int j, int k) {
     vector<Case*> sameColumnCases;
     sameColumnCases.push_back(container[i - 1][j - 1][0]);
     sameColumnCases.push_back(container[i - 1][j - 1][1]);
@@ -269,7 +269,7 @@ vector<Case*> Sudokube::getSameColumnOfCase(int i, int j, int k) {
     return sameColumnCases;
 }
 
-vector<Case*> Sudokube::getSameRegionOfCase(int i, int j, int k) {
+vector<Case*> Sudocube::getSameRegionOfCase(int i, int j, int k) {
     vector<Case*> sameRegionCases;
     if (j <= 2) {
         sameRegionCases.push_back(container[i - 1][0][0]);

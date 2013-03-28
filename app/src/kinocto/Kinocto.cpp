@@ -43,8 +43,8 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
     state = START_LOOP;
 }
 
-vector<Sudokube *> Kinocto::extractSudocube() {
-    vector<Sudokube *> sudokubes;
+vector<Sudocube *> Kinocto::extractSudocube() {
+    vector<Sudocube *> sudokubes;
     for (int i = 1; i <= 10 && sudokubes.size() < 3; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
         if (!sudocubeImg.data) {
@@ -52,7 +52,7 @@ vector<Sudokube *> Kinocto::extractSudocube() {
         }
 
         sudocubeImg = sudocubeImg.clone();
-        Sudokube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
+        Sudocube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
         ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
 
         if (sudokube->isEmpty() == false) {
@@ -63,11 +63,11 @@ vector<Sudokube *> Kinocto::extractSudocube() {
     return sudokubes;
 }
 
-void Kinocto::solveSudocube(vector<Sudokube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
+void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
     if (sudocubes.size() < 3) {
         ROS_ERROR("%s", "NOT ENOUGHT SUDOCUBES TO CHOOSE");
     } else {
-        Sudokube * goodSudocube;
+        Sudocube * goodSudocube;
         if (sudocubes[0]->equals(*sudocubes[1]) == true) {
             goodSudocube = sudocubes[0];
         } else if (sudocubes[0]->equals(*sudocubes[2]) == true) {
@@ -87,13 +87,13 @@ void Kinocto::solveSudocube(vector<Sudokube *> & sudocubes, string & solvedSudoc
                 redCaseValue = goodSudocube->getRedCaseValue();
                 solvedSudocube = goodSudocube->print();
             } else {
-                ROS_ERROR("%s", "Could not solve the Sudokube");
+                ROS_ERROR("%s", "Could not solve the Sudocube");
             }
         }
     }
 
     for (int i = 0; i < sudocubes.size(); i++) {
-        Sudokube * sudocube = sudocubes[i];
+        Sudocube * sudocube = sudocubes[i];
         sudocubes[i] = 0;
         delete sudocube;
     }
@@ -170,7 +170,7 @@ bool Kinocto::testExtractSudocubeAndSolve(TestExtractSudocubeAndSolve::Request &
     ROS_INFO("TESTING ExtractSudocubeAndSolve");
 
 /////
-    vector<Sudokube *> sudocubes = extractSudocube();
+    vector<Sudocube *> sudocubes = extractSudocube();
     if (sudocubes.size() == 0) {
         ROS_ERROR("DID NOT FIND ENOUGTH SUDOCUBES TO CHOOSE");
         return false;

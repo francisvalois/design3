@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "NumberReader.h"
+#include "vision/NumberReader.h"
 
 using namespace cv;
 using namespace std;

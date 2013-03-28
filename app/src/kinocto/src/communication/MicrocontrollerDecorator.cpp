@@ -1,4 +1,4 @@
-#include "MicrocontrollerDecorator.h"
+#include "communication/MicrocontrollerDecorator.h"
 
 using namespace microcontroller;
 

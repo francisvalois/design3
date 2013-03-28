@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-#include "PathPlanning.h"
+#include "pathPlanning/PathPlanning.h"
 #include "Workspace.h"
 
 using namespace std;

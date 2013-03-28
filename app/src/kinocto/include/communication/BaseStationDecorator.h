@@ -2,7 +2,7 @@
 #define BASESTATIONDECORATION_H_
 
 #include "ros/ros.h"
-#include "Position.h"
+#include "pathPlanning/Position.h"
 
 #include "basestation/FindRobotPosition.h"
 #include "basestation/FindObstaclesPosition.h"

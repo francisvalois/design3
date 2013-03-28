@@ -4,7 +4,8 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-#include "Position.h"
+
+#include "pathPlanning/Position.h"
 
 class Node {
 public:

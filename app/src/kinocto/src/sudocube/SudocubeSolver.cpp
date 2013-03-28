@@ -1,14 +1,14 @@
-#include "SudokubeSolver.h"
+#include "sudocube/SudocubeSolver.h"
 
 using namespace std;
 
-SudokubeSolver::SudokubeSolver() {
+SudocubeSolver::SudocubeSolver() {
 }
 
-SudokubeSolver::~SudokubeSolver() {
+SudocubeSolver::~SudocubeSolver() {
 }
 
-void SudokubeSolver::solve(Sudokube& sudokube) {
+void SudocubeSolver::solve(Sudocube& sudokube) {
 	if(sudokube.isSolved()) {
 		return;
 	}
@@ -47,7 +47,7 @@ void SudokubeSolver::solve(Sudokube& sudokube) {
 	return;
 }
 
-bool SudokubeSolver::simpleConstraintPropagation(Sudokube& sudokube) {
+bool SudocubeSolver::simpleConstraintPropagation(Sudocube& sudokube) {
 	bool hasRemovedPossibilities = false;
 	for(int i = 1; i <= 3; i++) {
 		for(int j = 1; j <= 4; j++) {
@@ -71,7 +71,7 @@ bool SudokubeSolver::simpleConstraintPropagation(Sudokube& sudokube) {
 	return hasRemovedPossibilities;
 }
 
-bool SudokubeSolver::removePossibilityFromListOfCases(vector<Case*> listOfCase, int possibilityValue) {
+bool SudocubeSolver::removePossibilityFromListOfCases(vector<Case*> listOfCase, int possibilityValue) {
 	bool hasRemovedPossibilities = false;
 	for(unsigned int x = 0; x < listOfCase.size(); x++) {
 		if(listOfCase[x]->containsValue(possibilityValue)) {
@@ -85,7 +85,7 @@ bool SudokubeSolver::removePossibilityFromListOfCases(vector<Case*> listOfCase, 
 	return hasRemovedPossibilities;
 }
 
-bool SudokubeSolver::lastRemainingCellInARegion(Sudokube& sudokube) {
+bool SudocubeSolver::lastRemainingCellInARegion(Sudocube& sudokube) {
 	vector<vector<Case*> > allRegions = sudokube.getListOfAllCaseLinesAndRegions();
 
 	for(unsigned int region = 0; region < allRegions.size(); region++) {
@@ -112,7 +112,7 @@ bool SudokubeSolver::lastRemainingCellInARegion(Sudokube& sudokube) {
 	return false;
 }
 
-bool SudokubeSolver::nakedPairs(Sudokube& sudokube) {
+bool SudocubeSolver::nakedPairs(Sudocube& sudokube) {
 	for(int i = 1; i <= 3; i++) {
 		for(int j = 1; j <= 4; j++) {
 			for(int k = 1; k <= 4; k++) {
@@ -139,7 +139,7 @@ bool SudokubeSolver::nakedPairs(Sudokube& sudokube) {
 	return false;
 }
 
-bool SudokubeSolver::removePossibilitiesFromNakedPairsWithinAListOfCases(vector<Case*> listOfCases, int possibility1, int possibility2) {
+bool SudocubeSolver::removePossibilitiesFromNakedPairsWithinAListOfCases(vector<Case*> listOfCases, int possibility1, int possibility2) {
 	int nakedPair = 0;
 	for(unsigned int x = 0; x < listOfCases.size(); x++) {
 		if(		listOfCases[x]->numberOfPossibilitiesRemaining() == 2 &&
@@ -165,7 +165,7 @@ bool SudokubeSolver::removePossibilitiesFromNakedPairsWithinAListOfCases(vector<
 	return false;
 }
 
-bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
+bool SudocubeSolver::hiddenPairs(Sudocube& sudokube) {
 	vector<vector<Case*> > allColumns = sudokube.getListOfAllCaseLines();
 
 	for(unsigned int a = 0; a < allColumns.size(); a++) {
@@ -219,7 +219,7 @@ bool SudokubeSolver::hiddenPairs(Sudokube& sudokube) {
 	return false;
 }
 
-bool SudokubeSolver::hiddenTriples(Sudokube& sudokube) {
+bool SudocubeSolver::hiddenTriples(Sudocube& sudokube) {
 	vector<vector<Case*> > allColumns = sudokube.getListOfAllCaseLines();
 
 	for(unsigned int a = 0; a < allColumns.size(); a++) {
@@ -282,7 +282,7 @@ bool SudokubeSolver::hiddenTriples(Sudokube& sudokube) {
 	return false;
 }
 
-bool SudokubeSolver::pointingPairs(Sudokube& sudokube) {
+bool SudocubeSolver::pointingPairs(Sudocube& sudokube) {
 	vector<vector<Case*> > allRegions;
 		allRegions.push_back(sudokube.getSameRegionOfCase(1,1,1));
 		allRegions.push_back(sudokube.getSameRegionOfCase(1,3,1));
@@ -349,7 +349,7 @@ bool SudokubeSolver::pointingPairs(Sudokube& sudokube) {
 		return false;
 }
 
-bool SudokubeSolver::pointingTriples(Sudokube& sudokube) {
+bool SudocubeSolver::pointingTriples(Sudocube& sudokube) {
 	vector<vector<Case*> > allRegions;
 		allRegions.push_back(sudokube.getSameRegionOfCase(1,1,1));
 		allRegions.push_back(sudokube.getSameRegionOfCase(1,3,1));
@@ -423,7 +423,7 @@ bool SudokubeSolver::pointingTriples(Sudokube& sudokube) {
 		return false;
 }
 
-bool SudokubeSolver::boxLineReductionPair(Sudokube& sudokube) {
+bool SudocubeSolver::boxLineReductionPair(Sudocube& sudokube) {
 	vector<vector<Case*> > allLines = sudokube.getListOfAllCaseLines();
 
 	for(unsigned int a = 0; a < allLines.size(); a++) {
@@ -469,7 +469,7 @@ bool SudokubeSolver::boxLineReductionPair(Sudokube& sudokube) {
 	return false;
 }
 
-bool SudokubeSolver::boxLineReductionTriple(Sudokube& sudokube) {
+bool SudocubeSolver::boxLineReductionTriple(Sudocube& sudokube) {
 	vector<vector<Case*> > allLines = sudokube.getListOfAllCaseLines();
 
 	for(unsigned int a = 0; a < allLines.size(); a++) {
@@ -520,7 +520,7 @@ bool SudokubeSolver::boxLineReductionTriple(Sudokube& sudokube) {
 	return false;
 }
 
-void SudokubeSolver::bruteForce(Sudokube& sudokube) {
+void SudocubeSolver::bruteForce(Sudocube& sudokube) {
 	int unsolvedCaseI;
 	int unsolvedCaseJ;
 	int unsolvedCaseK;
@@ -540,7 +540,7 @@ void SudokubeSolver::bruteForce(Sudokube& sudokube) {
 	}
 
 	for(unsigned int m = 0; m < possibilities.size(); m++) {
-		Sudokube sudokubeClone;
+		Sudocube sudokubeClone;
 
 		for(int i = 1; i <= 3; i++) {
 			for(int j = 1; j <= 4; j++) {
@@ -561,7 +561,7 @@ void SudokubeSolver::bruteForce(Sudokube& sudokube) {
 	}
 }
 
-void SudokubeSolver::solveWithoutBruteForce(Sudokube& sudokube) {
+void SudocubeSolver::solveWithoutBruteForce(Sudocube& sudokube) {
 	if(sudokube.isSolved()) {
 		return;
 	}

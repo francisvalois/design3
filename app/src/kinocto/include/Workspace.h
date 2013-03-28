@@ -1,7 +1,7 @@
 #ifndef WORKSPACE_H_
 #define WORKSPACE_H_
 
-#include "Position.h"
+#include "pathPlanning/Position.h"
 
 class Workspace {
 

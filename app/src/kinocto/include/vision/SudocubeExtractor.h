@@ -8,14 +8,14 @@
 
 #include "vision/NumberReader.h"
 #include "vision/SquarePair.h"
-#include "Sudokube.h"
+#include "sudocube/Sudocube.h"
 
 class SudocubeExtractor {
 
 public:
     SudocubeExtractor();
     virtual ~SudocubeExtractor();
-    Sudokube * extractSudocube(cv::Mat & src);
+    Sudocube * extractSudocube(cv::Mat & src);
 
 private:
     const static char OUTPUT_PATH[];
@@ -51,8 +51,8 @@ private:
     void applyErode(cv::Mat & toErode, int size, int morphShape);
     void applyDilate(cv::Mat & toDilate, int size, int morphShape);
 
-    void insertAllNumber(Sudokube * sudokube, std::vector<std::vector<int> > numbers);
-    void insert(Sudokube * sudokube, int face, int j, int k, int value);
+    void insertAllNumber(Sudocube * sudokube, std::vector<std::vector<int> > numbers);
+    void insert(Sudocube * sudokube, int face, int j, int k, int value);
 
     void saveImage(cv::Mat &pict, char* filename);
 };

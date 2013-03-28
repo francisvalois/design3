@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "Case.h"
+#include "sudocube/Case.h"
 
     const int MAXIMUM_NUMBER_OF_POSSIBILITIES = 8;
     const int A_VALID_SUDOKUBE_CASE_VALUE = 8;

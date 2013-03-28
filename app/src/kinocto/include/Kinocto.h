@@ -12,17 +12,18 @@
 #include "vision/CameraCapture.h"
 #include "vision/SudocubeExtractor.h"
 
-#include "Sudokube.h"
-#include "SudokubeSolver.h"
+#include "sudocube/Sudocube.h"
+#include "sudocube/SudocubeSolver.h"
 
-#include "Position.h"
-#include "Move.h"
-#include "PathPlanning.h"
+#include "pathPlanning/Position.h"
+#include "pathPlanning/Move.h"
+#include "pathPlanning/PathPlanning.h"
+
 #include "AntennaParam.h"
 #include "Workspace.h"
 
-#include "BaseStationDecorator.h"
-#include "MicrocontrollerDecorator.h"
+#include "communication/BaseStationDecorator.h"
+#include "communication/MicrocontrollerDecorator.h"
 
 #include "std_msgs/String.h"
 #include "kinocto/StartKinocto.h"
@@ -45,7 +46,7 @@ class Kinocto {
 private:
     //Pour la résolution des sudocubes
     CameraCapture cameraCapture;
-    SudokubeSolver sudokubeSolver;
+    SudocubeSolver sudokubeSolver;
     SudocubeExtractor sudocubeExtractor;
 
     //Pour la communication
@@ -66,8 +67,8 @@ private:
     void goToAntenna();
     void decodeAntennaParam();
     void showAntennaParam();
-    std::vector<Sudokube *> extractSudocube();
-    void solveSudocube(std::vector<Sudokube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
+    std::vector<Sudocube *> extractSudocube();
+    void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
     void goToSudocubeX();
     void goToDrawingZone();
     void drawNumber();

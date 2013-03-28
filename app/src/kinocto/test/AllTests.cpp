@@ -1,10 +1,10 @@
 #include <gtest/gtest.h>
 
-#include "CaseTest.cpp"
-#include "SudokubeTest.cpp"
-#include "SudokubeSolverTest.cpp"
-#include "NumberReaderIT.cpp"
-#include "PathPlanningTest.cpp"
+#include "sudocube/CaseTest.cpp"
+#include "sudocube/SudocubeTest.cpp"
+#include "sudocube/SudocubeSolverTest.cpp"
+#include "vision/NumberReaderIT.cpp"
+#include "pathPlanning/PathPlanningTest.cpp"
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

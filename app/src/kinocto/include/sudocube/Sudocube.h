@@ -1,17 +1,18 @@
 #ifndef SUDOKUBE_H_
 #define SUDOKUBE_H_
 
-#include "Case.h"
 #include <vector>
 #include <sstream>
 #include <string>
 
-class Sudokube {
-public:
-    Sudokube();
-    virtual ~Sudokube();
+#include "sudocube/Case.h"
 
-    bool equals(Sudokube &);
+class Sudocube {
+public:
+    Sudocube();
+    virtual ~Sudocube();
+
+    bool equals(Sudocube &);
 
     bool isSolved();
     bool isEmpty();
