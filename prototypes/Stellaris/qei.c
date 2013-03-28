@@ -68,7 +68,7 @@ void initQEI(void){
 void EncoderIntHandler(void){
 	GPIOPinIntClear(GPIO_PORTE_BASE, 0xC3);
 	state = GPIOPinRead(GPIO_PORTE_BASE, 0xC3);
-	//EncoderHandler();
+	EncoderHandler();
 }
 
 //Decodeur logiciel pour traitement des encodeurs en quadratures

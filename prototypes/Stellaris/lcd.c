@@ -84,7 +84,7 @@ void afficher_param(char sudocube, char orient, char T) {
 //Fonction qui écrit les noms des équipiers dans la mémoire du LCD pour l'affichage sur la 1ère ligne.
 void write_param(void) {
 	// Write names
-	/*write_char('S');
+	write_char('S');
 	write_char('u');
 	write_char('d');
 	write_char('o');
@@ -93,9 +93,9 @@ void write_param(void) {
 	write_char('b');
 	write_char('e');
 	write_char('=');
-	write_char('>');*/
+	write_char('>');
 	
-	write_char('D');
+	/*write_char('D');
 	write_char('a');
 	write_char('n');
 	write_char('i');
@@ -105,7 +105,7 @@ void write_param(void) {
 	write_char('s');
 	write_char('u');
 	write_char('c');
-	write_char('e');
+	write_char('e');*/
 	
 	// Set DDRAM address to second line
 	wait();

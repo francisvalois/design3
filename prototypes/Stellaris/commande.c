@@ -173,7 +173,7 @@ tBoolean CommandHandler(void){
 	 		consigne = 3200;
 	 		//deplacement_y -= 504;
 	 	}
-	 	else if(deplacement_x_abs > 6000 && deplacement_y == 0){
+	 	else if((deplacement_x_abs > 6000 && deplacement_y == 0) || (deplacement_y > 6000 && deplacement_x_abs == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 6400;
@@ -229,8 +229,9 @@ tBoolean CommandHandler(void){
 		degree = (commande[2]-'0')*100;
 		degree += (commande[3]-'0')*10;
 		degree += (commande[4]-'0');
-		degree = degree*17250/360;
+		//degree = degree*16000/360;
 		if(commande[1] == 'P'){
+			degree = degree*16200/360;
 			degree = -degree;
 		}
 		else if(commande[1] != 'N'){
@@ -238,9 +239,12 @@ tBoolean CommandHandler(void){
 			is_waiting_for_action = true;
 			return false;
 		}
+		else{
+			degree = degree*16000/360;
+		}
 		offset = 0; //Offset sur commande des moteurs
 	 	offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
-		turn(degree, 1600);
+		turn(degree, 800);
 		initCommande();
 		is_waiting_for_action = true;
 		return true;	
@@ -252,6 +256,7 @@ tBoolean CommandHandler(void){
 		else{
 			draw(commande[2]-'0');
 		}
+		return true;
 	}
 	else if(commande[0] == 'P'){ //Descendre préhenseur
 		descendrePrehenseur();

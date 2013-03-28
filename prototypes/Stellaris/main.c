@@ -207,7 +207,7 @@ int main(void)
 
     while(1)
 	{
-		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
+		//EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
 
 		//si un charactère dans la Receive FIFO
 		if(!(UART0_FR_R & UART_FR_RXFE)) //&& (send_buffer.read > send_buffer.write-256))
