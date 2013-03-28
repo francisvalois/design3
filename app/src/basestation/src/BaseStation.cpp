@@ -132,7 +132,7 @@ bool BaseStation::showSolvedSudocube(ShowSolvedSudocube::Request & request, Show
     buff << request.solvedSudocube;
     ROS_INFO( "%s\n red square value:%d\n solved sudocube:\n%s", "Show Solved Sudocube", request.redCaseValue, buff.str().c_str());
 
-    //TODO Afficher le sudocube et la valeur de la case rouge dans l'interface
+    emit showSolvedSudocubeSignal(QString(buff.str().c_str()), request.redCaseValue);
 
     return true;
 }
@@ -160,7 +160,7 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
 bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & response) {
     ROS_INFO("Show Loop Ended Message");
 
-    //TODO Afficher le message dans l'interface
+    emit loopEndedSignal("Kinocto : Loop Ended");
 
     return true;
 }
@@ -168,7 +168,7 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
 bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, UpdateRobotPosition::Response & response) {
     ROS_INFO( "%s\n x:%f\n y:%f", "Updating Robot Position", request.x, request.y);
 
-    //TODO Afficher la nouvelle position dans l'interface
+    emit UpdatingRobotPositionSignal(request.x, request.y);
 
     return true;
 }
@@ -176,7 +176,7 @@ bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, Up
 bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request & request, ShowConfirmStartRobot::Response & response) {
     ROS_INFO("Showing Confirmation of Start Robot");
 
-    //TODO Afficher le message dans l'interface
+    emit showConfirmStartRobotSignal("Kinocto : Start");
 
     return true;
 }

@@ -22,6 +22,10 @@ public:
     
 private slots:
     void on_StartSequenceButton_clicked();
+    void showSolvedSudocubeSlot(QString, int);
+    void loopEndedSlot(QString);
+    void UpdatingRobotPositionSlot(float,float);
+    void showConfirmStartRobotSlot(QString);
 
 private:
     Ui::MainWindow *ui;
