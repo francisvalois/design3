@@ -85,19 +85,19 @@ def handleTranslate(req):
 
 def handleRotateCam(req):
     rospy.loginfo("Rotating cam of vAngle:%d  and hAngle:%d", req.vAngle, req.hAngle)
-
+    #Limité entre 38.27 et -51.73 pour hAngle et entre 27.63 et 062.37  
     serCam.open()
-    if req.angle:
-        commande = "8405702E".decode("hex")
-        serCam.write(bytes(commande))
-        time.sleep(0.1)
-        commande = "84040031".decode("hex")
-        serCam.write(bytes(commande))
+    anglex_res = int(146+float(req.hAngle)/45*127)
+    angley_res = int(176+float(req.vAngle)/45*127)
+    if(anglex_res> 254 or anglex_res < 0 or
+       angley_res> 254 or angley_res < 0):
+        print("!!!!!!!VALEUR DÉPASSE 254 OU MOINS 0!!!!!!!!")
     else:
-        commande = "84053034".decode("hex")
+        serCam.open()
+        commande = bytes.fromhex("FF04{0:02X}".format(anglex_res))
         serCam.write(bytes(commande))
         time.sleep(0.1)
-        commande = "84040031".decode("hex")
+        commande = bytes.fromhex("FF05{0:02X}".format(angley_res))
         serCam.write(bytes(commande))
     serCam.close()
     
@@ -166,10 +166,12 @@ def handleDecodeAntenna(req):
 
 def handleGetSonarXDistance(req):
     rospy.loginfo("Getting distance from sonar no:%d", req.sonarNo)
-    
+
+    rep = sendCommandToController("S0000000")
+    valeur = ord(bytes(response[0]))*pow(2,24) + ord(bytes(response[1]))*pow(2,16) + ord(bytes(response[2]))*pow(2,8) + ord(bytes(response[3]))
     # Exemple de reponse
     response = SonarXDistanceResponse(); 
-    response.distance = 0.0;
+    response.distance = float(valeur)/16/58;
     
     return response
 
@@ -193,6 +195,7 @@ def sendCommandToController(commande):
             ser.close()
     except Exception, e:
         rospy.logerr("IMPOSSIBLE D'OUVRIR LE PORT DU MICROCONTROLLEUR: %s", str(e))
+    return response
 
 def Microcontroller():
     global ser
