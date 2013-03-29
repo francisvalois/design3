@@ -219,6 +219,7 @@ def sendCommandToController(commande):
     
     rospy.loginfo("Sending command to microcontroller %s", commande)
     
+    response = ""
     try: 
         ser.open()
         
@@ -226,7 +227,7 @@ def sendCommandToController(commande):
             ser.write(bytes(commande))
             time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
 
-            response = None
+
             while(response != 'E'):
                 response = ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
