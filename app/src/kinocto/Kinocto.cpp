@@ -17,6 +17,12 @@ Kinocto::Kinocto(NodeHandle node) {
 Kinocto::~Kinocto() {
     delete baseStation;
     delete microcontroller;
+
+    if (ros::isStarted()) {
+        ros::shutdown(); // explicitly needed since we use ros::start();
+        ros::waitForShutdown();
+    }
+    wait();
 }
 
 void Kinocto::start() {
