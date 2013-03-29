@@ -85,13 +85,13 @@ def handleTranslate(req):
 
 def handleRotateCam(req):
     rospy.loginfo("Rotating cam of vAngle:%d  and hAngle:%d", req.vAngle, req.hAngle)
-    #Limité entre 38.27 et -51.73 pour hAngle et entre 27.63 et 062.37  
+    #Limite entre 38.27 et -51.73 pour hAngle et entre 27.63 et 062.37  
     serCam.open()
     anglex_res = int(146+float(req.hAngle)/45*127)
     angley_res = int(176+float(req.vAngle)/45*127)
     if(anglex_res> 254 or anglex_res < 0 or
        angley_res> 254 or angley_res < 0):
-        print("!!!!!!!VALEUR DÉPASSE 254 OU MOINS 0!!!!!!!!")
+        print("!!!!!!!VALEUR DEPASSE 254 OU MOINS 0!!!!!!!!")
     else:
         serCam.open()
         commande = bytes.fromhex("FF04{0:02X}".format(anglex_res))
@@ -168,7 +168,7 @@ def handleGetSonarXDistance(req):
     rospy.loginfo("Getting distance from sonar no:%d", req.sonarNo)
 
     rep = sendCommandToController("S0000000")
-    valeur = ord(bytes(response[0]))*pow(2,24) + ord(bytes(response[1]))*pow(2,16) + ord(bytes(response[2]))*pow(2,8) + ord(bytes(response[3]))
+    valeur = ord(bytes(rep[0]))*pow(2,24) + ord(bytes(rep[1]))*pow(2,16) + ord(bytes(rep[2]))*pow(2,8) + ord(bytes(rep[3]))
     # Exemple de reponse
     response = SonarXDistanceResponse(); 
     response.distance = float(valeur)/16/58;
@@ -188,7 +188,7 @@ def sendCommandToController(commande):
             time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
 
             response = None
-            while(response != 'E'):
+            while('E' not in response):
                 response = ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
     
