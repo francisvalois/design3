@@ -9,6 +9,8 @@ import rospy
 import sys
 import array
 import time
+from microcontroller.scripts.antenna import *
+from microcontroller.scripts.fileformat import *
 
 from microcontroller.srv import *
 
@@ -154,11 +156,48 @@ def handleRotate(req):
     return RotateResponse()
 
 def handleDecodeAntenna(req):
-    # Example de retour des informations
-    response = DecodeAntennaResponse()
-    response.isBig = False
-    response.orientation = DecodeAntennaResponse.SOUTH  # Il est aussi possible d'utiliser NORTH, WEST, EAST
-    response.number = 8
+
+    fini = False
+    index = 0
+    while fini == False:
+        nomFichier = "patate.{0}".format(index%5)
+        ser.open()
+        ser.write(bytes("A0000000"))
+
+        byte = ' '.encode('ascii')
+        donnees = bytearray()
+        while byte != '\n'.encode('ascii'):
+            byte = ser.read(1);
+            donnees = donnees + byte
+
+        dataArray = formatDonnees(donnees)
+        if dataArray != 0:
+            fichierCVS(dataArray, nomFichier)
+        else:
+            print("Erreur de formattage des donnees\n")
+        ser.close()
+        if index%5 == 4:
+            test = traiterDonneesAntennes("patate")
+            if test:
+                response.number = test[0]*pow(2,3)+test[1]*pow(2,2)+test[2]*pow(2,1)+test[3]
+                if test[4] == 0 and test[5] == 0:
+                    response.orientation = DecodeAntennaResponse.NORTH
+                elif test[4] == 0 and test[5] == 1:
+                    response.orientation = DecodeAntennaResponse.EAST
+                elif test[4] == 1 and test[5] == 0:
+                    response.orientation = DecodeAntennaResponse.SOUTH
+                elif test[4] == 1 and test[5] == 1:
+                    response.orientation = DecodeAntennaResponse.WEST
+                if test[6] == 1:
+                    response.isBig = True
+                else:
+                    response.isBig = False
+                break;
+            else:
+                print("!!!! PAS DE SUCCES !!!!")
+                
+            
+        index += 1
     
     rospy.loginfo("Decoded Antenna Param are... number:%d orientation:%d isBig?:%s ", response.number, response.orientation, response.isBig)
     
@@ -219,7 +258,7 @@ def Microcontroller():
     ser = serial.Serial()
     # ser.port = ('/dev/ttyUSB0') 
     ser.port = ('/dev/serial/by-id/usb-TXI_Luminary_Micro_ICDI_Board_0B01015D-if01-port0')
-    ser.baudrate = 19200
+    ser.baudrate = 115200
     ser.parity = serial.PARITY_EVEN
     ser.stopbits = 1
     ser.timeout = 0

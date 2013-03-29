@@ -271,7 +271,11 @@ tBoolean CommandHandler(void){
 		return true;
 	}
 	else if(commande[0] == 'A'){ //Demander donnÃ©e antenne
+		disableTimer(); //Arrêter le timer  de l'asservissement
+		disableQEIs(); //Arrêter les calculs des QEIs
 		getAntenne();
+		enableQEIs(); //Permettre les calculs des QEIs
+		enableTimer(); //Enabler le timer  de l'asservissement
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
