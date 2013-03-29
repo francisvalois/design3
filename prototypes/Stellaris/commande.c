@@ -67,6 +67,8 @@ void enableTimer(void);
 //qei.c
 void disableQEIs(void);
 void enableQEIs(void);
+//antenne.c
+void getAntenne(void);
 
 /*
  * COMMANDE
@@ -244,7 +246,7 @@ tBoolean CommandHandler(void){
 		}
 		offset = 0; //Offset sur commande des moteurs
 	 	offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
-		turn(degree, 800);
+		turn(degree, 1600);
 		initCommande();
 		is_waiting_for_action = true;
 		return true;	
@@ -269,6 +271,8 @@ tBoolean CommandHandler(void){
 		return true;
 	}
 	else if(commande[0] == 'A'){ //Demander donnée antenne
+		getAntenne();
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
 	else if(commande[0] == 'O'){ //Ouvrir LED

@@ -1,7 +1,7 @@
 //***********************************************************
 //
 //       antenne.c
-//       Fonctions de décodage d'antenne
+//       Fonctions de dï¿½codage d'antenne
 //       2013-03-10
 //        
 //
@@ -27,7 +27,7 @@
 
 //***********************************************************
 //
-// Table de contrôle du contrôleur DMA
+// Table de contrï¿½le du contrï¿½leur DMA
 //
 //***********************************************************
 #if defined(ewarm)
@@ -115,7 +115,7 @@ void initDMA(unsigned short *ptrBuffer)
 
 //*****************************************************************************
 //
-// Démarrage du timer et du DMA
+// Dï¿½marrage du timer et du DMA
 //
 //*****************************************************************************
 void startTimer1B()
@@ -197,7 +197,7 @@ int bitsCompare(unsigned char s1[7], unsigned char s2[7])
 
 //*****************************************************************************
 //
-// Décodage du signal d'antenne 
+// Dï¿½codage du signal d'antenne 
 // Retourne 0 si lecture correcte, 1 si erreur
 //
 //*****************************************************************************
@@ -279,8 +279,8 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     }
 
     //
-    //   Séquençaage : On attribue une valeur digitale à chaque timing selon des correspondances suivantes:
-    //   10 - un seul zéro ; 11 - un seul '1' ; 20 - deux zéros consécutifs ; 21 - deux '1' consécutifs
+    //   Sï¿½quenï¿½aage : On attribue une valeur digitale ï¿½ chaque timing selon des correspondances suivantes:
+    //   10 - un seul zï¿½ro ; 11 - un seul '1' ; 20 - deux zï¿½ros consï¿½cutifs ; 21 - deux '1' consï¿½cutifs
     //
 
     unsigned short *seqData;
@@ -303,8 +303,8 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     }
 
     //
-    //   Algorithme de Knuth-Moris-Pratt (modifié)
-    //   On recherche la séquence P des bits d'arrêt et de départ dans l'échanillon seqDat
+    //   Algorithme de Knuth-Moris-Pratt (modifiï¿½)
+    //   On recherche la sï¿½quence P des bits d'arrï¿½t et de dï¿½part dans l'ï¿½chanillon seqDat
     //
 
     int *T;
@@ -312,7 +312,7 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     unsigned short P[15] = {10,11,10,11,10,11,10,11,10,11,10,11,10,11,20};
 
     //
-    //   1 - Construction du tableau des décalages
+    //   1 - Construction du tableau des dï¿½calages
     //
 
     for(idxA = dataSize-1; idxA >= 0; idxA--)
@@ -328,7 +328,7 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     }
 
     //
-    //   2 - Recherche de la séquence
+    //   2 - Recherche de la sï¿½quence
     //
 
     int debut = -1;
@@ -364,7 +364,7 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
     } 
 
     // 
-    //           Décodage
+    //           Dï¿½codage
     //
 
     if(debut != -1)
@@ -400,7 +400,7 @@ int decodeSignal(unsigned short *signalBuffer, unsigned int signalBufferSize, un
             }
         }
 
-        // Vérification de la séquence
+        // Vï¿½rification de la sï¿½quence
 
         currentBit = 6;
         idxA = debut - 15;

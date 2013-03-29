@@ -451,6 +451,39 @@ void ajustementVitesse(void){
 				consigne3 = 1200;
 			}
 		}
+		
+		time++;
+	
+	
+		if((abs_dist_cible0 != 0 && abs_pos0 > (abs_dist_cible0)) || (abs_dist_cible1 !=0 && abs_pos1 > (abs_dist_cible1))){ 
+				GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xFF);
+				GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xFF);
+				GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0xFF);
+				a_atteint_consigne = true;
+		}
+	 }
+	else if(abs_pos1 > abs_dist_cible1 -4000 && abs_dist_cible1 != 0 && !is_drawing && consigne0==0
+	 && consigne3==0){
+		if(time >= 0){//0ms depuis que abs_pos0 > abs_dist_cible0 -4000
+			if(consigne1 >4000 && consigne2 >4000){
+				consigne1 = consigne1*0.875;
+				consigne2 = consigne2*0.875;
+			}
+			else if(consigne1 >1400 && consigne1 <4000 && consigne2 <4000&&
+			consigne2 >1400 && abs_pos1 < abs_dist_cible1 -1500){
+				consigne1 = consigne1;
+				consigne2 = consigne2;
+			}
+			else if(consigne1 >1400 && consigne1 <4000 && consigne2 <4000&&
+			consigne2 >1400 && abs_pos1 > abs_dist_cible1 -1500){
+				consigne1 = consigne1*0.875;
+				consigne2 = consigne2*0.875;
+			}
+			else{
+				consigne1 = 1200;
+				consigne2 = 1200;
+			}
+		}
 		time++;
 	
 	

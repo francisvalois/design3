@@ -57,6 +57,7 @@ extern void EncoderIntHandler(void);
 extern void TimerInt(void);
 extern void sonarIntHandler(void);
 //void UARTIntHandler(void);
+extern void Timer0BIntHandler(void);
 
 //*****************************************************************************
 //
@@ -107,7 +108,7 @@ void (* const g_pfnVectors[])(void) =
     TimerInt,                      // Timer 0 subtimer A
     IntDefaultHandler,                      // Timer 0 subtimer B
     IntDefaultHandler,                      // Timer 1 subtimer A
-    IntDefaultHandler,                      // Timer 1 subtimer B
+    Timer0BIntHandler,                      // Timer 1 subtimer B
     IntDefaultHandler,                      // Timer 2 subtimer A
     IntDefaultHandler,                      // Timer 2 subtimer B
     IntDefaultHandler,                      // Analog Comparator 0
