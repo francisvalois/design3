@@ -113,7 +113,7 @@ void Kinocto::goToSudocubeX() {
         baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
     }
 
-    if (antennaParam.getNumber() == 3) {
+    /*if (antennaParam.getNumber() == 3) {
         Position translateLeft(-26.0, 0.0);
         microcontroller->translate(translateLeft);
         //UPDATE POS
@@ -125,7 +125,7 @@ void Kinocto::goToSudocubeX() {
         microcontroller->translate(translateRight);
         //UPDATE POS
         ROS_INFO("CAS SUDOCUBE 3");
-    }
+    }*/
 }
 
 void Kinocto::goToDrawingZone() {
