@@ -28,9 +28,9 @@ void initUART(void)
                          UART_CONFIG_PAR_EVEN));
     //IntEnable(INT_UART0);
     ROM_UARTEnable(UART0_BASE);
-    UART0_LCRH_R |= UART_LCRH_EPS; // even parity select
-    UART0_LCRH_R |= UART_LCRH_PEN; // parity enable
-    UART0_LCRH_R |= UART_LCRH_WLEN_8; // word lenght 8 bits
+    //UART0_LCRH_R |= UART_LCRH_EPS; // even parity select
+    //UART0_LCRH_R |= UART_LCRH_PEN; // parity enable
+    //UART0_LCRH_R |= UART_LCRH_WLEN_8; // word lenght 8 bits
     
     //UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
 }

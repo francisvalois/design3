@@ -8,11 +8,7 @@
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #include "ecran.h"
-//*****************************************************************************
-//
-// Main de Kinocto
-//
-//*****************************************************************************
+
 #define BUFFER_LEN          256
 
 //Type def
