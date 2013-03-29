@@ -114,14 +114,14 @@ void Kinocto::goToSudocubeX() {
     }
 
     if (antennaParam.getNumber() == 3) {
-        Position translateLeft(-30.0, 0.0);
+        Position translateLeft(-26.0, 0.0);
         microcontroller->translate(translateLeft);
         //UPDATE POS
         ROS_INFO("CAS SUDOCUBE 3");
     }
 
     if (antennaParam.getNumber() == 6) {
-        Position translateRight(30.0, 0.0);
+        Position translateRight(26.0, 0.0);
         microcontroller->translate(translateRight);
         //UPDATE POS
         ROS_INFO("CAS SUDOCUBE 3");
