@@ -66,9 +66,12 @@ private:
     void goToAntenna();
     void decodeAntennaParam();
     void showAntennaParam();
-    std::vector<Sudocube *> extractSudocube();
-    void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
     void goToSudocubeX();
+    void extractAndSolveSudocube();
+    std::vector<Sudocube *> extractSudocubes();
+    void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
+    void deleteSudocubes(std::vector<Sudocube *> & sudocubes);
+    void findAGoodSudocube(std::vector<Sudocube *> & sudocubes, Sudocube * goodSudocube);
     void goToDrawingZone();
     void drawNumber();
 

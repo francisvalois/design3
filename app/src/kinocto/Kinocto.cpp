@@ -73,6 +73,22 @@ void Kinocto::showAntennaParam() {
     sleep(5); //On dors 5 sec, le temps de lire les informations sur l'écran LCD
 }
 
+void Kinocto::extractAndSolveSudocube() {
+    vector<Sudocube *> sudocubes = extractSudocubes();
+    if (sudocubes.size() < 2) {
+        ROS_ERROR("DID NOT FIND ENOUGTH SUDOCUBES TO CHOOSE");
+        return;
+    }
+
+    String solvedSudocube;
+    int redCaseValue = 0;
+    solveSudocube(sudocubes, solvedSudocube, redCaseValue);
+    deleteSudocubes(sudocubes);
+
+    numberToDraw = redCaseValue;
+    baseStation->sendSolvedSudocube(solvedSudocube, redCaseValue);
+}
+
 void Kinocto::goToSudocubeX() {
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(antennaParam.getNumber()));
@@ -102,7 +118,7 @@ void Kinocto::goToSudocubeX() {
      }*/
 }
 
-vector<Sudocube *> Kinocto::extractSudocube() {
+vector<Sudocube *> Kinocto::extractSudocubes() {
     vector<Sudocube *> sudokubes;
     for (int i = 1; i <= 10 && sudokubes.size() < 3; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
@@ -110,12 +126,10 @@ vector<Sudocube *> Kinocto::extractSudocube() {
             return sudokubes;
         }
 
-        sudocubeImg = sudocubeImg.clone();
         Sudocube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
-        ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
-
         if (sudokube->isEmpty() == false) {
             sudokubes.push_back(sudokube);
+            ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
         }
     }
 
@@ -123,34 +137,32 @@ vector<Sudocube *> Kinocto::extractSudocube() {
 }
 
 void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
-    if (sudocubes.size() < 3) {
-        ROS_ERROR("%s", "NOT ENOUGHT SUDOCUBES TO CHOOSE");
-    } else {
-        Sudocube * goodSudocube;
-        if (sudocubes[0]->equals(*sudocubes[1]) == true) {
-            goodSudocube = sudocubes[0];
-        } else if (sudocubes[0]->equals(*sudocubes[2]) == true) {
-            goodSudocube = sudocubes[0];
-        } else if (sudocubes[1]->equals(*sudocubes[2]) == true) {
-            goodSudocube = sudocubes[1];
+    Sudocube * goodSudocube = 0;
+    findAGoodSudocube(sudocubes, goodSudocube);
+
+    if (goodSudocube != NULL) {
+        sudokubeSolver.solve(*goodSudocube);
+        if (goodSudocube->isSolved()) {
+            ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
+            redCaseValue = goodSudocube->getRedCaseValue();
+            solvedSudocube = goodSudocube->print();
         } else {
-            ROS_ERROR("%s", "NO PAIR OF SUDOCUBE ARE EQUALS");
+            ROS_ERROR("%s", "Could not solve the Sudocube");
         }
+    } else {
+        ROS_ERROR("%s", "NO PAIR OF SUDOCUBE ARE EQUALS");
+    }
+}
 
-        if (goodSudocube != NULL) {
-            sudokubeSolver.solve(*goodSudocube);
-            if (goodSudocube->isSolved()) {
-                ROS_INFO("%s\n%s", "The sudocube has been solved", goodSudocube->print().c_str());
-                ROS_INFO("The number to draw is %d\n", goodSudocube->getRedCaseValue());
-
-                redCaseValue = goodSudocube->getRedCaseValue();
-                solvedSudocube = goodSudocube->print();
-            } else {
-                ROS_ERROR("%s", "Could not solve the Sudocube");
-            }
+void Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes, Sudocube * goodSudocube) {
+    for (int i = 0; i < 2; i++) {
+        if (sudocubes[i]->equals(*sudocubes[i + 1])) {
+            goodSudocube = sudocubes[i];
         }
     }
+}
 
+void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {
     for (int i = 0; i < sudocubes.size(); i++) {
         Sudocube * sudocube = sudocubes[i];
         sudocubes[i] = 0;
@@ -189,27 +201,10 @@ void Kinocto::drawNumber() {
 bool Kinocto::testExtractSudocubeAndSolve(TestExtractSudocubeAndSolve::Request & request, TestExtractSudocubeAndSolve::Response & response) {
     ROS_INFO("TESTING ExtractSudocubeAndSolve");
 
-/////
-    vector<Sudocube *> sudocubes = extractSudocube();
-    if (sudocubes.size() == 0) {
-        ROS_ERROR("DID NOT FIND ENOUGTH SUDOCUBES TO CHOOSE");
-        return false;
-    }
+    extractAndSolveSudocube();
 
-    String solvedSudocube;
-    int redCaseValue = 0;
-    solveSudocube(sudocubes, solvedSudocube, redCaseValue); //TODO Vérifier si c'est solvé?!
-
-    numberToDraw = redCaseValue;
-    if (numberToDraw < 1 || numberToDraw > 8) {
-        ROS_ERROR("CANT DRAW THE NUMBER, IT'S NOT BETWEEN 1 AND 8");
-    }
-
-    baseStation->sendSolvedSudocube(solvedSudocube, redCaseValue);
-/////
-
-    response.solvedSudocube = solvedSudocube;
-    response.redCaseValue = redCaseValue;
+    response.solvedSudocube = "envoyé à la station de base";
+    response.redCaseValue = numberToDraw;
 
     return true;
 }
