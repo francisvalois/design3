@@ -8,7 +8,7 @@ using namespace kinocto;
 
 Kinocto::Kinocto(NodeHandle node) {
     this->nodeHandle = nodeHandle;
-    state = INITIATED;
+    state = WAITING;
     numberToDraw = 1;
     baseStation = new BaseStationDecorator(nodeHandle);
     microcontroller = new MicrocontrollerDecorator(nodeHandle);
