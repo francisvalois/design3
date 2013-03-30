@@ -38,8 +38,9 @@
 #include "kinocto/TestDrawNumber.h"
 #include "kinocto/TestGoToGreenFrameAndDraw.h"
 
-#define INITIATED 1
-#define START_LOOP 2
+#define WAITING 1
+#define LOOPING 2
+#define WAITING_TO_RESTART 3
 
 class Kinocto {
 
@@ -63,7 +64,9 @@ private:
     Workspace workspace;
     PathPlanning pathPlanning;
 
+    void getObstaclesPosition();
     void goToAntenna();
+    void executeMoves(std::vector<Move> & moves);
     void decodeAntennaParam();
     void showAntennaParam();
     void goToSudocubeX();
@@ -74,12 +77,15 @@ private:
     void findAGoodSudocube(std::vector<Sudocube *> & sudocubes, Sudocube * goodSudocube);
     void goToDrawingZone();
     void drawNumber();
+    void endLoop();
+    void restartLoop();
 
 public:
     Kinocto(ros::NodeHandle node);
     ~Kinocto();
     void loop();
     void startLoop(const std_msgs::String::ConstPtr& msg);
+    void restartLoop(const std_msgs::String::ConstPtr& msg);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
