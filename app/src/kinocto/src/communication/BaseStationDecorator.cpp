@@ -8,7 +8,7 @@ BaseStationDecorator::BaseStationDecorator(NodeHandle & node) {
     this->nodeHandle = node;
 
     findRobotPositionClient = nodeHandle.serviceClient<FindRobotPosition>("basestation/findRobotPosition");
-    findObstaclesPositionClient = nodeHandle.serviceClient<FindRobotPosition>("basestation/findRobotPosition");
+    findObstaclesPositionClient = nodeHandle.serviceClient<FindObstaclesPosition>("basestation/findObstaclesPosition");
     showSolvedSudocubeClient = nodeHandle.serviceClient<ShowSolvedSudocube>("basestation/showSolvedSudocube");
     loopEndedClient = nodeHandle.serviceClient<LoopEnded>("basestation/loopEnded");
     traceRealTrajectoryClient = nodeHandle.serviceClient<TraceRealTrajectory>("basestation/traceRealTrajectory");
