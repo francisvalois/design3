@@ -27,6 +27,7 @@ public:
     void sendTrajectory(std::vector<Position> positions);
     void sendUpdateRobotPositionMessage(Position position);
     void sendConfirmRobotStarted();
+
 private:
     ros::NodeHandle nodeHandle;
 

@@ -21,7 +21,7 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::on_StartSequenceButton_clicked() {
-    baseStation.init();
+    baseStation.loop();
 }
 
 void MainWindow::showSolvedSudocubeSlot(QString solvedSudocube, int redCaseValue) {

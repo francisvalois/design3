@@ -10,7 +10,7 @@ find_package(OpenCV REQUIRED)
 
  add_message_files(
    FILES
-   StartKinocto.msg
+   StartLoop.msg
  )
 
 add_service_files(

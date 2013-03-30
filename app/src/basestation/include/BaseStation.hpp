@@ -7,7 +7,7 @@
 
 //Messages
 #include "std_msgs/String.h"
-#include "kinocto/StartKinocto.h"
+#include "kinocto/StartLoop.h"
 
 //Services
 #include "basestation/FindObstaclesPosition.h"
@@ -26,6 +26,9 @@
 //Objets de la classe
 #include "../../build/basestation/ui_mainwindow.h"
 
+#define LOOP 0
+#define SEND_START_LOOP_MESSAGE 1
+
 class BaseStation: public QThread {
 Q_OBJECT
 public:
@@ -33,7 +36,8 @@ public:
     virtual ~BaseStation();
     bool init();
     bool init(const std::string &master_url, const std::string &host_url);
-    void run();
+    void loop();
+    void startLoop();
 
     bool findObstaclesPosition(basestation::FindObstaclesPosition::Request & request, basestation::FindObstaclesPosition::Response & response);
     bool findRobotPosition(basestation::FindRobotPosition::Request & request, basestation::FindRobotPosition::Response & response);
@@ -55,11 +59,13 @@ private:
     int init_argc;
     char** init_argv;
 
+    int state;
+
     KinectCapture kinectCapture;
     ObstaclesDetection obstaclesDetection;
     RobotDetection robotDetection;
 
-    ros::Publisher startKinoctoPublisher;
+    ros::Publisher startLoopPublisher;
 
     ros::ServiceServer findObstaclesPositionService;
     ros::ServiceServer findRobotPositionService;
@@ -70,7 +76,6 @@ private:
     ros::ServiceServer showConfirmStartRobotMessageService;
 
     void initHandlers(ros::NodeHandle & node);
-
 };
 
 #endif /* BASESTATION_H_ */

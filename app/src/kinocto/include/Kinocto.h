@@ -26,7 +26,7 @@
 #include "communication/MicrocontrollerDecorator.h"
 
 #include "std_msgs/String.h"
-#include "kinocto/StartKinocto.h"
+#include "kinocto/StartLoop.h"
 
 //Services de test
 #include "kinocto/TestGoToSudocubeX.h"
@@ -63,7 +63,6 @@ private:
     Workspace workspace;
     PathPlanning pathPlanning;
 
-    void loop();
     void goToAntenna();
     void decodeAntennaParam();
     void showAntennaParam();
@@ -76,7 +75,7 @@ private:
 public:
     Kinocto(ros::NodeHandle node);
     ~Kinocto();
-    void start();
+    void loop();
     void startLoop(const std_msgs::String::ConstPtr& msg);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités

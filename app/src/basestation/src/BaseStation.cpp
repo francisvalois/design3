@@ -7,6 +7,11 @@ using namespace cv;
 
 BaseStation::BaseStation(int argc, char** argv) :
         init_argc(argc), init_argv(argv) {
+
+    startLoopConfirmed = false;
+    state = 1;
+
+    init();
 }
 
 BaseStation::~BaseStation() {
@@ -28,34 +33,15 @@ bool BaseStation::init() {
     ROS_INFO("Creating services handler for Basestation");
     initHandlers(n);
 
-    ROS_INFO("Basestation initiated");
+    ROS_INFO("Basestation initiated1");
 
-    start();
-    return true;
-}
+    start(); // QT THREAD
 
-bool BaseStation::init(const std::string &master_url, const std::string &host_url) {
-    std::map<std::string, std::string> remappings;
-    remappings["__master"] = master_url;
-    remappings["__hostname"] = host_url;
-    ros::init(remappings, "basestation");
-    if (!ros::master::check()) {
-        return false;
-    }
-    ros::start(); // explicitly needed since our nodehandle is going out of scope.
-    ros::NodeHandle n;
-
-    ROS_INFO("Creating services handler for Basestation");
-    initHandlers(n);
-
-    ROS_INFO("Basestation initiated");
-
-    start();
     return true;
 }
 
 void BaseStation::initHandlers(ros::NodeHandle & node) {
-    startKinoctoPublisher = node.advertise<std_msgs::String>("kinocto/start", 1);
+    startLoopPublisher = node.advertise<std_msgs::String>("kinocto/startLoop", 1);
 
     findObstaclesPositionService = node.advertiseService("basestation/findObstaclesPosition", &BaseStation::findObstaclesPosition, this);
     findRobotPositionService = node.advertiseService("basestation/findRobotPosition", &BaseStation::findRobotPosition, this);
@@ -67,24 +53,40 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
             &BaseStation::showConfirmStartRobotdMessage, this);
 }
 
-void BaseStation::run() {
-    std_msgs::String msg;
-    std::stringstream ss;
-    ss << "hello world ";
-    msg.data = ss.str();
-
-    //int count = 0;
-    ros::Rate loop_rate(10);
+void BaseStation::loop() {
     while (ros::ok()) {
-        //ROS_INFO("%s", msg.data.c_str());
-        //startKinoctoPublisher.publish(msg);
+        switch (state) {
+        case LOOP:
+            cout << "looping" << endl;
+            break;
+        case SEND_START_LOOP_MESSAGE:
+            startLoop();
+            break;
+        }
+
+        sleep(1);
         ros::spinOnce();
-        loop_rate.sleep();
-        //++count;
     }
 
-    std::cout << "Ros shutdown, proceeding to close the gui." << std::endl;
+    ROS_INFO("Ros shutdown, proceeding to close the gui.");
     Q_EMIT rosShutdown(); // used to signal the gui for a shutdown (useful to roslaunch)
+}
+
+void BaseStation::startLoop() {
+    std_msgs::String msg;
+    msg.data = "Démarrage de la loop";
+
+    ROS_INFO("%s", msg.data.c_str());
+    startLoopPublisher.publish(msg);
+}
+
+bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request & request, ShowConfirmStartRobot::Response & response) {
+    ROS_INFO("Showing Confirmation of Start Robot");
+    state = LOOP;
+
+    emit showConfirmStartRobotSignal("Kinocto : Start");
+
+    return true;
 }
 
 bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request, FindObstaclesPosition::Response & response) {
@@ -172,12 +174,3 @@ bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, Up
 
     return true;
 }
-
-bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request & request, ShowConfirmStartRobot::Response & response) {
-    ROS_INFO("Showing Confirmation of Start Robot");
-
-    emit showConfirmStartRobotSignal("Kinocto : Start");
-
-    return true;
-}
-
