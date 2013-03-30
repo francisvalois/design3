@@ -8,8 +8,7 @@ using namespace cv;
 BaseStation::BaseStation(int argc, char** argv) :
         init_argc(argc), init_argv(argv) {
 
-    startLoopConfirmed = false;
-    state = 1;
+    state = LOOP;
 
     init();
 }
@@ -20,6 +19,9 @@ BaseStation::~BaseStation() {
         ros::waitForShutdown();
     }
     wait();
+
+    ROS_INFO("Ros shutdown, proceeding to close the gui.");
+    Q_EMIT rosShutdown(); // used to signal the gui for a shutdown (useful to roslaunch)
 }
 
 bool BaseStation::init() {
@@ -54,25 +56,25 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
 }
 
 void BaseStation::loop() {
-    while (ros::ok()) {
+    if (ros::ok()) {
         switch (state) {
         case LOOP:
             cout << "looping" << endl;
             break;
         case SEND_START_LOOP_MESSAGE:
-            startLoop();
+            sendStartLoopMessage();
             break;
         }
 
-        sleep(1);
         ros::spinOnce();
     }
-
-    ROS_INFO("Ros shutdown, proceeding to close the gui.");
-    Q_EMIT rosShutdown(); // used to signal the gui for a shutdown (useful to roslaunch)
 }
 
-void BaseStation::startLoop() {
+void BaseStation::setStateToSendStartLoopMessage() {
+    state = SEND_START_LOOP_MESSAGE;
+}
+
+void BaseStation::sendStartLoopMessage() {
     std_msgs::String msg;
     msg.data = "Démarrage de la loop";
 

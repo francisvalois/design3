@@ -9,6 +9,10 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
         QMainWindow(parent), ui(new Ui::MainWindow), baseStation(argc, argv) {
     ui->setupUi(this);
 
+    updateROSTimer = new QTimer(this);
+    QObject::connect(updateROSTimer, SIGNAL(timeout()), SLOT(updateROSSlot()));
+    updateROSTimer->start(200);
+
     QObject::connect(&baseStation, SIGNAL(rosShutdown()), this, SLOT(close()));
     QObject::connect(&baseStation, SIGNAL(showSolvedSudocubeSignal(QString,int)), this, SLOT(showSolvedSudocubeSlot(QString,int)));
     QObject::connect(&baseStation, SIGNAL(loopEndedSignal(QString)), this, SLOT(loopEndedSlot(QString)));
@@ -20,8 +24,12 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::on_StartSequenceButton_clicked() {
+void MainWindow::updateROSSlot () {
     baseStation.loop();
+}
+
+void MainWindow::on_StartSequenceButton_clicked() {
+    baseStation.setStateToSendStartLoopMessage();
 }
 
 void MainWindow::showSolvedSudocubeSlot(QString solvedSudocube, int redCaseValue) {

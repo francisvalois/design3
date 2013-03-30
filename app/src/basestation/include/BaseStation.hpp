@@ -26,6 +26,8 @@
 //Objets de la classe
 #include "../../build/basestation/ui_mainwindow.h"
 
+
+//ÉTATS DE LA CLASSE
 #define LOOP 0
 #define SEND_START_LOOP_MESSAGE 1
 
@@ -37,7 +39,8 @@ public:
     bool init();
     bool init(const std::string &master_url, const std::string &host_url);
     void loop();
-    void startLoop();
+    void setStateToSendStartLoopMessage();
+    void sendStartLoopMessage();
 
     bool findObstaclesPosition(basestation::FindObstaclesPosition::Request & request, basestation::FindObstaclesPosition::Response & response);
     bool findRobotPosition(basestation::FindRobotPosition::Request & request, basestation::FindRobotPosition::Response & response);
