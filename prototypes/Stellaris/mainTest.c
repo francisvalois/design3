@@ -295,6 +295,6 @@ void getAntenne(void)
     //UARTSend(bitsDecode,7);
     unsigned char fin = '\n';
     UARTSend(&fin, 1);
-    while(1);
+    //while(1);
     IntDisable(INT_TIMER1B);
 }
