@@ -9,7 +9,7 @@ import io
 import array
 import sys
 
-# Formattage des fichiers : '$' est le caractère sentinelle pour une colonne, '\n' pour fin de fichier
+# Formattage des fichiers : '$' est le caractere sentinelle pour une colonne, '\n' pour fin de fichier
 
 def fichierCVS(donnees, nomFichier):
 

@@ -9,8 +9,8 @@ import rospy
 import sys
 import array
 import time
-from microcontroller.scripts.antenna import *
-from microcontroller.scripts.fileformat import *
+from antenna import *
+from fileformat import *
 
 from microcontroller.srv import *
 
