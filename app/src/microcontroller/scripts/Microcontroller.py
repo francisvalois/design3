@@ -168,41 +168,41 @@ def handleDecodeAntenna(req):
 
         byte = ' '.encode('ascii')
         donnees = bytearray()
-        try:
-            while byte != '\n'.encode('ascii'):
-                byte = ser.read(1);
-                donnees = donnees + byte
+        #try:
+        while byte != '\n'.encode('ascii'):
+            byte = ser.read(1);
+            donnees = donnees + byte
 
-            dataArray = formatDonnees(donnees)
-            if dataArray != 0:
-                fichierCVS(dataArray, nomFichier)
-            else:
-                print("Erreur de formattage des donnees\n")
-            ser.close()
-            if index%5 == 4:
-                test = traiterDonneesAntennes("patate")
-                if test:
-                    response.number = test[0]*pow(2,3)+test[1]*pow(2,2)+test[2]*pow(2,1)+test[3]
-                    if test[4] == 0 and test[5] == 0:
-                        response.orientation = DecodeAntennaResponse.NORTH
-                    elif test[4] == 0 and test[5] == 1:
-                        response.orientation = DecodeAntennaResponse.EAST
-                    elif test[4] == 1 and test[5] == 0:
-                        response.orientation = DecodeAntennaResponse.SOUTH
-                    elif test[4] == 1 and test[5] == 1:
-                        response.orientation = DecodeAntennaResponse.WEST
-                    if test[6] == 1:
-                        response.isBig = True
-                    else:
-                        response.isBig = False
-                    fini = True
+        dataArray = formatDonnees(donnees)
+        if dataArray != 0:
+            fichierCVS(dataArray, nomFichier)
+        else:
+            print("Erreur de formattage des donnees\n")
+        ser.close()
+        if index%5 == 4:
+            test = traiterDonneesAntennes("patate")
+            if test:
+                response.number = test[0]*pow(2,2)+test[1]*pow(2,1)+test[2] + 1
+                if test[3] == 0 and test[4] == 0:
+                    response.orientation = DecodeAntennaResponse.NORTH
+                elif test[3] == 0 and test[4] == 1:
+                    response.orientation = DecodeAntennaResponse.EAST
+                elif test[3] == 1 and test[4] == 0:
+                    response.orientation = DecodeAntennaResponse.SOUTH
+                elif test[3] == 1 and test[4] == 1:
+                    response.orientation = DecodeAntennaResponse.WEST
+                if test[5] == 1:
+                    response.isBig = True
                 else:
-                    print("!!!! PAS DE SUCCES !!!!")
-                    
+                    response.isBig = False
+                fini = True
+            else:
+                print("!!!! PAS DE SUCCES !!!!")
                 
-            index += 1
-        except:
-            print("!!!! ERREUR DECODAGE !!!! on recommance!")
+            
+        index += 1
+        #except:
+        #print("!!!! ERREUR DECODAGE !!!! on recommance!")
     
     rospy.loginfo("Decoded Antenna Param are... number:%d orientation:%d isBig?:%s ", response.number, response.orientation, response.isBig)
     
