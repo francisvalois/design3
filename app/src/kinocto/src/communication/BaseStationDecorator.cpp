@@ -105,4 +105,3 @@ void BaseStationDecorator::sendConfirmRobotStarted() {
         ROS_ERROR("Failed to call service basestation/showConfirmStartRobotMessage");
     }
 }
-
