@@ -139,9 +139,10 @@ void Kinocto::adjustSidePosition() {
 float Kinocto::adjustFrontPosition() {
     float FRONT_DISTANCE = 33.02f;
 
-    //for (int i = 0; i < 3; i++) {
-    float frontDistance = microcontroller->getSonarDistance(1);
-    //}
+    float frontDistance = 0.0f;
+    for (int i = 0; i < 10; i++) {
+        frontDistance += microcontroller->getSonarDistance(1) / 10;
+    }
 
     float adjustOf = frontDistance - FRONT_DISTANCE;
 
