@@ -15,6 +15,7 @@ from fileformat import *
 from microcontroller.srv import *
 
 ser = None
+serCam = None
 
 def handlePutPen(req):
     rospy.loginfo("Putting Pen Down ?:%s", req.down)
@@ -86,24 +87,25 @@ def handleTranslate(req):
     return TranslateResponse()
 
 def handleRotateCam(req):
+    global serCam
     rospy.loginfo("Rotating cam of vAngle:%d  and hAngle:%d", req.vAngle, req.hAngle)
+
     #Limite entre 38.27 et -51.73 pour hAngle et entre 27.63 et 062.37  
     serCam.open()
-    anglex_res = int(146+float(req.hAngle)/45*127)
-    angley_res = int(176+float(req.vAngle)/45*127)
-    if(anglex_res> 254 or anglex_res < 0 or
-       angley_res> 254 or angley_res < 0):
-        print("!!!!!!!VALEUR DEPASSE 254 OU MOINS 0!!!!!!!!")
-    else:
-        serCam.open()
-        commande = bytes.fromhex("FF04{0:02X}".format(anglex_res))
-        serCam.write(bytes(commande))
-        time.sleep(0.1)
-        commande = bytes.fromhex("FF05{0:02X}".format(angley_res))
-        serCam.write(bytes(commande))
-    serCam.close()
+    if serCam.isOpen(): 
+    	anglex_res = int(146+float(req.hAngle)/45*127)
+    	angley_res = int(176+float(req.vAngle)/45*127)
+    	if(anglex_res> 254 or anglex_res < 0 or angley_res> 254 or angley_res < 0):
+            print("!!!!!!!VALEUR DEPASSE 254 OU MOINS 0!!!!!!!!")
+        else:
+            commande = ("FF04{0:02X}".format(anglex_res)).decode('hex')
+            serCam.write(bytes(commande))
+            time.sleep(0.1)
+            commande = ("FF05{0:02X}".format(angley_res)).decode('hex')
+            serCam.write(bytes(commande))
+        serCam.close()
     
-    return RotateVerticallyCamResponse()
+    return RotateCamResponse()
 
 def handleMove(req):
     rospy.loginfo("Executing Move Of:%f", req.distance)
@@ -212,7 +214,7 @@ def handleGetSonarXDistance(req):
     rep = sendCommandToController("S0000000")
     valeur = ord(bytes(rep[0]))*pow(2,24) + ord(bytes(rep[1]))*pow(2,16) + ord(bytes(rep[2]))*pow(2,8) + ord(bytes(rep[3]))
     # Exemple de reponse
-    response = SonarXDistanceResponse(); 
+    response = GetSonarXDistanceResponse(); 
     response.distance = float(valeur)/16/58;
     
     return response
@@ -271,7 +273,8 @@ def Microcontroller():
 
     rospy.loginfo("Creating Serial Communication with Camera")
     serCam = serial.Serial()
-    serCam.port = ('/dev/ttyACM0') 
+    #serCam.port = ('/dev/ttyACM0') 
+    serCam.port = ('/dev/serial/by-id/usb-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00044759-if00')
     serCam.baudrate = 19200
     serCam.parity = serial.PARITY_NONE
     serCam.stopbits = 1
