@@ -52,7 +52,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         decodeAntennaParam();
         showAntennaParam();
         goToSudocubeX();
-        //RECTIFIER POSITION
+        adjustFrontPosition();
         //RECTIFIER ANGLE
         extractAndSolveSudocube();
         goToDrawingZone();
@@ -121,6 +121,23 @@ void Kinocto::goToSudocubeX() {
     baseStation->sendTrajectory(positions);
 
     executeMoves(moves);
+}
+
+void Kinocto::adjustSidePosition() {
+    /*if () {
+
+     }*/
+}
+
+float Kinocto::adjustFrontPosition() {
+    float FRONT_DISTANCE = 33.02f;
+    float frontDistance = microcontroller->getSonarDistance(1);
+    float adjustOf = frontDistance - FRONT_DISTANCE;
+
+    microcontroller->move(adjustOf);
+    //TODO modifier position workspace
+
+    return adjustOf;
 }
 
 void Kinocto::extractAndSolveSudocube() {
@@ -370,6 +387,12 @@ bool Kinocto::testGoToGreenFrameAndDraw(TestGoToGreenFrameAndDraw::Request & req
     goToDrawingZone();
     drawNumber();
     /////
+
+    return true;
+}
+
+bool Kinocto::testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request & request, kinocto::TestAdjustFrontPosition::Response & response) {
+    adjustFrontPosition();
 
     return true;
 }

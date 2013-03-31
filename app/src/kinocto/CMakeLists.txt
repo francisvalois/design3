@@ -23,6 +23,7 @@ add_service_files(
   TestFindObstacles.srv
   TestDrawNumber.srv
   TestGoToGreenFrameAndDraw.srv
+  TestAdjustFrontPosition.srv
   MoveRobotToSudocube.srv
 )
 
