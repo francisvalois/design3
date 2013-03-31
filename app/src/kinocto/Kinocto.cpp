@@ -133,7 +133,6 @@ float Kinocto::adjustFrontPosition() {
     float FRONT_DISTANCE = 33.02f;
     float frontDistance = microcontroller->getSonarDistance(1);
     float adjustOf = frontDistance - FRONT_DISTANCE;
-
     microcontroller->move(adjustOf);
     //TODO modifier position workspace
 

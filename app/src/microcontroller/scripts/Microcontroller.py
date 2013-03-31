@@ -209,13 +209,13 @@ def handleDecodeAntenna(req):
     return response
 
 def handleGetSonarXDistance(req):
-    rospy.loginfo("Getting distance from sonar no:%d", req.sonarNo)
-
     rep = sendCommandToController("S0000000")
     valeur = ord(bytes(rep[0]))*pow(2,24) + ord(bytes(rep[1]))*pow(2,16) + ord(bytes(rep[2]))*pow(2,8) + ord(bytes(rep[3]))
     # Exemple de reponse
     response = GetSonarXDistanceResponse(); 
     response.distance = float(valeur)/16/58;
+    
+    rospy.loginfo("Getting distance from sonar no:%d  distance:%f", req.sonarNo, response.distance)
     
     return response
 
