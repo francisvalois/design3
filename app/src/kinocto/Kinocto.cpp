@@ -47,6 +47,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         baseStation->sendConfirmRobotStarted();
 
         getObstaclesPosition();
+        getRobotPosition();
         //TROUVER L'ANGLE ET LA POSITION
         goToAntenna();
         decodeAntennaParam();
@@ -84,6 +85,12 @@ void Kinocto::restartLoop(const std_msgs::String::ConstPtr& msg) {
 void Kinocto::getObstaclesPosition() {
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
+}
+
+void Kinocto::getRobotPosition() {
+    Position robotPos = baseStation->requestRobotPosition();
+    workspace.setRobotPos(robotPos);
+    baseStation->sendUpdateRobotPositionMessage(robotPos);
 }
 
 void Kinocto::goToAntenna() {
@@ -131,10 +138,14 @@ void Kinocto::adjustSidePosition() {
 
 float Kinocto::adjustFrontPosition() {
     float FRONT_DISTANCE = 33.02f;
+
+    //for (int i = 0; i < 3; i++) {
     float frontDistance = microcontroller->getSonarDistance(1);
+    //}
+
     float adjustOf = frontDistance - FRONT_DISTANCE;
+
     microcontroller->move(adjustOf);
-    //TODO modifier position workspace
 
     return adjustOf;
 }

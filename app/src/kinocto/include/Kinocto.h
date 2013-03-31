@@ -66,6 +66,7 @@ private:
     PathPlanning pathPlanning;
 
     void getObstaclesPosition();
+    void getRobotPosition();
     void goToAntenna();
     void executeMoves(std::vector<Move> & moves);
     void decodeAntennaParam();
