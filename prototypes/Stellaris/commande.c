@@ -233,16 +233,16 @@ tBoolean CommandHandler(void){
 		degree += (commande[4]-'0');
 		//degree = degree*16000/360;
 		if(commande[1] == 'P'){
-			degree = degree*16200/360;
+			degree = (degree-5.6)*16200/360;//(-5.6) Used to correct the initial torque offset dued to gearbox slack in the wheel
 			degree = -degree;
 		}
-		else if(commande[1] != 'N'){
+		else if(commande[1] == 'N'){
+			degree = degree*16200/360;
+		}
+		else{
 			initCommande();
 			is_waiting_for_action = true;
 			return false;
-		}
-		else{
-			degree = degree*16000/360;
 		}
 		offset = 0; //Offset sur commande des moteurs
 	 	offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
