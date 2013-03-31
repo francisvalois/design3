@@ -18,13 +18,13 @@ Workspace::Workspace() {
     sudocubesPos[2].set(186.0f, 95.0f);
     sudocubesAngle[2] = 0.0f;
 
-    sudocubesPos[3].set(183.0f, 70.0f);
+    sudocubesPos[3].set(186.0f, 70.0f);
     sudocubesAngle[3] = 0.0f;
 
-    sudocubesPos[4].set(183.0f, 44.0f);
+    sudocubesPos[4].set(186.0f, 44.0f);
     sudocubesAngle[4] = 0.0f;
 
-    sudocubesPos[5].set(183.0f, 18.0f);
+    sudocubesPos[5].set(186.0f, 18.0f);
     sudocubesAngle[5] = 0.0f;
 
     sudocubesPos[6].set(209.0f, 45.0f);

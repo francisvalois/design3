@@ -101,10 +101,10 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
     Vec2f obs1 = obstaclesDetection.getObstacle1();
     Vec2f obs2 = obstaclesDetection.getObstacle2();
 
-    response.x1 = obs1[0];
-    response.y1 = obs1[1];
-    response.x2 = obs2[0];
-    response.y2 = obs2[1];
+    response.x1 = obs1[1] * 100;
+    response.y1 = obs1[0] * 100;
+    response.x2 = obs2[1] * 100;
+    response.y2 = obs2[0] * 100;
 
     ROS_INFO( "%s x:%f y:%f  x:%f y:%f", "Request Find Obstacles Position. Sending values ", response.x1, response.y1, response.x2, response.y2);
 
@@ -124,7 +124,7 @@ bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRo
     response.x = robot[0];
     response.y = robot[1];
 
-    ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", response.x, response.y);
+    ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", robot[1], robot[0]);
 
     return true;
 }
