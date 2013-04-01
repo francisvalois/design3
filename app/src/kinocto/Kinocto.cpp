@@ -136,26 +136,29 @@ void Kinocto::goToSudocubeX() {
 
 void Kinocto::adjustSidePosition() {
     int sudocubeNo = antennaParam.getNumber();
-
+	float ROBOT_SIZE = 12.5;
+	float MAX_X = 231.0f;
+	float MAX_Y = 111.0f;
+	
     if (sudocubeNo <= 2) {
         microcontroller->rotate(90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 12.5));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (MAX_X - distance - ROBOT_SIZE));
         microcontroller->rotate(-90);
     } else if (sudocubeNo <= 4) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (111 - distance - 12.5));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (MAX_Y - distance - ROBOT_SIZE));
         microcontroller->rotate(90);
     } else if (sudocubeNo <= 6) {
         microcontroller->rotate(90);
         float distance = getSonarDistance();
-        microcontroller->move((distance + 12.5) - workspace.getSudocubePos(sudocubeNo).y);
+        microcontroller->move((distance + ROBOT_SIZE) - workspace.getSudocubePos(sudocubeNo).y);
         microcontroller->rotate(-90);
     } else if (sudocubeNo <= 8) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 12.5));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (MAX_X - distance - ROBOT_SIZE));
         microcontroller->rotate(90);
     }
 }
