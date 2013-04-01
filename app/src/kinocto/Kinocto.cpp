@@ -136,22 +136,22 @@ void Kinocto::adjustSidePosition() {
     if (sudocubeNo <= 2) {
         microcontroller->rotate(90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 13));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 12.5));
         microcontroller->rotate(-90);
     } else if (sudocubeNo <= 4) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (114 - distance - 13));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (111 - distance - 12.5));
         microcontroller->rotate(90);
     } else if (sudocubeNo <= 6) {
         microcontroller->rotate(90);
         float distance = getSonarDistance();
-        microcontroller->move((distance + 13) - workspace.getSudocubePos(sudocubeNo).y);
+        microcontroller->move((distance + 12.5) - workspace.getSudocubePos(sudocubeNo).y);
         microcontroller->rotate(-90);
     } else if (sudocubeNo <= 8) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 13));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 12.5));
         microcontroller->rotate(90);
     }
 }
