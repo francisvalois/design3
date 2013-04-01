@@ -100,6 +100,8 @@ void Kinocto::goToAntenna() {
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
 
     executeMoves(moves);
+
+    microcontroller->move(-14);
 }
 
 void Kinocto::executeMoves(vector<Move> & moves) {
