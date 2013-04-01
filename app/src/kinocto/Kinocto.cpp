@@ -46,6 +46,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         state = LOOPING;
         baseStation->sendConfirmRobotStarted();
 
+		microcontroller->turnLED(false);
         getObstaclesPosition();
         getRobotPosition();
         //TROUVER L'ANGLE ET LA POSITION
@@ -75,7 +76,9 @@ void Kinocto::restartLoop(const std_msgs::String::ConstPtr& msg) {
         decodeAntennaParam();
         showAntennaParam();
         goToSudocubeX();
-        //RECTIFIER POSITION
+        //RECTIFIER ANGLE
+        adjustFrontPosition();
+        adjustSidePosition();
         //RECTIFIER ANGLE
         extractAndSolveSudocube();
         goToDrawingZone();
@@ -87,6 +90,7 @@ void Kinocto::restartLoop(const std_msgs::String::ConstPtr& msg) {
 void Kinocto::getObstaclesPosition() {
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
+	pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 }
 
 void Kinocto::getRobotPosition() {
@@ -120,7 +124,7 @@ void Kinocto::decodeAntennaParam() {
 
 void Kinocto::showAntennaParam() {
     microcontroller->writeToLCD(antennaParam);
-    sleep(5); //On dors 5 sec, le temps de lire les informations sur l'écran LCD
+    sleep(3);
 }
 
 void Kinocto::goToSudocubeX() {
@@ -135,48 +139,48 @@ void Kinocto::goToSudocubeX() {
 
 void Kinocto::adjustSidePosition() {
     int sudocubeNo = antennaParam.getNumber();
-
+	float ROBOT_SIZE = 12.5;
+	float MAX_X = 231.0f;
+	float MAX_Y = 111.0f;
+	
     if (sudocubeNo <= 2) {
         microcontroller->rotate(90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 12.5));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (MAX_X - distance - ROBOT_SIZE));
         microcontroller->rotate(-90);
     } else if (sudocubeNo <= 4) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (111 - distance - 12.5));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (MAX_Y - distance - ROBOT_SIZE));
         microcontroller->rotate(90);
     } else if (sudocubeNo <= 6) {
         microcontroller->rotate(90);
         float distance = getSonarDistance();
-        microcontroller->move((distance + 12.5) - workspace.getSudocubePos(sudocubeNo).y);
+        microcontroller->move((distance + ROBOT_SIZE) - workspace.getSudocubePos(sudocubeNo).y);
         microcontroller->rotate(-90);
     } else if (sudocubeNo <= 8) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 12.5));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (MAX_X - distance - ROBOT_SIZE));
         microcontroller->rotate(90);
     }
 }
 
 float Kinocto::getSonarDistance() {
     vector<float> distances;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 1; i <= 3; i++) {
         distances.push_back(microcontroller->getSonarDistance(1));
     }
 
-    float distance = 0.0f;
     for (int i = 0; i < distances.size(); i++) {
         for (int j = 0; i < distances.size(); j++) {
-            float gap = abs(distances[i] - distances[j]);
-            if ((distances[i] - distances[j]) <= 1) {
-                distance = distances[i];
-                break;
+            if (abs(distances[i] - distances[j]) <= 1) {
+                return distances[i];
             }
         }
     }
 
-    return distance;
+    return 0.0f;
 }
 
 float Kinocto::adjustFrontPosition() {
@@ -242,7 +246,6 @@ void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudoc
 int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
     for (int i = 0; i < 2; i++) {
         if (sudocubes[i]->equals(*sudocubes[i + 1])) {
-            cout << "le bon sudocube" << i << endl;
             return i ;
         }
     }
@@ -304,7 +307,7 @@ void Kinocto::endLoop() {
 
     microcontroller->turnLED(true);
     baseStation->sendLoopEndedMessage();
-    state = WAITING_TO_RESTART;
+    state = WAITING;
 }
 
 void Kinocto::restartLoop() {

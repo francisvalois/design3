@@ -48,7 +48,7 @@ unsigned char ucControlTable[1024] __attribute__ ((aligned(1024)));
 //*****************************************************************************
 void initTimer1B()
 {
-	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+	//ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 	//
     // Configure the Timer1 CCP3 function to use PB2
     //

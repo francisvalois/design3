@@ -23,7 +23,7 @@ void initUART(void)
     GPIOPinConfigure(GPIO_PA0_U0RX); //Pin 0 du port A utilisé pour le RX du UART 
     GPIOPinConfigure(GPIO_PA1_U0TX); //Pin 1 du port A utilisé pour le TX du UART
     ROM_GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1); //pin type du UART
-    ROM_UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 115200,
+    ROM_UARTConfigSetExpClk(UART0_BASE, SysCtlClockGet(), 19200,
                         (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
                          UART_CONFIG_PAR_EVEN));
     //IntEnable(INT_UART0);

@@ -115,7 +115,7 @@ Timer0BIntHandler(void)
 // On doit connecter les broches PD0 et PB2 pour effectuer le test.
 //
 //*****************************************************************************
-static void
+/*static void
 SetupSignalSource(void)
 {
     //
@@ -140,7 +140,7 @@ SetupSignalSource(void)
     PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, TIMEOUT_VAL / 2);
     PWMOutputState(PWM_BASE, PWM_OUT_0_BIT, 1);
     PWMGenEnable(PWM_BASE, PWM_GEN_0);
-}
+}*/
 
 //*****************************************************************************
 //
@@ -220,7 +220,7 @@ void getAntenne(void)
     // Set the clocking to run directly from the crystal.
     //
 
-    SetupSignalSource(); 
+    //SetupSignalSource(); 
     initTimer1B();
     initDMA(g_usTimerBuf);
     TimerIntEnable(TIMER1_BASE, TIMER_CAPB_EVENT);
@@ -297,4 +297,11 @@ void getAntenne(void)
     UARTSend(&fin, 1);
     //while(1);
     IntDisable(INT_TIMER1B);
+    TimerIntDisable(TIMER1_BASE, TIMER_CAPB_EVENT);
+    ROM_IntDisable(INT_UDMAERR);
+    ROM_uDMADisable();
+    ROM_uDMAChannelEnable(UDMA_CHANNEL_TMR1B);
+    TimerDisable(TIMER1_BASE, TIMER_B);
+    ROM_SysCtlPeripheralDisable(SYSCTL_PERIPH_TIMER1);
+	ROM_SysCtlPeripheralDisable(SYSCTL_PERIPH_UDMA);
 }
