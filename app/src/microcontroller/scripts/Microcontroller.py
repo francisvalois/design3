@@ -168,7 +168,7 @@ def handleDecodeAntenna(req):
 
         byte = ' '.encode('ascii')
         donnees = bytearray()
-        #try:
+
         while byte != '\n'.encode('ascii'):
             byte = ser.read(1);
             donnees = donnees + byte
@@ -178,7 +178,9 @@ def handleDecodeAntenna(req):
             fichierCVS(dataArray, nomFichier)
         else:
             print("Erreur de formattage des donnees\n")
+            
         ser.close()
+        
         if index%5 == 4:
             test = traiterDonneesAntennes("patate")
             if test:
@@ -231,7 +233,6 @@ def sendCommandToController(commande):
         if ser.isOpen():
             ser.write(bytes(commande))
             time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
-
 
             while('E' not in response):
                 response = ser.readline()  # Boucle while ici?? 

@@ -9,6 +9,7 @@ public:
     Workspace();
     virtual ~Workspace();
     Position getAntennaPos();
+    Position getAntennaReadPos();
 
     Position getSudocubePos(int sudocubeNo);
     float getSudocubeAngle(int sudocubeNo);
@@ -31,6 +32,7 @@ public:
 private:
     //Fixe
     Position antenna;
+    Position antennaReadPos;
     Position sudocubesPos[8];
     float sudocubesAngle[8];
     float poleAngle[4];

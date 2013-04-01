@@ -35,6 +35,8 @@ Workspace::Workspace() {
 
     antenna.set(60.0f, 54.0f);
 
+    antennaReadPos.set(46.0f, 54.0f);
+
     poleAngle[0] = 90.0f;
     poleAngle[1] = -90.0f;
     poleAngle[2] = -180.0f;
@@ -57,6 +59,10 @@ Workspace::~Workspace() {
 
 Position Workspace::getAntennaPos() {
     return antenna;
+}
+
+Position Workspace::getAntennaReadPos() {
+    return antennaReadPos;
 }
 
 Position Workspace::getSudocubePos(int sudocubeNo) {

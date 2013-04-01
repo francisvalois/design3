@@ -7,6 +7,8 @@ public:
 	Position(float xx, float yy) {x = xx; y = yy;};
 
 	void set(float xx, float yy) {x = xx; y = yy;};
+	void translateX(float xx) { x += xx;};
+	void translateY(float yy) { y += yy;};
 
 	float x;
 	float y;
