@@ -64,9 +64,11 @@ void afficher_param(char sudocube, char orient, char T);
 //timer.c
 void disableTimer(void);
 void enableTimer(void);
+void initTimer(void);
 //qei.c
 void disableQEIs(void);
 void enableQEIs(void);
+void initQEI(void);
 //antenne.c
 void getAntenne(void);
 
@@ -163,6 +165,8 @@ tBoolean CommandHandler(void){
 	 		consigne = 6400;
 	 		deplacement_x_abs -= 1591;
 	 	}*/
+	 	long consignex=0;
+	 	long consigney=0;
 	 	if(deplacement_y > 0 && deplacement_y < 1745 && deplacement_x == 0){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
@@ -178,8 +182,20 @@ tBoolean CommandHandler(void){
 	 	else if((deplacement_x_abs > 6000 && deplacement_y == 0) || (deplacement_y > 6000 && deplacement_x_abs == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
-	 		consigne = 6400;
+	 		consigne = 3200;
 	 		//deplacement_x_abs -= 504;
+	 	}
+	 	else if(deplacement_x_abs !=0 && deplacement_y !=0){
+	 		offset = 0; //Offset sur commande des moteurs
+	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
+	 		if(deplacement_x_abs < deplacement_y){
+	 			consignex = 800;
+	 			consigney = (800*deplacement_y)/deplacement_x_abs;
+	 		}
+	 		else{
+	 			consigney = 800;
+	 			consignex = (800*deplacement_x_abs)/deplacement_y;
+	 		}
 	 	}
 	 	else{
 	 		offset = 0; //Offset sur commande des moteurs
@@ -200,8 +216,14 @@ tBoolean CommandHandler(void){
 	 	if(commande[0] == '-'){
 	 		deplacement_y = -deplacement_y;
 	 	}
-	 	moveFront(deplacement_y, consigne);
-	 	moveLateral(deplacement_x, consigne);
+	 	if(consignex != 0 && consigney != 0){
+	 		moveFront(deplacement_y, consigney);
+	 		moveLateral(deplacement_x, consignex);
+	 	}
+	 	else{
+	 		moveFront(deplacement_y, consigne);
+	 		moveLateral(deplacement_x, consigne);
+	 	}
 	 	initCommande();
 	 	is_waiting_for_action = true;
 	 	return true;
@@ -232,21 +254,33 @@ tBoolean CommandHandler(void){
 		degree += (commande[3]-'0')*10;
 		degree += (commande[4]-'0');
 		//degree = degree*16000/360;
-		if(commande[1] == 'P'){
-			degree = (degree-5.6)*16200/360;//(-5.6) Used to correct the initial torque offset dued to gearbox slack in the wheel
+		long consigne = 0;
+		if(commande[1] == 'P' && degree > 29){
+			degree = (degree-5.6)*16200/360;
 			degree = -degree;
+			consigne = 1600;
+		}
+		else if(commande[1] == 'P'){
+			degree = (degree)*16200/360;
+			degree = -degree;
+			consigne = 800;
+		}
+		else if(commande[1] == 'N' && degree > 29){
+			degree = (degree-5.6)*16200/360;
+			consigne = 1600;
 		}
 		else if(commande[1] == 'N'){
-			degree = degree*16200/360;
+			degree = (degree)*16200/360;
+			consigne = 800;
 		}
 		else{
 			initCommande();
-			is_waiting_for_action = true;
+			is_waiting_for_action = false;
 			return false;
 		}
 		offset = 0; //Offset sur commande des moteurs
 	 	offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
-		turn(degree, 1600);
+		turn(degree, consigne);
 		initCommande();
 		is_waiting_for_action = true;
 		return true;	
@@ -274,9 +308,12 @@ tBoolean CommandHandler(void){
 		disableTimer(); //Arrêter le timer  de l'asservissement
 		disableQEIs(); //Arrêter les calculs des QEIs
 		getAntenne();
-		enableQEIs(); //Permettre les calculs des QEIs
-		enableTimer(); //Enabler le timer  de l'asservissement
-		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
+		//enableQEIs(); //Permettre les calculs des QEIs
+		//enableTimer(); //Enabler le timer  de l'asservissement
+		initQEI();
+		initTimer();
+		//SysCtlReset();
+		//send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
 		return true;
 	}
 	else if(commande[0] == 'O'){ //Ouvrir LED
@@ -321,8 +358,8 @@ tBoolean CommandHandler(void){
 		average += sonarTimeDelta.buffer[sonarTimeDelta.read++%BUFFER_LEN];
 		ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5, 0x00);
 		disableSonar();
-		enableQEIs(); //Permettre les calculs des QEIs
-		enableTimer(); //Enabler le timer  de l'asservissement
+		initQEI(); //Permettre les calculs des QEIs
+		initTimer(); //Enabler le timer  de l'asservissement
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0xFF000000) >> 24;
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0x00FF0000) >> 16;
 		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= (average & 0x0000FF00) >> 8;

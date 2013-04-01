@@ -203,7 +203,7 @@ int main(void)
 
     while(1)
 	{
-		//EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
+		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
 
 		//si un charactère dans la Receive FIFO
 		if(!(UART0_FR_R & UART_FR_RXFE)) //&& (send_buffer.read > send_buffer.write-256))
@@ -211,6 +211,9 @@ int main(void)
 			receive_buffer.buffer[receive_buffer.write%BUFFER_LEN] = UART0_DR_R;
 			if(!(receive_buffer.buffer[receive_buffer.write%BUFFER_LEN] > 90 || 32 > receive_buffer.buffer[receive_buffer.write%BUFFER_LEN])){
 				receive_buffer.write++;
+			}
+			else if(receive_buffer.buffer[receive_buffer.write%BUFFER_LEN] == 'R'){
+				SysCtlReset();
 			}
 		}
 		
