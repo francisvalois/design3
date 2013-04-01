@@ -129,16 +129,15 @@ bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRo
     }
 
     robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
-    //Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
+    Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
 
-    response.x = 36.5;
+    response.x = 36.5; // TODO À supprimer quand la kinect fonctionnera
     response.y = 79.0;
 
     ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", 36.5, 79.0);
 
     stringstream info;
-    info << "Kinocto : Demande de la position du robot \n";
-    info << "Envoi de la position : ";
+    info << "Kinocto : Demande de la position du robot \n Envoi de la position : ";
     info << " (" << robot[1] << "," << robot[0] << ")";
     QString infoQ((char*) info.str().c_str());
 
