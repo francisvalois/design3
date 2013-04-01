@@ -35,7 +35,7 @@ Workspace::Workspace() {
 
     squareCenter.set(60.0f, 54.0f);
 
-    antennaReadPos.set(46.0f, 54.0f);
+    antennaReadPos.set(48.0f, 52.0f);
 
     poleAngle[0] = 90.0f;
     poleAngle[1] = -90.0f;
