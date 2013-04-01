@@ -221,7 +221,7 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
 }
 
 void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
-    Sudocube * goodSudocube = 0;
+    Sudocube * goodSudocube = NULL;
     findAGoodSudocube(sudocubes, goodSudocube);
 
     if (goodSudocube != NULL) {
@@ -242,6 +242,8 @@ void Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes, Sudocube * goodS
     for (int i = 0; i < 2; i++) {
         if (sudocubes[i]->equals(*sudocubes[i + 1])) {
             goodSudocube = sudocubes[i];
+            cout << "le bon sudocube" << i << endl;
+            return;
         }
     }
 }
