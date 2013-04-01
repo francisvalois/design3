@@ -20,7 +20,7 @@ const int TABLE_Y = 114;
 const int ROBOT_RADIUS = 13;
 const int OBSTACLE_RADIUS = 7;
 const int DRAWING_ZONE = 89;
-const int BUFFER_SIZE = ROBOT_RADIUS + 5;
+const int BUFFER_SIZE = ROBOT_RADIUS + 3;
 const int TOTAL_OBSTACLE_RADIUS = (BUFFER_SIZE + OBSTACLE_RADIUS);
 
 #define PI 3.14159265
