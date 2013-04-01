@@ -119,12 +119,12 @@ bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRo
     }
 
     robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
-    Vec2f robot = robotDetection.getRobotPosition();
+    //Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
 
-    response.x = robot[0];
-    response.y = robot[1];
+    response.x = 36.5;
+    response.y = 79.0;
 
-    ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", robot[1], robot[0]);
+    ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", 36.5, 79.0);
 
     return true;
 }
