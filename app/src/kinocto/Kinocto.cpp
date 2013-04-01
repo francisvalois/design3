@@ -165,22 +165,19 @@ void Kinocto::adjustSidePosition() {
 
 float Kinocto::getSonarDistance() {
     vector<float> distances;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 1; i <= 3; i++) {
         distances.push_back(microcontroller->getSonarDistance(1));
     }
 
-    float distance = 0.0f;
     for (int i = 0; i < distances.size(); i++) {
         for (int j = 0; i < distances.size(); j++) {
-            float gap = abs(distances[i] - distances[j]);
-            if ((distances[i] - distances[j]) <= 1) {
-                distance = distances[i];
-                break;
+            if (abs(distances[i] - distances[j]) <= 1) {
+                return distances[i];
             }
         }
     }
 
-    return distance;
+    return 0.0f;
 }
 
 float Kinocto::adjustFrontPosition() {
