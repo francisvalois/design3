@@ -9,10 +9,10 @@ Workspace::Workspace() {
     obstacles[1].set(0.0f, 0.0f);
 
     //Valeurs fixes
-    sudocubesPos[0].set(176.0f, 68.0f);
+    sudocubesPos[0].set(176.0f, 66.0f);
     sudocubesAngle[0] = -90.0f;
 
-    sudocubesPos[1].set(209.0f, 68.0f);
+    sudocubesPos[1].set(209.0f, 66.0f);
     sudocubesAngle[1] = -90.0f;
 
     sudocubesPos[2].set(186.0f, 95.0f);
@@ -27,13 +27,15 @@ Workspace::Workspace() {
     sudocubesPos[5].set(186.0f, 18.0f);
     sudocubesAngle[5] = 0.0f;
 
-    sudocubesPos[6].set(209.0f, 45.0f);
+    sudocubesPos[6].set(209.0f, 45.5f);
     sudocubesAngle[6] = 90.0f;
 
-    sudocubesPos[7].set(174.0f, 45.0f);
+    sudocubesPos[7].set(174.0f, 45.5f);
     sudocubesAngle[7] = 90.0f;
 
-    antenna.set(60.0f, 54.0f);
+    squareCenter.set(60.0f, 54.0f);
+
+    antennaReadPos.set(43.0f, 56.0f);
 
     poleAngle[0] = 90.0f;
     poleAngle[1] = -90.0f;
@@ -55,8 +57,12 @@ Workspace::Workspace() {
 Workspace::~Workspace() {
 }
 
-Position Workspace::getAntennaPos() {
-    return antenna;
+Position Workspace::getSquareCenter() {
+    return squareCenter;
+}
+
+Position Workspace::getAntennaReadPos() {
+    return antennaReadPos;
 }
 
 Position Workspace::getSudocubePos(int sudocubeNo) {

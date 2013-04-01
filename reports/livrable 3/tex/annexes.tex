@@ -1,0 +1,23 @@
+%!TEX root = ../rapport.tex
+%!TEX encoding = UTF-8 Unicode
+% Chapitres "Annexes"
+
+% modifié par Francis Valois, Université Laval
+% 31/01/2011 - version 1.0 - Création du document
+\chapter{Annexes}
+\label{s:annexes}
+
+\section{Asservissement des moteurs}
+\subsection{Fonction agissant comme PID} \label{s:fonction_PID}
+\begin{lstlisting}[language=C]
+long PIDHandler(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
+{
+  long error = *consigne - *measured_value;
+  *I = *I + error*dt;
+  float D = (error - *previous_error)/dt;
+  long output = Kp*error + Ki*(*I) + Kd*D;
+  *previous_error = error;
+  return output;
+}
+\end{lstlisting}
+

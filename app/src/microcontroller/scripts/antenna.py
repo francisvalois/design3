@@ -13,7 +13,7 @@ def traiterDonneesAntennes(nomFichier):
 	v = 0
 	for v in range(5):
 
-		nom = ".\\" + nomFichier + '.' + str(v)
+		nom = "./" + nomFichier + '.' + str(v)
 		f = open(nom, 'r')
 
 		data = f.readlines()

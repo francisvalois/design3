@@ -158,17 +158,20 @@ def handleRotate(req):
     return RotateResponse()
 
 def handleDecodeAntenna(req):
+    rospy.loginfo("Decoding antenna param...")
+
     response = DecodeAntennaResponse()
     fini = False
     index = 0
     while fini == False:
+        rospy.loginfo("index %d", index)
         nomFichier = "patate.{0}".format(index%5)
         ser.open()
         ser.write(bytes("A0000000"))
 
         byte = ' '.encode('ascii')
         donnees = bytearray()
-        #try:
+
         while byte != '\n'.encode('ascii'):
             byte = ser.read(1);
             donnees = donnees + byte
@@ -178,7 +181,9 @@ def handleDecodeAntenna(req):
             fichierCVS(dataArray, nomFichier)
         else:
             print("Erreur de formattage des donnees\n")
+            
         ser.close()
+        
         if index%5 == 4:
             test = traiterDonneesAntennes("patate")
             if test:
@@ -232,7 +237,6 @@ def sendCommandToController(commande):
             ser.write(bytes(commande))
             time.sleep(0.5)  # le temps que le microcontrolleur recoive la commande
 
-
             while('E' not in response):
                 response = ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
@@ -264,7 +268,7 @@ def Microcontroller():
     ser = serial.Serial()
     # ser.port = ('/dev/ttyUSB0') 
     ser.port = ('/dev/serial/by-id/usb-TXI_Luminary_Micro_ICDI_Board_0B01015D-if01-port0')
-    ser.baudrate = 115200
+    ser.baudrate = 19200
     ser.parity = serial.PARITY_EVEN
     ser.stopbits = 1
     ser.timeout = 0

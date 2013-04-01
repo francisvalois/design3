@@ -46,6 +46,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         state = LOOPING;
         baseStation->sendConfirmRobotStarted();
 
+		microcontroller->turnLED(false);
         getObstaclesPosition();
         getRobotPosition();
         //TROUVER L'ANGLE ET LA POSITION
@@ -53,7 +54,9 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         decodeAntennaParam();
         showAntennaParam();
         goToSudocubeX();
+        //RECTIFIER ANGLE
         adjustFrontPosition();
+        adjustSidePosition();
         //RECTIFIER ANGLE
         extractAndSolveSudocube();
         goToDrawingZone();
@@ -73,7 +76,9 @@ void Kinocto::restartLoop(const std_msgs::String::ConstPtr& msg) {
         decodeAntennaParam();
         showAntennaParam();
         goToSudocubeX();
-        //RECTIFIER POSITION
+        //RECTIFIER ANGLE
+        adjustFrontPosition();
+        adjustSidePosition();
         //RECTIFIER ANGLE
         extractAndSolveSudocube();
         goToDrawingZone();
@@ -85,6 +90,7 @@ void Kinocto::restartLoop(const std_msgs::String::ConstPtr& msg) {
 void Kinocto::getObstaclesPosition() {
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
+	pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 }
 
 void Kinocto::getRobotPosition() {
@@ -94,7 +100,7 @@ void Kinocto::getRobotPosition() {
 }
 
 void Kinocto::goToAntenna() {
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaReadPos());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
 
     executeMoves(moves);
@@ -118,10 +124,11 @@ void Kinocto::decodeAntennaParam() {
 
 void Kinocto::showAntennaParam() {
     microcontroller->writeToLCD(antennaParam);
-    sleep(5); //On dors 5 sec, le temps de lire les informations sur l'écran LCD
+    sleep(3);
 }
 
 void Kinocto::goToSudocubeX() {
+    pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(antennaParam.getNumber()));
 
@@ -131,23 +138,58 @@ void Kinocto::goToSudocubeX() {
 }
 
 void Kinocto::adjustSidePosition() {
-    /*if () {
+    int sudocubeNo = antennaParam.getNumber();
+	float ROBOT_SIZE = 12.5;
+	float MAX_X = 231.0f;
+	float MAX_Y = 111.0f;
+	
+    if (sudocubeNo <= 2) {
+        microcontroller->rotate(90);
+        float distance = getSonarDistance();
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (MAX_X - distance - ROBOT_SIZE));
+        microcontroller->rotate(-90);
+    } else if (sudocubeNo <= 4) {
+        microcontroller->rotate(-90);
+        float distance = getSonarDistance();
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (MAX_Y - distance - ROBOT_SIZE));
+        microcontroller->rotate(90);
+    } else if (sudocubeNo <= 6) {
+        microcontroller->rotate(90);
+        float distance = getSonarDistance();
+        microcontroller->move((distance + ROBOT_SIZE) - workspace.getSudocubePos(sudocubeNo).y);
+        microcontroller->rotate(-90);
+    } else if (sudocubeNo <= 8) {
+        microcontroller->rotate(-90);
+        float distance = getSonarDistance();
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (MAX_X - distance - ROBOT_SIZE));
+        microcontroller->rotate(90);
+    }
+}
 
-     }*/
+float Kinocto::getSonarDistance() {
+    vector<float> distances;
+    for (int i = 1; i <= 3; i++) {
+        distances.push_back(microcontroller->getSonarDistance(1));
+    }
+
+    for (int i = 0; i < distances.size(); i++) {
+        for (int j = 0; i < distances.size(); j++) {
+            if (abs(distances[i] - distances[j]) <= 1) {
+                return distances[i];
+            }
+        }
+    }
+
+    return 0.0f;
 }
 
 float Kinocto::adjustFrontPosition() {
     float FRONT_DISTANCE = 33.02f;
 
-    //for (int i = 0; i < 3; i++) {
-    float frontDistance = microcontroller->getSonarDistance(1);
-    //}
+    float frontDistance = getSonarDistance();
+    microcontroller->move(frontDistance - FRONT_DISTANCE);
 
-    float adjustOf = frontDistance - FRONT_DISTANCE;
-
-    microcontroller->move(adjustOf);
-
-    return adjustOf;
+    return frontDistance - FRONT_DISTANCE;
 }
 
 void Kinocto::extractAndSolveSudocube() {
@@ -183,10 +225,11 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
 }
 
 void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
-    Sudocube * goodSudocube = 0;
-    findAGoodSudocube(sudocubes, goodSudocube);
+    Sudocube * goodSudocube = NULL;
+    int goodSudocubeNo = findAGoodSudocube(sudocubes);
 
-    if (goodSudocube != NULL) {
+    if (goodSudocubeNo != -1) {
+        goodSudocube = sudocubes[goodSudocubeNo];
         sudokubeSolver.solve(*goodSudocube);
         if (goodSudocube->isSolved()) {
             ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
@@ -200,12 +243,13 @@ void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudoc
     }
 }
 
-void Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes, Sudocube * goodSudocube) {
+int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
     for (int i = 0; i < 2; i++) {
         if (sudocubes[i]->equals(*sudocubes[i + 1])) {
-            goodSudocube = sudocubes[i];
+            return i ;
         }
     }
+    return -1;
 }
 
 void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {
@@ -218,10 +262,28 @@ void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {
 
 void Kinocto::goToDrawingZone() {
     float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
 
     executeMoves(moves);
+
+    microcontroller->move(-13.0f);
+    Position robotPos = workspace.getRobotPos();
+    switch (antennaParam.getOrientation()) {
+    case 1:
+        robotPos.translateY(13.0f);
+        break;
+    case 2:
+        robotPos.translateY(-13.0f);
+        break;
+    case 3:
+        robotPos.translateX(13.0f);
+        break;
+    case 4:
+        robotPos.translateX(-13.0f);
+        break;
+    }
+    workspace.setRobotPos(robotPos);
 }
 
 void Kinocto::drawNumber() {
@@ -245,7 +307,7 @@ void Kinocto::endLoop() {
 
     microcontroller->turnLED(true);
     baseStation->sendLoopEndedMessage();
-    state = WAITING_TO_RESTART;
+    state = WAITING;
 }
 
 void Kinocto::restartLoop() {
@@ -277,7 +339,6 @@ bool Kinocto::testGoToSudocubeX(TestGoToSudocubeX::Request & request, TestGoToSu
     Position obs1(request.obs1x, request.obs1y);
     Position obs2(request.obs2x, request.obs2y);
     workspace.setObstaclesPos(obs1, obs2);
-    pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     //Spécification du sudocube
     antennaParam.setNumber(request.sudocubeNo);
@@ -407,6 +468,16 @@ bool Kinocto::testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request 
     return true;
 }
 
+bool Kinocto::testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response) {
+    antennaParam.setNumber(request.sudocubeNo);
+
+    adjustSidePosition();
+
+    return true;
+}
+
+//adjustSidePosition
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "kinocto");
     ros::NodeHandle nodeHandle;
@@ -428,6 +499,7 @@ int main(int argc, char **argv) {
     ros::ServiceServer service7 = nodeHandle.advertiseService("kinocto/TestDrawNumber", &Kinocto::testDrawNumber, &kinocto);
     ros::ServiceServer service8 = nodeHandle.advertiseService("kinocto/TestGoToGreenFrameAndDraw", &Kinocto::testGoToGreenFrameAndDraw, &kinocto);
     ros::ServiceServer service9 = nodeHandle.advertiseService("kinocto/TestAdjustFrontPosition", &Kinocto::testAdjustFrontPosition, &kinocto);
+    ros::ServiceServer service10 = nodeHandle.advertiseService("kinocto/TestAdjustSidePosition", &Kinocto::testAdjustSidePosition, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();

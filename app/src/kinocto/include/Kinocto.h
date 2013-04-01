@@ -38,6 +38,7 @@
 #include "kinocto/TestDrawNumber.h"
 #include "kinocto/TestGoToGreenFrameAndDraw.h"
 #include "kinocto/TestAdjustFrontPosition.h"
+#include "kinocto/TestAdjustSidePosition.h"
 
 #define WAITING 1
 #define LOOPING 2
@@ -73,12 +74,13 @@ private:
     void showAntennaParam();
     void goToSudocubeX();
     void adjustSidePosition();
+    float getSonarDistance();
     float adjustFrontPosition();
     void extractAndSolveSudocube();
     std::vector<Sudocube *> extractSudocubes();
     void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
     void deleteSudocubes(std::vector<Sudocube *> & sudocubes);
-    void findAGoodSudocube(std::vector<Sudocube *> & sudocubes, Sudocube * goodSudocube);
+    int findAGoodSudocube(std::vector<Sudocube *> & sudocubes);
     void goToDrawingZone();
     void drawNumber();
     void endLoop();
@@ -102,6 +104,8 @@ public:
     bool testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response);
     bool testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Request & request, kinocto::TestGoToGreenFrameAndDraw::Response & response);
     bool testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request & request, kinocto::TestAdjustFrontPosition::Response & response);
+    bool testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response);
+
 };
 
 #endif

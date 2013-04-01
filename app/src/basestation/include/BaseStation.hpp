@@ -18,10 +18,10 @@
 #include "basestation/LoopEnded.h"
 #include "basestation/ShowConfirmStartRobot.h"
 
-#include "KinectCalibration.h"
+#include "KinectCalibrator.h"
 #include "KinectCapture.h"
-#include "ObstaclesDetection.h"
-#include "RobotDetection.h"
+#include "ObstaclesDetector.h"
+#include "RobotDetector.h"
 
 //Objets de la classe
 #include "../../build/basestation/ui_mainwindow.h"
@@ -64,8 +64,8 @@ private:
     int state;
 
     KinectCapture kinectCapture;
-    ObstaclesDetection obstaclesDetection;
-    RobotDetection robotDetection;
+    ObstaclesDetector obstaclesDetection;
+    RobotDetector robotDetection;
 
     ros::Publisher startLoopPublisher;
 
