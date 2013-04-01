@@ -131,24 +131,47 @@ void Kinocto::goToSudocubeX() {
 }
 
 void Kinocto::adjustSidePosition() {
-    /*if () {
+    int sudocubeNo = antennaParam.getNumber();
 
-     }*/
+    if (sudocubeNo <= 2) {
+        microcontroller->rotate(90);
+        float distance = getSonarDistance();
+        microcontroller->move((231 - distance - 12) - workspace.getSudocubePos(sudocubeNo).x);
+        microcontroller->rotate(-90);
+    } else if (sudocubeNo <= 4) {
+        microcontroller->rotate(-90);
+        float distance = getSonarDistance();
+        microcontroller->move((114 - distance - 12) - workspace.getSudocubePos(sudocubeNo).y);
+        microcontroller->rotate(90);
+    } else if (sudocubeNo <= 6) {
+        microcontroller->rotate(90);
+        float distance = getSonarDistance();
+        microcontroller->move((distance + 12) - workspace.getSudocubePos(sudocubeNo).y);
+        microcontroller->rotate(-90);
+    } else if (sudocubeNo <= 8) {
+        microcontroller->rotate(-90);
+        float distance = getSonarDistance();
+        microcontroller->move((231 - distance - 12) - workspace.getSudocubePos(sudocubeNo).x);
+        microcontroller->rotate(90);
+    }
+}
+
+float Kinocto::getSonarDistance() {
+    float distance = 0.0f;
+    for (int i = 0; i < 10; i++) {
+        distance += microcontroller->getSonarDistance(1) / 10;
+    }
+
+    return distance;
 }
 
 float Kinocto::adjustFrontPosition() {
     float FRONT_DISTANCE = 33.02f;
 
-    float frontDistance = 0.0f;
-    for (int i = 0; i < 10; i++) {
-        frontDistance += microcontroller->getSonarDistance(1) / 10;
-    }
+    float frontDistance = getSonarDistance();
+    microcontroller->move(frontDistance - FRONT_DISTANCE);
 
-    float adjustOf = frontDistance - FRONT_DISTANCE;
-
-    microcontroller->move(adjustOf);
-
-    return adjustOf;
+    return frontDistance - FRONT_DISTANCE;
 }
 
 void Kinocto::extractAndSolveSudocube() {
@@ -408,6 +431,16 @@ bool Kinocto::testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request 
     return true;
 }
 
+bool Kinocto::testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response) {
+    antennaParam.setNumber(request.sudocubeNo);
+
+    adjustSidePosition();
+
+    return true;
+}
+
+//adjustSidePosition
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "kinocto");
     ros::NodeHandle nodeHandle;
@@ -429,6 +462,7 @@ int main(int argc, char **argv) {
     ros::ServiceServer service7 = nodeHandle.advertiseService("kinocto/TestDrawNumber", &Kinocto::testDrawNumber, &kinocto);
     ros::ServiceServer service8 = nodeHandle.advertiseService("kinocto/TestGoToGreenFrameAndDraw", &Kinocto::testGoToGreenFrameAndDraw, &kinocto);
     ros::ServiceServer service9 = nodeHandle.advertiseService("kinocto/TestAdjustFrontPosition", &Kinocto::testAdjustFrontPosition, &kinocto);
+    ros::ServiceServer service10 = nodeHandle.advertiseService("kinocto/TestAdjustSidePosition", &Kinocto::testAdjustSidePosition, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();

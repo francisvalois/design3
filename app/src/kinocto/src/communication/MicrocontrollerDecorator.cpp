@@ -53,7 +53,7 @@ void MicrocontrollerDecorator::move(float distance) {
     Move srv;
     srv.request.distance = distance;
 
-    if (distance < -1 || distance > 1) { // TODO vérifier conditions
+    if (distance < -0.75f || distance > 0.75f) { // TODO vérifier conditions
         if (moveClient.call(srv) == false) {
             ROS_ERROR("Failed to call service microcontroller/move");
         }
@@ -66,7 +66,7 @@ void MicrocontrollerDecorator::rotate(float angle) {
     Rotate srv;
     srv.request.angle = angle;
 
-    if (angle < -1 || angle > 1) {
+    if (angle < -0.75f || angle > 0.75f) {
         if (rotateClient.call(srv) == false) {
             ROS_ERROR("Failed to call service microcontroller/rotate");
         }

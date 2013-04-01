@@ -24,6 +24,7 @@ add_service_files(
   TestDrawNumber.srv
   TestGoToGreenFrameAndDraw.srv
   TestAdjustFrontPosition.srv
+  TestAdjustSidePosition.srv
   MoveRobotToSudocube.srv
 )
 
