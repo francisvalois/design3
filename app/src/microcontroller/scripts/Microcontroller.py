@@ -158,10 +158,13 @@ def handleRotate(req):
     return RotateResponse()
 
 def handleDecodeAntenna(req):
+    rospy.loginfo("Decoding antenna param...")
+
     response = DecodeAntennaResponse()
     fini = False
     index = 0
     while fini == False:
+        rospy.loginfo("index %d", index)
         nomFichier = "patate.{0}".format(index%5)
         ser.open()
         ser.write(bytes("A0000000"))
