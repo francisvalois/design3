@@ -1,0 +1,145 @@
+% !TEX encoding = UTF-8 Unicode
+
+%
+% Exemple de rapport
+% par Pierre Tremblay, Universite Laval
+% modifié par Christian Gagne, Universite Laval
+% modifié par Francis Valois, Université Laval
+% 31/01/2011 - version 1.4
+%
+
+%
+% Modele d'organisation d'un projet LaTeX 
+% rapport/      dossier racine et fichier principal
+% rapport/fig   fichiers des figures
+% rapport/tex   autres fichiers .tex
+%
+
+% ** Preambule **
+%
+% Ajouter les options au besoin :
+%    - "ULlof" pour inclure la liste des figures, requis si "\begin{figure}" utilise
+%    - "ULlot" pour inclure la liste des tableaux, requis si "\begin{table}" utilise
+%
+\documentclass[12pt,ULlof,ULlot]{ULrapport}
+
+% Chargement des packages supplementaires (si absent de la classe)
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[autolanguage]{numprint}
+\usepackage{icomma}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage[absolute]{textpos}
+\usepackage[final]{pdfpages}
+\usepackage{listings} % For source code
+\usepackage{color}
+\usepackage{pdflscape}
+\usepackage{multirow}
+\usepackage{array}
+
+% settings pour le listing de code
+\lstset{
+	tabsize=4,
+	language=matlab,
+        basicstyle=\scriptsize,
+        %upquote=true,
+        aboveskip={1.5\baselineskip},
+        columns=fixed,
+        showstringspaces=false,
+        extendedchars=true,
+        breaklines=true,
+        prebreak = \raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+	frame=single,
+        showtabs=false,
+        showspaces=false,
+        showstringspaces=false,
+        identifierstyle=\ttfamily,
+        keywordstyle=\color[rgb]{0,0,1},
+        commentstyle=\color[rgb]{0.133,0.545,0.133},
+        stringstyle=\color[rgb]{0.627,0.126,0.941},
+	language=Java
+}
+\newcommand{\HRule}{\rule{\linewidth}{0.2mm}}
+%\usepackage[hmargin=3cm,vmargin=3.5cm]{geometry}
+\definecolor{mygrey}{gray}{.96} % Light Grey
+\lstset{ 
+	language=vhdl,              % choose the language of the code
+%("language=Verilog" is popular as well)
+	tabsize=4,			% sets the size of the tabs in spaces (1
+%Tab is replaced with 3 spaces)
+	basicstyle=\scriptsize,               % the size of the fonts that are
+%used for the code
+	numbers=left,                   % where to put the line-numbers
+	numberstyle=\tiny,              % the size of the fonts that are used
+%for the line-numbers
+	stepnumber=1,                   % the step between two line-numbers. If
+%it's 1 each line will be numbered
+	numbersep=5pt,                  % how far the line-numbers are from the
+%code
+	backgroundcolor=\color{mygrey}, % choose the background color. You must add \usepackage{color}
+	showspaces=false,              % show spaces adding particular underscores
+	showstringspaces=false,        % underline spaces within strings
+	%showtabs=false,                % show tabs within strings adding particular underscores
+	frame=single,	                 % adds a frame around the code
+	tabsize=3,	                    % sets default tabsize to 2 spaces
+	captionpos=b,                   % sets the caption-position to bottom
+	breaklines=true,                % sets automatic line breaking
+	breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+	%escapeinside={\%*}{*)},        % if you want to add a comment within your code
+	%commentstyle=\color{RedBrick}   % sets the comment style
+}
+
+\def\dbar{{\mathchar'26\mkern-12mu d}} 
+%\usepackage[options]{nom_du_package}
+
+% Definition d'une commande pour presenter des cellules multilignes dans un tableau
+\newcommand{\cellulemultiligne}[1]{\begin{tabular}{@{}c@{}}#1\end{tabular}}
+
+
+% Definition de colonnes en mode paragraphe avec alignement ajustable
+% Cette definition requiert le chargement du package "array"
+%    - alignement horizontal, parametre #1 : - \raggedright (aligne a gauche)
+%                                            - \centering (centre)
+%                                            - \raggedleft (aligne a droite)
+%    - alignement vertical, parametre #2 : - p (aligne en haut)
+%                                          - m (centre)
+%                                          - b (aligne en bas)
+%    - largeur, parametre #3 : longueur
+\newcolumntype{Z}[3]{>{#1\hspace{0pt}\arraybackslash}#2{#3}}
+
+% Definitions des parametres de la page titre
+\TitreProjet{Livrable 3 - Robot Kinocto}                         % Titre du projet
+\TitreRapport{Design III}       % Titre du rapport
+\Destinataire{M. Dominique Grenier, M. Luc Lamontagne et M. Abdelhakim Bendada}         % Nom(s) du destinataire
+\TableauMembres{%                                     % Tableau des membres de l'equipe
+   910\,058\,073  & Émile Arsenault \\\hline 
+   908\,190\,985  & Philippe Bourdages \\\hline
+   910\,098\,468  & Pierre-Luc Buhler \\\hline    
+   998\,107\,355  & Diane Fournier \\\hline
+   908\,318\,388  & Olivier Sylvain \\\hline
+   910\,055\,897  & Daniel Thibodeau \\\hline
+   910\,097\,879  & Francis Valois \\\hline
+}
+\DateRemise{4 avril 2013}                           % Date de remis
+
+
+% Corps du document
+
+\begin{document}
+
+%   Chapitres
+
+\input{tex/classes}
+\input{tex/sequences}
+\input{tex/integration}
+\input{tex/registre_risque}
+\input{tex/vision_1it}
+\input{tex/electronics}
+
+%\appendix
+%\input{tex/annexes}
+
+\end{document}
+% Fin du document
+

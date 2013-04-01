@@ -1,0 +1,61 @@
+%!TEX root = ../rapport.tex
+%!TEX encoding = UTF-8 Unicode
+
+% Chapitres "Introduction"
+
+% modifié par Francis Valois, Université Laval
+% 31/01/2011 - version 1.0 - Création du document
+\chapter{Registre de risques}
+\begin{landscape}
+\begin{table}[htbp]
+	\small
+ 	 \centering
+  	\caption{Registre de risques partie 1}
+  	\scalebox{0.8}{
+	\tabcolsep=0.11cm
+    \begin{tabular}{|Z{\centering}{m}{1.5cm}||Z{\raggedright}{p}{3cm}|Z{\raggedright}{m}{1.5cm}|Z{\raggedright}{p}{5cm}|Z{\raggedright}{p}{4cm}|Z{\centering}{m}{1.5cm}|Z{\centering}{m}{1.5cm}|Z{\raggedright}{p}{4cm}|Z{\raggedright}{p}{3cm}|}\hline
+    \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
+    1 & Bris de la batterie suite à une usure prématurée & 5 & Plus d'autonomie énergétique pour le robot, opération impossible & L'ensemble du système sera inopérable &5 & 60 & Formation des utilisateurs à l'endroit de l'utilisation. Apposition d'un capteur de tension. Dispositifs de protection (fusibles). Utiliser un système de recharge adéquat pour la batterie. & É. Arsenault \\\hline
+    2 & Utilisation entraînant l'alimentation hors de sa zone de fonctionnement & 5 &Bris  d'un ou des système d'alimentation. Les systèmes auxiliaires, le Mac mini ou les moteurs ne seront pas alimentés. Le système ne sera pas fonctionnel & Une partie ou l'ensemble du système sera inopérable & 5 & 25 & Utilisateur de connecteurs protégés (d'un seul sens possible). Dispositifs de protection (fusibles), surdimensionnement des composantes d'alimentation. Achat de pièces de rechange. & D. Thibodeau \\\hline
+    3 & Bris  du crayon lors du dessin & 4 & Le dessin ne pourra être complété & La portion dessin sera partiellement complète & 20 & 2 & Tests rigoureux et optimisation du choix de crayon avant la compétition & É. Arsenault \\\hline
+    4 & Bris du système de préhension & 5 & Le dessin ne pourra être complété et selon le moment du bris, la trajectoire du robot peut être affectée & La portion dessin sera partiellement complète et la trajectoire sera déviée & 5 & 10 & Tests rigoureux et essais multiples pour vérifier la stabilité en température lors du fonctionnement  & É. Arsenault \\\hline
+  	5 & Mauvais branchement avec le microcontrôleur& 4 & Bris d'une portion ou de la totalité du microcontrôleur. Le bris d'une portion du microcontrôleur empêche l'exécution de la tâche dans son ensemble et peut occasionner des bris dans les systèmes reliés & Un robot qui ne peut pas se déplacer correctement, qui n'allume pas la DEL ou qui n'active pas le préhenseur & 5 & 100 & Isolation des entrées et sorties avec des dispositifs de protection (diode), limiteur de courant & D. Fournier \\\hline    
+    \end{tabular}}%
+  \label{tab:rr1}%
+\end{table}%
+\end{landscape}
+\begin{landscape}
+\begin{table}[htbp]
+	\small
+ 	 \centering
+  	\caption{Registre de risques partie 2}
+  	\scalebox{0.8}{
+	\tabcolsep=0.11cm
+    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4.8cm}|p{4.6cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{3cm}|}\hline
+    \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
+    6 & Mauvaise utilisation des entrées/sorties ou des ports d'alimentation du Mac mini& 5 & Bris d'une portion ou de la totalité du Mac mini. Une portion ou l'ensemble des auxiliaires ne fonctionnera pas correctement. Le système sera partiellement fonctionnel & Robot incapable d'effectuer l'ensemble de la tâche & 5 &  600  & Apposition de protections électriques (fusibles et interrupteurs) sur l'étage d'alimentation du Mac mini. Fixation robuste du Mac mini sur le robot. Protection du port USB du Mac mini en n'utilisant pas le fil d'alimentation. & F. Valois \\\hline
+    7 & Collision de la caméra web avec les obstacles lors des déplacements ou mauvaise manipulation de celle-ci. & 4 & Bris de la caméra web. Le bris de la caméra empêche la vision des cubes & Si la caméra ne peut voir le sudo cube, on ne peut trouver le chiffre dans la case rouge et effectuer le bon dessin & 5 & 80 & Storage adéquat de la caméra, protection d'alimentation (fusible), limiter les chocs contre les obstacles & D. Thibodeau \\\hline
+	8 & Problème de communication entre le Mac mini et la station de base & 5 & Les informations requises ne pourront être transmises correctement, on perd l'information sur le comportement du robot ainsi que sa position. Le robot ne pourra pas se localiser initialement et en temps réel. & Le robot de remplira pas les exigences d'affichage sur la station de base, le robot ne recevra aucune position de la Kinect  & 5 &       & Tests répétés pour la transmission et de la réception de l'information en temps réel entre le Mac mini et la station de base & P. Bourdages \\\hline	
+	9 & Bris du système d'exploitation du Mac mini & 4 & La portion logicielle du robot et le traitement seront absents. Le système ne sera pas fonctionnel & Robot incapable d'accomplir un traitement de tâches & 30 &       &Clonage d'une version fonctionnelle et stable du système d'exploitation & P. Buhler \\\hline
+\end{tabular}}%
+  \label{tab:rr2}%
+\end{table}%
+\end{landscape}
+\begin{landscape}
+\begin{table}[htbp]
+	\small
+ 	 \centering
+  	\caption{Registre de risques partie 3}
+  	\scalebox{0.8}{
+	\tabcolsep=0.11cm
+    \begin{tabular}{|c||p{3cm}|>{\centering\arraybackslash}m{1.5cm}|p{4cm}|p{4cm}|>{\centering\arraybackslash}m{1.5cm}|>{\centering\arraybackslash}m{1.5cm}|p{5cm}|p{3cm}|}\hline
+    \textbf{Risque} &\textbf{Type de risque} &\textbf{Niveau de priorité (1- faible, 5-élevé)} & \textbf{Conséquences de l'occurrence du risque} & \textbf{Coût en performance associé au risque} & \textbf{Prob. d'occurrence (\%)} & \textbf{Coût estimé du risque (\$)}& \textbf{Plan de réduction du risque} & \textbf{Responsable du risque} \\\hline\hline
+ 	10 & Problème de communication entre le Mac mini et le microcontrôleur & 5 & L'ensemble des auxiliaires ne fonctionnera pas correctement. Le système sera non fonctionnel & Robot incapable de se déplacer selon la trajectoire prévue et d'effectuer la tâche & 5 &       & Tests répétés pour la transmission et de la réception de l'information entre le Mac mini et le microcontrôleur & D. Fournier \\\hline
+ 	11 & Contact avec un ou des obstacles & 3 & Bris du système et déviation de trajectoire possible & Un robot qui entre en contact avec les obstacles ne remplit pas les exigences du projet & 20 &       & Tests rigoureux sur les déplacements et marge de sécurité importante pour le contournement. & O. Sylvain \\\hline
+   	12 & Problème d'identification du robot et de l'environnement (vision) par la Kinect & 5 & Correction de la trajectoire erronée, risque de rencontrer les obstacles, mauvaise trajectoire calculée & La trajectoire réelle ne sera pas optimale et le robot risque de rencontrer des obstacles & 10 &  & Tests rigoureux et utilisation de plusieurs images pour le calcul.& F. Valois \\\hline
+ 	13 & Perturbations de l'environnement du robot (irrégularités sur la table ou dans l'éclairage) &2 & La trajectoire du robot pourrait être 	déviée si la vision est entachée par une mauvaise luminosité ou une irrégularité dans la table & La trajectoire parcourue par le robot ne sera pas idéale& 10 &  & Tests rigoureux des algorithmes de vision et d'asservissement, essais avec ajout d'irrégularités & D. Thibodeau 			\\\hline  
+    14 & Départ de l'un des membres de l'équipe & 3 & La quantité de tâches des membres restants de l'équipe devra être augmentée. & Des détails et des ajustements de pointes nécessitant plus de temps ne seront pas réalisés& 5 &       & S'assurer d'une bonne communication dans l'équipe et d'un bon transfert de conaissances& D. Thibodeau\\\hline
+    \end{tabular}}%
+  \label{tab:rr3}%
+\end{table}%
+\end{landscape}
