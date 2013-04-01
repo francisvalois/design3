@@ -141,7 +141,7 @@ void Kinocto::adjustSidePosition() {
     } else if (sudocubeNo <= 4) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move((114 - distance - 13) - workspace.getSudocubePos(sudocubeNo).y);
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (114 - distance - 13));
         microcontroller->rotate(90);
     } else if (sudocubeNo <= 6) {
         microcontroller->rotate(90);
@@ -151,15 +151,15 @@ void Kinocto::adjustSidePosition() {
     } else if (sudocubeNo <= 8) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move((231 - distance - 13) - workspace.getSudocubePos(sudocubeNo).x);
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (231 - distance - 13));
         microcontroller->rotate(90);
     }
 }
 
 float Kinocto::getSonarDistance() {
     float distance = 0.0f;
-    for (int i = 0; i < 10; i++) {
-        distance += microcontroller->getSonarDistance(1) / 10;
+    for (int i = 0; i < 5; i++) {
+        distance += microcontroller->getSonarDistance(1) / 5;
     }
 
     return distance;
