@@ -244,10 +244,28 @@ void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {
 
 void Kinocto::goToDrawingZone() {
     float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaPos());
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
 
     executeMoves(moves);
+
+    microcontroller->move(-13.0f);
+    Position robotPos = workspace.getRobotPos();
+    switch (antennaParam.getOrientation()) {
+    case 1:
+        robotPos.translateY(13.0f);
+        break;
+    case 2:
+        robotPos.translateY(-13.0f);
+        break;
+    case 3:
+        robotPos.translateX(13.0f);
+        break;
+    case 4:
+        robotPos.translateX(-13.0f);
+        break;
+    }
+    workspace.setRobotPos(robotPos);
 }
 
 void Kinocto::drawNumber() {
