@@ -76,7 +76,9 @@ void Kinocto::restartLoop(const std_msgs::String::ConstPtr& msg) {
         decodeAntennaParam();
         showAntennaParam();
         goToSudocubeX();
-        //RECTIFIER POSITION
+        //RECTIFIER ANGLE
+        adjustFrontPosition();
+        adjustSidePosition();
         //RECTIFIER ANGLE
         extractAndSolveSudocube();
         goToDrawingZone();
@@ -88,6 +90,7 @@ void Kinocto::restartLoop(const std_msgs::String::ConstPtr& msg) {
 void Kinocto::getObstaclesPosition() {
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
+	pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 }
 
 void Kinocto::getRobotPosition() {
@@ -121,7 +124,7 @@ void Kinocto::decodeAntennaParam() {
 
 void Kinocto::showAntennaParam() {
     microcontroller->writeToLCD(antennaParam);
-    sleep(5); //On dors 5 sec, le temps de lire les informations sur l'écran LCD
+    sleep(3);
 }
 
 void Kinocto::goToSudocubeX() {
@@ -243,7 +246,6 @@ void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudoc
 int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
     for (int i = 0; i < 2; i++) {
         if (sudocubes[i]->equals(*sudocubes[i + 1])) {
-            cout << "le bon sudocube" << i << endl;
             return i ;
         }
     }
