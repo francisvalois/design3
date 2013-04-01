@@ -54,9 +54,8 @@ public:
 Q_SIGNALS:
     void rosShutdown();
     void showSolvedSudocubeSignal(QString, int);
-    void loopEndedSignal(QString);
     void UpdatingRobotPositionSignal(float,float);
-    void showConfirmStartRobotSignal(QString);
+    void message(QString);
 
 private:
     int init_argc;

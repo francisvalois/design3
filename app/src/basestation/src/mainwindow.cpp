@@ -15,9 +15,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
 
     QObject::connect(&baseStation, SIGNAL(rosShutdown()), this, SLOT(close()));
     QObject::connect(&baseStation, SIGNAL(showSolvedSudocubeSignal(QString,int)), this, SLOT(showSolvedSudocubeSlot(QString,int)));
-    QObject::connect(&baseStation, SIGNAL(loopEndedSignal(QString)), this, SLOT(loopEndedSlot(QString)));
     QObject::connect(&baseStation, SIGNAL(UpdatingRobotPositionSignal(float,float)), this, SLOT(UpdatingRobotPositionSlot(float,float)));
-    QObject::connect(&baseStation, SIGNAL(showConfirmStartRobotSignal(QString)), this, SLOT(showConfirmStartRobotSlot(QString)));
+    QObject::connect(&baseStation, SIGNAL(message(QString)), this, SLOT(showMessage(QString)));
 }
 
 MainWindow::~MainWindow() {
@@ -49,10 +48,6 @@ void MainWindow::showSolvedSudocubeSlot(QString solvedSudocube, int redCaseValue
     ui->consoleText->append("");
 }
 
-void MainWindow::loopEndedSlot(QString loopEndedMessage) {
-    ui->consoleText->append(loopEndedMessage);
-}
-
 void MainWindow::UpdatingRobotPositionSlot(float x, float y) {
     ui->consoleText->append("Kinocto : Mise a jour de la position du robot : ");
 
@@ -68,6 +63,6 @@ void MainWindow::UpdatingRobotPositionSlot(float x, float y) {
     ui->consoleText->append(position);
 }
 
-void MainWindow::showConfirmStartRobotSlot(QString showConfirmStartRobot) {
+void MainWindow::showMessage(QString showConfirmStartRobot) {
     ui->consoleText->append(showConfirmStartRobot);
 }

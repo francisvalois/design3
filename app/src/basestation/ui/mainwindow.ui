@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>637</width>
-    <height>410</height>
+    <width>683</width>
+    <height>619</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="StartSequenceButton">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>0</y>
+      <x>520</x>
+      <y>60</y>
       <width>121</width>
       <height>31</height>
      </rect>
@@ -32,8 +32,8 @@
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>391</width>
-      <height>311</height>
+      <width>461</width>
+      <height>231</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -46,8 +46,8 @@
    <widget class="QLCDNumber" name="TimeBeforeEnd">
     <property name="geometry">
      <rect>
-      <x>550</x>
-      <y>320</y>
+      <x>540</x>
+      <y>170</y>
       <width>64</width>
       <height>23</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>320</y>
+      <x>520</x>
+      <y>140</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -69,9 +69,9 @@
    <widget class="QTextEdit" name="consoleText">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>60</y>
-      <width>221</width>
+      <x>10</x>
+      <y>300</y>
+      <width>661</width>
       <height>251</height>
      </rect>
     </property>
@@ -79,8 +79,8 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>410</x>
-      <y>40</y>
+      <x>10</x>
+      <y>270</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -108,7 +108,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>637</width>
+     <width>683</width>
      <height>25</height>
     </rect>
    </property>

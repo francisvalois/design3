@@ -86,7 +86,7 @@ bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request &
     ROS_INFO("Showing Confirmation of Start Robot");
     state = LOOP;
 
-    emit showConfirmStartRobotSignal("Kinocto : Start");
+    emit message("Kinocto : Start");
 
     return true;
 }
@@ -106,7 +106,17 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
     response.x2 = obs2[1] * 100;
     response.y2 = obs2[0] * 100;
 
+    //ROS_INFO(infoString);
     ROS_INFO( "%s x:%f y:%f  x:%f y:%f", "Request Find Obstacles Position. Sending values ", response.x1, response.y1, response.x2, response.y2);
+
+    stringstream info;
+    info << "Kinocto : Demande de la position des obstacles \n";
+    info << "Envoi des positions : ";
+    info << " (" << response.x1 << "," << response.y1 << ") et ";
+    info << " (" << response.x2 << "," << response.y2 << ")";
+    QString infoQ((char*) info.str().c_str());
+
+    emit message(infoQ);
 
     return true;
 }
@@ -125,6 +135,14 @@ bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRo
     response.y = robot[1];
 
     ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", robot[1], robot[0]);
+
+    stringstream info;
+    info << "Kinocto : Demande de la position du robot \n";
+    info << "Envoi de la position : ";
+    info << " (" << robot[1] << "," << robot[0] << ")";
+    QString infoQ((char*) info.str().c_str());
+
+    emit message(infoQ);
 
     return true;
 }
@@ -158,13 +176,18 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
 
     ROS_INFO("%s %s", "Points of the trajectory :\n", buff.str().c_str());
 
+    QString infoQ("Kinocto : Points de la trajectoire : \n");
+    infoQ.append((char*) buff.str().c_str());
+
+    emit message(infoQ);
+
     return true;
 }
 
 bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & response) {
     ROS_INFO("Show Loop Ended Message");
 
-    emit loopEndedSignal("Kinocto : Loop Ended");
+    emit message("Kinocto : Loop Ended");
 
     return true;
 }
