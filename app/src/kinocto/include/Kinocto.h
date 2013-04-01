@@ -80,7 +80,7 @@ private:
     std::vector<Sudocube *> extractSudocubes();
     void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
     void deleteSudocubes(std::vector<Sudocube *> & sudocubes);
-    void findAGoodSudocube(std::vector<Sudocube *> & sudocubes, Sudocube * goodSudocube);
+    int findAGoodSudocube(std::vector<Sudocube *> & sudocubes);
     void goToDrawingZone();
     void drawNumber();
     void endLoop();
