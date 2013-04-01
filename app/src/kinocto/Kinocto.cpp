@@ -46,6 +46,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         state = LOOPING;
         baseStation->sendConfirmRobotStarted();
 
+		microcontroller->turnLED(false);
         getObstaclesPosition();
         getRobotPosition();
         //TROUVER L'ANGLE ET LA POSITION
@@ -304,7 +305,7 @@ void Kinocto::endLoop() {
 
     microcontroller->turnLED(true);
     baseStation->sendLoopEndedMessage();
-    state = WAITING_TO_RESTART;
+    state = WAITING;
 }
 
 void Kinocto::restartLoop() {
