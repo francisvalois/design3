@@ -124,6 +124,7 @@ void Kinocto::showAntennaParam() {
 }
 
 void Kinocto::goToSudocubeX() {
+    pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(antennaParam.getNumber()));
 
@@ -166,9 +167,9 @@ float Kinocto::getSonarDistance() {
 
     float distance = 0.0f;
     for (int i = 0; i < distances.size(); i++) {
-        for (int j= 0; i < distances.size(); j++) {
+        for (int j = 0; i < distances.size(); j++) {
             float gap = abs(distances[i] - distances[j]);
-            if ((distances[i] - distances[j]) <= 1 ) {
+            if ((distances[i] - distances[j]) <= 1) {
                 distance = distances[i];
                 break;
             }
@@ -332,7 +333,6 @@ bool Kinocto::testGoToSudocubeX(TestGoToSudocubeX::Request & request, TestGoToSu
     Position obs1(request.obs1x, request.obs1y);
     Position obs2(request.obs2x, request.obs2y);
     workspace.setObstaclesPos(obs1, obs2);
-    pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     //Spécification du sudocube
     antennaParam.setNumber(request.sudocubeNo);
