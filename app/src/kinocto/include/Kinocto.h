@@ -25,6 +25,7 @@
 #include "communication/BaseStationDecorator.h"
 #include "communication/MicrocontrollerDecorator.h"
 
+//Topics du robot
 #include "std_msgs/String.h"
 #include "kinocto/StartLoop.h"
 
@@ -47,6 +48,15 @@
 class Kinocto {
 
 private:
+    //Informations concernant la loop actuelle
+    int state;
+    AntennaParam antennaParam;
+    int numberToDraw;
+
+    //Pour les déplacements
+    Workspace workspace;
+    PathPlanning pathPlanning;
+
     //Pour la résolution des sudocubes
     CameraCapture cameraCapture;
     SudocubeSolver sudokubeSolver;
@@ -56,15 +66,6 @@ private:
     ros::NodeHandle nodeHandle;
     BaseStationDecorator * baseStation;
     MicrocontrollerDecorator * microcontroller;
-
-    //Informations concernant la loop actuelle
-    int state;
-    AntennaParam antennaParam;
-    int numberToDraw;
-
-    //Pour les déplacements
-    Workspace workspace;
-    PathPlanning pathPlanning;
 
     void getObstaclesPosition();
     void getRobotPosition();

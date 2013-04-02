@@ -25,7 +25,6 @@ add_service_files(
   TestGoToGreenFrameAndDraw.srv
   TestAdjustFrontPosition.srv
   TestAdjustSidePosition.srv
-  MoveRobotToSudocube.srv
 )
 
 generate_messages(
