@@ -59,7 +59,7 @@ private:
     cv::Scalar red;
     void showWindowWith(const char*, const cv::Mat &);
     void colorPixel(cv::Mat&, cv::Scalar, int, int);
-    void drawLine(cv::Mat, cv::Point, cv::Point);
+    void drawLine(cv::Mat, cv::Point, cv::Point, cv::Scalar);
 };
 
 #endif // MAINWINDOW_H

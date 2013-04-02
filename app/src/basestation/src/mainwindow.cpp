@@ -87,7 +87,7 @@ void MainWindow::traceRealTrajectory(vector<Position> positions) {
 }
 
 void MainWindow::updateObstaclesPositions(int o1x, int o1y, int o2x, int o2y) {
-    obstable1.set(o1x,o1y);
+    obstacle1.set(o1x,o1y);
     obstacle2.set(o2x,o2y);
     printTable();
 }
@@ -149,7 +149,7 @@ void MainWindow::colorPixel(Mat &mat, Scalar color, int x, int y) {
     mat.at<cv::Vec3b>(x, y)[2] = color[2];
 }
 
-void MainWindow::showWindowWith(const char* 255name, const Mat &mat) {
+void MainWindow::showWindowWith(const char* name, const Mat &mat) {
     namedWindow(name, CV_WINDOW_AUTOSIZE);
     imshow(name, mat);
     waitKey(0);
