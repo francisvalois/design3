@@ -4,6 +4,7 @@
 #include <ros/ros.h>
 #include <QThread>
 #include "opencv2/core/core.hpp"
+#include <vector>
 
 //Messages
 #include "std_msgs/String.h"
@@ -26,6 +27,7 @@
 //Objets de la classe
 #include "../../build/basestation/ui_mainwindow.h"
 
+#include "../../kinocto/include/pathPlanning/Position.h"
 
 //ÉTATS DE LA CLASSE
 #define LOOP 0
@@ -56,6 +58,8 @@ Q_SIGNALS:
     void showSolvedSudocubeSignal(QString, int);
     void UpdatingRobotPositionSignal(float,float);
     void message(QString);
+    void traceRealTrajectorySignal(vector<Position>);
+    void updateObstaclesPositions(int,int,int,int);
 
 private:
     int init_argc;

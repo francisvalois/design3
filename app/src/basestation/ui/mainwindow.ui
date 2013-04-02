@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>683</width>
-    <height>619</height>
+    <width>692</width>
+    <height>353</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="StartSequenceButton">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>60</y>
+      <x>540</x>
+      <y>30</y>
       <width>121</width>
       <height>31</height>
      </rect>
@@ -27,27 +27,11 @@
      <string>Start sequence</string>
     </property>
    </widget>
-   <widget class="QFrame" name="frame">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>461</width>
-      <height>231</height>
-     </rect>
-    </property>
-    <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
-    </property>
-    <property name="frameShadow">
-     <enum>QFrame::Raised</enum>
-    </property>
-   </widget>
    <widget class="QLCDNumber" name="TimeBeforeEnd">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>170</y>
+      <x>570</x>
+      <y>240</y>
       <width>64</width>
       <height>23</height>
      </rect>
@@ -56,8 +40,8 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>520</x>
-      <y>140</y>
+      <x>540</x>
+      <y>210</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -70,8 +54,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>300</y>
-      <width>661</width>
+      <y>30</y>
+      <width>501</width>
       <height>251</height>
      </rect>
     </property>
@@ -80,7 +64,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>270</y>
+      <y>10</y>
       <width>121</width>
       <height>21</height>
      </rect>
@@ -89,17 +73,17 @@
      <string>Console :</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_3">
+   <widget class="QPushButton" name="calibrateKinectButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>0</y>
+      <x>540</x>
+      <y>110</y>
       <width>121</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>Workspace :</string>
+     <string>Calibrate Kinect</string>
     </property>
    </widget>
   </widget>
@@ -108,7 +92,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>683</width>
+     <width>692</width>
      <height>25</height>
     </rect>
    </property>

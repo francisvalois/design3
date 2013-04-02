@@ -117,6 +117,7 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
+    emit updateObstaclesPositions(response.x1, response.y1, response.x2, response.y2);
 
     return true;
 }
@@ -139,10 +140,11 @@ bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRo
     stringstream info;
     info << "Kinocto : Demande de la position du robot \n";
     info << "Envoi de la position : ";
-    info << " (" << robot[1] << "," << robot[0] << ")";
+    info << " (" << 36.5 << "," << 79.0 << ")";
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
+    emit UpdatingRobotPositionSignal(36.5, 79.0);
 
     return true;
 }
@@ -168,8 +170,11 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     }
 
     stringstream buff;
+    vector<Position> positions;
     for (int i = 0; i < request.x.size(); i++) {
         buff << "(" << request.x[i] << "," << request.y[i] << ")" << endl;
+        Position position(request.x[i],request.y[i]);
+        positions.push_back(position);
     }
 
     //TODO Afficher les points dans l'interface graphique
@@ -180,6 +185,7 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     infoQ.append((char*) buff.str().c_str());
 
     emit message(infoQ);
+    emit traceRealTrajectorySignal(positions);
 
     return true;
 }
@@ -195,6 +201,12 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
 bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, UpdateRobotPosition::Response & response) {
     ROS_INFO( "%s\n x:%f\n y:%f", "Updating Robot Position", request.x, request.y);
 
+    stringstream info;
+    info << "Kinocto : Mise a jour de la position du robot :  \n";
+    info << " (" << request.x << "," << request.y << ")";
+    QString infoQ((char*) info.str().c_str());
+
+    emit message(infoQ);
     emit UpdatingRobotPositionSignal(request.x, request.y);
 
     return true;
