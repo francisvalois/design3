@@ -63,14 +63,14 @@ void MicrocontrollerDecorator::move(float distance) {
 void MicrocontrollerDecorator::rotate(float angle) {
     ROS_INFO("Requesting the microncontroller to rotate of :%f", angle);
 
-    Rotate srv;
-    srv.request.angle = angle;
-
     if (angle > 180) {
         angle = -(360 - angle);
     } else if(angle < -180) {
         angle = 360 + angle;
     }
+
+    Rotate srv;
+    srv.request.angle = angle;
 
     if (angle < -0.75f || angle > 0.75f) {
         if (rotateClient.call(srv) == false) {
