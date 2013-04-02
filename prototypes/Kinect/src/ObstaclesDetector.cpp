@@ -9,7 +9,7 @@ const int ObstaclesDetector::X_OBSTACLE_LEFT_THRESHOLD = 180;
 const int ObstaclesDetector::X_OBSTACLE_RIGHT_THRESHOLD = 610;
 const int ObstaclesDetector::Y_OBSTACLE_TOP_THRESHOLD = 80;
 const int ObstaclesDetector::Y_OBSTACLE_BOTTOM_THRESHOLD = 272;
-const float ObstaclesDetector::OBSTACLE_DISTANCE_MIN_THRESHOLD = 0.5f;
+const float ObstaclesDetector::OBSTACLE_DISTANCE_MIN_THRESHOLD = 0.8f;
 const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.1f;
 const float ObstaclesDetector::OBSTACLE_HEIGHT_THRESHOLD_PERCENT = 0.7f;
 

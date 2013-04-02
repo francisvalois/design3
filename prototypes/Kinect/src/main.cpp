@@ -133,7 +133,6 @@ vector<Point> calibrate(){
 response findRobot(){
     int const AVERAGECOUNT = 3;
     int robotPositionAverageCount = 0;
-    Mat RGBGray;
     
     response response;
     RobotDetector robotDetection;
@@ -141,12 +140,11 @@ response findRobot(){
     for(int i  = 0; i < AVERAGECOUNT; i++){
         Mat depthMatrix = captureDepthMatrix();
         Mat rgbMatrix = captureRGBMatrix();
-        cvtColor(rgbMatrix, RGBGray, CV_RGB2GRAY);
         if (!rgbMatrix.data || !depthMatrix.data) {
             throw string("Unable to load picture");
         }
         
-        robotDetection.findRobotWithAngle(depthMatrix, RGBGray);
+        robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
         
         if(robot[0] > 0.10 || robot[1] > 0.20){
@@ -177,7 +175,7 @@ int main( /*int argc, char* argv[]*/ ) {
     capture.open(CV_CAP_OPENNI);
     capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
     
-    vector<Point> test2 = calibrate();
+    //vector<Point> test2 = calibrate();
     
     RobotDetector robotDetection;
     response responseObstacle;
@@ -216,11 +214,11 @@ int main( /*int argc, char* argv[]*/ ) {
     imshow("depth", world);
     
     
-    int pt1x = test2[0].x;
-    int pt2x = test2[1].x;
-    int pty = (test2[1].y - test2[0].y)/2 + test2[0].y;
+    //int pt1x = test2[0].x;
+    //int pt2x = test2[1].x;
+    //int pty = (test2[1].y - test2[0].y)/2 + test2[0].y;
     
-    circle(rgb, Point((pt2x-pt1x)/ 2 +pt1x, pty), 4, Scalar(255, 255, 255));
+    //circle(rgb, Point((pt2x-pt1x)/ 2 +pt1x, pty), 4, Scalar(255, 255, 255));
     
     imshow("chess8", rgb);
 
