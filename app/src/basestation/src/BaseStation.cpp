@@ -97,17 +97,8 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
     int obstacle2AverageCount = 0;
     
     //Average the measure for a better precision when the kinect is doing obscure things
-    /*TODO: Check with Philippe if response is always 0 when that function is being called and clear that initializer if it's
-    the case*/
     
-    /*TODO: Check if there is a problem with creating the capture instance everytimes instead of storing it in a singleton 
-     and check if there is a Kinect Frame buffer that could create a error when getting robot position because we are X frames
-     behind*/
-    response.x1 = 0;
-    response.y1 = 0;
-    response.x2 = 0;
-    response.y2 = 0;    
-    
+    kinectCapture.openCapture();
     for(int i  = 0; i < AVERAGECOUNT; i++){
         Mat depthMatrix = kinectCapture.captureDepthMatrix();
         if (!depthMatrix.data) {
@@ -130,6 +121,7 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
             obstacle2AverageCount++;
         }       
     }
+    kinectCapture.closeCapture();
     
     if(obstacle1AverageCount > 0){
         response.x1 /= obstacle1AverageCount;
@@ -161,17 +153,7 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     int const AVERAGECOUNT = 3;
     int robotPositionAverageCount;
     
-    response.x = 0;
-    response.y = 0;
-    
-    //Average the measure for a better precision when the kinect is doing obscure things
-    /*TODO: Check with Philippe if response is always 0 when that function is being called and clear that initializer if it's
-     the case*/
-    
-    /*TODO: Check if there is a lag when creating the capture instance everytimes instead of storing it in a singleton
-     and check if there is a Kinect Frame buffer that could create a error when getting robot position because we are X frames
-     behind*/
-    
+    kinectCapture.openCapture();
     for(int i  = 0; i < AVERAGECOUNT; i++){
         Mat depthMatrix = kinectCapture.captureDepthMatrix();
         Mat rgbMatrix = kinectCapture.captureRGBMatrix();
@@ -188,11 +170,8 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
             robotPositionAverageCount++;
         }
     }
+    kinectCapture.closeCapture();
     
-    
-    response.x = 36.5; // TODO À supprimer quand la kinect fonctionnera
-    response.y = 79.0;
-
     ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", response.x, response.y);
 
     stringstream info;

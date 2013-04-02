@@ -55,6 +55,7 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         adjustFrontPosition();
         adjustSidePosition();
         //RECTIFIER ANGLE
+
         extractAndSolveSudocube();
         goToDrawingZone();
         drawNumber();

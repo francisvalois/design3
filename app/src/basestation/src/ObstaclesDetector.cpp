@@ -125,7 +125,7 @@ void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, 
                     validObstaclePosition.clear();
                 }
             }
-            cout << i << endl;
+            //cout << i << endl;
             validObstaclePosition.push_back(Point(i, middleYPoint));
         }
     }
