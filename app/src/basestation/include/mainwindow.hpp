@@ -41,6 +41,7 @@ private:
 
     Position obstacle1;
     Position obstacle2;
+    Position actualPosition;
     vector<Position> plannedPath;
     vector<Position> kinoctoPositionUpdates;
 

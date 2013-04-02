@@ -106,7 +106,6 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
     response.x2 = obs2[1] * 100;
     response.y2 = obs2[0] * 100;
 
-    //ROS_INFO(infoString);
     ROS_INFO( "%s x:%f y:%f  x:%f y:%f", "Request Find Obstacles Position. Sending values ", response.x1, response.y1, response.x2, response.y2);
 
     stringstream info;

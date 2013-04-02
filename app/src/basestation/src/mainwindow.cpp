@@ -30,6 +30,9 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     obstacle2.x = 0;
     obstacle2.y = 0;
 
+    actualPosition.x = 0;
+    actualPosition.y = 0;
+
     for (int y = 0; y <= TABLE_Y; y++) {
         for (int x = 0; x <= TABLE_X; x++) {
             table[x][y] = 0;
@@ -70,6 +73,8 @@ void MainWindow::UpdatingRobotPositionSlot(float x, float y) {
     Position position(x,y);
     kinoctoPositionUpdates.push_back(position);
 
+    actualPosition.set(x,y);
+
     printTable();
 }
 
@@ -106,20 +111,34 @@ void MainWindow::printTable() {
             }
         }
     }
-    transpose(workspace, workspace);
 
-    //Drawing plannedPath
-    for(unsigned int i = 0; i < plannedPath.size() - 1; i++) {
-        Point currentPoint(plannedPath[i].x, TABLE_Y - plannedPath[i].y);
-        Point nextPoint(plannedPath[i+1].x, TABLE_Y - plannedPath[i+1].y);
-        drawLine(workspace, currentPoint, nextPoint, blue);
+    //Drawing actual Kinocto position
+    if (actualPosition.x != 0 && actualPosition.y != 0) {
+        for (int y = (actualPosition.y - 3); y <= (actualPosition.y + 3); y++) {
+            for (int x = (actualPosition.x - 3); x <= (actualPosition.x + 3); x++) {
+                colorPixel(workspace, red, x, TABLE_Y - y);
+            }
+        }
     }
 
+    transpose(workspace, workspace);
+
     //Drawing kinoctoPositionUpdates
-    for(unsigned int i = 0; i < kinoctoPositionUpdates.size() - 1; i++) {
-        Point currentPoint(kinoctoPositionUpdates[i].x, TABLE_Y - kinoctoPositionUpdates[i].y);
-        Point nextPoint(kinoctoPositionUpdates[i+1].x, TABLE_Y - kinoctoPositionUpdates[i+1].y);
-        drawLine(workspace, currentPoint, nextPoint, red);
+    if(kinoctoPositionUpdates.size() > 0) {
+        for(unsigned int i = 0; i < kinoctoPositionUpdates.size() - 1; i++) {
+            Point currentPoint(kinoctoPositionUpdates[i].x, TABLE_Y - kinoctoPositionUpdates[i].y);
+            Point nextPoint(kinoctoPositionUpdates[i+1].x, TABLE_Y - kinoctoPositionUpdates[i+1].y);
+            drawLine(workspace, currentPoint, nextPoint, red);
+        }
+    }
+
+    //Drawing plannedPath
+    if(plannedPath.size() > 0) {
+        for(unsigned int i = 0; i < plannedPath.size() - 1; i++) {
+            Point currentPoint(plannedPath[i].x, TABLE_Y - plannedPath[i].y);
+            Point nextPoint(plannedPath[i+1].x, TABLE_Y - plannedPath[i+1].y);
+            drawLine(workspace, currentPoint, nextPoint, blue);
+        }
     }
 
     showWindowWith("Workspace", workspace);
