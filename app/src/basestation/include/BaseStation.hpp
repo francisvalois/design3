@@ -11,8 +11,8 @@
 #include "kinocto/StartLoop.h"
 
 //Services
-#include "basestation/FindObstaclesPosition.h"
-#include "basestation/FindRobotPosition.h"
+#include "basestation/GetObstaclesPosition.h"
+#include "basestation/FindRobotPositionAndAngle.h"
 #include "basestation/ShowSolvedSudocube.h"
 #include "basestation/TraceRealTrajectory.h"
 #include "basestation/UpdateRobotPosition.h"
@@ -44,8 +44,9 @@ public:
     void setStateToSendStartLoopMessage();
     void sendStartLoopMessage();
 
-    bool findObstaclesPosition(basestation::FindObstaclesPosition::Request & request, basestation::FindObstaclesPosition::Response & response);
-    bool findRobotPosition(basestation::FindRobotPosition::Request & request, basestation::FindRobotPosition::Response & response);
+    bool getObstaclesPosition(basestation::GetObstaclesPosition::Request & request, basestation::GetObstaclesPosition::Response & response);
+    bool findRobotPositionAndAngle(basestation::FindRobotPositionAndAngle::Request & request,
+            basestation::FindRobotPositionAndAngle::Response & response);
     bool showSolvedSudocube(basestation::ShowSolvedSudocube::Request & request, basestation::ShowSolvedSudocube::Response & response);
     bool traceRealTrajectory(basestation::TraceRealTrajectory::Request & request, basestation::TraceRealTrajectory::Response & response);
     bool loopEnded(basestation::LoopEnded::Request & request, basestation::LoopEnded::Response & response);
@@ -56,10 +57,10 @@ public:
 Q_SIGNALS:
     void rosShutdown();
     void showSolvedSudocubeSignal(QString, int);
-    void UpdatingRobotPositionSignal(float,float);
+    void UpdatingRobotPositionSignal(float, float);
     void message(QString);
     void traceRealTrajectorySignal(vector<Position>);
-    void updateObstaclesPositions(int,int,int,int);
+    void updateObstaclesPositions(int, int, int, int);
 
 private:
     int init_argc;
@@ -73,8 +74,8 @@ private:
 
     ros::Publisher startLoopPublisher;
 
-    ros::ServiceServer findObstaclesPositionService;
-    ros::ServiceServer findRobotPositionService;
+    ros::ServiceServer getObstaclesPositionService;
+    ros::ServiceServer findRobotPositionAndAngleService;
     ros::ServiceServer showSolvedSudocubeService;
     ros::ServiceServer traceRealTrajectoryService;
     ros::ServiceServer updateRobotPositionService;

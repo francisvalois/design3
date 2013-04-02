@@ -17,8 +17,8 @@ include(${QT_USE_FILE})
 
 add_service_files(
   FILES
-  FindObstaclesPosition.srv
-  FindRobotPosition.srv
+  GetObstaclesPosition.srv
+  FindRobotPositionAndAngle.srv
   LoopEnded.srv
   TraceRealTrajectory.srv
   UpdateRobotPosition.srv

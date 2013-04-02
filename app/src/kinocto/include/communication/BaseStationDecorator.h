@@ -4,8 +4,8 @@
 #include "ros/ros.h"
 #include "pathPlanning/Position.h"
 
-#include "basestation/FindRobotPosition.h"
-#include "basestation/FindObstaclesPosition.h"
+#include "basestation/FindRobotPositionAndAngle.h"
+#include "basestation/GetObstaclesPosition.h"
 #include "basestation/ShowSolvedSudocube.h"
 #include "basestation/LoopEnded.h"
 #include "basestation/TraceRealTrajectory.h"
@@ -18,7 +18,7 @@ public:
     virtual ~BaseStationDecorator();
 
     //Request
-    Position requestRobotPosition();
+    void requestRobotPositionAndAngle(Position & pos, float & angle);
     std::vector<Position> requestObstaclesPosition();
 
     //Messsages
@@ -31,8 +31,8 @@ public:
 private:
     ros::NodeHandle nodeHandle;
 
-    ros::ServiceClient findRobotPositionClient;
-    ros::ServiceClient findObstaclesPositionClient;
+    ros::ServiceClient findRobotPositionAndAngleClient;
+    ros::ServiceClient getObstaclesPositionClient;
     ros::ServiceClient showSolvedSudocubeClient;
     ros::ServiceClient loopEndedClient;
     ros::ServiceClient traceRealTrajectoryClient;

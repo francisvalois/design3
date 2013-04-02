@@ -91,8 +91,12 @@ void Kinocto::getObstaclesPosition() {
 }
 
 void Kinocto::getRobotPosition() {
-    Position robotPos = baseStation->requestRobotPosition();
+    float angle;
+    Position robotPos;
+    baseStation->requestRobotPositionAndAngle(robotPos, angle);
+
     workspace.setRobotPos(robotPos);
+    workspace.setRobotAngle(angle);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
 }
 
@@ -287,7 +291,10 @@ void Kinocto::drawNumber() {
 }
 
 void Kinocto::endLoop() {
-    workspace.setRobotPos(baseStation->requestRobotPosition());
+    float angle;
+    Position robotPos;
+    baseStation->requestRobotPositionAndAngle(robotPos, angle);
+    workspace.setRobotPos(robotPos);
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
     executeMoves(moves);
@@ -353,7 +360,9 @@ bool Kinocto::testFindRobotPosition(TestFindRobotPosition::Request & request, Te
     ROS_INFO("TESTING FindRobotPosition");
 
 /////
-    Position robotPos = baseStation->requestRobotPosition();
+    float angle;
+    Position robotPos;
+    baseStation->requestRobotPositionAndAngle(robotPos, angle);
     workspace.setRobotPos(robotPos);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
 /////
