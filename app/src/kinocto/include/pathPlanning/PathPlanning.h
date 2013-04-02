@@ -16,7 +16,7 @@
 #include "pathPlanning/Move.h"
 
 const int TABLE_X = 231;
-const int TABLE_Y = 114;
+const int TABLE_Y = 111;
 const int ROBOT_RADIUS = 13;
 const int OBSTACLE_RADIUS = 7;
 const int DRAWING_ZONE = 89;
