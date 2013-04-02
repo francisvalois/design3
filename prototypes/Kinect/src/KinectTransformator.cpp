@@ -4,10 +4,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-const float KinectTransformator::KINECTANGLE = 21.5f;
+const float KinectTransformator::KINECTANGLE = 19.76f;
 float KinectTransformator::KINECTANGLERAD = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);
 Vec2f KinectTransformator::BASE_POSITION_FROM_ORIGIN = Vec2f(0.58f, 0.775f);
-Vec3f KinectTransformator::_basePositionFromKinect = Vec3f(0.13f, 0, 1.40f);
+Vec3f KinectTransformator::_basePositionFromKinect = Vec3f(0.065f, 0, 1.39f);
 
 void KinectTransformator::setKinectAngle(float angleRad){
     if(angleRad > 0 && angleRad < M_PI){

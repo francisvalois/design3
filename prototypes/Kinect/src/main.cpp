@@ -1,11 +1,11 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/calib3d/calib3d.hpp"
 #include "ObstaclesDetector.h"
 #include "RobotDetector.h"
 #include "KinectUtility.h"
 #include "KinectCalibrator.h"
+#include "ObjectDetector.h"
 #include "KinectTransformator.h"
 #define _USE_MATH_DEFINES
 #include "Math.h"
@@ -61,7 +61,7 @@ int main( /*int argc, char* argv[]*/ ) {
                 depthMap.convertTo(show, CV_8UC1, 0.05f);
         }
 
-        showRGB = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection5.jpg");
+        //showRGB = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection5.jpg");
         //showRGB = imread("RobotDetector5.jpg");
 
         cvtColor(showRGB, RGBGray, CV_RGB2GRAY);
@@ -80,9 +80,9 @@ int main( /*int argc, char* argv[]*/ ) {
         model.findRobotWithAngle(world, RGBGray.clone());
         model2.findCenteredObstacle(world);
 
-        Mat test3;
+        Mat test3 = RGBGray.clone();
         vector<Rect> test1;
-        int test4 = model3.generateQuads(RGBGray.clone(), test1);
+        model3.generateQuads(test3, test1);
 
         Vec2f obstacle1 = model2.getObstacle1();
         Vec2f obstacle2 = model2.getObstacle2();

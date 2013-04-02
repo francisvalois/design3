@@ -92,19 +92,55 @@ bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request &
 }
 
 bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request, FindObstaclesPosition::Response & response) {
-    Mat depthMatrix = kinectCapture.captureDepthMatrix();
-    if (!depthMatrix.data) {
-        return false;
+    int const AVERAGECOUNT = 3;
+    int obstacle1AverageCount = 0;
+    int obstacle2AverageCount = 0;
+    
+    //Average the measure for a better precision when the kinect is doing obscure things
+    /*TODO: Check with Philippe if response is always 0 when that function is being called and clear that initializer if it's
+    the case*/
+    
+    /*TODO: Check if there is a problem with creating the capture instance everytimes instead of storing it in a singleton 
+     and check if there is a Kinect Frame buffer that could create a error when getting robot position because we are X frames
+     behind*/
+    response.x1 = 0;
+    response.y1 = 0;
+    response.x2 = 0;
+    response.y2 = 0;    
+    
+    for(int i  = 0; i < AVERAGECOUNT; i++){
+        Mat depthMatrix = kinectCapture.captureDepthMatrix();
+        if (!depthMatrix.data) {
+            return false;
+        }
+        
+        obstaclesDetection.findCenteredObstacle(depthMatrix);
+        Vec2f obs1 = obstaclesDetection.getObstacle1();
+        Vec2f obs2 = obstaclesDetection.getObstacle2();
+        
+        if(obs1[0] > 0.10 || obs1[1] > 0.20){
+            response.x1 += obs1[1] * 100;
+            response.y1 += obs1[0] * 100;
+            obstacle1AverageCount++;
+        }
+        
+        if(obs2[0] > 0.10 || obs2[1] > 0.20){
+            response.x2 += obs2[1] * 100;
+            response.y2 += obs2[0] * 100;
+            obstacle2AverageCount;
+        }       
     }
-
-    obstaclesDetection.findCenteredObstacle(depthMatrix);
-    Vec2f obs1 = obstaclesDetection.getObstacle1();
-    Vec2f obs2 = obstaclesDetection.getObstacle2();
-
-    response.x1 = obs1[1] * 100;
-    response.y1 = obs1[0] * 100;
-    response.x2 = obs2[1] * 100;
-    response.y2 = obs2[0] * 100;
+    
+    if(obstacle1AverageCount > 0){
+        response.x1 /= obstacle1AverageCount;
+        response.y1 /= obstacle1AverageCount;
+    }
+    
+    if(obstacle2AverageCount > 0){
+        response.x2 /= obstacle2AverageCount;
+        response.y2 /= obstacle2AverageCount;
+    }
+    
 
     //ROS_INFO(infoString);
     ROS_INFO( "%s x:%f y:%f  x:%f y:%f", "Request Find Obstacles Position. Sending values ", response.x1, response.y1, response.x2, response.y2);
@@ -123,15 +159,38 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
 }
 
 bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRobotPosition::Response & response) {
-    Mat depthMatrix = kinectCapture.captureDepthMatrix();
-    Mat rgbMatrix = kinectCapture.captureRGBMatrix();
-    if (!rgbMatrix.data || !depthMatrix.data) {
-        return false;
+    int const AVERAGECOUNT = 3;
+    int robotPositionAverageCount;
+    
+    response.x = 0;
+    response.y = 0;
+    
+    //Average the measure for a better precision when the kinect is doing obscure things
+    /*TODO: Check with Philippe if response is always 0 when that function is being called and clear that initializer if it's
+     the case*/
+    
+    /*TODO: Check if there is a lag when creating the capture instance everytimes instead of storing it in a singleton
+     and check if there is a Kinect Frame buffer that could create a error when getting robot position because we are X frames
+     behind*/
+    
+    for(int i  = 0; i < AVERAGECOUNT; i++){
+        Mat depthMatrix = kinectCapture.captureDepthMatrix();
+        Mat rgbMatrix = kinectCapture.captureRGBMatrix();
+        if (!rgbMatrix.data || !depthMatrix.data) {
+            return false;
+        }
+        
+        robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
+        Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
+        
+        if(robot[0] > 0.10 || robot[1] > 0.20){
+            response.x += robot[1] * 100;
+            response.y += robot[0] * 100;
+            robotPositionAverageCount++;
+        }
     }
-
-    robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
-    Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
-
+    
+    
     response.x = 36.5; // TODO À supprimer quand la kinect fonctionnera
     response.y = 79.0;
 
