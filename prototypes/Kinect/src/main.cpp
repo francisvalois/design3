@@ -13,6 +13,151 @@
 using namespace cv;
 using namespace std;
 Mat world;
+VideoCapture capture;
+
+struct response {
+    float x1;
+    float x2;
+    float y2;
+    float y1;
+};
+
+Mat captureDepthMatrix() {
+    Mat depthMap;
+    
+    if (capture.isOpened()) {
+        capture.grab();
+        capture.retrieve(depthMap, CV_CAP_OPENNI_POINT_CLOUD_MAP);
+    }
+    else{
+            cout << "Cannot open a capture object." << endl;
+            std::stringstream file;
+            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection1.xml";
+            file << "robotdetection1.xml";
+            string fileString = file.str();
+            cout << "Loading from file " << fileString << endl;
+            
+            try{
+                depthMap =  Utility::readFromFile(fileString);
+            }
+            catch(string e){
+                cout << e;
+                throw String("Unable to load the file");
+            }
+
+    }
+    
+    return depthMap.clone();
+}
+
+Mat captureRGBMatrix() {
+    Mat showRGB;
+    
+    if (capture.isOpened()) {
+        capture.grab();
+        capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
+    }
+    else{
+        cout << "Cannot open a capture object." << endl;
+        std::stringstream file;
+        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection1.xml";
+        file << "robotdetection1.jpg";
+        string fileString = file.str();
+        cout << "Loading from file " << fileString << endl;
+        
+        try{
+            showRGB = imread(fileString);
+        }
+        catch(string e){
+            cout << e;
+            throw String("Unable to load the file");
+        }
+        
+    }
+    
+    return showRGB.clone();
+}
+
+response findObstacle(){
+    response response;
+    ObstaclesDetector obstaclesDetection;
+    int const AVERAGECOUNT = 3;
+    int obstacle1AverageCount = 0;
+    int obstacle2AverageCount = 0;
+    
+    for(int i  = 0; i < AVERAGECOUNT; i++){
+        Mat depthMatrix = captureDepthMatrix();
+        if (!depthMatrix.data) {
+            throw string("Unable to load data");
+        }
+        
+        obstaclesDetection.findCenteredObstacle(depthMatrix);
+        Vec2f obs1 = obstaclesDetection.getObstacle1();
+        Vec2f obs2 = obstaclesDetection.getObstacle2();
+        
+        if(obs1[0] > 0.10 || obs1[1] > 0.20){
+            response.x1 += obs1[1] * 100;
+            response.y1 += obs1[0] * 100;
+            obstacle1AverageCount++;
+        }
+        
+        if(obs2[0] > 0.10 || obs2[1] > 0.20){
+            response.x2 += obs2[1] * 100;
+            response.y2 += obs2[0] * 100;
+            obstacle2AverageCount++;
+        }
+    }
+    
+    if(obstacle1AverageCount > 0){
+        response.x1 /= obstacle1AverageCount;
+        response.y1 /= obstacle1AverageCount;
+    }
+    
+    if(obstacle2AverageCount > 0){
+        response.x2 /= obstacle2AverageCount;
+        response.y2 /= obstacle2AverageCount;
+    }
+    
+    return response;
+}
+
+vector<Point> calibrate(){
+    KinectCalibrator calibrator;
+    Mat depthMatrix = captureDepthMatrix();
+    calibrator.calibrate(depthMatrix);
+    vector<Point> test = calibrator.getSquarePositions();
+    
+    return test;
+}
+
+response findRobot(){
+    int const AVERAGECOUNT = 3;
+    int robotPositionAverageCount = 0;
+    Mat RGBGray;
+    
+    response response;
+    RobotDetector robotDetection;
+    
+    for(int i  = 0; i < AVERAGECOUNT; i++){
+        Mat depthMatrix = captureDepthMatrix();
+        Mat rgbMatrix = captureRGBMatrix();
+        cvtColor(rgbMatrix, RGBGray, CV_RGB2GRAY);
+        if (!rgbMatrix.data || !depthMatrix.data) {
+            throw string("Unable to load picture");
+        }
+        
+        robotDetection.findRobotWithAngle(depthMatrix, RGBGray);
+        Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
+        
+        if(robot[0] > 0.10 || robot[1] > 0.20){
+            response.x1 += robot[1] * 100;
+            response.y1 += robot[0] * 100;
+            robotPositionAverageCount++;
+        }
+    }
+    
+    return response;
+}
 
 void onMouse(int event, int x, int y, int flags, void *) {
     if (event == CV_EVENT_LBUTTONUP) {
@@ -23,89 +168,62 @@ void onMouse(int event, int x, int y, int flags, void *) {
         cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[2] << endl;
     }
     if (event == CV_EVENT_RBUTTONUP) {
-
+        cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
     }
 }
 
 int main( /*int argc, char* argv[]*/ ) {
-    VideoCapture capture;
     Mat depthMap, show, showRGB, RGBGray;
-
+    capture.open(CV_CAP_OPENNI);
+    capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
     
-    for (int i = 5; i <= 5; i++) {
-        capture.open(CV_CAP_OPENNI);
-        capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
+    vector<Point> test2 = calibrate();
+    
+    RobotDetector robotDetection;
+    response responseObstacle;
+    response responseRobot;
 
-        if (!capture.isOpened()) {
-            cout << "Cannot open a capture object." << endl;
-            std::stringstream file;
-            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection" << i << ".xml";
-            //file << "RobotDetector5.xml";
-            string fileString = file.str();
-            cout << "Loading from file " << fileString << endl;
+    responseObstacle = findObstacle();
+    responseRobot = findRobot();
+    
+    namedWindow("depth", 1);
+    namedWindow("chess8", 1);
+    setMouseCallback("depth", onMouse, 0);
+    setMouseCallback("chess8", onMouse, 0);
+    //KinectCalibrator::calibrate(world);
+    //std::vector<Point> squarePoints = KinectCalibrator::getSquarePositions();
 
-            try{
-                world =  Utility::readFromFile(fileString);
-            }
-            catch(string e){
-                cout << e;
-                return 1;
-            }          
-        }
-        else{
-            capture.grab();
-            capture.retrieve(world, CV_CAP_OPENNI_POINT_CLOUD_MAP);
-            capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
+    ObjectDetector model3;
 
-            if (capture.retrieve(depthMap, CV_CAP_OPENNI_DEPTH_MAP))
-                depthMap.convertTo(show, CV_8UC1, 0.05f);
-        }
+    //Mat test3 = RGBGray.clone();
+    //vector<Rect> test1;
+    //model3.generateQuads(test3, test1);
 
-        //showRGB = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection5.jpg");
-        //showRGB = imread("RobotDetector5.jpg");
-
-        cvtColor(showRGB, RGBGray, CV_RGB2GRAY);
-
-        namedWindow("depth", 1);
-        namedWindow("chess8", 1);
-        setMouseCallback("depth", onMouse, 0);
-
-        //KinectCalibrator::calibrate(world);
-        //std::vector<Point> squarePoints = KinectCalibrator::getSquarePositions();
-
-        RobotDetector model;
-        ObstaclesDetector model2;
-        ObjectDetector model3;
-        
-        model.findRobotWithAngle(world, RGBGray.clone());
-        model2.findCenteredObstacle(world);
-
-        Mat test3 = RGBGray.clone();
-        vector<Rect> test1;
-        model3.generateQuads(test3, test1);
-
-        Vec2f obstacle1 = model2.getObstacle1();
-        Vec2f obstacle2 = model2.getObstacle2();
-        Vec2f robotPosition = model.getRobotPosition();
-        float robotAngle = model.getRobotAngle();
-
-        cout << "Matrix " << i << endl;
-        cout << "Obstacle 1 : (" << obstacle1[0] << "m en x, " << obstacle1[1] << "m en z)" << endl;
-        cout << "Obstacle 2 : (" << obstacle2[0] << "m en x, " << obstacle2[1] << "m en z)" << endl;
-        cout << "Robot : (" << robotPosition[0] << "m en x, " << robotPosition[1] << "m en z) et "
-             << robotAngle/M_PI*180 << " degre avec l'axe X" << endl;
+    cout << "Obstacle 1 : (" << responseObstacle.y1 << "cm en x, " << responseObstacle.x1 << "cm en z)" << endl;
+    cout << "Obstacle 2 : (" << responseObstacle.y2 << "cm en x, " << responseObstacle.x2 << "cm en z)" << endl;
+    cout << "Robot : (" << responseRobot.y1 << "m en x, " << responseRobot.x1 << "m en z) et "
+         << 0/M_PI*180 << " degre avec l'axe X" << endl;
 
 
-        world.convertTo(show, CV_8UC1, 0.05f);
+    //world.convertTo(show, CV_8UC1, 0.05f);
 
-        for(int j = 0; j < test1.size(); j++){
-            rectangle(showRGB, test1[j],Scalar(0,0,255));
-        }
+    //for(int j = 0; j < test1.size(); j++){
+    //    rectangle(showRGB, test1[j],Scalar(0,0,255));
+    //}
+    
+    world = captureDepthMatrix();
+    Mat rgb = captureRGBMatrix();
+    imshow("depth", world);
+    
+    
+    int pt1x = test2[0].x;
+    int pt2x = test2[1].x;
+    int pty = (test2[1].y - test2[0].y)/2 + test2[0].y;
+    
+    circle(rgb, Point((pt2x-pt1x)/ 2 +pt1x, pty), 4, Scalar(255, 255, 255));
+    
+    imshow("chess8", rgb);
 
-        imshow("depth", world);
-        imshow("chess8", showRGB);
-
-    }
     do{
 
     }while(waitKey(10) != 30);

@@ -127,7 +127,7 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
         if(obs2[0] > 0.10 || obs2[1] > 0.20){
             response.x2 += obs2[1] * 100;
             response.y2 += obs2[0] * 100;
-            obstacle2AverageCount;
+            obstacle2AverageCount++;
         }       
     }
     

@@ -164,7 +164,7 @@ int ObjectDetector::generateQuads(Mat &image, vector<Rect>&outQuads){
 }
 
 int ObjectDetector::removeDoubleSquare(vector<Rect> &outQuads){
-    float acceptablePercent = 0.70;
+    float acceptablePercent = 0.70f;
     vector<Rect> tempList;
 
     for(int i = 0; i< outQuads.size(); i++){
