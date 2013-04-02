@@ -52,6 +52,13 @@ void MainWindow::on_StartSequenceButton_clicked() {
     baseStation.setStateToSendStartLoopMessage();
 }
 
+void MainWindow::on_calibrateKinectButton_clicked() {
+    ui->consoleText->append("Calibration de la Kinect");
+    KinectCapture kinectCapture;
+    KinectCalibrator kinectCalibrator;
+    kinectCalibrator.calibrate(kinectCapture.captureDepthMatrix());
+}
+
 void MainWindow::showSolvedSudocubeSlot(QString solvedSudocube, int redCaseValue) {
     stringstream strs;
     strs << redCaseValue;
