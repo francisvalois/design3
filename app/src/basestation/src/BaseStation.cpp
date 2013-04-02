@@ -45,8 +45,8 @@ bool BaseStation::init() {
 void BaseStation::initHandlers(ros::NodeHandle & node) {
     startLoopPublisher = node.advertise<std_msgs::String>("kinocto/startLoop", 1);
 
-    findObstaclesPositionService = node.advertiseService("basestation/findObstaclesPosition", &BaseStation::findObstaclesPosition, this);
-    findRobotPositionService = node.advertiseService("basestation/findRobotPosition", &BaseStation::findRobotPosition, this);
+    getObstaclesPositionService = node.advertiseService("basestation/getObstaclesPosition", &BaseStation::getObstaclesPosition, this);
+    findRobotPositionAndAngleService = node.advertiseService("basestation/findRobotPositionAndAngle", &BaseStation::findRobotPositionAndAngle, this);
     showSolvedSudocubeService = node.advertiseService("basestation/showSolvedSudocube", &BaseStation::showSolvedSudocube, this);
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
     updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
@@ -91,7 +91,7 @@ bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request &
     return true;
 }
 
-bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request, FindObstaclesPosition::Response & response) {
+bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, GetObstaclesPosition::Response & response) {
     int const AVERAGECOUNT = 3;
     int obstacle1AverageCount = 0;
     int obstacle2AverageCount = 0;
@@ -157,7 +157,7 @@ bool BaseStation::findObstaclesPosition(FindObstaclesPosition::Request & request
     return true;
 }
 
-bool BaseStation::findRobotPosition(FindRobotPosition::Request & request, FindRobotPosition::Response & response) {
+bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request & request, FindRobotPositionAndAngle::Response & response) {
     int const AVERAGECOUNT = 3;
     int robotPositionAverageCount;
     
