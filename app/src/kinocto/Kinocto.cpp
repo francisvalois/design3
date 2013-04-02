@@ -135,6 +135,7 @@ void Kinocto::goToSudocubeX() {
 
     baseStation->sendTrajectory(positions);
 
+    microcontroller->move(-0.75f); // P'tit hack pour enlever le slack dans les roues
     executeMoves(moves);
 }
 
@@ -259,6 +260,7 @@ void Kinocto::goToDrawingZone() {
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
 
+    microcontroller->move(-0.75f); // P'tit hack pour enlever le slack dans les roues
     executeMoves(moves);
 
     microcontroller->move(-13.0f);
