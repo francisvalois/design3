@@ -78,14 +78,18 @@ int ObjectDetector::getAverageFromPointList(list<Point> obstacle) {
 int ObjectDetector::generateQuads(Mat &image, vector<Rect>&outQuads){
     int minSize = 25;
     int maxContourApprox = 7;
+    Mat RGB = image.clone();
+    Mat RGBGray;
     
     vector<Point> srcContour;
     
     vector<vector<Point> > frameContours;
     vector<Vec4i> frameHierarchy;
 
-    Canny(image,image, 50,200, 3);
-    findContours(image, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+    cvtColor(image, RGBGray, CV_RGB2GRAY);
+    
+    Canny(RGBGray,RGBGray, 50,200, 3);
+    findContours(RGBGray, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
     
     // get all the contours one by one
     for (int j=0; j<frameContours.size(); j++) {
@@ -156,15 +160,23 @@ int ObjectDetector::generateQuads(Mat &image, vector<Rect>&outQuads){
         }
     }
 
+    
+    
     removeDoubleSquare(outQuads);
+    
     removeQuadsNotOnChessboard(outQuads);
+    for (int i = 0; i<outQuads.size(); i++) {
+        rectangle(RGB, outQuads[i], Scalar(0,0,255));
+    }
+    
+    imshow("Debug", RGB);
     sortQuadsByPosition(outQuads);
 
     return outQuads.size();
 }
 
 int ObjectDetector::removeDoubleSquare(vector<Rect> &outQuads){
-    float acceptablePercent = 0.70;
+    float acceptablePercent = 0.70f;
     vector<Rect> tempList;
 
     for(int i = 0; i< outQuads.size(); i++){
