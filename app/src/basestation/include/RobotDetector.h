@@ -10,7 +10,8 @@
 using namespace cv;
 using namespace std;
 
-class RobotDetector : private ObjectDetector{;
+class RobotDetector: private ObjectDetector {
+    ;
 
 private:
     Vec2f _robotPosition;
@@ -22,7 +23,7 @@ private:
     void get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition, Vec2f &trueLeftPosition, Vec2f &trueRightPosition);
     float findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> validRobotPosition);
     Vec2f findRobotCenterPosition(Mat depthMatrix, vector<Point2f> validRobotPosition, float angleRad);
-    Vec2f addRadiusToRobotFaceDistance(Vec2f distance,float angleRad);
+    Vec2f addRadiusToRobotFaceDistance(Vec2f distance, float angleRad);
 public:
 
     RobotDetector();
@@ -30,7 +31,7 @@ public:
     void findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1 = Vec2f(), Vec2f obstacle2 = Vec2f());
     Vec2f getRobotPosition();
     float getRobotAngle();
-    
+
 };
 
 #endif //__kinect_H_

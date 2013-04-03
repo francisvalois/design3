@@ -115,6 +115,11 @@ void Kinocto::goToSudocubeX() {
     baseStation->sendTrajectory(positions);
 
     microcontroller->move(-0.75f); // P'tit hack pour enlever le slack dans les roues
+
+    Position robotPos = workspace.getRobotPos();
+    robotPos.translateX(-0.75f);
+    workspace.setRobotPos(robotPos);
+
     executeMoves(moves);
 }
 
@@ -167,7 +172,8 @@ float Kinocto::adjustFrontPosition() {
 }
 
 void Kinocto::extractAndSolveSudocube() {
-    microcontroller->rotateCam(0, 0);
+    microcontroller->rotateCam(3, 0);
+
     vector<Sudocube *> sudocubes = extractSudocubes();
     if (sudocubes.size() < 2) {
         ROS_ERROR("DID NOT FIND ENOUGTH SUDOCUBES TO CHOOSE");
@@ -457,6 +463,10 @@ bool Kinocto::testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & 
     return true;
 }
 
+bool Kinocto::testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response) {
+    return true;
+}
+
 //adjustSidePosition
 
 int main(int argc, char **argv) {
@@ -481,6 +491,7 @@ int main(int argc, char **argv) {
     ros::ServiceServer service8 = nodeHandle.advertiseService("kinocto/TestGoToGreenFrameAndDraw", &Kinocto::testGoToGreenFrameAndDraw, &kinocto);
     ros::ServiceServer service9 = nodeHandle.advertiseService("kinocto/TestAdjustFrontPosition", &Kinocto::testAdjustFrontPosition, &kinocto);
     ros::ServiceServer service10 = nodeHandle.advertiseService("kinocto/TestAdjustSidePosition", &Kinocto::testAdjustSidePosition, &kinocto);
+    ros::ServiceServer service11 = nodeHandle.advertiseService("kinocto/TestAdjustAngle", &Kinocto::testAdjustAngle, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();

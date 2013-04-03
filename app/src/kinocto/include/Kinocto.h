@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string>
 #include "opencv2/opencv.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 #include <ros/ros.h>
 
@@ -40,6 +41,7 @@
 #include "kinocto/TestGoToGreenFrameAndDraw.h"
 #include "kinocto/TestAdjustFrontPosition.h"
 #include "kinocto/TestAdjustSidePosition.h"
+#include "kinocto/TestAdjustAngle.h"
 
 #define WAITING 1
 #define LOOPING 2
@@ -104,6 +106,7 @@ public:
     bool testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Request & request, kinocto::TestGoToGreenFrameAndDraw::Response & response);
     bool testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request & request, kinocto::TestAdjustFrontPosition::Response & response);
     bool testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response);
+    bool testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response);
 
 };
 
