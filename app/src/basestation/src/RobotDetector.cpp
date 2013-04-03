@@ -64,7 +64,7 @@ float RobotDetector::findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> va
         throw string("Unable to find the angle of the robot from the depthMap and the rgbMap");
     }
 
-    return -(M_PI/2 - angleRad);
+    return -(M_PI / 2 - angleRad);
 }
 
 Vec2f RobotDetector::addRadiusToRobotFaceDistance(Vec2f distance, float angleRad) {

@@ -41,4 +41,3 @@ Mat KinectCapture::captureRGBMatrix() {
 
     return showRGB.clone();
 }
-

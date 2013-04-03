@@ -65,7 +65,7 @@ void MicrocontrollerDecorator::rotate(float angle) {
 
     if (angle > 180) {
         angle = -(360 - angle);
-    } else if(angle < -180) {
+    } else if (angle < -180) {
         angle = 360 + angle;
     }
 
@@ -148,8 +148,6 @@ float MicrocontrollerDecorator::getSonarDistance(int sonarNo) {
     } else {
         ROS_ERROR("Failed to call service microcontroller/getSonarXDistance");
     }
-
-
 
     return 0.0f;
 }
