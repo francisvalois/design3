@@ -19,6 +19,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     QObject::connect(&baseStation, SIGNAL(message(QString)), this, SLOT(showMessage(QString)));
     QObject::connect(&baseStation, SIGNAL(traceRealTrajectorySignal(vector<Position>)), this, SLOT(traceRealTrajectory(vector<Position>)));
     QObject::connect(&baseStation, SIGNAL(updateObstaclesPositions(int,int,int,int)), this, SLOT(updateObstaclesPositions(int,int,int,int)));
+    QObject::connect(&baseStation, SIGNAL(updateTableImage(QImage)), this, SLOT(updateTableImage(QImage)));
 
     white = Scalar(255, 255, 255);
     blue = Scalar(255, 0, 0);
@@ -185,4 +186,11 @@ void MainWindow::drawLine(Mat img, Point start, Point end, Scalar color) {
     int thickness = 2;
     int lineType = 8;
     line(img, start, end, color, thickness, lineType);
+}
+
+void MainWindow::updateTableImage(QImage image) {
+
+    QImage largeImage = image.scaled(Workspace::TABLE_X * 2, Workspace::TABLE_Y * 2, Qt::KeepAspectRatio);
+    ui->tableImage->setPixmap(QPixmap::fromImage(largeImage));
+    ui->tableImage->show();
 }

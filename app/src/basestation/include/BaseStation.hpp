@@ -28,10 +28,12 @@
 #include "../../build/basestation/ui_mainwindow.h"
 
 #include "../../kinocto/include/pathPlanning/Position.h"
+#include "../../kinocto/include/Workspace.h"
 
 //ÉTATS DE LA CLASSE
 #define LOOP 0
 #define SEND_START_LOOP_MESSAGE 1
+
 
 class BaseStation: public QThread {
 Q_OBJECT
@@ -61,6 +63,7 @@ Q_SIGNALS:
     void message(QString);
     void traceRealTrajectorySignal(vector<Position>);
     void updateObstaclesPositions(int, int, int, int);
+    void updateTableImage(QImage);
 
 private:
     int init_argc;
@@ -83,6 +86,24 @@ private:
     ros::ServiceServer showConfirmStartRobotMessageService;
 
     void initHandlers(ros::NodeHandle & node);
+
+
+    cv::Mat3b createMatrix();
+    QImage Mat2QImage(const Mat3b&);
+
+    Position obstacle1;
+    Position obstacle2;
+    Position actualPosition;
+    vector<Position> plannedPath;
+    vector<Position> kinoctoPositionUpdates;
+
+    cv::Scalar white;
+    cv::Scalar blue;
+    cv::Scalar black;
+    cv::Scalar red;
+
+    void colorPixel(cv::Mat&, cv::Scalar, int, int);
+    void drawLine(cv::Mat, cv::Point, cv::Point, cv::Scalar);
 };
 
 #endif /* BASESTATION_H_ */

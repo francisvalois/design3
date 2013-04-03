@@ -8,6 +8,19 @@ using namespace cv;
 BaseStation::BaseStation(int argc, char** argv) :
         init_argc(argc), init_argv(argv) {
 
+    white = Scalar(255, 255, 255);
+    blue = Scalar(255, 0, 0);
+    black = Scalar(0, 0, 0);
+    red = Scalar(0, 0, 255);
+
+    obstacle1.x = 0;
+    obstacle1.y = 0;
+    obstacle2.x = 0;
+    obstacle2.y = 0;
+
+    actualPosition.x = 0;
+    actualPosition.y = 0;
+
     state = LOOP;
 
     init();
@@ -152,7 +165,14 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
-    emit updateObstaclesPositions(response.x1, response.y1, response.x2, response.y2);
+
+    //emit updateObstaclesPositions(response.x1, response.y1, response.x2, response.y2);
+
+    obstacle1.set(response.x1,response.y1);
+    obstacle2.set(response.x2,response.y2);
+
+    QImage image = Mat2QImage(createMatrix());
+    emit updateTableImage(image);
 
     return true;
 }
@@ -228,14 +248,16 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     }
 
     stringstream buff;
-    vector<Position> positions;
-    for (int i = 0; i < request.x.size(); i++) {
-        buff << "(" << request.x[i] << "," << request.y[i] << ")" << endl;
-        Position position(request.x[i],request.y[i]);
-        positions.push_back(position);
-    }
 
-    //TODO Afficher les points dans l'interface graphique
+    if(request.x.size() > 0) {
+        plannedPath.clear();
+
+        for (int i = 0; i < request.x.size(); i++) {
+            buff << "(" << request.x[i] << "," << request.y[i] << ")" << endl;
+            Position position(request.x[i],request.y[i]);
+            plannedPath.push_back(position);
+        }
+    }
 
     ROS_INFO("%s %s", "Points of the trajectory :\n", buff.str().c_str());
 
@@ -243,13 +265,23 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     infoQ.append((char*) buff.str().c_str());
 
     emit message(infoQ);
-    emit traceRealTrajectorySignal(positions);
+    //emit traceRealTrajectorySignal(positions);
+
+    QImage image = Mat2QImage(createMatrix());
+    emit updateTableImage(image);
 
     return true;
 }
 
 bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & response) {
     ROS_INFO("Show Loop Ended Message");
+
+    if(plannedPath.size() > 0) {
+        plannedPath.clear();
+    }
+    if(kinoctoPositionUpdates.size() > 0) {
+        kinoctoPositionUpdates.clear();
+    }
 
     emit message("Kinocto : Loop Ended");
 
@@ -265,7 +297,91 @@ bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, Up
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
-    emit UpdatingRobotPositionSignal(request.x, request.y);
+
+    //emit UpdatingRobotPositionSignal(request.x, request.y);
+
+    actualPosition.set(request.x, request.y);
+    kinoctoPositionUpdates.push_back(actualPosition);
+
+    QImage image = Mat2QImage(createMatrix());
+    emit updateTableImage(image);
 
     return true;
+}
+
+Mat3b BaseStation::createMatrix() {
+    Mat3b tableWorkspace = Mat(Workspace::TABLE_X + 1, Workspace::TABLE_Y + 1, CV_8UC3, white);
+
+    //OBSTACLE 1
+    if (obstacle1.x != 0 && obstacle1.y != 0) {
+        for (int y = (obstacle1.y - Workspace::OBSTACLE_RADIUS); y <= (obstacle1.y + Workspace::OBSTACLE_RADIUS); y++) {
+            for (int x = (obstacle1.x - Workspace::OBSTACLE_RADIUS); x <= (obstacle1.x + Workspace::OBSTACLE_RADIUS); x++) {
+                colorPixel(tableWorkspace, black, x, y);
+            }
+        }
+    }
+
+    //OBSTACLE 2
+    if (obstacle2.x != 0 && obstacle2.y != 0) {
+        for (int y = (obstacle2.y - Workspace::OBSTACLE_RADIUS); y <= (obstacle2.y + Workspace::OBSTACLE_RADIUS); y++) {
+            for (int x = (obstacle2.x - Workspace::OBSTACLE_RADIUS); x <= (obstacle2.x + Workspace::OBSTACLE_RADIUS); x++) {
+                colorPixel(tableWorkspace, black, x, y);
+            }
+        }
+    }
+
+    //Drawing actual Kinocto position
+    if (actualPosition.x != 0 && actualPosition.y != 0) {
+        for (int y = (actualPosition.y - 3); y <= (actualPosition.y + 3); y++) {
+            for (int x = (actualPosition.x - 3); x <= (actualPosition.x + 3); x++) {
+                colorPixel(tableWorkspace, red, x, Workspace::TABLE_Y - y);
+            }
+        }
+    }
+
+    transpose(tableWorkspace, tableWorkspace);
+
+    //Drawing kinoctoPositionUpdates
+    if(kinoctoPositionUpdates.size() > 0) {
+        for(unsigned int i = 0; i < kinoctoPositionUpdates.size() - 1; i++) {
+            Point currentPoint(kinoctoPositionUpdates[i].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i].y);
+            Point nextPoint(kinoctoPositionUpdates[i+1].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i+1].y);
+            drawLine(tableWorkspace, currentPoint, nextPoint, red);
+        }
+    }
+
+    //Drawing plannedPath
+    if(plannedPath.size() > 0) {
+        for(unsigned int i = 0; i < plannedPath.size() - 1; i++) {
+            Point currentPoint(plannedPath[i].x, Workspace::TABLE_Y - plannedPath[i].y);
+            Point nextPoint(plannedPath[i+1].x, Workspace::TABLE_Y - plannedPath[i+1].y);
+            drawLine(tableWorkspace, currentPoint, nextPoint, blue);
+        }
+    }
+
+    return tableWorkspace;
+}
+
+QImage BaseStation::Mat2QImage(const Mat3b &src) {
+    QImage dest(src.cols, src.rows, QImage::Format_ARGB32);
+    for (int y = 0; y < src.rows; ++y) {
+            const cv::Vec3b *srcrow = src[y];
+            QRgb *destrow = (QRgb*)dest.scanLine(y);
+            for (int x = 0; x < src.cols; ++x) {
+                    destrow[x] = qRgba(srcrow[x][2], srcrow[x][1], srcrow[x][0], 255);
+            }
+    }
+    return dest;
+}
+
+void BaseStation::colorPixel(Mat &mat, Scalar color, int x, int y) {
+    mat.at<cv::Vec3b>(x, y)[0] = color[0];
+    mat.at<cv::Vec3b>(x, y)[1] = color[1];
+    mat.at<cv::Vec3b>(x, y)[2] = color[2];
+}
+
+void BaseStation::drawLine(Mat img, Point start, Point end, Scalar color) {
+    int thickness = 1;
+    int lineType = 8;
+    line(img, start, end, color, thickness, lineType);
 }

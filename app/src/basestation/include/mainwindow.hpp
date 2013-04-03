@@ -34,6 +34,7 @@ private slots:
     void showMessage(QString);
     void traceRealTrajectory(vector<Position>);
     void updateObstaclesPositions(int,int,int,int);
+    void updateTableImage(QImage);
 
 private:
     Ui::MainWindow *ui;
