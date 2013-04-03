@@ -205,6 +205,7 @@ void Kinocto::extractAndSolveSudocube() {
 
 vector<Sudocube *> Kinocto::extractSudocubes() {
     vector<Sudocube *> sudokubes;
+    cameraCapture.openCapture();
     for (int i = 1; i <= 10 && sudokubes.size() < 5; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
         if (!sudocubeImg.data) {
@@ -217,6 +218,7 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
             ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
         }
     }
+    cameraCapture.closeCapture();
 
     return sudokubes;
 }
