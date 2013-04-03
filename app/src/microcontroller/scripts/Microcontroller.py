@@ -162,19 +162,16 @@ def handleDecodeAntenna(req):
 
     response = DecodeAntennaResponse()
     test = sendCommandToController("A0000000")
-    for i in range(len(test) -1):
-        test[i] = int(test[i])
-
     response.number = int(test[0])*pow(2,2)+int(test[1])*pow(2,1)+int(test[2]) + 1
-    if test[3] == 0 and test[4] == 0:
+    if int(test[3]) == 0 and int(test[4]) == 0:
         response.orientation = DecodeAntennaResponse.NORTH
-    elif test[3] == 0 and test[4] == 1:
+    elif int(test[3]) == 0 and int(test[4]) == 1:
         response.orientation = DecodeAntennaResponse.EAST
-    elif test[3] == 1 and test[4] == 0:
+    elif int(test[3]) == 1 and int(test[4]) == 0:
         response.orientation = DecodeAntennaResponse.SOUTH
-    elif test[3] == 1 and test[4] == 1:
+    elif int(test[3]) == 1 and int(test[4]) == 1:
         response.orientation = DecodeAntennaResponse.WEST
-    if test[5] == 1:
+    if int(test[5]) == 1:
         response.isBig = True
     else:
         response.isBig = False
