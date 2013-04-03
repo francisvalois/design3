@@ -104,7 +104,6 @@ void Kinocto::decodeAntennaParam() {
 
 void Kinocto::showAntennaParam() {
     microcontroller->writeToLCD(antennaParam);
-    sleep(3);
 }
 
 void Kinocto::goToSudocubeX() {
