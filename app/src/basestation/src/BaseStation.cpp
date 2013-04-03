@@ -150,7 +150,7 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
 
 bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request & request, FindRobotPositionAndAngle::Response & response) {
     int const AVERAGECOUNT = 3;
-    int robotPositionAverageCount;
+    int robotPositionAverageCount = 0;
 
     kinectCapture.openCapture();
     for (int i = 0; i < AVERAGECOUNT; i++) {
@@ -163,7 +163,6 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition();
         float angle = robotDetection.getRobotAngle();
-
         if (robot[0] > 0.10 || robot[1] > 0.20) {
             response.x += robot[1] * 100;
             response.y += robot[0] * 100;
@@ -172,6 +171,7 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
         }
     }
     kinectCapture.closeCapture();
+
 
     if (robotPositionAverageCount > 0) {
         response.x /= robotPositionAverageCount;

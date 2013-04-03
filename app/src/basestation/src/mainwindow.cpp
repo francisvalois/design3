@@ -56,7 +56,10 @@ void MainWindow::on_calibrateKinectButton_clicked() {
     ui->consoleText->append("Calibration de la Kinect");
     KinectCapture kinectCapture;
     KinectCalibrator kinectCalibrator;
+
+    kinectCapture.openCapture();
     kinectCalibrator.calibrate(kinectCapture.captureDepthMatrix());
+    kinectCapture.closeCapture();
 }
 
 void MainWindow::showSolvedSudocubeSlot(QString solvedSudocube, int redCaseValue) {
