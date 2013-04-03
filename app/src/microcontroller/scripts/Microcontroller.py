@@ -175,7 +175,7 @@ def handleDecodeAntenna(req):
         response.isBig = True
     else:
         response.isBig = False
-    rospy.loginfo("Decoded Antenna Param are... number:%d orientation:%d isBig?:%s ", response.number, response.orientation, str(response.isBig))
+    rospy.loginfo("Decoded Antenna Param are... number:%d orientation:%d isBig?:%s ", response.number, response.orientation, response.isBig)
     
     return response
 
