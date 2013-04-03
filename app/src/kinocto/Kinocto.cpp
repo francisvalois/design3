@@ -189,6 +189,7 @@ float Kinocto::adjustFrontPosition() {
 }
 
 void Kinocto::extractAndSolveSudocube() {
+    microcontroller->rotateCam(0, 0);
     vector<Sudocube *> sudocubes = extractSudocubes();
     if (sudocubes.size() < 2) {
         ROS_ERROR("DID NOT FIND ENOUGTH SUDOCUBES TO CHOOSE");
@@ -204,7 +205,7 @@ void Kinocto::extractAndSolveSudocube() {
 
 vector<Sudocube *> Kinocto::extractSudocubes() {
     vector<Sudocube *> sudokubes;
-    for (int i = 1; i <= 10 && sudokubes.size() < 3; i++) {
+    for (int i = 1; i <= 10 && sudokubes.size() < 5; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
         if (!sudocubeImg.data) {
             return sudokubes;
@@ -240,9 +241,11 @@ void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudoc
 }
 
 int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
-    for (int i = 0; i < 2; i++) {
-        if (sudocubes[i]->equals(*sudocubes[i + 1])) {
-            return i;
+    for (int i = 0; i < sudocubes.size(); i++) {
+        for (int j = i + 1; j < sudocubes.size(); j++) {
+            if (sudocubes[i]->equals(*sudocubes[i + 1])) {
+                return i;
+            }
         }
     }
     return -1;
@@ -294,13 +297,13 @@ void Kinocto::drawNumber() {
 }
 
 void Kinocto::endLoop() {
-    //float angle;
-    //Position robotPos;
-    //baseStation->requestRobotPositionAndAngle(robotPos, angle);
-    //workspace.setRobotPos(robotPos);
-    //vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
-    //vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-    //executeMoves(moves);
+//float angle;
+//Position robotPos;
+//baseStation->requestRobotPositionAndAngle(robotPos, angle);
+//workspace.setRobotPos(robotPos);
+//vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
+//vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+//executeMoves(moves);
 
     microcontroller->turnLED(true);
     baseStation->sendLoopEndedMessage();
