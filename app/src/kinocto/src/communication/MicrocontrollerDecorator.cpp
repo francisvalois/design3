@@ -139,16 +139,17 @@ void MicrocontrollerDecorator::rotateCam(int vAngle, int hAngle) {
 }
 
 float MicrocontrollerDecorator::getSonarDistance(int sonarNo) {
-    ROS_INFO("Requesting the microcontroller to send the distance of the sonar no:%d", sonarNo);
-
     GetSonarXDistance srv;
     srv.request.sonarNo = sonarNo;
 
     if (sonarXDistanceClient.call(srv) == true) {
+        ROS_INFO("Requesting the microcontroller to send the distance of the sonar no:%d value%f", sonarNo, srv.response.distance);
         return srv.response.distance;
     } else {
         ROS_ERROR("Failed to call service microcontroller/getSonarXDistance");
     }
+
+
 
     return 0.0f;
 }
