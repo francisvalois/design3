@@ -16,8 +16,8 @@ PathPlanning::PathPlanning() {
     startNode = 0;
     destinationNode = 0;
 
-    for (int y = 0; y <= TABLE_Y; y++) {
-        for (int x = 0; x <= TABLE_X; x++) {
+    for (int y = 0; y <= Workspace::TABLE_Y; y++) {
+        for (int x = 0; x <= Workspace::TABLE_X; x++) {
             table[x][y] = 0;
         }
     }
@@ -58,22 +58,22 @@ void PathPlanning::setObstacles(Position o1, Position o2) {
 }
 
 bool PathPlanning::obstaclesPositionsOK(Position obstacle1, Position obstacle2) {
-    if (obstacle1.x < DRAWING_ZONE || obstacle2.x < DRAWING_ZONE) {
+    if (obstacle1.x < Workspace::DRAWING_ZONE || obstacle2.x < Workspace::DRAWING_ZONE) {
 //        cout << "Error : An obstacle is in the drawing zone" << endl;
     	ROS_ERROR("Error : An obstacle is in the drawing zone");
         return false;
     }
-    if (obstacle1.x > TABLE_X - OBSTACLE_RADIUS || obstacle2.x > TABLE_X - OBSTACLE_RADIUS) {
+    if (obstacle1.x > Workspace::TABLE_X - Workspace::OBSTACLE_RADIUS || obstacle2.x > Workspace::TABLE_X - Workspace::OBSTACLE_RADIUS) {
 //        cout << "Error : An obstacle is in the west wall (x too high)" << endl;
         ROS_ERROR("Error : An obstacle is in the west wall (x too high)");
         return false;
     }
-    if (obstacle1.y < OBSTACLE_RADIUS || obstacle2.y < OBSTACLE_RADIUS) {
+    if (obstacle1.y < Workspace::OBSTACLE_RADIUS || obstacle2.y < Workspace::OBSTACLE_RADIUS) {
 //        cout << "Error : An obstacle is in the north wall (y too low)" << endl;
         ROS_ERROR("Error : An obstacle is in the north wall (y too low)");
         return false;
     }
-    if (obstacle1.y > TABLE_Y - OBSTACLE_RADIUS || obstacle2.y > TABLE_Y - OBSTACLE_RADIUS) {
+    if (obstacle1.y > Workspace::TABLE_Y - Workspace::OBSTACLE_RADIUS || obstacle2.y > Workspace::TABLE_Y - Workspace::OBSTACLE_RADIUS) {
 //        cout << "Error : An obstacle is in the south wall (y too high)" << endl;
         ROS_ERROR("Error : An obstacle is in the south wall (y too high)");
         return false;
@@ -281,21 +281,21 @@ vector<Position> PathPlanning::getObstacleCorners() {
     vector<Position> corners;
 
     Position p;
-    p.set(obstacle1.x - TOTAL_OBSTACLE_RADIUS, obstacle1.y + TOTAL_OBSTACLE_RADIUS);
+    p.set(obstacle1.x - Workspace::TOTAL_OBSTACLE_RADIUS, obstacle1.y + Workspace::TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.set(obstacle1.x - TOTAL_OBSTACLE_RADIUS, obstacle1.y - TOTAL_OBSTACLE_RADIUS);
+    p.set(obstacle1.x - Workspace::TOTAL_OBSTACLE_RADIUS, obstacle1.y - Workspace::TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.set(obstacle1.x + TOTAL_OBSTACLE_RADIUS, obstacle1.y + TOTAL_OBSTACLE_RADIUS);
+    p.set(obstacle1.x + Workspace::TOTAL_OBSTACLE_RADIUS, obstacle1.y + Workspace::TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.set(obstacle1.x + TOTAL_OBSTACLE_RADIUS, obstacle1.y - TOTAL_OBSTACLE_RADIUS);
+    p.set(obstacle1.x + Workspace::TOTAL_OBSTACLE_RADIUS, obstacle1.y - Workspace::TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.set(obstacle2.x - TOTAL_OBSTACLE_RADIUS, obstacle2.y + TOTAL_OBSTACLE_RADIUS);
+    p.set(obstacle2.x - Workspace::TOTAL_OBSTACLE_RADIUS, obstacle2.y + Workspace::TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.set(obstacle2.x - TOTAL_OBSTACLE_RADIUS, obstacle2.y - TOTAL_OBSTACLE_RADIUS);
+    p.set(obstacle2.x - Workspace::TOTAL_OBSTACLE_RADIUS, obstacle2.y - Workspace::TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.set(obstacle2.x + TOTAL_OBSTACLE_RADIUS, obstacle2.y + TOTAL_OBSTACLE_RADIUS);
+    p.set(obstacle2.x + Workspace::TOTAL_OBSTACLE_RADIUS, obstacle2.y + Workspace::TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
-    p.set(obstacle2.x + TOTAL_OBSTACLE_RADIUS, obstacle2.y - TOTAL_OBSTACLE_RADIUS);
+    p.set(obstacle2.x + Workspace::TOTAL_OBSTACLE_RADIUS, obstacle2.y - Workspace::TOTAL_OBSTACLE_RADIUS);
     corners.push_back(p);
 
     return corners;
@@ -334,14 +334,14 @@ void PathPlanning::connectNodes() {
 }
 
 bool PathPlanning::linePassesThroughObstacle(Position p1, Position p2) {
-    Position upperLeftObstacle1(obstacle1.x - TOTAL_OBSTACLE_RADIUS, obstacle1.y + TOTAL_OBSTACLE_RADIUS);
-    Position upperRightObstacle1(obstacle1.x + TOTAL_OBSTACLE_RADIUS, obstacle1.y + TOTAL_OBSTACLE_RADIUS);
-    Position lowerLeftObstacle1(obstacle1.x - TOTAL_OBSTACLE_RADIUS, obstacle1.y - TOTAL_OBSTACLE_RADIUS);
-    Position lowerRightObstacle1(obstacle1.x + TOTAL_OBSTACLE_RADIUS, obstacle1.y - TOTAL_OBSTACLE_RADIUS);
-    Position upperLeftObstacle2(obstacle2.x - TOTAL_OBSTACLE_RADIUS, obstacle2.y + TOTAL_OBSTACLE_RADIUS);
-    Position upperRightObstacle2(obstacle2.x + TOTAL_OBSTACLE_RADIUS, obstacle2.y + TOTAL_OBSTACLE_RADIUS);
-    Position lowerLeftObstacle2(obstacle2.x - TOTAL_OBSTACLE_RADIUS, obstacle2.y - TOTAL_OBSTACLE_RADIUS);
-    Position lowerRightObstacle2(obstacle2.x + TOTAL_OBSTACLE_RADIUS, obstacle2.y - TOTAL_OBSTACLE_RADIUS);
+    Position upperLeftObstacle1(obstacle1.x - Workspace::TOTAL_OBSTACLE_RADIUS, obstacle1.y + Workspace::TOTAL_OBSTACLE_RADIUS);
+    Position upperRightObstacle1(obstacle1.x + Workspace::TOTAL_OBSTACLE_RADIUS, obstacle1.y + Workspace::TOTAL_OBSTACLE_RADIUS);
+    Position lowerLeftObstacle1(obstacle1.x - Workspace::TOTAL_OBSTACLE_RADIUS, obstacle1.y - Workspace::TOTAL_OBSTACLE_RADIUS);
+    Position lowerRightObstacle1(obstacle1.x + Workspace::TOTAL_OBSTACLE_RADIUS, obstacle1.y - Workspace::TOTAL_OBSTACLE_RADIUS);
+    Position upperLeftObstacle2(obstacle2.x - Workspace::TOTAL_OBSTACLE_RADIUS, obstacle2.y + Workspace::TOTAL_OBSTACLE_RADIUS);
+    Position upperRightObstacle2(obstacle2.x + Workspace::TOTAL_OBSTACLE_RADIUS, obstacle2.y + Workspace::TOTAL_OBSTACLE_RADIUS);
+    Position lowerLeftObstacle2(obstacle2.x - Workspace::TOTAL_OBSTACLE_RADIUS, obstacle2.y - Workspace::TOTAL_OBSTACLE_RADIUS);
+    Position lowerRightObstacle2(obstacle2.x + Workspace::TOTAL_OBSTACLE_RADIUS, obstacle2.y - Workspace::TOTAL_OBSTACLE_RADIUS);
 
     if (linesCrosses(p1, p2, upperLeftObstacle1, upperRightObstacle1))
         return true;
@@ -370,15 +370,15 @@ bool PathPlanning::linesCrosses(Position line1p1, Position line1p2, Position lin
 void PathPlanning::printTable() {
     updateMatrixTable();
 
-    Mat workspace = Mat(TABLE_X + 1, TABLE_Y + 1, CV_8UC3, white);
+    Mat workspace = Mat(Workspace::TABLE_X + 1, Workspace::TABLE_Y + 1, CV_8UC3, white);
 
-    for (int y = TABLE_Y; y >= 0; y--) {
-        for (int x = 0; x <= TABLE_X; x++) {
+    for (int y = Workspace::TABLE_Y; y >= 0; y--) {
+        for (int x = 0; x <= Workspace::TABLE_X; x++) {
             if (table[x][y] == 9) {
-                colorPixel(workspace, black, x, TABLE_Y - y);
+                colorPixel(workspace, black, x, Workspace::TABLE_Y - y);
             }
             if (table[x][y] == 2) {
-                colorPixel(workspace, blue, x, TABLE_Y - y);
+                colorPixel(workspace, blue, x, Workspace::TABLE_Y - y);
             }
         }
     }
@@ -387,21 +387,21 @@ void PathPlanning::printTable() {
     Node* current = destinationNode;
     Node* predecessor = current->getPredecessor();
     while (predecessor != 0) {
-        Point currentPoint(current->getPosition().x, TABLE_Y - current->getPosition().y);
-        Point predecessorPoint(predecessor->getPosition().x, TABLE_Y - predecessor->getPosition().y);
+        Point currentPoint(current->getPosition().x, Workspace::TABLE_Y - current->getPosition().y);
+        Point predecessorPoint(predecessor->getPosition().x, Workspace::TABLE_Y - predecessor->getPosition().y);
         drawLine(workspace, currentPoint, predecessorPoint);
         current = predecessor;
         predecessor = current->getPredecessor();
     }
 
-    showWindowWith("Workspace", workspace);
+    showWindowWith("workspace", workspace);
 }
 
 void PathPlanning::updateMatrixTable() {
 //	WALLS IN BLACK
-    for (int y = 0; y <= TABLE_Y; y++) {
-        for (int x = 0; x <= TABLE_X; x++) {
-            if (y <= BUFFER_SIZE || y >= TABLE_Y - BUFFER_SIZE || x <= BUFFER_SIZE || x >= TABLE_X - BUFFER_SIZE) {
+    for (int y = 0; y <= Workspace::TABLE_Y; y++) {
+        for (int x = 0; x <= Workspace::TABLE_X; x++) {
+            if (y <= Workspace::BUFFER_SIZE || y >= Workspace::TABLE_Y - Workspace::BUFFER_SIZE || x <= Workspace::BUFFER_SIZE || x >= Workspace::TABLE_X - Workspace::BUFFER_SIZE) {
                 table[x][y] = 9;
             } else {
                 table[x][y] = 1;
@@ -410,15 +410,15 @@ void PathPlanning::updateMatrixTable() {
     }
 //	OBSTACLES IN BLACK
     if (obstacle1.x != 0 && obstacle1.y != 0) {
-        for (int y = (obstacle1.y - TOTAL_OBSTACLE_RADIUS); y <= (obstacle1.y + TOTAL_OBSTACLE_RADIUS); y++) {
-            for (int x = (obstacle1.x - TOTAL_OBSTACLE_RADIUS); x <= (obstacle1.x + TOTAL_OBSTACLE_RADIUS); x++) {
+        for (int y = (obstacle1.y - Workspace::TOTAL_OBSTACLE_RADIUS); y <= (obstacle1.y + Workspace::TOTAL_OBSTACLE_RADIUS); y++) {
+            for (int x = (obstacle1.x - Workspace::TOTAL_OBSTACLE_RADIUS); x <= (obstacle1.x + Workspace::TOTAL_OBSTACLE_RADIUS); x++) {
                 table[x][y] = 9;
             }
         }
     }
     if (obstacle2.x != 0 && obstacle2.y != 0) {
-        for (int y = (obstacle2.y - TOTAL_OBSTACLE_RADIUS); y <= (obstacle2.y + TOTAL_OBSTACLE_RADIUS); y++) {
-            for (int x = (obstacle2.x - TOTAL_OBSTACLE_RADIUS); x <= (obstacle2.x + TOTAL_OBSTACLE_RADIUS); x++) {
+        for (int y = (obstacle2.y - Workspace::TOTAL_OBSTACLE_RADIUS); y <= (obstacle2.y + Workspace::TOTAL_OBSTACLE_RADIUS); y++) {
+            for (int x = (obstacle2.x - Workspace::TOTAL_OBSTACLE_RADIUS); x <= (obstacle2.x + Workspace::TOTAL_OBSTACLE_RADIUS); x++) {
                 table[x][y] = 9;
             }
         }
