@@ -172,7 +172,7 @@ float Kinocto::adjustFrontPosition() {
 }
 
 void Kinocto::extractAndSolveSudocube() {
-    microcontroller->rotateCam(3, 0);
+    microcontroller->rotateCam(0, 0);
 
     vector<Sudocube *> sudocubes = extractSudocubes();
     if (sudocubes.size() < 2) {
