@@ -309,7 +309,7 @@ Mat3b BaseStation::createMatrix() {
     if (obstacle1.x != 0 && obstacle1.y != 0) {
         for (int y = (obstacle1.y - Workspace::OBSTACLE_RADIUS); y <= (obstacle1.y + Workspace::OBSTACLE_RADIUS); y++) {
             for (int x = (obstacle1.x - Workspace::OBSTACLE_RADIUS); x <= (obstacle1.x + Workspace::OBSTACLE_RADIUS); x++) {
-                colorPixel(tableWorkspace, black, x, y);
+                colorPixel(tableWorkspace, black, x, Workspace::TABLE_Y -  y);
             }
         }
     }
@@ -318,7 +318,7 @@ Mat3b BaseStation::createMatrix() {
     if (obstacle2.x != 0 && obstacle2.y != 0) {
         for (int y = (obstacle2.y - Workspace::OBSTACLE_RADIUS); y <= (obstacle2.y + Workspace::OBSTACLE_RADIUS); y++) {
             for (int x = (obstacle2.x - Workspace::OBSTACLE_RADIUS); x <= (obstacle2.x + Workspace::OBSTACLE_RADIUS); x++) {
-                colorPixel(tableWorkspace, black, x, y);
+                colorPixel(tableWorkspace, black, x, Workspace::TABLE_Y - y);
             }
         }
     }
