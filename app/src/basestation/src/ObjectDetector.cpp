@@ -169,7 +169,7 @@ int ObjectDetector::generateQuads(Mat &image, vector<Rect>&outQuads){
         rectangle(RGB, outQuads[i], Scalar(0,0,255));
     }
     
-    imshow("Debug", RGB);
+    //imshow("Debug", RGB);
     sortQuadsByPosition(outQuads);
 
     return outQuads.size();
