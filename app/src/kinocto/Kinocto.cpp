@@ -172,7 +172,7 @@ float Kinocto::getSonarDistance() {
     for (int i = 1; i <= NB_OF_SAMPLE; i++) {
         distances.push_back(microcontroller->getSonarDistance(1));
         if (i > 1) {
-            if (abs(distances[i - 1] - distances[i]) <= 1) { //Distance between 2 values
+            if (fabs(distances[i - 1] - distances[i]) <= 1) { //Distance between 2 values
                 return distances[i];
             }
         }
