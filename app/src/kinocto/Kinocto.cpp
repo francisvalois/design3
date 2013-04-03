@@ -208,9 +208,7 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
 
     vector<Sudocube *> sudokubes;
     for (int i = 1; i <= 10 && sudokubes.size() < 5; i++) {
-        cout <<  "patate" << endl;
         Mat sudocubeImg = cameraCapture.takePicture();
-        cout << "patate2" << endl;
 
         if (!sudocubeImg.data) {
             return sudokubes;
@@ -291,7 +289,7 @@ void Kinocto::goToDrawingZone() {
 }
 
 void Kinocto::drawNumber() {
-    Position translateTo = workspace.getNumberInitDrawPos(antennaParam.getNumber());
+    Position translateTo = workspace.getNumberInitDrawPos(numberToDraw);
     if (antennaParam.isBig() == true) {
         translateTo.set(translateTo.x * 2, translateTo.y * 2);
     }
@@ -299,7 +297,7 @@ void Kinocto::drawNumber() {
     microcontroller->translate(translateTo);
 
     microcontroller->putPen(true);
-    microcontroller->drawNumber(antennaParam.getNumber(), antennaParam.isBig());
+    microcontroller->drawNumber(numberToDraw, antennaParam.isBig());
     microcontroller->putPen(false);
 }
 
