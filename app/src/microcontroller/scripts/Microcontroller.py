@@ -162,7 +162,10 @@ def handleDecodeAntenna(req):
 
     response = DecodeAntennaResponse()
     test = sendCommandToController("A0000000")
-    response.number = test[0]*pow(2,2)+test[1]*pow(2,1)+test[2] + 1
+    for i in range(len(test) -1):
+        test[i] = int(test[i])
+
+    response.number = int(test[0])*pow(2,2)+int(test[1])*pow(2,1)+int(test[2]) + 1
     if test[3] == 0 and test[4] == 0:
         response.orientation = DecodeAntennaResponse.NORTH
     elif test[3] == 0 and test[4] == 1:
@@ -175,7 +178,7 @@ def handleDecodeAntenna(req):
         response.isBig = True
     else:
         response.isBig = False
-    rospy.loginfo("Decoded Antenna Param are... number:%d orientation:%d isBig?:%s ", response.number, response.orientation, response.isBig)
+    rospy.loginfo("Decoded Antenna Param are... number:%d orientation:%d isBig?:%s ", response.number, response.orientation, str(response.isBig))
     
     return response
 
@@ -234,7 +237,7 @@ def Microcontroller():
     ser = serial.Serial()
     # ser.port = ('/dev/ttyUSB0') 
     ser.port = ('/dev/serial/by-id/usb-TXI_Luminary_Micro_ICDI_Board_0B01015D-if01-port0')
-    ser.baudrate = 19200
+    ser.baudrate = 115200
     ser.parity = serial.PARITY_EVEN
     ser.stopbits = 1
     ser.timeout = 0
