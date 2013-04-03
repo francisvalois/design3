@@ -151,7 +151,7 @@ void MainWindow::printTable() {
         }
     }
 
-    showWindowWith("Workspace", workspace);
+    //showWindowWith("Workspace", workspace);
 }
 
 void MainWindow::setObstaclesInMatrixTable() {

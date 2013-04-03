@@ -294,13 +294,13 @@ void Kinocto::drawNumber() {
 }
 
 void Kinocto::endLoop() {
-    float angle;
-    Position robotPos;
-    baseStation->requestRobotPositionAndAngle(robotPos, angle);
-    workspace.setRobotPos(robotPos);
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-    executeMoves(moves);
+    //float angle;
+    //Position robotPos;
+    //baseStation->requestRobotPositionAndAngle(robotPos, angle);
+    //workspace.setRobotPos(robotPos);
+    //vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
+    //vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+    //executeMoves(moves);
 
     microcontroller->turnLED(true);
     baseStation->sendLoopEndedMessage();

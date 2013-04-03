@@ -180,6 +180,11 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
         response.angle = response.angle * 180 / M_PI;
     }
 
+    //TODO TEMPORAIRE PR TESTS
+    response.x = 35.5;
+    response.y = 76.5;
+    response.angle = 0.0f;
+
     ROS_INFO( "%s x:%f y:%f angle:%f", "Request Find Robot Position. Sending Values ", response.x, response.y, response.angle);
 
     stringstream info;
