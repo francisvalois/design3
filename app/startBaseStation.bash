@@ -1,1 +1,1 @@
-rosrun basestation BaseStation __tcpros_server_port:=11111
+rosrun basestation BaseStation
