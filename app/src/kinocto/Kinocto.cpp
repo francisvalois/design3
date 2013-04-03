@@ -169,9 +169,9 @@ void Kinocto::adjustSidePosition() {
 float Kinocto::getSonarDistance() {
     int NB_OF_SAMPLE = 5;
     vector<float> distances;
-    for (int i = 1; i <= NB_OF_SAMPLE; i++) {
+    for (int i = 0; i < NB_OF_SAMPLE; i++) {
         distances.push_back(microcontroller->getSonarDistance(1));
-        if (i > 1) {
+        if (i >= 1) {
             if (fabs(distances[i - 1] - distances[i]) <= 1) { //Distance between 2 values
                 return distances[i];
             }
