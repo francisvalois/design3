@@ -95,44 +95,43 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
     int const AVERAGECOUNT = 3;
     int obstacle1AverageCount = 0;
     int obstacle2AverageCount = 0;
-    
+
     //Average the measure for a better precision when the kinect is doing obscure things
-    
+
     kinectCapture.openCapture();
-    for(int i  = 0; i < AVERAGECOUNT; i++){
+    for (int i = 0; i < AVERAGECOUNT; i++) {
         Mat depthMatrix = kinectCapture.captureDepthMatrix();
         if (!depthMatrix.data) {
             return false;
         }
-        
+
         obstaclesDetection.findCenteredObstacle(depthMatrix);
         Vec2f obs1 = obstaclesDetection.getObstacle1();
         Vec2f obs2 = obstaclesDetection.getObstacle2();
-        
-        if(obs1[0] > 0.10 || obs1[1] > 0.20){
+
+        if (obs1[0] > 0.10 || obs1[1] > 0.20) {
             response.x1 += obs1[1] * 100;
             response.y1 += obs1[0] * 100;
             obstacle1AverageCount++;
         }
-        
-        if(obs2[0] > 0.10 || obs2[1] > 0.20){
+
+        if (obs2[0] > 0.10 || obs2[1] > 0.20) {
             response.x2 += obs2[1] * 100;
             response.y2 += obs2[0] * 100;
             obstacle2AverageCount++;
-        }       
+        }
     }
     kinectCapture.closeCapture();
-    
-    if(obstacle1AverageCount > 0){
+
+    if (obstacle1AverageCount > 0) {
         response.x1 /= obstacle1AverageCount;
         response.y1 /= obstacle1AverageCount;
     }
-    
-    if(obstacle2AverageCount > 0){
+
+    if (obstacle2AverageCount > 0) {
         response.x2 /= obstacle2AverageCount;
         response.y2 /= obstacle2AverageCount;
     }
-    
 
     ROS_INFO( "%s x:%f y:%f  x:%f y:%f", "Request Find Obstacles Position. Sending values ", response.x1, response.y1, response.x2, response.y2);
 
@@ -152,27 +151,36 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
 bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request & request, FindRobotPositionAndAngle::Response & response) {
     int const AVERAGECOUNT = 3;
     int robotPositionAverageCount;
-    
+
     kinectCapture.openCapture();
-    for(int i  = 0; i < AVERAGECOUNT; i++){
+    for (int i = 0; i < AVERAGECOUNT; i++) {
         Mat depthMatrix = kinectCapture.captureDepthMatrix();
         Mat rgbMatrix = kinectCapture.captureRGBMatrix();
         if (!rgbMatrix.data || !depthMatrix.data) {
             return false;
         }
-        
+
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
-        Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
-        
-        if(robot[0] > 0.10 || robot[1] > 0.20){
+        Vec2f robot = robotDetection.getRobotPosition();
+        float angle = robotDetection.getRobotAngle();
+
+        if (robot[0] > 0.10 || robot[1] > 0.20) {
             response.x += robot[1] * 100;
             response.y += robot[0] * 100;
+            response.angle += angle;
             robotPositionAverageCount++;
         }
     }
     kinectCapture.closeCapture();
-    
-    ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", response.x, response.y);
+
+    if (robotPositionAverageCount > 0) {
+        response.x /= robotPositionAverageCount;
+        response.y /= robotPositionAverageCount;
+        response.angle /= robotPositionAverageCount;
+        response.angle = response.angle * 180 / M_PI;
+    }
+
+    ROS_INFO( "%s x:%f y:%f angle:%f", "Request Find Robot Position. Sending Values ", response.x, response.y, response.angle);
 
     stringstream info;
     info << "Kinocto : Demande de la position du robot \n";
@@ -210,7 +218,7 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     vector<Position> positions;
     for (int i = 0; i < request.x.size(); i++) {
         buff << "(" << request.x[i] << "," << request.y[i] << ")" << endl;
-        Position position(request.x[i],request.y[i]);
+        Position position(request.x[i], request.y[i]);
         positions.push_back(position);
     }
 

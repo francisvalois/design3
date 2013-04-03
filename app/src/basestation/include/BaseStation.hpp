@@ -5,6 +5,7 @@
 #include <QThread>
 #include "opencv2/core/core.hpp"
 #include <vector>
+#include <math.h>
 
 //Messages
 #include "std_msgs/String.h"
