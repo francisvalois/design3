@@ -63,28 +63,6 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
     }
 }
 
-void Kinocto::restartLoop(const std_msgs::String::ConstPtr& msg) {
-    if (state == WAITING_TO_RESTART) {
-        state = LOOPING;
-        baseStation->sendConfirmRobotStarted();
-
-        goToAntenna(); //ON PART DE L'ANGLE MORT DE LA KINECT
-        //TROUVER L'ANGLE ET LA POSITION
-        goToAntenna();
-        decodeAntennaParam();
-        showAntennaParam();
-        goToSudocubeX();
-        //RECTIFIER ANGLE
-        adjustFrontPosition();
-        adjustSidePosition();
-        //RECTIFIER ANGLE
-        extractAndSolveSudocube();
-        goToDrawingZone();
-        drawNumber();
-        endLoop();
-    }
-}
-
 void Kinocto::getObstaclesPosition() {
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
@@ -313,10 +291,6 @@ void Kinocto::endLoop() {
     microcontroller->turnLED(true);
     baseStation->sendLoopEndedMessage();
     state = WAITING;
-}
-
-void Kinocto::restartLoop() {
-
 }
 
 bool Kinocto::testExtractSudocubeAndSolve(TestExtractSudocubeAndSolve::Request & request, TestExtractSudocubeAndSolve::Response & response) {

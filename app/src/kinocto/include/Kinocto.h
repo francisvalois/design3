@@ -85,14 +85,12 @@ private:
     void goToDrawingZone();
     void drawNumber();
     void endLoop();
-    void restartLoop();
 
 public:
     Kinocto(ros::NodeHandle node);
     ~Kinocto();
     void loop();
     void startLoop(const std_msgs::String::ConstPtr& msg);
-    void restartLoop(const std_msgs::String::ConstPtr& msg);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
