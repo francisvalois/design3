@@ -8,7 +8,6 @@
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #include "ecran.h"
-#include "gestionAntenne.h"
 
 #define BUFFER_LEN          256
 
@@ -63,12 +62,15 @@ void write(char mychar);
 void initPWM(void);
 //timer.c
 void initTimer(void);
-void disableTimer(void);
+//antenne.c
+void initAntenne(void);
+void activateAntenneInt(void);
+void deactivateAntenneInt(void);
+void AntenneHandler(void);
 //qei.c
 void initQEI(void);
 void EncoderIntHandler(void);
 void EncoderHandler(void);
-void disableQEIs(void);
 //command.c
 void initCommande(void);
 void traiterNouvelleCommande(long commande_a_traiter[8]);
@@ -104,8 +106,8 @@ int main(void)
 	ROM_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
     
     //Enable les GPIO pour les timings des interrupts et autres	
-	//ROM_GPIOPadConfigSet(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
-	//ROM_GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
+	ROM_GPIOPadConfigSet(GPIO_PORTB_BASE, GPIO_PIN_7, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD_WPD);
+	ROM_GPIOPinTypeGPIOOutput(GPIO_PORTB_BASE, GPIO_PIN_7);
 
 	//Mettre les interrupts du port E en haute prorités: évite collisions avec QEI logiciel
 	ROM_IntPrioritySet(INT_GPIOE,0); 
@@ -183,7 +185,7 @@ int main(void)
     
     is_waiting_for_action = false;
     
- 
+    
     init_lcd();
     //afficher_param('2', 'S', 'G');
 	//ecranInit();
@@ -196,11 +198,6 @@ int main(void)
     initUART();   
     initQEI();
     initTimer();
-    //disableTimer();
-    //disableQEIs();
-    antenne_Initialiser();
-    //GPIOPinIntEnable(GPIO_PORTB_BASE, GPIO_PIN_2);
-
     
 
 
