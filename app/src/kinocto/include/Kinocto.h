@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string>
 #include "opencv2/opencv.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 #include <ros/ros.h>
 
@@ -40,6 +41,7 @@
 #include "kinocto/TestGoToGreenFrameAndDraw.h"
 #include "kinocto/TestAdjustFrontPosition.h"
 #include "kinocto/TestAdjustSidePosition.h"
+#include "kinocto/TestAdjustAngle.h"
 
 #define WAITING 1
 #define LOOPING 2
@@ -85,14 +87,12 @@ private:
     void goToDrawingZone();
     void drawNumber();
     void endLoop();
-    void restartLoop();
 
 public:
     Kinocto(ros::NodeHandle node);
     ~Kinocto();
     void loop();
     void startLoop(const std_msgs::String::ConstPtr& msg);
-    void restartLoop(const std_msgs::String::ConstPtr& msg);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
@@ -106,6 +106,7 @@ public:
     bool testGoToGreenFrameAndDraw(kinocto::TestGoToGreenFrameAndDraw::Request & request, kinocto::TestGoToGreenFrameAndDraw::Response & response);
     bool testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request & request, kinocto::TestAdjustFrontPosition::Response & response);
     bool testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response);
+    bool testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response);
 
 };
 

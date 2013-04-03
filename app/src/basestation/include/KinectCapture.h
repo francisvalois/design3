@@ -11,8 +11,13 @@ private:
 public:
     KinectCapture();
     ~KinectCapture();
+
+    void openCapture();
+    void closeCapture();
     cv::Mat captureDepthMatrix();
     cv::Mat captureRGBMatrix();
+private:
+    cv::VideoCapture capture;
 };
 
 #endif /* KINECTCAPTURE_H_ */

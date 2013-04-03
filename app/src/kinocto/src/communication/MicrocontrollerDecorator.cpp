@@ -53,7 +53,7 @@ void MicrocontrollerDecorator::move(float distance) {
     Move srv;
     srv.request.distance = distance;
 
-    if (distance < -0.75f || distance > 0.75f) { // TODO vérifier conditions
+    if (distance < -0.5f || distance > 0.5f) { // TODO vérifier conditions
         if (moveClient.call(srv) == false) {
             ROS_ERROR("Failed to call service microcontroller/move");
         }
@@ -65,14 +65,14 @@ void MicrocontrollerDecorator::rotate(float angle) {
 
     if (angle > 180) {
         angle = -(360 - angle);
-    } else if(angle < -180) {
+    } else if (angle < -180) {
         angle = 360 + angle;
     }
 
     Rotate srv;
     srv.request.angle = angle;
 
-    if (angle < -0.75f || angle > 0.75f) {
+    if (angle < -0.5f || angle > 0.5f) {
         if (rotateClient.call(srv) == false) {
             ROS_ERROR("Failed to call service microcontroller/rotate");
         }
@@ -139,12 +139,11 @@ void MicrocontrollerDecorator::rotateCam(int vAngle, int hAngle) {
 }
 
 float MicrocontrollerDecorator::getSonarDistance(int sonarNo) {
-    ROS_INFO("Requesting the microcontroller to send the distance of the sonar no:%d", sonarNo);
-
     GetSonarXDistance srv;
     srv.request.sonarNo = sonarNo;
 
     if (sonarXDistanceClient.call(srv) == true) {
+        ROS_INFO("Requesting the microcontroller to send the distance of the sonar no:%d value%f", sonarNo, srv.response.distance);
         return srv.response.distance;
     } else {
         ROS_ERROR("Failed to call service microcontroller/getSonarXDistance");

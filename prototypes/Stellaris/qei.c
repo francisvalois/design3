@@ -138,6 +138,9 @@ void resetQEIs(void){
 
 void disableQEIs(void){
 	ROM_IntDisable(INT_GPIOE);
+	GPIOPinIntDisable(GPIO_PORTE_BASE, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_6 | GPIO_PIN_7);
+	QEIDisable(QEI1_BASE);
+	QEIDisable(QEI0_BASE);
 }
 
 void enableQEIs(void){
