@@ -63,6 +63,7 @@ void BaseStation::loop() {
             break;
         case SEND_START_LOOP_MESSAGE:
             sendStartLoopMessage();
+            state = LOOP;
             break;
         }
 
