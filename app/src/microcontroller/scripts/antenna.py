@@ -4,14 +4,14 @@ import sys
 
 def traiterDonneesAntennes(nomFichier):
 
-	print('********************Test de decodeur antenne*************************')
+	print('********************Test de décodeur antenne*************************')
 	sumary = nomFichier + ".dec"
 	h = open(sumary, 'w')
 	intro = "Resultats : " + nomFichier + '\r\n'
 	h.write(intro)
 
 	v = 0
-	for v in range(5):
+	if(nomFichier):
 
 		nom = "./" + nomFichier + '.' + str(v)
 		f = open(nom, 'r')
@@ -25,7 +25,7 @@ def traiterDonneesAntennes(nomFichier):
 		s_indx = 0
 
 		data.pop(0)
-	# construction de l'array, reperage du plus petit et du plus grand element
+	# construction de l'array, repérage du plus petit et du plus grand élément
 		for x in range(len(data)):
 			current = int(data[x])
 			if current < smallest_0 and current > 2000:
@@ -33,9 +33,9 @@ def traiterDonneesAntennes(nomFichier):
 				s_indx = x
 			dataInt.append(current)
 
-	#array qui contient les timings associes a leur valeur 1 ou 0
+	#array qui contient les timings associés à leur valeur 1 ou 0
 		ValuedData = []
-	# nettoyage de l'array, attribution des 1 et des zeros
+	# nettoyage de l'array, attribution des 1 et des zéros
 		i = s_indx
 		toggle = True
 		while i >= 0:
@@ -75,13 +75,13 @@ def traiterDonneesAntennes(nomFichier):
 				if ValuedData[j][0] < smallest_1:
 					smallest_1 = ValuedData[j][0]
 
-	############################# Sequencage ################################################################
-	# On attribue une valeur digitale a chaque timing selon les correspondances suivantes:
-	# 10 - un seul zero; 11 - un seul '1'; 20 - deux zeros consecutifs; 21 - deux '1' consecutifs
+	############################# Séquençage ################################################################
+	# On attribue une valeur digitale à chaque timing selon les correspondances suivantes:
+	# 10 - un seul zéro; 11 - un seul '1'; 20 - deux zéros consécutifs; 21 - deux '1' consécutifs
 		seqData = []
 		for k in range(len(ValuedData)):
 			if ValuedData[k][1] == 0:
-				if ValuedData[k][0] > smallest_0*2.7: # scale factor pour zero
+				if ValuedData[k][0] > smallest_0*1.7: # scale factor pour zéro
 					seqData.append(20)
 				else:
 					seqData.append(10)
@@ -103,13 +103,13 @@ def traiterDonneesAntennes(nomFichier):
 
 
 
-	######################## algorithme de Knuth-Morris-Pratt (modifie) ###############################################
-	# On recherche la sequence P des bits d'arret et de depart dans l'echantillon seqData
+	######################## algorithme de Knuth-Morris-Pratt (modifié) ###############################################
+	# On recherche la séquence P des bits d'arrêt et de départ dans l'échantillon seqData
 
 		T = []
-		P = [10,11,10,11,10,11,10,11,10,11,10,11,10,11,20] # chaine recherchee -> bits d'arret suivis du bit de depart
+		P = [10,11,10,11,10,11,10,11,10,11,10,11,10,11,20] # chaîne recherchée -> bits d'arrêt suivis du bit de départ
 
-	# 1 - Conctruction du tableau des decalages
+	# 1 - Conctruction du tableau des décalages
 
 		for y in range(len(seqData) - 1, 0, -1):
 			if seqData[y] == 20 and y < len(seqData) - 14 and y >= len(P) + 14 :
@@ -138,12 +138,12 @@ def traiterDonneesAntennes(nomFichier):
 				ok = 1
 			else:
 				debut = -1
-				print("Erreur, sequence d'arret - depart non trouvee")
+				print("Erreur, séquence d'arrêt - départ non trouvée")
 		else:
 			debut = -1
 			print("Erreur")
 
-	########################################## Decodage #######################################################
+	########################################## Décodage #######################################################
 
 		if debut != -1:
 			currentBit = 0
@@ -174,10 +174,10 @@ def traiterDonneesAntennes(nomFichier):
 						idx = idx + 1
 						previousBit = 0
 
-			# verification (on va voir si la sequence de bits utiles de l'autre cote de la sequence d'arret correspond a celle trouvee)
+			# vérification (on va voir si la séquence de bits utiles de l'autre côté de la séquence d'arrêt correspond à celle trouvée)
 
 				currentBit = 0
-				idxRev = debut - 15 # on commence a la fin de la sequence et on recule
+				idxRev = debut - 15 # on commence à la fin de la séquence et on recule
 				reponseConf = []
 				previousBit = 1
 				while currentBit < 7:
@@ -215,7 +215,7 @@ def traiterDonneesAntennes(nomFichier):
 					print("Echec")
 		else:
 			print("Echec")
-			qff = "Essai" + str(v) + " :" + "ECHEC (Sequence arret non trouvee)\n"
+			qff = "Essai" + str(v) + " :" + "ECHEC (Sequence arrêt non trouvée)\n"
 			h.write(qff)
 			
 	h.close()
