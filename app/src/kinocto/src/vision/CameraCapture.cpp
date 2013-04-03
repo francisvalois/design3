@@ -11,24 +11,23 @@ CameraCapture::~CameraCapture() {
 }
 
 Mat CameraCapture::takePicture() {
-    setConfig(cap);
-
     Mat picture;
     if (videoCapture.isOpened() == false) {
         ROS_ERROR("%s", "ERROR, COULD NOT TAKE A PICTURE");
         return picture;
     }
 
-    cap >> picture;
+    videoCapture >> picture;
 
     return picture.clone();
 }
 
 void CameraCapture::openCapture() {
     videoCapture.open(0);
+    setConfig(videoCapture);
 }
 
-void CameraCapture::openCapture() {
+void CameraCapture::closeCapture() {
     videoCapture.release();
 }
 
