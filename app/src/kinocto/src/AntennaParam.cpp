@@ -2,7 +2,7 @@
 
 using namespace std;
 
-const string AntennaParam::ORIENTATION_LETTER[] = { "N", "S", "E", "W" };
+const string AntennaParam::ORIENTATION_LETTER[] = { "N", "S", "E", "O" };
 
 AntennaParam::AntennaParam() {
     big = false;
@@ -31,7 +31,7 @@ string AntennaParam::getOrientationLetter() {
 
 string AntennaParam::getIsBigLetter() {
     if (big == true) {
-        return "B";
+        return "G";
     }
 
     return "P";

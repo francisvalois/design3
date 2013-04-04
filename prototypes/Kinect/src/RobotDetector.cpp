@@ -97,6 +97,7 @@ Vec2f RobotDetector::findRobotCenterPosition(Mat depthMatrix, vector<Point2f> va
 
 void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1, Vec2f obstacle2) {
     vector<Rect> validRectPosition;
+
     int generatedCount = generateQuads(rgbMatrix, validRectPosition);
 
     if(generatedCount >= 3){

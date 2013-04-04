@@ -1,1 +1,1 @@
-rosrun microcontroller Microcontroller.py __tcpros_server_port:=11211
+rosrun microcontroller Microcontroller.py

@@ -7,8 +7,8 @@ using namespace basestation;
 BaseStationDecorator::BaseStationDecorator(NodeHandle & node) {
     this->nodeHandle = node;
 
-    findRobotPositionClient = nodeHandle.serviceClient<FindRobotPosition>("basestation/findRobotPosition");
-    findObstaclesPositionClient = nodeHandle.serviceClient<FindObstaclesPosition>("basestation/findObstaclesPosition");
+    findRobotPositionAndAngleClient = nodeHandle.serviceClient<FindRobotPositionAndAngle>("basestation/findRobotPositionAndAngle");
+    getObstaclesPositionClient = nodeHandle.serviceClient<GetObstaclesPosition>("basestation/getObstaclesPosition");
     showSolvedSudocubeClient = nodeHandle.serviceClient<ShowSolvedSudocube>("basestation/showSolvedSudocube");
     loopEndedClient = nodeHandle.serviceClient<LoopEnded>("basestation/loopEnded");
     traceRealTrajectoryClient = nodeHandle.serviceClient<TraceRealTrajectory>("basestation/traceRealTrajectory");
@@ -19,32 +19,29 @@ BaseStationDecorator::BaseStationDecorator(NodeHandle & node) {
 BaseStationDecorator::~BaseStationDecorator() {
 }
 
-Position BaseStationDecorator::requestRobotPosition() {
+void BaseStationDecorator::requestRobotPositionAndAngle(Position & pos, float & angle) {
     ROS_INFO("Requesting Robot Position from basestation");
 
-    Position pos;
-    FindRobotPosition srv;
-    if (findRobotPositionClient.call(srv) == true) {
-        ROS_INFO("The robot position is x:%f y:%f", srv.response.x, srv.response.y);
+    FindRobotPositionAndAngle srv;
+    if (findRobotPositionAndAngleClient.call(srv) == true) {
+        ROS_INFO("The robot position is x:%f y:%f angle:%f", srv.response.x, srv.response.y, srv.response.angle);
         pos.set(srv.response.x, srv.response.y);
     } else {
-        ROS_ERROR("Failed to call service basestation/findRobotPosition");
+        ROS_ERROR("Failed to call service basestation/findRobotPositionAndAngle");
     }
-
-    return pos;
 }
 
 vector<Position> BaseStationDecorator::requestObstaclesPosition() {
     ROS_INFO("Requesting Obstacles Position from the basestation");
 
     vector<Position> obsPos(2);
-    FindObstaclesPosition srv;
-    if (findObstaclesPositionClient.call(srv) == true) {
+    GetObstaclesPosition srv;
+    if (getObstaclesPositionClient.call(srv) == true) {
         ROS_INFO("The obstacles positions are : (x:%f, y:%f) (x:%f, y:%f)", srv.response.x1, srv.response.y1, srv.response.x2, srv.response.y2);
         obsPos[0].set(srv.response.x1, srv.response.y1);
         obsPos[1].set(srv.response.x2, srv.response.y2);
     } else {
-        ROS_ERROR("Failed to call service basestation/findObstaclesPosition");
+        ROS_ERROR("Failed to call service basestation/getObstaclesPosition");
     }
 
     return obsPos;

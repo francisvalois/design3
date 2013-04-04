@@ -9,13 +9,23 @@ KinectCapture::KinectCapture() {
 KinectCapture::~KinectCapture() {
 }
 
-Mat KinectCapture::captureDepthMatrix() {
-    Mat depthMap;
-
-    VideoCapture capture;
+void KinectCapture::openCapture() {
     capture.open(CV_CAP_OPENNI);
     capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
 
+    Mat depthMap;
+    for (int i = 0; i < 3; i++) { // Pour avoir les bonnes valeurs dès la premier version
+        capture.grab();
+        capture.retrieve(depthMap, CV_CAP_OPENNI_POINT_CLOUD_MAP);
+    }
+}
+
+void KinectCapture::closeCapture() {
+    capture.release();
+}
+
+Mat KinectCapture::captureDepthMatrix() {
+    Mat depthMap;
     if (capture.isOpened()) {
         capture.grab();
         capture.retrieve(depthMap, CV_CAP_OPENNI_POINT_CLOUD_MAP);
@@ -28,11 +38,6 @@ Mat KinectCapture::captureDepthMatrix() {
 
 Mat KinectCapture::captureRGBMatrix() {
     Mat showRGB;
-
-    VideoCapture capture;
-    capture.open(CV_CAP_OPENNI);
-    capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
-
     if (capture.isOpened()) {
         capture.grab();
         capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
@@ -42,4 +47,3 @@ Mat KinectCapture::captureRGBMatrix() {
 
     return showRGB.clone();
 }
-

@@ -8,11 +8,17 @@
 class CameraCapture {
 
 private:
+    cv::VideoCapture videoCapture;
+
     void setConfig(cv::VideoCapture & videoCapture);
 
 public:
     CameraCapture();
     ~CameraCapture();
+
+    void openCapture();
+    void closeCapture();
+
     cv::Mat takePicture();
     void saveImage(cv::Mat &pict, char* filename);
 };

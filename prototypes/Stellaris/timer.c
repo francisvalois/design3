@@ -86,6 +86,9 @@ void initTimer(void){
 
 void disableTimer(void){
 	ROM_TimerDisable(TIMER0_BASE, TIMER_A);
+	ROM_TimerIntDisable(TIMER0_BASE, TIMER_A);
+	ROM_IntDisable(INT_TIMER0A);
+	ROM_SysCtlPeripheralDisable(SYSCTL_PERIPH_TIMER0);
 }
 
 void enableTimer(void){

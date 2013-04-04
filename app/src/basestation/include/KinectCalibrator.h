@@ -8,14 +8,14 @@
 
 using namespace cv;
 
-class KinectCalibrator{
-    private:
-        static std::vector<Point> _squarePositions;
-        static std::vector<Point> findCalibrationSquare(Mat depthMatrix);
-        static float findAndSetKinectAngle(Mat depthMatrix);
-    public:
-        static bool calibrate(Mat depthMatrix);
-        static std::vector<Point> getSquarePositions();
+class KinectCalibrator {
+private:
+    static std::vector<Point> _squarePositions;
+    static std::vector<Point> findCalibrationSquare(Mat depthMatrix);
+    static float findAndSetKinectAngle(Mat depthMatrix);
+public:
+    static bool calibrate(Mat depthMatrix);
+    static std::vector<Point> getSquarePositions();
 };
 
 #endif /* defined(__OpenCVTest__KinectCalibrator__) */

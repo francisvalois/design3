@@ -6,15 +6,24 @@
 class Workspace {
 
 public:
-    const static float MAX_X = 331.0f; //the workspace max size on the x axis
+    const static float MAX_X = 231.0f; //the workspace max size on the x axis
     const static float MAX_Y = 111.0f; //the workspace max size on the y axis
     const static float ROBOT_FRONT_SIZE = 12.5f; //the distance between the robot center and the sonar
-    const static float SUDOCUBE_FRONT_DISTANCE = 33.05f; //The desired distance between the robot and the sudocube
+    const static float ROBOT_SIDE_SIZE = 10.0f;
+    const static float SUDOCUBE_FRONT_DISTANCE = 31.75f; //The desired distance between the robot and the sudocube
 
     const static int NORTH = 1;
     const static int SOUTH = 2;
     const static int EAST = 3;
     const static int WEST = 4;
+
+    const static int TABLE_X = 231;
+    const static int TABLE_Y = 111;
+    const static int ROBOT_RADIUS = 13;
+    const static int OBSTACLE_RADIUS = 7;
+    const static int DRAWING_ZONE = 89;
+    const static int BUFFER_SIZE = ROBOT_RADIUS + 2;
+    const static int TOTAL_OBSTACLE_RADIUS = (BUFFER_SIZE + OBSTACLE_RADIUS);
 
     Workspace();
     virtual ~Workspace();

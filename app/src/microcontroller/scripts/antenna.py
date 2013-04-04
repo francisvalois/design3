@@ -11,7 +11,7 @@ def traiterDonneesAntennes(nomFichier):
 	h.write(intro)
 
 	v = 0
-	for v in range(5):
+	if(nomFichier):
 
 		nom = "./" + nomFichier + '.' + str(v)
 		f = open(nom, 'r')
@@ -81,7 +81,7 @@ def traiterDonneesAntennes(nomFichier):
 		seqData = []
 		for k in range(len(ValuedData)):
 			if ValuedData[k][1] == 0:
-				if ValuedData[k][0] > smallest_0*2.7: # scale factor pour zero
+				if ValuedData[k][0] > smallest_0*1.7: # scale factor pour zero
 					seqData.append(20)
 				else:
 					seqData.append(10)

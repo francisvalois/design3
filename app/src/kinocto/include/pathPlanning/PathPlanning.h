@@ -15,13 +15,7 @@
 #include "pathPlanning/Node.h"
 #include "pathPlanning/Move.h"
 
-const int TABLE_X = 231;
-const int TABLE_Y = 111;
-const int ROBOT_RADIUS = 13;
-const int OBSTACLE_RADIUS = 7;
-const int DRAWING_ZONE = 89;
-const int BUFFER_SIZE = ROBOT_RADIUS + 3;
-const int TOTAL_OBSTACLE_RADIUS = (BUFFER_SIZE + OBSTACLE_RADIUS);
+#include "Workspace.h"
 
 #define PI 3.14159265
 
@@ -36,6 +30,7 @@ public:
     void printTable();
 
 private:
+
     //OBSTACLES
     Position obstacle1;
     Position obstacle2;
@@ -73,7 +68,7 @@ private:
     // 1 = normal area
     // 2 = node
     // 9 = wall or obstacle
-    int table[TABLE_X + 1][TABLE_Y + 1];
+    int table[Workspace::TABLE_X + 1][Workspace::TABLE_Y + 1];
 
     cv::Scalar white;
     cv::Scalar blue;
