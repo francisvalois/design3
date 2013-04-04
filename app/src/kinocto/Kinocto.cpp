@@ -128,22 +128,22 @@ void Kinocto::adjustSidePosition() {
     if (sudocubeNo <= 2) {
         microcontroller->rotate(90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (Workspace::MAX_X - distance - Workspace::ROBOT_SIDE_SIZE));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (Workspace::MAX_X - distance - Workspace::ROBOT_FRONT_SIZE));
         microcontroller->rotate(-90);
     } else if (sudocubeNo <= 4) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (Workspace::MAX_Y - distance - Workspace::ROBOT_SIDE_SIZE));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (Workspace::MAX_Y - distance - Workspace::ROBOT_FRONT_SIZE));
         microcontroller->rotate(90);
     } else if (sudocubeNo <= 6) {
         microcontroller->rotate(90);
         float distance = getSonarDistance();
-        microcontroller->move((distance + Workspace::ROBOT_SIDE_SIZE) - workspace.getSudocubePos(sudocubeNo).y);
+        microcontroller->move((distance + Workspace::ROBOT_FRONT_SIZE) - workspace.getSudocubePos(sudocubeNo).y);
         microcontroller->rotate(-90);
     } else if (sudocubeNo <= 8) {
         microcontroller->rotate(-90);
         float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (Workspace::MAX_X - distance - Workspace::ROBOT_SIDE_SIZE));
+        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (Workspace::MAX_X - distance - Workspace::ROBOT_FRONT_SIZE));
         microcontroller->rotate(90);
     }
 }
@@ -190,7 +190,7 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
     cameraCapture.openCapture();
 
     vector<Sudocube *> sudokubes;
-    for (int i = 1; i <= 10 && sudokubes.size() < 5; i++) {
+    for (int i = 1; i <= 10 && sudokubes.size() <= 10; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
 
         if (!sudocubeImg.data) {
