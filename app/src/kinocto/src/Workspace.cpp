@@ -33,7 +33,7 @@ Workspace::Workspace() {
     sudocubesPos[7].set(174.0f, 44.25f);
     sudocubesAngle[7] = 90.0f;
 
-    squareCenter.set(60.0f, 54.0f);
+    squareCenter.set(55.5f, 55.8f);
 
     antennaReadPos.set(43.0f, 56.0f);
 
