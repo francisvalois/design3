@@ -23,6 +23,7 @@ volatile long consigne0, consigne1, consigne2, consigne3; //Consigne de vitesse
 volatile long dist_cible0, dist_cible1, dist_cible2, dist_cible3; //Consigne de position
 volatile long output0, output1, output2, output3; //Commande
 volatile long offset, offset2;
+volatile long drawOffset0, drawOffset1, drawOffset2, drawOffset3;
 //Variable de PID
 volatile float Kd0, Ki0, Kp0, Kd1, Ki1, Kp1, Kd2, Ki2, Kp2, Kd3, Ki3, Kp3;
 volatile float Kd0_m, Ki0_m, Kp0_m, Kd1_m, Ki1_m, Kp1_m, Kd2_m, Ki2_m, Kp2_m, Kd3_m, Ki3_m, Kp3_m;
@@ -31,10 +32,14 @@ volatile float Kd0_d, Ki0_d, Kp0_d, Kd1_d, Ki1_d, Kp1_d, Kd2_d, Ki2_d, Kp2_d, Kd
 volatile float Tf0, Tf1, Tf2, Tf3; //Cste du filtre de commande de sortie
 volatile float dt; //periode d'asservissement
 volatile long time = 0;
+volatile long time1 = 0;
+volatile tBoolean drawingConditionFront = false;
+volatile tBoolean drawingConditionLateral = false;
 tBoolean est_demi_consigne;
 tBoolean est_en_mouvement;
 tBoolean a_atteint_consigne;
 extern tBoolean is_drawing;
+extern volatile long final_speed;
 
 //Pour tests
 long pos0_table[300], pos1_table[300], pos2_table[300], pos3_table[300];
@@ -44,6 +49,7 @@ long fraction0_table[300], fraction1_table[300], fraction2_table[300], fraction3
 
 //Declaration de fonctions
 //moteur.c
+long adjustStartSpeed(long final_speed);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
 void ajustementVitesse(void);
@@ -100,6 +106,11 @@ void resetQEIs(void);
    	a_atteint_consigne = true;
    	offset=0;
    	offset2=-640;
+   	drawOffset0=0;
+   	drawOffset1=0;
+   	drawOffset2=0;
+   	drawOffset3=0;
+   	time =0;
  }
 
 //Filtre PID, ref: http://www.telecom-robotics.org/node/326
@@ -338,26 +349,26 @@ void asservirMoteurs(void){
 	float fraction2;
 	float fraction3;
 	//Une équation linéaire est utilisée x*0.5/7700 = % du duty cycle
-	fraction0 = (((output0+offset)*0.5)/7700);
+	fraction0 = (((output0+offset+drawOffset0)*0.5)/7700);
 	if(fraction0 > 0.99){
 		fraction0 = 0.99;
 	}
 	else if(fraction0 < 0){
 		fraction0 = 0;
 	}
-	fraction1 = (((output1+offset)*0.5)/7700);
+	fraction1 = (((output1+offset+drawOffset1)*0.5)/7700);
 	if(fraction1 > 0.99){
 		fraction1 = 0.99;
 	}else if(fraction1 < 0){
 		fraction1 = 0;
 	}
-	fraction2 = (((output2+offset2)*0.5)/7700);
+	fraction2 = (((output2+offset2+drawOffset2)*0.5)/7700);
 	if(fraction2 > 0.99){
 		fraction2 = 0.99;
 	}else if(fraction2 < 0){
 		fraction2 = 0;
 	}
-	fraction3 = (((output3+offset)*0.5)/7700);
+	fraction3 = (((output3+offset+drawOffset3)*0.5)/7700);
 	if(fraction3 > 0.99){
 		fraction3 = 0.99;
 	}else if(fraction3 < 0){
@@ -403,6 +414,71 @@ void asservirMoteurs(void){
 
 //Fonction qui ajuste la vitesse selon la position.
 void ajustementVitesse(void){
+	//Ajustement pour le start speed
+	long speed = 0;
+	if(drawingConditionFront){
+		switch(time1){
+			case 0:
+				speed = 1200;
+				time1++;
+				break;
+			case 1:
+				speed = speed + (final_speed - speed)*0.3;
+				time1++;
+				break;
+			case 2:
+				speed = speed + (final_speed - speed)*0.6;
+				time1++;
+				break;
+			case 3:
+				speed = speed + (final_speed - speed)*0.8;
+				time1++;
+				break;
+			case 4:
+				speed = final_speed;
+				drawingConditionFront = false;
+				time1 =0;
+				break;
+			default: 
+				speed = final_speed;
+				drawingConditionFront = false;
+				time1 =0;
+		}
+		consigne0=speed;
+		consigne3=speed;
+	}
+	else if(drawingConditionLateral){
+		switch(time1){
+			case 0:
+				speed = 1200;
+				time1++;
+				break;
+			case 1:
+				speed = speed + (final_speed - speed)*0.3;
+				time1++;
+				break;
+			case 2:
+				speed = speed + (final_speed - speed)*0.6;
+				time1++;
+				break;
+			case 3:
+				speed = speed + (final_speed - speed)*0.8;
+				time1++;
+				break;
+			case 4:
+				speed = final_speed;
+				drawingConditionLateral = false;
+				time1 =0;
+				break;
+			default: 
+				speed = final_speed;
+				drawingConditionLateral = false;
+				time1 =0;
+		}
+		consigne1=speed;
+		consigne2=speed;
+	}
+	//Ajustement vitesse fin
 	long abs_pos0, abs_pos1, abs_dist_cible0, abs_dist_cible1;
 	if(pos0 < 0){
 		abs_pos0 = - pos0;
@@ -637,5 +713,7 @@ void turn(long distance, long vitesse){
 		dist_cible3 = distance;
 	}
 }
+
+
 
 

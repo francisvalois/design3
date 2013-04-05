@@ -16,7 +16,6 @@ extern volatile long position_m2, position_m3;
 //Variables globales
 volatile unsigned long index;
 void resetVariables(void);
-
 void asservirMoteurs(void);
 void motorTurnCCW(volatile long mnumber);
 void moveLateral(long distance, long vitesse);
@@ -43,11 +42,11 @@ void TimerInt(void){
 	test3 = position_m3;*/
     
     
-    /*if(index==0){
-    	//moveFront(6400, 800);
-    	moveLateral(6400, 800);
-    	//draw(80);
-    }*/
+    if(index==0){
+    	//moveFront(10000, 6400);
+    	//moveLateral(6400, 800);
+    	draw(3);
+    }
 
 	//Asservissement Moteurs
 	asservirMoteurs();
