@@ -106,6 +106,7 @@ catkin_add_gtest(kinoctoTest test/AllTests.cpp
     "src/pathPlanning/PathPlanning.cpp"
     "src/pathPlanning/Node.cpp"
     "src/vision/NumberReader.cpp"
+    "src/vision/WallAngleFinder.cpp"
     "src/Workspace.cpp"
 )
 target_link_libraries(kinoctoTest ${OpenCV_LIBS} ${catkin_LIBRARIES})

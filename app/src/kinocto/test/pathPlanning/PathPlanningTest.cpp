@@ -208,7 +208,7 @@ namespace {
 
 		pathPlanning.setObstacles(obs1,obs2);
 
-		pathPlanning.getPath(start, workspace.getAntennaPos());
+		pathPlanning.getPath(start, workspace.getSquareCenter());
 //		pathPlanning.printTable();
   }
 
@@ -238,6 +238,6 @@ namespace {
 			cout << "Move " << i << " :" << " angle : "  << mov[i].angle <<  " distance : "  << mov[i].distance << endl;
 
 		}
-		pathPlanning.printTable();
+		//pathPlanning.printTable();
   }
 }
