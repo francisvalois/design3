@@ -14,6 +14,14 @@ protected:
     WallAngleFinder wallAngleFinder;
 };
 
+TEST_F(WallAngleFinderIT, returnZeroWhenNotAGoodImage) {
+    Mat img = imread("img/testWallAngleFinder/empty.png");
+
+    double angle = wallAngleFinder.findAngle(img);
+
+    ASSERT_NEAR(0.0, angle, PRECISION);
+}
+
 TEST_F(WallAngleFinderIT, find1Degree) {
     Mat img = imread("img/testWallAngleFinder/1degree.png");
 

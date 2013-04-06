@@ -27,7 +27,7 @@ private:
     double calculateAngleFrom(Point2d * first, Point2d * last);
     void applyErode(Mat & toErode, int size, int morphShape);
     vector<cv::Point2d *> findSlopePoints(cv::Mat & wall);
-    double calculateSlopeAverage(vector<cv::Point2d *> points, int nbOfStep);
+    double calculateSlopeAverage(vector<cv::Point2d *> points);
     void deletePoints (vector<Point2d *> points);
 };
 

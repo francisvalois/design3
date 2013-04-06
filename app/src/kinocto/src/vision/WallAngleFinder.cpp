@@ -36,13 +36,13 @@ vector<Point2d *> WallAngleFinder::findSlopePoints(Mat & wall) {
     return points;
 }
 
-double WallAngleFinder::calculateSlopeAverage(vector<Point2d *> points, int nbOfStep) {
-    double average = 0;
-    for (int i = 0; i < (nbOfStep / 2); i++) {
+double WallAngleFinder::calculateSlopeAverage(vector<Point2d *> points) {
+    double average = 0.0f;
+    for (int i = 0; i < (points.size() / 2); i++) {
         Point2d * first = points[i];
-        Point2d * last = points[nbOfStep - i - 1];
+        Point2d * last = points[points.size() - i - 1];
         double angle = calculateAngleFrom(first, last);
-        average += (angle / (nbOfStep / 2));
+        average += (angle / (points.size() / 2));
     }
 
     return average;
@@ -50,16 +50,14 @@ double WallAngleFinder::calculateSlopeAverage(vector<Point2d *> points, int nbOf
 
 double WallAngleFinder::findAngle(Mat & wall) {
     Mat grayWall;
-    cvtColor(wall, grayWall, CV_RGB2GRAY);
 
+    cvtColor(wall, grayWall, CV_RGB2GRAY);
     threshold(grayWall, grayWall, 100, 250, THRESH_BINARY);
     applyErode(grayWall, 7, MORPH_ELLIPSE);
 
-    int nbOfStep = grayWall.cols / STEP_SIZE;
-
     vector<Point2d *> points = findSlopePoints(grayWall);
 
-    return calculateSlopeAverage(points, nbOfStep);
+    return calculateSlopeAverage(points);
 }
 
 void WallAngleFinder::deletePoints(vector<Point2d *> points) {
