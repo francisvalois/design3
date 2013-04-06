@@ -13,6 +13,7 @@
 #include "vision/CameraCapture.h"
 #include "vision/SudocubeExtractor.h"
 #include "vision/WallAngleFinder.h"
+#include "vision/FrameCenterFinder.h"
 
 #include "sudocube/Sudocube.h"
 #include "sudocube/SudocubeSolver.h"
@@ -43,6 +44,7 @@
 #include "kinocto/TestAdjustFrontPosition.h"
 #include "kinocto/TestAdjustSidePosition.h"
 #include "kinocto/TestAdjustAngle.h"
+#include "kinocto/TestAdjustSidePositionWithGreenFrame.h"
 
 #define WAITING 1
 #define LOOPING 2
@@ -81,6 +83,7 @@ private:
     void adjustSidePosition();
     float getSonarDistance();
     float adjustFrontPosition();
+    void adjustSidePositionWithGreenFrame();
     void extractAndSolveSudocube();
     std::vector<Sudocube *> extractSudocubes();
     void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
@@ -109,6 +112,8 @@ public:
     bool testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request & request, kinocto::TestAdjustFrontPosition::Response & response);
     bool testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response);
     bool testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response);
+    bool testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request, kinocto::TestAdjustSidePositionWithGreenFrame::Response & response);
+
 
 };
 

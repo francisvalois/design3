@@ -26,6 +26,7 @@ add_service_files(
   TestAdjustFrontPosition.srv
   TestAdjustSidePosition.srv
   TestAdjustAngle.srv
+  TestAdjustSidePositionWithGreenFrame.srv
 )
 
 generate_messages(
@@ -107,6 +108,7 @@ catkin_add_gtest(kinoctoTest test/AllTests.cpp
     "src/pathPlanning/Node.cpp"
     "src/vision/NumberReader.cpp"
     "src/vision/WallAngleFinder.cpp"
+    "src/vision/FrameCenterFinder.cpp"
     "src/Workspace.cpp"
 )
 target_link_libraries(kinoctoTest ${OpenCV_LIBS} ${catkin_LIBRARIES})

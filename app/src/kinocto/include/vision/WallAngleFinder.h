@@ -23,7 +23,6 @@ public:
 private:
 
     static const int STEP_SIZE = 2;
-    static const double PI = 3.14159265359;
 
     double calculateAngleFrom(Point2d * first, Point2d * last);
     void applyErode(Mat & toErode, int size, int morphShape);

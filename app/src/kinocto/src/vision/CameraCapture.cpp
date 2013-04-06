@@ -24,20 +24,43 @@ Mat CameraCapture::takePicture() {
 
 void CameraCapture::openCapture() {
     videoCapture.open(0);
-    setConfig(videoCapture);
+    setConfig(videoCapture, CameraCapture::SUDOCUBE_CONFIG);
+}
+
+void CameraCapture::openCapture(const int configNo) {
+    videoCapture.open(0);
+    setConfig(videoCapture, configNo);
 }
 
 void CameraCapture::closeCapture() {
     videoCapture.release();
 }
 
-void CameraCapture::setConfig(cv::VideoCapture & videoCapture) {
-    videoCapture.open(0);
+void CameraCapture::setConfig(cv::VideoCapture & videoCapture, const int configNo) {
+    switch (configNo) {
+    case SUDOCUBE_CONFIG:
+        setSudocubeConfig(videoCapture);
+        break;
+    case MEDIUM_FRAME:
+        setMediumFrameConfig(videoCapture);
+        break;
+    }
+}
+
+void CameraCapture::setSudocubeConfig(cv::VideoCapture & videoCapture) {
     videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
     videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 1200);
-    videoCapture.set(CV_CAP_PROP_BRIGHTNESS, 0.509803);
-    videoCapture.set(CV_CAP_PROP_CONTRAST, 0.196078);
-    videoCapture.set(CV_CAP_PROP_SATURATION, 0.176470);
+    videoCapture.set(CV_CAP_PROP_BRIGHTNESS, 0.509803f);
+    videoCapture.set(CV_CAP_PROP_CONTRAST, 0.196078f);
+    videoCapture.set(CV_CAP_PROP_SATURATION, 0.176470f);
+}
+
+void CameraCapture::setMediumFrameConfig(cv::VideoCapture & videoCapture) {
+    videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 800);
+    videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 600);
+    videoCapture.set(CV_CAP_PROP_BRIGHTNESS, 0.509803f);
+    videoCapture.set(CV_CAP_PROP_CONTRAST, 0.196078f);
+    videoCapture.set(CV_CAP_PROP_SATURATION, 0.176470f);
 }
 
 void CameraCapture::saveImage(Mat &pict, char* filename) {

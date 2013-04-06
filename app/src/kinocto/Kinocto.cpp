@@ -126,7 +126,7 @@ void Kinocto::goToSudocubeX() {
 void Kinocto::adjustAngleInFrontOfWall() {
     microcontroller->rotateCam(-25, 0);
 
-    cameraCapture.openCapture();
+    cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
     Mat wallImg = cameraCapture.takePicture();
     cameraCapture.closeCapture();
 
@@ -135,6 +135,18 @@ void Kinocto::adjustAngleInFrontOfWall() {
     microcontroller->rotate(angle);
 
     microcontroller->rotateCam(0, 0);
+}
+
+void Kinocto::adjustSidePositionWithGreenFrame() {
+    cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
+    Mat frameImg = cameraCapture.takePicture();
+    cameraCapture.closeCapture();
+
+    FrameCenterFinder frameCenterFinder;
+    double translateX = frameCenterFinder.getXTranslation(frameImg);
+
+    Position translePos(translateX, 0.0f);
+    microcontroller->translate(translePos);
 }
 
 void Kinocto::adjustSidePosition() {
@@ -202,11 +214,12 @@ void Kinocto::extractAndSolveSudocube() {
 }
 
 vector<Sudocube *> Kinocto::extractSudocubes() {
-    cameraCapture.openCapture();
+    cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
     vector<Sudocube *> sudokubes;
     for (int i = 1; i <= 10 && sudokubes.size() <= 10; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
+        cout << "TAILLE DE LIMAGE " << sudocubeImg.cols << endl;
 
         if (!sudocubeImg.data) {
             return sudokubes;
@@ -472,7 +485,9 @@ bool Kinocto::testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request 
 bool Kinocto::testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response) {
     antennaParam.setNumber(request.sudocubeNo);
 
+    ///
     adjustSidePosition();
+    ///
 
     return true;
 }
@@ -483,7 +498,18 @@ bool Kinocto::testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinoc
     return true;
 }
 
-//adjustSidePosition
+bool Kinocto::testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request,
+        kinocto::TestAdjustSidePositionWithGreenFrame::Response & response) {
+
+    adjustFrontPosition();
+    adjustAngleInFrontOfWall();
+
+    ///
+    adjustSidePositionWithGreenFrame();
+    ///
+
+    return true;
+}
 
 int main(int argc, char **argv) {
     ros::init(argc, argv, "kinocto");
@@ -508,6 +534,8 @@ int main(int argc, char **argv) {
     ros::ServiceServer service9 = nodeHandle.advertiseService("kinocto/TestAdjustFrontPosition", &Kinocto::testAdjustFrontPosition, &kinocto);
     ros::ServiceServer service10 = nodeHandle.advertiseService("kinocto/TestAdjustSidePosition", &Kinocto::testAdjustSidePosition, &kinocto);
     ros::ServiceServer service11 = nodeHandle.advertiseService("kinocto/TestAdjustAngle", &Kinocto::testAdjustAngle, &kinocto);
+    ros::ServiceServer service12 = nodeHandle.advertiseService("kinocto/TestAdjustSidePositionWithGreenFrame",
+            &Kinocto::testAdjustSidePositionWithGreenFrame, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();

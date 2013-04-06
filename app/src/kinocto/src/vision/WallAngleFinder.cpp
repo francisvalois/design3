@@ -17,13 +17,13 @@ double WallAngleFinder::calculateAngleFrom(Point2d * first, Point2d * last) {
     double yComp = last->y - first->y;
 
     double hypo = sqrt(xComp * xComp + yComp * yComp);
-    double angle = asin(yComp / hypo) * 180.0 / PI;
+    double angle = asin(yComp / hypo) * 180.0 / CV_PI;
 
     return angle;
 }
 
 vector<Point2d *> WallAngleFinder::findSlopePoints(Mat & wall) {
-    vector<Point2d *> points;
+    vector<Point2d * > points;
     for (int i = 0; i < wall.cols; i += STEP_SIZE) {
         for (int j = 0; j < wall.rows; j++) {
             if (wall.at<uchar>(j, i) == 250) {
@@ -62,8 +62,8 @@ double WallAngleFinder::findAngle(Mat & wall) {
     return calculateSlopeAverage(points, nbOfStep);
 }
 
-void WallAngleFinder::deletePoints (vector<Point2d * > points) {
-    for (int i = 0 ; i < points.size(); i++) {
+void WallAngleFinder::deletePoints(vector<Point2d *> points) {
+    for (int i = 0; i < points.size(); i++) {
         Point2d * point = points[i];
         points[i] = 0;
         delete point;
