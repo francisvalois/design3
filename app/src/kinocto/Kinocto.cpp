@@ -51,10 +51,11 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         decodeAntennaParam();
         showAntennaParam();
         goToSudocubeX();
-        //RECTIFIER ANGLE
+
         adjustFrontPosition();
+        adjustAngleInFrontOfWall();
         adjustSidePosition();
-        //RECTIFIER ANGLE
+        adjustAngleInFrontOfWall();
 
         extractAndSolveSudocube();
         goToDrawingZone();
@@ -120,6 +121,20 @@ void Kinocto::goToSudocubeX() {
     workspace.setRobotPos(robotPos);
 
     executeMoves(moves);
+}
+
+void Kinocto::adjustAngleInFrontOfWall() {
+    microcontroller->rotateCam(-25, 0);
+
+    cameraCapture.openCapture();
+    Mat wallImg = cameraCapture.takePicture();
+    cameraCapture.closeCapture();
+
+    WallAngleFinder wallAngleFinder;
+    double angle = wallAngleFinder.findAngle(wallImg);
+    microcontroller->rotate(angle);
+
+    microcontroller->rotateCam(0, 0);
 }
 
 void Kinocto::adjustSidePosition() {
@@ -463,6 +478,8 @@ bool Kinocto::testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & 
 }
 
 bool Kinocto::testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response) {
+    adjustAngleInFrontOfWall();
+
     return true;
 }
 

@@ -12,6 +12,7 @@
 
 #include "vision/CameraCapture.h"
 #include "vision/SudocubeExtractor.h"
+#include "vision/WallAngleFinder.h"
 
 #include "sudocube/Sudocube.h"
 #include "sudocube/SudocubeSolver.h"
@@ -76,6 +77,7 @@ private:
     void decodeAntennaParam();
     void showAntennaParam();
     void goToSudocubeX();
+    void adjustAngleInFrontOfWall();
     void adjustSidePosition();
     float getSonarDistance();
     float adjustFrontPosition();
