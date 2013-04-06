@@ -37,7 +37,12 @@ extern tBoolean est_en_mouvement;
 extern long number_to_draw;
 extern long segment_to_draw;
 extern tBoolean is_drawing;
+extern tBoolean drawingConditionFront;
+extern tBoolean drawingConditionLateral;
 extern volatile long offset, offset2;
+volatile long final_speed=0;
+extern volatile tBoolean drawingCondition = false;
+extern volatile long drawOffset0, drawOffset1, drawOffset2, drawOffset3;
 
 //Variables globales
 volatile CircularBuffer receive_buffer;
@@ -300,11 +305,11 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 2:
-							moveLateral(9032, 800);
+							moveLateral(9183, 800);
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-4787, 800);
+							moveFront(-4907, 800);
 							segment_to_draw++;
 							break;
 						case 4:
@@ -370,25 +375,41 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 2:
-							moveFront(-5419, 800);
-							moveLateral(-10486, 1548);
+							drawOffset0=2250;
+							drawOffset3=2250;
+							moveFront(-5650, 775);
+							//final_speed = 1548;
+							//drawingConditionLateral = true;
+							moveLateral(-10636, 1548);
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-1658, 700);
-							moveLateral(9945, 4200);
+							drawOffset0=2500;
+							drawOffset3=2500;
+							moveFront(-1660, 700);
+							//final_speed = 4200;
+							//drawingConditionLateral = true;
+							moveLateral(9859, 4425);
 							segment_to_draw++;
 							break;
 						case 4:
+							drawOffset0=0;
+							drawOffset3=0;
 							moveFront(-1740, 800);
 							segment_to_draw++;
 							break;
 					 	case 5:
-					 		moveFront(-2500, 700);
-							moveLateral(-10000, 2800);
+					 		drawOffset0=2500;
+							drawOffset3=2500;
+					 		moveFront(-2650, 750);
+					 		//final_speed = 2800;
+							//drawingCondition = true;
+							moveLateral(-10602, 3071);
 							segment_to_draw++;	
 							break;
 						case 6:
+							drawOffset0=0;
+							drawOffset3=0;
 							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
@@ -407,22 +428,30 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 2:
+							drawOffset0=1000;
+							drawOffset3=1000;
 							moveFront(-2710, 800);
 							moveLateral(-5243, 1548);
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-779, 700);
-							moveLateral(4673, 4200);
+							drawOffset0=2500;
+							drawOffset3=2500;
+							moveFront(-830, 700);
+							moveLateral(4973, 4200);
 							segment_to_draw++;
 							break;
 						case 4:
+							drawOffset0=0;
+							drawOffset3=0;
 							moveFront(-879, 800);
 							segment_to_draw++;
 							break;
 					 	case 5:
-					 		moveFront(-1175, 700);
-							moveLateral(-4700, 2800);
+					 		drawOffset0=2500;
+							drawOffset3=2500;
+					 		moveFront(-1375, 700);
+							moveLateral(-5400, 2800);
 							segment_to_draw++;	
 							break;
 						case 6:
