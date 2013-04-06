@@ -14,15 +14,13 @@ class KinectTransformator {
 private:
     static float KINECTANGLERAD;
     static const float KINECTANGLE;
-    static float X_KINECT_POSITION;
-    static float Z_KINECT_POSITION;
-    static Vec2f BASE_POSITION_FROM_ORIGIN;
-    static Vec3f _basePositionFromKinect;
-
+    static Vec2f _kinectPosition;
+    static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
 public:
     static Vec2f getTrueCoordFromKinectCoord(Vec3f depthXYZ);
+    static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
     static void setKinectAngle(float angleRad);
-    static void setBasePositionFromKinect(Vec3f basePosition);
+    static void setKinectPosition(Vec2f kinectPosition);
 
 };
 

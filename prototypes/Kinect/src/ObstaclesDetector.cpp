@@ -10,7 +10,7 @@ const int ObstaclesDetector::X_OBSTACLE_RIGHT_THRESHOLD = 610;
 const int ObstaclesDetector::Y_OBSTACLE_TOP_THRESHOLD = 80;
 const int ObstaclesDetector::Y_OBSTACLE_BOTTOM_THRESHOLD = 272;
 const float ObstaclesDetector::OBSTACLE_DISTANCE_MIN_THRESHOLD = 0.8f;
-const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.1f;
+const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.20f;
 const float ObstaclesDetector::OBSTACLE_HEIGHT_THRESHOLD_PERCENT = 0.7f;
 
 Vec2f ObstaclesDetector::getObstacle1() {
@@ -92,9 +92,10 @@ Vec2f ObstaclesDetector::getAveragePositionForObstacle(Mat depthMatrix, list<Poi
     Vec2f positionObstacle = getAverageDistanceForPointLine(allDistances);
 
     Vec3f positionObstacle3(positionObstacle[0], 0, positionObstacle[1]);
-    Vec3f positionObstacleWithRadius = addObstacleRadiusToDistance(positionObstacle3);
+    //Vec3f positionObstacleWithRadius = addObstacleRadiusToDistance(positionObstacle3);
 
-    Vec2f truePositionObstacle = KinectTransformator::getTrueCoordFromKinectCoord(positionObstacleWithRadius);
+    Vec2f truePositionObstacle = KinectTransformator::getTrueCoordFromKinectCoord(positionObstacle3);
+    cout << truePositionObstacle << endl;
     return truePositionObstacle;
 }
 
@@ -117,7 +118,7 @@ void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, 
             }
         }
 
-        if (obstaclePoint && count > (90*OBSTACLE_HEIGHT_THRESHOLD_PERCENT)) {
+        if (obstaclePoint && count > (60*OBSTACLE_HEIGHT_THRESHOLD_PERCENT)) {
             if (validObstaclePosition.size() > 0) {
                 if ((i - validObstaclePosition.back().x) > 10) // Separate first obstacle from second
                 {
@@ -125,6 +126,7 @@ void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, 
                     validObstaclePosition.clear();
                 }
             }
+            cout << i << endl;
             validObstaclePosition.push_back(Point(i, middleYPoint));
         }
     }

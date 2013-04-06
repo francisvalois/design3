@@ -9,63 +9,26 @@
 #include "KinectCalibrator.h"
 #include "KinectTransformator.h"
 
-std::vector<Point> KinectCalibrator::_squarePositions;
+Vec2f KinectCalibrator::BASE_POSITION_FROM_ORIGIN = Vec2f(0.545f, 0.775f);
+
+std::vector<Point> KinectCalibrator::_pointVector;
 
 
 std::vector<Point> KinectCalibrator::getSquarePositions(){
-    return KinectCalibrator::_squarePositions;
+    return KinectCalibrator::_pointVector;
 }
 
-std::vector<Point> KinectCalibrator::findCalibrationSquare(Mat depthMatrix){
-    std:vector<Point> squarePosition;
-    std::list<Vec3f> tempLineOfPointsOnSquare;
+std::vector<Point> KinectCalibrator::findCalibrationSquare(Mat rgbMatrix){
+    Size chessboardSize(5,4);
+    bool test4 = findChessboardCorners(rgbMatrix, chessboardSize, _pointVector);
 
-    for(int i = 0; i < 640; i++){
-        int lastLength = 0;
-        Vec2f lastPoint(0,0);
-        int lowPoint = 0;
-        int highPoint = 0;
-        for(int j = 300; j>= 160; j--){
-            Vec3f position = depthMatrix.at<Vec3f>(j, i);
-            Vec2f trueCoordFromPosition = KinectTransformator::getTrueCoordFromKinectCoord(position);
-
-            if(trueCoordFromPosition[1] > 0.6 && trueCoordFromPosition[1] <= 0.85){
-                if((trueCoordFromPosition[1] > lastPoint[1] *0.95 && trueCoordFromPosition[1] < lastPoint[1]*1.05) ||
-                        (lastPoint[1] == 0 && lastPoint[0] == 0)){
-                    if(lowPoint == 0){
-                        lowPoint = j;
-                    }
-
-                    lastLength++;
-                    lastPoint = trueCoordFromPosition;
-                    highPoint = j;
-                }
-                else if(lastLength < 60 || lastLength > 90){
-                    lastLength = 0;
-                    lowPoint = j;
-                    lastPoint = trueCoordFromPosition;
-                }
-            }
-        }
-
-        if(lastLength > 40 && lastLength < 90){
-            tempLineOfPointsOnSquare.push_back(Vec3f(i,lowPoint, highPoint));
-        }
-    }
-
-    Vec3f leftVertice = tempLineOfPointsOnSquare.front();
-    Vec3f rightVertice = tempLineOfPointsOnSquare.back();
-
-    squarePosition.push_back(Point(leftVertice[0]+2,leftVertice[2]+2));
-    squarePosition.push_back(Point(rightVertice[0]-2,leftVertice[1]-2));
-
-    return squarePosition;
+    return _pointVector;
 }
 
 float KinectCalibrator::findAndSetKinectAngle(Mat depthMatrix){
-    int pt1x = _squarePositions[0].x;
-    int pt2x = _squarePositions[1].x;
-    int pty = (_squarePositions[1].y - _squarePositions[0].y)/2 + _squarePositions[0].y;
+    int pt1x = _pointVector[4].x;
+    int pt2x = _pointVector[0].x;
+    int pty = (_pointVector[0].y - _pointVector[4].y)/2 + _pointVector[4].y;
 
     Vec3f leftPointDistance = depthMatrix.at<Vec3f>(pty, pt1x);
     Vec3f rightPointDistance = depthMatrix.at<Vec3f>(pty, pt2x);
@@ -73,15 +36,21 @@ float KinectCalibrator::findAndSetKinectAngle(Mat depthMatrix){
     float yDistance = rightPointDistance[0] - leftPointDistance[0];
     float xDistance = leftPointDistance[2] - rightPointDistance[2];
     float angleRad = atan(xDistance/yDistance);
-
-    KinectTransformator::setBasePositionFromKinect(leftPointDistance);
+    
     KinectTransformator::setKinectAngle(angleRad);
+    
+    Vec2f rotatedPointCoord = KinectTransformator::getRotatedXZCoordFromKinectCoord(leftPointDistance);
+    float xKinectPosition = BASE_POSITION_FROM_ORIGIN[0] - rotatedPointCoord[0];
+    float zKinectPosition = BASE_POSITION_FROM_ORIGIN[1] - rotatedPointCoord[1];
+    Vec2f kinectPosition(xKinectPosition, zKinectPosition);
+    
+    KinectTransformator::setKinectPosition(kinectPosition);
 
     return angleRad;
 }
 
-bool KinectCalibrator::calibrate(Mat depthMatrix){
-    KinectCalibrator::_squarePositions = KinectCalibrator::findCalibrationSquare(depthMatrix);
+bool KinectCalibrator::calibrate(Mat rgbMatrix, Mat depthMatrix){
+    KinectCalibrator::_pointVector = KinectCalibrator::findCalibrationSquare(rgbMatrix);
 
     float angle = findAndSetKinectAngle(depthMatrix);
 
