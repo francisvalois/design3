@@ -1,4 +1,4 @@
-    #include "AntennaParam.h"
+#include "AntennaParam.h"
 
 using namespace std;
 
@@ -20,9 +20,13 @@ void AntennaParam::set(AntennaParam & antennaParam) {
 }
 
 void AntennaParam::set(int number, bool isBig, int orientation) {
-    this->number = number;
+    if (isAValidSudocubeNumber(number)) {
+        this->number = number;
+    }
+    if (isAValidOrientationNumber(orientation)) {
+        this->orientation = orientation;
+    }
     this->big = isBig;
-    this->orientation = orientation;
 }
 
 string AntennaParam::getOrientationLetter() {
@@ -50,15 +54,26 @@ int AntennaParam::getOrientation() {
 }
 
 void AntennaParam::setOrientation(int orientation) {
-    if (orientation >= 1 && orientation <= 4) {
+    if (isAValidOrientationNumber(orientation)) {
         this->orientation = orientation;
     }
 }
 
 void AntennaParam::setNumber(int sudocubeNumber) {
-    number = sudocubeNumber;
+    if (isAValidSudocubeNumber(sudocubeNumber)) {
+        number = sudocubeNumber;
+    }
 }
 
 void AntennaParam::setIsBig(bool isBig) {
     big = isBig;
+}
+
+
+bool AntennaParam::isAValidSudocubeNumber (int sudocubeNumber) {
+    return sudocubeNumber >= 1 && sudocubeNumber <= 8;
+}
+
+bool AntennaParam::isAValidOrientationNumber (int orientation) {
+    return orientation >= 1 && orientation <= 4;
 }
