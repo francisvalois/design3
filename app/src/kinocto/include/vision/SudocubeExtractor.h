@@ -11,6 +11,7 @@
 #include "vision/SquaresExtractor.h"
 #include "vision/NumberReader.h"
 #include "vision/SquarePair.h"
+#include "vision/SquaresPairSorter.h"
 #include "sudocube/Sudocube.h"
 
 class SudocubeExtractor {
@@ -38,17 +39,11 @@ private:
     cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
 
     SquarePair getRedSquarePair(const cv::Mat& srcHSV);
-    std::vector<std::vector<SquarePair> > sortSquaresPair(std::vector<SquarePair> squaresRect, const int frameWidth);
 
     bool extractNumber(cv::Mat &inImage, cv::Mat &outImage, cv::Mat &squareMask);
 
-    void applyErode(cv::Mat & toErode, int size, int morphShape);
-    void applyDilate(cv::Mat & toDilate, int size, int morphShape);
-
     void insertAllNumber(Sudocube * sudokube, std::vector<std::vector<int> > numbers);
     void insert(Sudocube * sudokube, int face, int j, int k, int value);
-
-    void saveImage(cv::Mat &pict, char* filename);
 };
 
 #endif

@@ -43,7 +43,8 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     SquarePair redSquarePair = getRedSquarePair(srcHSV(frameRect));
     squaresPair.push_back(redSquarePair);
 
-    vector<vector<SquarePair> > orderedSquaresPair = sortSquaresPair(squaresPair, frameCroppedThresholded.cols);
+    SquaresPairSorter squarePairSorter;
+    vector<vector<SquarePair> > orderedSquaresPair = squarePairSorter.sortSquaresPair(squaresPair, frameCroppedThresholded.cols);
 
     vector<vector<int> > orderedNumber(8);
     for (int i = 0; i < 8; i++) {
@@ -141,39 +142,6 @@ SquarePair SudocubeExtractor::getRedSquarePair(const Mat& srcHSV) {
     SquarePair squarePair(squareBoundingRect[0], squareContoursPoly[0]);
 
     return squarePair;
-}
-
-bool compareXPos(const SquarePair& pair1, const SquarePair& pair2) {
-    return pair1.rect.x < pair2.rect.x;
-}
-
-bool compareYPos(const SquarePair& pair1, const SquarePair& pair2) {
-    return pair1.rect.y < pair2.rect.y;
-}
-
-vector<vector<SquarePair> > SudocubeExtractor::sortSquaresPair(vector<SquarePair> squaresPair, const int frameWidth) {
-    sort(squaresPair.begin(), squaresPair.end(), compareXPos); //Tri selon les x des Rect
-
-    //Séparation des colonnes selon la variation importante en x entre i et i+1
-    int dx = frameWidth / 20; //Seuil pour tester la variation
-    int actualXColumn = 0;
-    vector<vector<SquarePair> > colonnesX(8);
-    vector<SquarePair>::iterator it;
-    for (it = squaresPair.begin(); it != squaresPair.end() && actualXColumn < 8; ++it) {
-        colonnesX[actualXColumn].push_back(*it);
-
-        if ((it + 1) != squaresPair.end()) {
-            if ((it->rect.x + dx) < (it + 1)->rect.x) {
-                actualXColumn++;
-            }
-        }
-    }
-
-    for (int i = 0; i < 8; i++) { 	//Tri selon les y des Rect
-        sort(colonnesX[i].begin(), colonnesX[i].end(), compareYPos);
-    }
-
-    return colonnesX;
 }
 
 bool SudocubeExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask) {
