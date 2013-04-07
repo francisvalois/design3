@@ -1,7 +1,9 @@
 #include "gtest/gtest.h"
 #include "opencv2/core/core.hpp"
+
 #include "KinectUtility.h"
-#include "Kinect.h"
+#include "ObstaclesDetector.h"
+#include "RobotDetector.h"
 
 using namespace cv;
 using namespace std;
@@ -10,29 +12,25 @@ namespace {
 
 TEST(KinectTest, GetDistanceForRobotMatrix1) {
     //Arrange
-
-    // Mock obstacle
-    Vec2f obstacle1(0.46f, 1.41f);
-    Vec2f obstacle2;
-
-    Mat testMatrix = KinectUtility::readFromFile("img/testKinect/matrixRobot1.xml");
-    Kinect kinect(obstacle1, obstacle2);
+    Mat testMatrix = Utility::readFromFile("img/testKinect/matrixRobot1.xml");
+    Mat rgbMatrix = imread("img/testKinect/matrixRobot1.jpg");
 
     float valueX = 0.484f;
     float valueZ = 0.47f;
 
     //Act
-    kinect.findRobot(testMatrix);
-    Vec2f robot = kinect.getRobot();
+    RobotDetector robotDetector;
+    robotDetector.findRobotWithAngle(testMatrix, rgbMatrix);
+    Vec2f robot = robotDetector.getRobotPosition();
     float positionX = robot[0];
     float positionZ = robot[1];
 
     //Assert
-    ASSERT_TRUE(positionX >= valueX-0.01 && positionX < valueX + 0.01);
-    ASSERT_TRUE(positionZ >= valueZ-0.01 && positionZ < valueZ + 0.01);
+    ASSERT_NEAR(positionX, valueX, 0.01);
+    ASSERT_NEAR(positionZ, valueZ, 0.01);
 }
 
-TEST(KinectTest, GetDistanceForRobotMatrix2) {
+/*TEST(KinectTest, GetDistanceForRobotMatrix2) {
     //Arrange
 
     // Mock obstacle
@@ -483,5 +481,5 @@ TEST(KinectTest, getTrueCoordFromKinectCoords) {
     ASSERT_TRUE(trueCoords[0] >= (0.42 - 0.3) || trueCoords[0] <= (0.42 + 0.3));
     ASSERT_TRUE(trueCoords[1] >= (2.59 - 0.3) || trueCoords[1] <= (2.59 + 0.3));
 }
-
+*/
 }
