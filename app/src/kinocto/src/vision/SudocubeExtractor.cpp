@@ -22,7 +22,6 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     Mat srcHSV;
     cvtColor(src, srcHSV, CV_BGR2HSV);
 
-
     Rect frameRect = getFrameRect(srcHSV);
     if (frameRect.area() == 0) { //TODO Gestion exception
         cout << "Could not find the green frame" << endl;
@@ -97,39 +96,9 @@ void SudocubeExtractor::cleanGraySrc(Mat& src, Mat& srcGray) {
 }
 
 Rect SudocubeExtractor::getFrameRect(Mat& srcHSV) {
-    Mat segmentedFrame;
-    inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
-    applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
-    applyDilate(segmentedFrame, FRAME_DILATE_SIZE, MORPH_RECT);
-    //sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
-    //saveImage(segmentedFrame, filename);
+    GreenFrameExtractor frameExtractor;
 
-    vector<vector<Point> > frameContours;
-    vector<Vec4i> frameHierarchy;
-    findContours(segmentedFrame, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-    vector<vector<Point> > frameContoursPoly(frameContours.size());
-    vector<Rect> frameBoundingRect(0);
-    for (uint i = 0; i < frameContours.size(); i++) {
-        approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
-        Rect rect = boundingRect(Mat(frameContoursPoly[i]));
-
-        if (rect.area() > FRAME_AREA_MIN) {
-            frameBoundingRect.push_back(rect);
-        }
-    }
-
-    if (frameBoundingRect.empty()) {
-        cout << "Found not enought frames for sudocube" << endl; // TODO Gestion d'exception...
-        return Rect();
-    } else if (frameBoundingRect.size() == 1) {
-        return frameBoundingRect[0];
-    } else if (frameBoundingRect.size() == 2) {
-        return getSmallestRectBetween(frameBoundingRect[0], frameBoundingRect[1]);
-    } else {
-        cout << "Found too many potential frames for sudocube" << endl; // TODO Gestion d'exception...
-        return Rect();
-    }
+    return frameExtractor.getFrameRect(srcHSV);
 }
 
 Rect SudocubeExtractor::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
@@ -164,7 +133,6 @@ bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> &
 
         if (squaresPair.size() == 47) {
             isExtracted = true;
-            //cout << threshValue << endl;
         }
     }
 

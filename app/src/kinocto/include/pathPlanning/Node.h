@@ -10,32 +10,32 @@
 class Node {
 public:
 
-	Node(int,int);
-	Node(Position);
-	virtual ~Node();
+    Node(int, int);
+    Node(Position);
+    virtual ~Node();
 
-	Position getPosition();
-	void setPosition(Position);
+    Position getPosition();
+    void setPosition(Position);
 
-	Node* getPredecessor();
-	void setPredecessor(Node*);
+    Node* getPredecessor();
+    void setPredecessor(Node*);
 
-	float getCost();
-	void setCost(float);
+    float getCost();
+    void setCost(float);
 
-	std::vector<Node*> getLeftNeighbors();
-	std::vector<Node*> getRightNeighbors();
-	void addNeighbor(Node*);
-	void removeNeighbor(Node*);
+    std::vector<Node*> getLeftNeighbors();
+    std::vector<Node*> getRightNeighbors();
+    void addNeighbor(Node*);
+    void removeNeighbor(Node*);
 
-	void resetConnexions();
+    void resetConnexions();
 
 private:
-	Position position;
-	Node* predecessor;
-	float cost;
-	std::vector<Node*> leftNeighbors;
-	std::vector<Node*> rightNeighbors;
+    Position position;
+    Node* predecessor;
+    float cost;
+    std::vector<Node*> leftNeighbors;
+    std::vector<Node*> rightNeighbors;
 };
 
 #endif /* NODE_H_ */

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <vector>
 
+#include "vision/GreenFrameExtractor.h"
 #include "vision/NumberReader.h"
 #include "vision/SquarePair.h"
 #include "sudocube/Sudocube.h"
@@ -19,10 +20,6 @@ public:
 
 private:
     const static char OUTPUT_PATH[];
-
-    const static int FRAME_AREA_MIN = 300000;
-    const static int FRAME_ERODE_SIZE = 1;
-    const static int FRAME_DILATE_SIZE = 15;
 
     const static int SQUARE_THRESHOLD_MIN = 165;
     const static int SQUARE_THRESHOLD_MAX = 215;
@@ -42,10 +39,13 @@ private:
     void cleanGraySrc(cv::Mat& src, cv::Mat& srcGray);
     cv::Rect getFrameRect(cv::Mat& srcHSV);
     cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
+
+
     bool findSquaresPair(const cv::Mat& srcGray, std::vector<SquarePair>& squaresPair, cv::Mat& srcThresholded);
     void removeInvalidSquaresPair(std::vector<SquarePair>& squaresPair);
     SquarePair getRedSquarePair(const cv::Mat& srcHSV);
     std::vector<std::vector<SquarePair> > sortSquaresPair(std::vector<SquarePair> squaresRect, const int frameWidth);
+
     bool extractNumber(cv::Mat &inImage, cv::Mat &outImage, cv::Mat &squareMask);
 
     void applyErode(cv::Mat & toErode, int size, int morphShape);

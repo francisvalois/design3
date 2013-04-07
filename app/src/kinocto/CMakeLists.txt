@@ -116,6 +116,7 @@ target_link_libraries(kinoctoTest ${OpenCV_LIBS} ${catkin_LIBRARIES})
 catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp 
     "src/vision/NumberReader.cpp"
     "src/vision/SudocubeExtractor.cpp"
+    "src/vision/GreenFrameExtractor.cpp"
     "src/sudocube/Sudocube.cpp"
     "src/sudocube/Case.cpp" 
 )
