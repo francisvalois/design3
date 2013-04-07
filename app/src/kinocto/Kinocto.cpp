@@ -53,9 +53,11 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         goToSudocubeX();
 
         adjustFrontPosition();
+        adjustAngleInFrontOfWall(); //Deux fois pour combler l'incertitude
         adjustAngleInFrontOfWall();
-        adjustSidePosition();
-        adjustAngleInFrontOfWall();
+        //adjustSidePosition(); //Utilise les sonars mais est problématique
+        adjustSidePositionWithGreenFrame(); //Deux fois pour combler l'incertitude
+        adjustSidePositionWithGreenFrame();
 
         extractAndSolveSudocube();
         goToDrawingZone();
