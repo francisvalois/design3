@@ -8,3 +8,67 @@
 
 \chapter{Vision 1$^{ère}$ itération}
 \label{vision1}
+
+\section{Localisation avec la caméra embarquée}
+
+La localisation avec la caméra embarquée est un système de localisation d'appoint dans le projet Kinocto. La classe Localisation doit recevoir une image et une orientation grossière selon le nord, sud, est ou ouest par rapport à la table. Elle doit ensuite être initialisée en fournissant un fichier .xml contenant les paramètres de calibration. Ces paramètres comprennent les paramètres intrinsèques de la caméra obtenus lors de la calibration, les paramètres liés à la distortion de l'image par la lentille, les paramètres extrinsèques qui permettent de lier les points des images prises par la caméra à leur position par rapport à un système de référence virtuel ainsi que les paramètres qui permettent de recadrer ces coordonnées par rapport au centre du robot.
+
+Avec l'image et les paramètres provenant de la calibration, les méthodes de localisation, de détermination de l'orientation et de mesure de l'angle par rapport au mur peuvent être utilisées.
+
+\subsection{Localisation}
+
+\subsubsection{Transformations}
+
+Pour effectuer la localisation du robot, il faut trouver dans l'image reçue au moins deux points identifiables dont les coordonnées par rapport à la table sont connues. Dans le projet Kinocto, ces points incluent les coins de la tables, les coins inférieurs des blocs de couleur, les coins du carré vert dessiné sur la table. Pour passer du système de coordonnée du robot à celui de la table, il faut résoudre le système d'équation suivant, où les points $P_1A$ et $P2_A$ sont les points dans le systèmes de la table, $P_1R$ et $P_2R$ sont les mêmes points dans le système du robot et $t_X$ et $t_Y$ sont les coordonnées du robot dans le système de la table:
+
+\begin{equation}
+\label{eq1}
+X_{1A} = X_{1R}cos(\theta) - Y_{1R}sin(\theta) + t_X
+\end{equation}
+\begin{equation}
+\label{eq2}
+Y_{1A} = X_{1R}sin(\theta) + Y_{1R}cos(\theta) + t_Y
+\end{equation}
+\begin{equation}
+\label{eq3}
+X_{2A} = X_{2R}cos{\theta} - Y_{2R}sin(\theta) + t_X
+\end{equation}
+\begin{equation}
+\label{eq4}
+Y_{2A} = X_{2R}sin(\theta) + Y_{2R}cos(\theta) + t_Y
+\end{equation}
+
+En soustrayant l'équation~\ref{eq3} de l'équation~\ref{eq1} ainsi que l'équation~\ref{eq4} de l'équation~\ref{eq2}, on élimine $t_X$ et $t_Y$ et on se retrouve avec deux équations que l'on peut combiner pour obtenir une équation à une inconnue, $\theta$. Il s'agit d'une équation de la forme $a cos(\theta) + b sin(\theta) = c$. Ce type d'équation peut être résolu en considérant la relation suivante:
+
+\begin{equation}
+a cos(\theta) + b sin(\theta) = R cos(\theta - \alpha)
+\end{equation}
+
+Où $R = \sqrt{a^2 + b^2}$ et $tan(\alpha) = \frac{b}{a}$. En isolant $\theta$, on obtient donc:
+
+\begin{equation}
+\theta = cos^{-1}(\frac{c}{\sqrt{a^2 + b^2}}) + tan^{-1}(\frac{b}{a})
+\end{equation} 
+
+Il suffit ensuite d'utiliser $\theta$ dans deux des équation initiales pour retrouver les coordonnées du robot selon le système de référence de la table $t_X$ et $t_Y$.
+
+\subsubsection{Localisation des points}
+
+\begin{enumerate}
+\item{Coins de table}
+
+Les points correspondant aux coins de table sont trouvés dans l'image en effectuant d'abord une segmentation sur le noir et en utilisant ensuite l'algorithme des lignes de Hough pour retrouver les lignes de bas de mur. L'intersection entres les lignes de bas de mur constitue le coin de la table. Un intérêt de cette méthode est qu'elle permet de retrouver les coins de table même lorsqu'un obstacle se trouve devant celui-ci.
+
+\item{Coins du bas des blocs de couleur}
+
+Les coins du bas des blocs de couleurs peuvent être retrouvés en trouvant les intersections entre les lignes de bas de mur et la ligne du bas du bloc de couleur, trouvée après segmentation sur le bleu et l'orange.
+
+\item{Coins du carré vert}
+
+Les coins internes du carré vert peuvent être retrouvés en segmentant sur le vert et en retrouvant les intersections entre les lignes avec la méthode décrite plus haut.
+\end{enumerate}
+
+\subsection{Orientation et angle par rapport au mur}
+
+L'angle par rapport au mur peut être utile pour réorienter le robot pour la lecture des sudokus. Il est facilement obtenu en utilisant la ligne de bas de mur détectée précédemment. L'orientation peut être déduite en utilisant cet angle et l'orientation fournie à l'initialisation.
+
