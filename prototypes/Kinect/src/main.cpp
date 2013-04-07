@@ -21,6 +21,7 @@ struct response {
     float y2;
     float y1;
 };
+typedef struct response response;
 
 Mat captureDepthMatrix() {
     Mat depthMap;
@@ -32,8 +33,8 @@ Mat captureDepthMatrix() {
     else{
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
-            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection1.xml";
-            file << "robotdetection1.xml";
+            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle4.xml";
+            //file << "robotdetection1.xml";
             string fileString = file.str();
             cout << "Loading from file " << fileString << endl;
             
@@ -64,8 +65,8 @@ Mat captureRGBMatrix() {
     else{
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
-        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection1.xml";
-        file << "robotdetection1.jpg";
+        file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle4.jpg";
+        //file << "robotdetection1.jpg";
         string fileString = file.str();
         cout << "Loading from file " << fileString << endl;
         
@@ -83,7 +84,7 @@ Mat captureRGBMatrix() {
 }
 
 response findObstacle(){
-    response response;
+    response response = {0, 0, 0, 0};
     ObstaclesDetector obstaclesDetection;
     int const AVERAGECOUNT = 3;
     int obstacle1AverageCount = 0;
@@ -143,7 +144,7 @@ response findRobot(){
     int const AVERAGECOUNT = 3;
     int robotPositionAverageCount = 0;
     
-    response response;
+    response response = {0, 0, 0, 0};
     RobotDetector robotDetection;
     
     for(int i  = 0; i < AVERAGECOUNT; i++){

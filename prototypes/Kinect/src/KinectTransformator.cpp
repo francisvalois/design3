@@ -1,17 +1,23 @@
-//TODO : Faire des tests avec plusieurs positions de robot
-
 #include "KinectTransformator.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 
 const float KinectTransformator::KINECTANGLE = 22.5f;
-float KinectTransformator::KINECTANGLERAD = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);
+float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);
 Vec2f KinectTransformator::_kinectPosition = Vec2f(0.105f, -0.530f);
 
 void KinectTransformator::setKinectAngle(float angleRad){
     if(angleRad > 0 && angleRad < M_PI){
-        KINECTANGLERAD = angleRad;
+        _kinectAngleRad = angleRad;
     }
+}
+
+Vec2f KinectTransformator::getKinectPosition(){
+    return _kinectPosition;
+}
+
+float KinectTransformator::getKinectAngle(){
+    return _kinectAngleRad;
 }
 
 void KinectTransformator::setKinectPosition(Vec2f kinectPosition){
@@ -21,8 +27,8 @@ void KinectTransformator::setKinectPosition(Vec2f kinectPosition){
 Vec2f KinectTransformator::getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ) {
     float depthZ = depthXYZ[2];
     float depthX = depthXYZ[0];
-    float trueDepthX = sin(KINECTANGLERAD) * depthZ - cos(KINECTANGLERAD) * depthX;
-    float trueDepthZ = sin(KINECTANGLERAD) * depthX + cos(KINECTANGLERAD) * depthZ;
+    float trueDepthX = sin(_kinectAngleRad) * depthZ - cos(_kinectAngleRad) * depthX;
+    float trueDepthZ = sin(_kinectAngleRad) * depthX + cos(_kinectAngleRad) * depthZ;
     Vec2f trueDepth(trueDepthX, trueDepthZ);
     
     return trueDepth;

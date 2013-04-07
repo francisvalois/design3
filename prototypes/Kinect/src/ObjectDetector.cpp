@@ -165,11 +165,7 @@ int ObjectDetector::generateQuads(Mat &image, vector<Rect>&outQuads){
     removeDoubleSquare(outQuads);
     
     removeQuadsNotOnChessboard(outQuads);
-    for (int i = 0; i<outQuads.size(); i++) {
-        rectangle(RGB, outQuads[i], Scalar(0,0,255));
-    }
-    
-    imshow("Debug", RGB);
+
     sortQuadsByPosition(outQuads);
 
     return outQuads.size();

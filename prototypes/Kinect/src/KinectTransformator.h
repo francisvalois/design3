@@ -12,15 +12,17 @@ using namespace std;
 class KinectTransformator {
 
 private:
-    static float KINECTANGLERAD;
+    static float _kinectAngleRad;
     static const float KINECTANGLE;
     static Vec2f _kinectPosition;
-    static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
 public:
+    static Vec2f translateXZCoordtoOrigin(Vec2f rotatedXZ);
     static Vec2f getTrueCoordFromKinectCoord(Vec3f depthXYZ);
     static Vec2f getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ);
     static void setKinectAngle(float angleRad);
     static void setKinectPosition(Vec2f kinectPosition);
+    static float getKinectAngle();
+    static Vec2f getKinectPosition();
 
 };
 
