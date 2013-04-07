@@ -10,7 +10,7 @@ const int ObstaclesDetector::X_OBSTACLE_RIGHT_THRESHOLD = 610;
 const int ObstaclesDetector::Y_OBSTACLE_TOP_THRESHOLD = 80;
 const int ObstaclesDetector::Y_OBSTACLE_BOTTOM_THRESHOLD = 272;
 const float ObstaclesDetector::OBSTACLE_DISTANCE_MIN_THRESHOLD = 0.8f;
-const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.20f;
+const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.3f;
 const float ObstaclesDetector::OBSTACLE_HEIGHT_THRESHOLD_PERCENT = 0.7f;
 
 Vec2f ObstaclesDetector::getObstacle1() {
@@ -86,7 +86,7 @@ vector<Vec2f> ObstaclesDetector::findCenteredObstacle(Mat depthMatrix) {
 Vec2f ObstaclesDetector::getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle) {
 
     int averagePointObstacle1 = getAverageFromPointList(obstacle);
-    cout << "Obstacle found a pixel line x: " << averagePointObstacle1 << endl; 
+    cout << "Obstacle found at pixel line x: " << averagePointObstacle1 << endl; 
     list<Vec2f> allDistances = getSomeYDistanceAssociatedWithXForObstacle(averagePointObstacle1, depthMatrix);
 
     Vec2f positionObstacle = getAverageDistanceForPointLine(allDistances);
@@ -117,7 +117,6 @@ void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, 
                     count++;
             }
         }
-
         if (obstaclePoint && count > (60*OBSTACLE_HEIGHT_THRESHOLD_PERCENT)) {
             if (validObstaclePosition.size() > 0) {
                 if ((i - validObstaclePosition.back().x) > 10) // Separate first obstacle from second
@@ -126,7 +125,6 @@ void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, 
                     validObstaclePosition.clear();
                 }
             }
-            cout << i << endl;
             validObstaclePosition.push_back(Point(i, middleYPoint));
         }
     }
