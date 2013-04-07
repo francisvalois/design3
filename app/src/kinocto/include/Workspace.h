@@ -17,8 +17,10 @@ public:
     const static int EAST = 3;
     const static int WEST = 4;
 
+
     const static int TABLE_X = 231;
     const static int TABLE_Y = 111;
+    const static int CAM_HEIGHT = 19;
     const static int ROBOT_RADIUS = 13;
     const static int OBSTACLE_RADIUS = 7;
     const static int DRAWING_ZONE = 89;

@@ -79,7 +79,7 @@ private:
     void decodeAntennaParam();
     void showAntennaParam();
     void goToSudocubeX();
-    void adjustAngleInFrontOfWall();
+    double adjustAngleInFrontOfWall();
     void adjustSidePosition();
     float getSonarDistance();
     float adjustFrontPosition();
