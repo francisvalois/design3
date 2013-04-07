@@ -72,3 +72,10 @@ Les coins internes du carré vert peuvent être retrouvés en segmentant sur le 
 
 L'angle par rapport au mur peut être utile pour réorienter le robot pour la lecture des sudokus. Il est facilement obtenu en utilisant la ligne de bas de mur détectée précédemment. L'orientation peut être déduite en utilisant cet angle et l'orientation fournie à l'initialisation.
 
+\subsection{Extraire les contours d'un sudocube}
+
+La première étape d'extraction consiste à segmenter par couleur verte afin d'isoler le cadre du sudocube. Puis, un algorithme de détection des contours est appliqué pour trouver deux polygones rectangulaires. Ces polygones sont les bordures intérieurs et extérieurs du cadre. L'aire des rectangles est calculé pour vérifier que les polygones sont assez grand pour être ceux du cadre.
+
+Ensuite, à partir du polygone intérieur du cadre on isole une sous région de l'image principale. L'image obtenue est convertie en noir et blanc afin d'appliquer à nouveau un algorithme de contours afin de trouver les cases du sudocube. On sélectionne les polygones résultants selon leur aire. Si jamais le nombre de cases sélectionné n'est pas de 47 on recommence avec un seuil de tolérance différent pour l'algorithme de contour. Le polygone de la case rouge est obtenue en segmentant par couleur rouge et appliquant a nouveau un algorithme de contour. 
+
+Finalement, les images des cases sont triées en fonction de leur position en X et en Y dans l'image du sudocube et un algorithme de reconnaissance des caractères appliqué sur toutes les cases afin d'identifier les numéros. L'algorithme de reconnaissance utilise la technique KNearest. Les chiffres trouvés sont ajoutés dans la structure de données du sudocube et la position de la case rouge est spécifiée.
