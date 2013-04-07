@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <vector>
 
+#include "vision/VisionUtility.h"
 #include "vision/GreenFrameExtractor.h"
 #include "vision/NumberReader.h"
 #include "vision/SquarePair.h"

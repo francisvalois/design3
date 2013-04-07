@@ -16,10 +16,10 @@ GreenFrameExtractor::~GreenFrameExtractor() {
 Rect GreenFrameExtractor::getFrameRect(Mat& srcHSV) {
     Mat segmentedFrame;
     inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
-    applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
-    applyDilate(segmentedFrame, FRAME_DILATE_SIZE, MORPH_RECT);
+    VisionUtility::applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
+    VisionUtility::applyDilate(segmentedFrame, FRAME_DILATE_SIZE, MORPH_RECT);
     //sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
-    //saveImage(segmentedFrame, filename);
+    //VisionUtility::saveImage(segmentedFrame, filename);
 
     vector<vector<Point> > frameContours = extractFrameContours(segmentedFrame);
     vector<Rect> frameBoundingRect = extractFrameRects(frameContours);
@@ -70,24 +70,4 @@ Rect GreenFrameExtractor::getSmallestRectBetween(const Rect &rect1, const Rect &
     }
 
     return rect2;
-}
-
-void GreenFrameExtractor::applyErode(Mat & toErode, int size, int morphShape) {
-    Point erodePoint(size, size);
-    Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
-    erode(toErode, toErode, erodeElem);
-}
-
-void GreenFrameExtractor::applyDilate(Mat & toDilate, int size, int morphShape) {
-    Point dilatePoint(size, size);
-    Mat dilateElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), dilatePoint);
-    dilate(toDilate, toDilate, dilateElem);
-}
-
-void GreenFrameExtractor::saveImage(Mat &pict, char* filename) {
-    vector<int> compression_params;
-    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-    compression_params.push_back(9);
-
-    imwrite(filename, pict, compression_params);
 }

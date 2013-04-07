@@ -63,7 +63,7 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
             frameCroppedThresholded.copyTo(squareMasked, squareMask);
 
             Mat squareInversedMask = 255 - squareMask;
-            applyDilate(squareInversedMask, 8, MORPH_RECT);
+            VisionUtility::applyDilate(squareInversedMask, 8, MORPH_RECT);
 
             Mat number;
             bool foundPossibleNumber = extractNumber(squareMasked, number, squareInversedMask);
@@ -72,10 +72,9 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
                 int numberFound = numberReader.identifyNumber(number);
                 (*itNum) = numberFound;
 
-                //cout << "Found : " << numberFound << endl;
                 int y = distance(orderedSquaresPair[i].begin(), itPair);
                 //sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
-                //saveImage(number, filename);
+                //VisionUtility::saveImage(number, filename);
             }
         }
     }
@@ -115,7 +114,7 @@ bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> &
     for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
         threshold(srcGray, srcThresholded, threshValue, 500, THRESH_BINARY);
         //sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
-        //saveImage(srcThresholded, filename);
+        //VisionUtility::saveImage(srcThresholded, filename);
 
         vector<vector<Point> > squaresContours;
         vector<Vec4i> squaresHierarchy;
@@ -158,7 +157,7 @@ SquarePair SudocubeExtractor::getRedSquarePair(const Mat& srcHSV) {
     inRange(srcHSV, Scalar(130, 100, 50), Scalar(255, 255, 255), segmentedRedSquare2);
     segmentedRedSquare += segmentedRedSquare2;
 
-    applyErode(segmentedRedSquare, 2, MORPH_CROSS);
+    VisionUtility::applyErode(segmentedRedSquare, 2, MORPH_CROSS);
 
     vector<vector<Point> > squareContour;
     vector<Vec4i> squareHierarchy;
@@ -223,7 +222,7 @@ bool SudocubeExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMa
     adaptiveThreshold(inImage, thresholdedSquare, 255, 1, 1, 11, 2);
 
     thresholdedSquare.setTo(black, squareMask);
-    applyDilate(thresholdedSquare, NUMBER_DILATE_SIZE, MORPH_RECT);
+    VisionUtility::applyDilate(thresholdedSquare, NUMBER_DILATE_SIZE, MORPH_RECT);
 
     Mat contourImage;
     thresholdedSquare.copyTo(contourImage);
@@ -312,24 +311,3 @@ void SudocubeExtractor::insert(Sudocube * sudokube, int face, int j, int k, int 
         sudokube->setRedCase(face, j, k);
     }
 }
-
-void SudocubeExtractor::applyErode(Mat & toErode, int size, int morphShape) {
-    Point erodePoint(size, size);
-    Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
-    erode(toErode, toErode, erodeElem);
-}
-
-void SudocubeExtractor::applyDilate(Mat & toDilate, int size, int morphShape) {
-    Point dilatePoint(size, size);
-    Mat dilateElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), dilatePoint);
-    dilate(toDilate, toDilate, dilateElem);
-}
-
-void SudocubeExtractor::saveImage(Mat &pict, char* filename) {
-    vector<int> compression_params;
-    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-    compression_params.push_back(9);
-
-    imwrite(filename, pict, compression_params);
-}
-

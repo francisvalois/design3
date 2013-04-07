@@ -9,6 +9,8 @@
 #include <vector>
 #include <iostream>
 
+#include "vision/VisionUtility.h"
+
 class GreenFrameExtractor {
 
 public:
@@ -31,11 +33,6 @@ private:
     std::vector<cv::Rect> extractFrameRects(std::vector<std::vector<cv::Point> > & frameContours);
     cv::Rect chooseFrameRect(std::vector<cv::Rect> & frameBoundingRect);
     cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
-
-    void applyErode(cv::Mat & toErode, int size, int morphShape);
-    void applyDilate(cv::Mat & toDilate, int size, int morphShape);
-
-    void saveImage(cv::Mat &pict, char* filename);
 };
 
 #endif
