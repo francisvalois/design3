@@ -23,11 +23,7 @@ double FrameCenterFinder::getXTranslation(Mat & src) {
 
     double relativeCenterX = frameRect.tl().x + frameRect.width / 2;
     double imageCenterX = src.cols / 2;
-    int xTranslation =  relativeCenterX - imageCenterX;
-
-    cout << "Position relative du sudocube" << relativeCenterX << endl;
-    cout << "Position centrale de l'image" << imageCenterX << endl;
-    cout << "Translation nécessaire" << xTranslation << endl;
+    int xTranslation = relativeCenterX - imageCenterX;
 
     return xTranslation / pixelRatio;
 }
@@ -81,12 +77,3 @@ void FrameCenterFinder::applyDilate(Mat & toDilate, int size, int morphShape) {
     Mat dilateElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), dilatePoint);
     dilate(toDilate, toDilate, dilateElem);
 }
-
-void FrameCenterFinder::saveImage(Mat &pict, char* filename) {
-    vector<int> compression_params;
-    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-    compression_params.push_back(9);
-
-    imwrite(filename, pict, compression_params);
-}
-

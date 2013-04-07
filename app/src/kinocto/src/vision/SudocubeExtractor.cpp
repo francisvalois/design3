@@ -30,12 +30,6 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     }
 
     Mat frameCroppedGray = srcGray(frameRect);
-   /* Mat frameCroppedGray2 = frameCroppedGray.clone();
-
-    Size newSize;
-    newSize.width = 750;
-    newSize.height = (frameCroppedGray2.size().width * 750) / frameCroppedGray2.size().width;
-    resize(frameCroppedGray2, frameCroppedGray2, newSize); //750 min*/
 
     vector<SquarePair> squaresPair;
     Mat frameCroppedThresholded;

@@ -501,7 +501,7 @@ bool Kinocto::testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinoc
 bool Kinocto::testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request,
         kinocto::TestAdjustSidePositionWithGreenFrame::Response & response) {
 
-    response.translatedX = adjustSidePositionWithGreenFrame();
+    adjustSidePositionWithGreenFrame();
 
     return true;
 }

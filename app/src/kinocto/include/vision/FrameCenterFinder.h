@@ -28,8 +28,6 @@ private:
 
     void applyErode(cv::Mat & toErode, int size, int morphShape);
     void applyDilate(cv::Mat & toDilate, int size, int morphShape);
-
-    void saveImage(cv::Mat &pict, char* filename);
 };
 
 #endif
