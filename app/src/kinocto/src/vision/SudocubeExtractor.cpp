@@ -30,9 +30,10 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
 
     Mat frameCroppedGray = srcGray(frameRect);
 
+    SquaresExtractor squaresExtractor;
     vector<SquarePair> squaresPair;
     Mat frameCroppedThresholded;
-    bool squaresAreExtracted = findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded);
+    bool squaresAreExtracted = squaresExtractor.findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded);
 
     if (squaresAreExtracted == false) {
         cout << "Could not extract all the square for sudocube" << endl; //TODO gestion d'exception
@@ -108,48 +109,6 @@ Rect SudocubeExtractor::getSmallestRectBetween(const Rect &rect1, const Rect &re
     return rect2;
 }
 
-bool SudocubeExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded) {
-    bool isExtracted = false;
-
-    for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
-        threshold(srcGray, srcThresholded, threshValue, 500, THRESH_BINARY);
-        //sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
-        //VisionUtility::saveImage(srcThresholded, filename);
-
-        vector<vector<Point> > squaresContours;
-        vector<Vec4i> squaresHierarchy;
-        Mat thresContour;
-        srcThresholded.copyTo(thresContour);
-        findContours(thresContour, squaresContours, squaresHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-        squaresPair.resize(squaresContours.size() + 1);
-        for (uint i = 0; i < squaresContours.size(); i++) {
-            approxPolyDP(Mat(squaresContours[i]), squaresPair[i].poly, 10, true);
-            squaresPair[i].rect = boundingRect(Mat(squaresPair[i].poly));
-        }
-
-        removeInvalidSquaresPair(squaresPair);
-
-        if (squaresPair.size() == 47) {
-            isExtracted = true;
-        }
-    }
-
-    return isExtracted;
-}
-
-void SudocubeExtractor::removeInvalidSquaresPair(vector<SquarePair>& squaresPair) {
-    vector<SquarePair> validSquaresPair;
-    for (uint i = 0; i < squaresPair.size(); i++) {
-        if (squaresPair[i].rect.area() > SQUARE_AREA_MIN && squaresPair[i].rect.area() < SQUARE_AREA_MAX) {
-            SquarePair squarePair(squaresPair[i].rect, squaresPair[i].poly);
-            validSquaresPair.push_back(squarePair);
-        }
-    }
-
-    squaresPair = validSquaresPair;
-}
-
 SquarePair SudocubeExtractor::getRedSquarePair(const Mat& srcHSV) {
     Mat segmentedRedSquare;
     Mat segmentedRedSquare2;
@@ -169,7 +128,7 @@ SquarePair SudocubeExtractor::getRedSquarePair(const Mat& srcHSV) {
         approxPolyDP(Mat(squareContour[i]), squareContoursPoly[i], 3, true);
         Rect rect = boundingRect(Mat(squareContoursPoly[i]));
 
-        if (rect.area() > SQUARE_AREA_MIN && rect.area() < SQUARE_AREA_MAX) {
+        if (rect.area() > SquaresExtractor::SQUARE_AREA_MIN && rect.area() < SquaresExtractor::SQUARE_AREA_MAX) {
             squareBoundingRect.push_back(rect);
         }
     }

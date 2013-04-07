@@ -8,6 +8,7 @@
 
 #include "vision/VisionUtility.h"
 #include "vision/GreenFrameExtractor.h"
+#include "vision/SquaresExtractor.h"
 #include "vision/NumberReader.h"
 #include "vision/SquarePair.h"
 #include "sudocube/Sudocube.h"
@@ -21,11 +22,6 @@ public:
 
 private:
     const static char OUTPUT_PATH[];
-
-    const static int SQUARE_THRESHOLD_MIN = 165;
-    const static int SQUARE_THRESHOLD_MAX = 215;
-    const static int SQUARE_AREA_MIN = 5000;
-    const static int SQUARE_AREA_MAX = 160000;
 
     const static int NUMBER_AREA_MAX = 3000;
     const static int NUMBER_AREA_MIN = 200;
@@ -41,9 +37,6 @@ private:
     cv::Rect getFrameRect(cv::Mat& srcHSV);
     cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
 
-
-    bool findSquaresPair(const cv::Mat& srcGray, std::vector<SquarePair>& squaresPair, cv::Mat& srcThresholded);
-    void removeInvalidSquaresPair(std::vector<SquarePair>& squaresPair);
     SquarePair getRedSquarePair(const cv::Mat& srcHSV);
     std::vector<std::vector<SquarePair> > sortSquaresPair(std::vector<SquarePair> squaresRect, const int frameWidth);
 
