@@ -121,8 +121,16 @@ void MicrocontrollerDecorator::translate(Position position) {
     srv.request.x = position.x;
     srv.request.y = position.y;
 
-    if (translateClient.call(srv) == false) {
-        ROS_ERROR("Failed to call service microcontroller/translate");
+    if (angle < -1.0f || angle > 1.0f) {
+        if (rotateClient.call(srv) == false) {
+            ROS_ERROR("Failed to call service microcontroller/rotate");
+        }
+    }
+
+    if (position.x != 0.0f && position.y != 0.0f) {
+        if (translateClient.call(srv) == false) {
+            ROS_ERROR("Failed to call service microcontroller/translate");
+        }
     }
 }
 
