@@ -221,9 +221,8 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
     cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
     vector<Sudocube *> sudokubes;
-    for (int i = 1; i <= 10 && sudokubes.size() <= 10; i++) {
+    for (int i = 1; i <= 10 && sudokubes.size() <= 6; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
-        cout << "TAILLE DE LIMAGE " << sudocubeImg.cols << endl;
 
         if (!sudocubeImg.data) {
             return sudokubes;
@@ -284,7 +283,6 @@ void Kinocto::goToDrawingZone() {
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
 
-    microcontroller->move(-0.75f); // P'tit hack pour enlever le slack dans les roues
     executeMoves(moves);
 
     microcontroller->move(-13.0f);
