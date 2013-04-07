@@ -13,6 +13,7 @@
 #include "vision/SquarePair.h"
 #include "vision/SquaresPairSorter.h"
 #include "vision/NumberExtractor.h"
+#include "vision/RedSquarePairExtractor.h"
 #include "sudocube/Sudocube.h"
 
 class SudocubeExtractor {
@@ -32,10 +33,7 @@ private:
     char filename[255];
 
     void cleanGraySrc(cv::Mat& src, cv::Mat& srcGray);
-    cv::Rect getFrameRect(cv::Mat& srcHSV);
     cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
-
-    SquarePair getRedSquarePair(const cv::Mat& srcHSV);
 
     void insertAllNumber(Sudocube * sudokube, std::vector<std::vector<int> > numbers);
     void insert(Sudocube * sudokube, int face, int j, int k, int value);

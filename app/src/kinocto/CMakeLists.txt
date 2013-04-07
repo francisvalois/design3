@@ -120,6 +120,7 @@ catkin_add_gtest(kinoctoLongTest test/AllLongTests.cpp
     "src/vision/GreenFrameExtractor.cpp"
     "src/vision/SquaresExtractor.cpp"
     "src/vision/SquaresPairSorter.cpp"
+    "src/vision/RedSquarePairExtractor.cpp"
     "src/vision/NumberExtractor.cpp"
     "src/sudocube/Sudocube.cpp"
     "src/sudocube/Case.cpp" 

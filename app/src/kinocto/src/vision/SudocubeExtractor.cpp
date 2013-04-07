@@ -16,13 +16,15 @@ SudocubeExtractor::~SudocubeExtractor() {
 
 Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     Sudocube * sudokube = new Sudocube();
+
     Mat srcGray;
     cleanGraySrc(src, srcGray);
 
     Mat srcHSV;
     cvtColor(src, srcHSV, CV_BGR2HSV);
 
-    Rect frameRect = getFrameRect(srcHSV);
+    GreenFrameExtractor frameExtractor;
+    Rect frameRect = frameExtractor.getFrameRect(srcHSV);
     if (frameRect.area() == 0) { //TODO Gestion exception
         cout << "Could not find the green frame" << endl;
         return sudokube;
@@ -34,13 +36,13 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     vector<SquarePair> squaresPair;
     Mat frameCroppedThresholded;
     bool squaresAreExtracted = squaresExtractor.findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded);
-
     if (squaresAreExtracted == false) {
         cout << "Could not extract all the square for sudocube" << endl; //TODO gestion d'exception
         return sudokube;
     }
 
-    SquarePair redSquarePair = getRedSquarePair(srcHSV(frameRect));
+    RedSquarePairExtractor redSquarePairExtractor;
+    SquarePair redSquarePair = redSquarePairExtractor.getRedSquarePair(srcHSV(frameRect));
     squaresPair.push_back(redSquarePair);
 
     SquaresPairSorter squarePairSorter;
@@ -75,7 +77,7 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
                 int numberFound = numberReader.identifyNumber(number);
                 (*itNum) = numberFound;
 
-                int y = distance(orderedSquaresPair[i].begin(), itPair);
+                //int y = distance(orderedSquaresPair[i].begin(), itPair);
                 //sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
                 //VisionUtility::saveImage(number, filename);
             }
@@ -97,52 +99,12 @@ void SudocubeExtractor::cleanGraySrc(Mat& src, Mat& srcGray) {
     srcGray = srcGray - laplacianImg;
 }
 
-Rect SudocubeExtractor::getFrameRect(Mat& srcHSV) {
-    GreenFrameExtractor frameExtractor;
-
-    return frameExtractor.getFrameRect(srcHSV);
-}
-
 Rect SudocubeExtractor::getSmallestRectBetween(const Rect &rect1, const Rect &rect2) {
     if (rect1.area() < rect2.area()) {
         return rect1;
     }
 
     return rect2;
-}
-
-SquarePair SudocubeExtractor::getRedSquarePair(const Mat& srcHSV) {
-    Mat segmentedRedSquare;
-    Mat segmentedRedSquare2;
-    inRange(srcHSV, Scalar(0, 100, 50), Scalar(25, 255, 255), segmentedRedSquare); // Pas le choix, en deux partie...
-    inRange(srcHSV, Scalar(130, 100, 50), Scalar(255, 255, 255), segmentedRedSquare2);
-    segmentedRedSquare += segmentedRedSquare2;
-
-    VisionUtility::applyErode(segmentedRedSquare, 2, MORPH_CROSS);
-
-    vector<vector<Point> > squareContour;
-    vector<Vec4i> squareHierarchy;
-    findContours(segmentedRedSquare, squareContour, squareHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-    vector<vector<Point> > squareContoursPoly(squareContour.size());
-    vector<Rect> squareBoundingRect(0);
-    for (uint i = 0; i < squareContour.size(); i++) {
-        approxPolyDP(Mat(squareContour[i]), squareContoursPoly[i], 3, true);
-        Rect rect = boundingRect(Mat(squareContoursPoly[i]));
-
-        if (rect.area() > SquaresExtractor::SQUARE_AREA_MIN && rect.area() < SquaresExtractor::SQUARE_AREA_MAX) {
-            squareBoundingRect.push_back(rect);
-        }
-    }
-
-    if (squareBoundingRect.empty() == true) {
-        cout << "Could not find the red square" << endl;
-        return SquarePair();
-    }
-
-    SquarePair squarePair(squareBoundingRect[0], squareContoursPoly[0]);
-
-    return squarePair;
 }
 
 void SudocubeExtractor::insertAllNumber(Sudocube * sudokube, vector<vector<int> > orderedNumber) {
