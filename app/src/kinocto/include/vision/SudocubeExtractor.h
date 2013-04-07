@@ -12,6 +12,7 @@
 #include "vision/NumberReader.h"
 #include "vision/SquarePair.h"
 #include "vision/SquaresPairSorter.h"
+#include "vision/NumberExtractor.h"
 #include "sudocube/Sudocube.h"
 
 class SudocubeExtractor {
@@ -24,10 +25,6 @@ public:
 private:
     const static char OUTPUT_PATH[];
 
-    const static int NUMBER_AREA_MAX = 3000;
-    const static int NUMBER_AREA_MIN = 200;
-    const static int NUMBER_DILATE_SIZE = 1;
-
     NumberReader numberReader;
     cv::Scalar white;
     cv::Scalar black;
@@ -39,8 +36,6 @@ private:
     cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
 
     SquarePair getRedSquarePair(const cv::Mat& srcHSV);
-
-    bool extractNumber(cv::Mat &inImage, cv::Mat &outImage, cv::Mat &squareMask);
 
     void insertAllNumber(Sudocube * sudokube, std::vector<std::vector<int> > numbers);
     void insert(Sudocube * sudokube, int face, int j, int k, int value);
