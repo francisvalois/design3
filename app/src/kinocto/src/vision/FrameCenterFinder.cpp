@@ -23,7 +23,11 @@ double FrameCenterFinder::getXTranslation(Mat & src) {
 
     double relativeCenterX = frameRect.tl().x + frameRect.width / 2;
     double imageCenterX = src.cols / 2;
-    int xTranslation =  imageCenterX - relativeCenterX;
+    int xTranslation =  relativeCenterX - imageCenterX;
+
+    cout << "Position relative du sudocube" << relativeCenterX << endl;
+    cout << "Position centrale de l'image" << imageCenterX << endl;
+    cout << "Translation nécessaire" << xTranslation << endl;
 
     return xTranslation / pixelRatio;
 }
