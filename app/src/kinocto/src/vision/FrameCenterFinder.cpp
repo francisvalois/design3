@@ -34,10 +34,21 @@ Rect FrameCenterFinder::getFrameRect(Mat& srcHSV) {
     applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
     applyDilate(segmentedFrame, FRAME_DILATE_SIZE, MORPH_RECT);
 
+    vector<vector<Point> > frameContours = extractFrameContours(segmentedFrame);
+    vector<Rect> frameBoundingRect = extractFrameRects(frameContours);
+
+    return chooseFrameRect(frameBoundingRect);
+}
+
+vector<vector<Point> > FrameCenterFinder::extractFrameContours (Mat & segmentedFrame) {
     vector<vector<Point> > frameContours;
     vector<Vec4i> frameHierarchy;
     findContours(segmentedFrame, frameContours, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
+    return frameContours;
+}
+
+vector<Rect> FrameCenterFinder::extractFrameRects(vector<vector<Point> > & frameContours) {
     vector<vector<Point> > frameContoursPoly(frameContours.size());
     vector<Rect> frameBoundingRect(0);
     for (uint i = 0; i < frameContours.size(); i++) {
@@ -48,12 +59,16 @@ Rect FrameCenterFinder::getFrameRect(Mat& srcHSV) {
         }
     }
 
+    return frameBoundingRect;
+}
+
+Rect FrameCenterFinder::chooseFrameRect(vector<Rect> & frameBoundingRect) {
     if (frameBoundingRect.size() == 1) {
         return frameBoundingRect[0];
     } else if (frameBoundingRect.size() == 2) {
         return getBiggestRectBetween(frameBoundingRect[0], frameBoundingRect[1]);
     } else {
-        cout << "Wrong number of frame << endl";
+        cout << "Wrong number of frame" << endl;
         return Rect();
     }
 }

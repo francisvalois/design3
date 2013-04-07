@@ -24,6 +24,9 @@ private:
     const static int FRAME_DILATE_SIZE = 7;
 
     cv::Rect getFrameRect(cv::Mat& srcHSV);
+    std::vector<std::vector<cv::Point> > extractFrameContours (cv::Mat & segmentedFrame);
+    std::vector<cv::Rect> extractFrameRects (std::vector<std::vector<cv::Point> > &  frameContours);
+    cv::Rect chooseFrameRect(std::vector<cv::Rect> & frameBoundingRect);
     cv::Rect getBiggestRectBetween(const cv::Rect &, const cv::Rect &);
 
     void applyErode(cv::Mat & toErode, int size, int morphShape);
