@@ -9,6 +9,7 @@
 #include "opencv2/highgui/highgui.hpp"
 
 #include <ros/ros.h>
+#include "std_msgs/String.h"
 
 #include "vision/CameraCapture.h"
 #include "vision/SudocubeExtractor.h"
@@ -29,8 +30,7 @@
 #include "communication/MicrocontrollerDecorator.h"
 
 //Topics du robot
-#include "std_msgs/String.h"
-#include "kinocto/StartLoop.h"
+#include "basestation/StartLoop.h"
 
 //Services de test
 #include "kinocto/TestGoToSudocubeX.h"
@@ -113,7 +113,6 @@ public:
     bool testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response);
     bool testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response);
     bool testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request, kinocto::TestAdjustSidePositionWithGreenFrame::Response & response);
-
 
 };
 

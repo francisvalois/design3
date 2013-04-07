@@ -513,7 +513,7 @@ int main(int argc, char **argv) {
     ROS_INFO("%s", "Creating services and messages handler for Kinocto");
 
 //Message handlers
-    ros::Subscriber sub = nodeHandle.subscribe("kinocto/startLoop", 10, &Kinocto::startLoop, &kinocto);
+    ros::Subscriber sub = nodeHandle.subscribe("basestation/startLoop", 10, &Kinocto::startLoop, &kinocto);
 
 //Services de test seulement
     ros::ServiceServer service1 = nodeHandle.advertiseService("kinocto/TestExtractSudocubeAndSolve", &Kinocto::testExtractSudocubeAndSolve, &kinocto);

@@ -56,7 +56,7 @@ bool BaseStation::init() {
 }
 
 void BaseStation::initHandlers(ros::NodeHandle & node) {
-    startLoopPublisher = node.advertise<std_msgs::String>("kinocto/startLoop", 1);
+    startLoopPublisher = node.advertise<std_msgs::String>("basestation/startLoop", 1);
 
     getObstaclesPositionService = node.advertiseService("basestation/getObstaclesPosition", &BaseStation::getObstaclesPosition, this);
     findRobotPositionAndAngleService = node.advertiseService("basestation/findRobotPositionAndAngle", &BaseStation::findRobotPositionAndAngle, this);

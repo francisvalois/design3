@@ -33,6 +33,9 @@ private:
     int number;
     bool big;
     int orientation;
+
+    bool isAValidSudocubeNumber(int sudocubeNumber);
+    bool isAValidOrientationNumber(int orientation);
 };
 
 #endif /* ANTENNAPARAM_H_ */

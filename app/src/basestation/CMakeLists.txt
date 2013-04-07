@@ -10,10 +10,10 @@ include(${QT_USE_FILE})
 ## Declare ROS messages and services ##
 #######################################
 
-# add_message_files(
-#   FILES
-#   Num.msg
-# )
+ add_message_files(
+   FILES
+   StartLoop.msg
+ )
 
 add_service_files(
   FILES
@@ -62,7 +62,7 @@ qt4_wrap_ui(QT_FORM_HPP ${QT_FORMS})
 qt4_wrap_cpp(QT_MOCC_HPP ${QT_MOC})
 
 add_executable(BaseStation main.cpp  ${PROJ_SOURCES} ${QT_FORM_HPP} ${QT_MOCC_HPP})
-add_dependencies(BaseStation kinocto_gencpp)
+#add_dependencies(BaseStation kinocto_gencpp)
 target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${OpenCV_LIBS})
 
 #############

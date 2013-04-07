@@ -216,10 +216,9 @@ vector<vector<Case*> > Sudocube::getListOfAllCaseLines() {
 vector<Case*> Sudocube::getSameLineOfCase(int i, int j, int k) {
     vector<Case*> sameLineCases;
 
-    sameLineCases.push_back(container[i - 1][0][k - 1]);
-    sameLineCases.push_back(container[i - 1][1][k - 1]);
-    sameLineCases.push_back(container[i - 1][2][k - 1]);
-    sameLineCases.push_back(container[i - 1][3][k - 1]);
+    for (int y = 0; y <= 3; y++) {
+        sameLineCases.push_back(container[i - 1][y][k - 1]);
+    }
 
     int x;
     int y;
@@ -234,20 +233,18 @@ vector<Case*> Sudocube::getSameLineOfCase(int i, int j, int k) {
         y = k - 1;
     }
 
-    sameLineCases.push_back(container[x][y][0]);
-    sameLineCases.push_back(container[x][y][1]);
-    sameLineCases.push_back(container[x][y][2]);
-    sameLineCases.push_back(container[x][y][3]);
+    for (int z = 0; z <= 3; z++) {
+        sameLineCases.push_back(container[x][y][z]);
+    }
 
     return sameLineCases;
 }
 
 vector<Case*> Sudocube::getSameColumnOfCase(int i, int j, int k) {
     vector<Case*> sameColumnCases;
-    sameColumnCases.push_back(container[i - 1][j - 1][0]);
-    sameColumnCases.push_back(container[i - 1][j - 1][1]);
-    sameColumnCases.push_back(container[i - 1][j - 1][2]);
-    sameColumnCases.push_back(container[i - 1][j - 1][3]);
+    for (int z = 0; z <= 3; z++) {
+        sameColumnCases.push_back(container[i - 1][j - 1][z]);
+    }
 
     int x;
     int z;
@@ -261,10 +258,10 @@ vector<Case*> Sudocube::getSameColumnOfCase(int i, int j, int k) {
         x = 0;
         z = 4 - j;
     }
-    sameColumnCases.push_back(container[x][0][z]);
-    sameColumnCases.push_back(container[x][1][z]);
-    sameColumnCases.push_back(container[x][2][z]);
-    sameColumnCases.push_back(container[x][3][z]);
+
+    for (int y = 0; y <= 3; y++) {
+        sameColumnCases.push_back(container[x][y][z]);
+    }
 
     return sameColumnCases;
 }
@@ -272,23 +269,17 @@ vector<Case*> Sudocube::getSameColumnOfCase(int i, int j, int k) {
 vector<Case*> Sudocube::getSameRegionOfCase(int i, int j, int k) {
     vector<Case*> sameRegionCases;
     if (j <= 2) {
-        sameRegionCases.push_back(container[i - 1][0][0]);
-        sameRegionCases.push_back(container[i - 1][0][1]);
-        sameRegionCases.push_back(container[i - 1][0][2]);
-        sameRegionCases.push_back(container[i - 1][0][3]);
-        sameRegionCases.push_back(container[i - 1][1][0]);
-        sameRegionCases.push_back(container[i - 1][1][1]);
-        sameRegionCases.push_back(container[i - 1][1][2]);
-        sameRegionCases.push_back(container[i - 1][1][3]);
+        for (int y = 0; y <= 1; y++) {
+            for (int z = 0; z <= 3; z ++) {
+                sameRegionCases.push_back(container[i - 1][y][z]);
+            }
+        }
     } else {
-        sameRegionCases.push_back(container[i - 1][2][0]);
-        sameRegionCases.push_back(container[i - 1][2][1]);
-        sameRegionCases.push_back(container[i - 1][2][2]);
-        sameRegionCases.push_back(container[i - 1][2][3]);
-        sameRegionCases.push_back(container[i - 1][3][0]);
-        sameRegionCases.push_back(container[i - 1][3][1]);
-        sameRegionCases.push_back(container[i - 1][3][2]);
-        sameRegionCases.push_back(container[i - 1][3][3]);
+        for (int y = 2; y <= 3; y++) {
+            for (int z = 0; z <= 3; z ++) {
+                sameRegionCases.push_back(container[i - 1][y][z]);
+            }
+        }
     }
     return sameRegionCases;
 }
