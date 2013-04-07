@@ -487,9 +487,7 @@ bool Kinocto::testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request 
 bool Kinocto::testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response) {
     antennaParam.setNumber(request.sudocubeNo);
 
-    ///
     adjustSidePosition();
-    ///
 
     return true;
 }
@@ -503,7 +501,7 @@ bool Kinocto::testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinoc
 bool Kinocto::testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request,
         kinocto::TestAdjustSidePositionWithGreenFrame::Response & response) {
 
-    adjustSidePositionWithGreenFrame();
+    response.translatedX = adjustSidePositionWithGreenFrame();
 
     return true;
 }
