@@ -53,10 +53,8 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         goToSudocubeX();
 
         adjustFrontPosition();
-        adjustAngleInFrontOfWall(); //Deux fois pour combler l'incertitude
         adjustAngleInFrontOfWall();
         //adjustSidePosition(); //Utilise les sonars mais est problématique
-        adjustSidePositionWithGreenFrame(); //Deux fois pour combler l'incertitude
         adjustSidePositionWithGreenFrame();
 
         extractAndSolveSudocube();
@@ -221,7 +219,7 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
     cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
     vector<Sudocube *> sudokubes;
-    for (int i = 1; i <= 10 && sudokubes.size() <= 6; i++) {
+    for (int i = 1; i <= 10 && sudokubes.size() <= 5; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
 
         if (!sudocubeImg.data) {
