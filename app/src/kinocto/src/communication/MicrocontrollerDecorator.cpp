@@ -72,7 +72,7 @@ void MicrocontrollerDecorator::rotate(float angle) {
     Rotate srv;
     srv.request.angle = angle;
 
-    if (angle < -0.5f || angle > 0.5f) {
+    if (angle < -1.0f || angle > 1.0f) {
         if (rotateClient.call(srv) == false) {
             ROS_ERROR("Failed to call service microcontroller/rotate");
         }
