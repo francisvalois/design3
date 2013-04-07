@@ -140,7 +140,7 @@ double Kinocto::adjustAngleInFrontOfWall() {
 }
 
 void Kinocto::adjustSidePositionWithGreenFrame() {
-    cameraCapture.openCapture(1);
+    cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
     Mat frameImg = cameraCapture.takePicture();
     cameraCapture.closeCapture();
 
