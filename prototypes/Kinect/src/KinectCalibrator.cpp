@@ -52,11 +52,13 @@ float KinectCalibrator::findAndSetKinectAngle(Mat depthMatrix){
 bool KinectCalibrator::calibrate(Mat rgbMatrix, Mat depthMatrix){
     KinectCalibrator::_pointVector = KinectCalibrator::findCalibrationSquare(rgbMatrix);
 
-    float angle = findAndSetKinectAngle(depthMatrix);
+    if(_pointVector.size() > 0){
+        float angle = findAndSetKinectAngle(depthMatrix);
 
-    if (angle > 0 /*&& !isnan(angle)*/){
-        return true;
+        if (angle != 0 /*&& !isnan(angle)*/){
+            return true;
+        }
     }
-
+        
     return false;
 }

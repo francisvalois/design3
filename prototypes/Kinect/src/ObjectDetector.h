@@ -18,12 +18,13 @@ protected:
 
     int getAverageFromPointList(list<Point> obstacle);
     Vec2f getAverageDistanceForPointLine(list<Vec2f> allDistances);
-
-public:
-    int generateQuads(Mat &image, vector<Rect>&outQuads);
     int removeQuadsNotOnChessboard(vector<Rect>  & outQuads);
     void sortQuadsByPosition(vector<Rect>  & outQuads);
     int removeDoubleSquare(vector<Rect>  & outQuads);
+
+public:
+    int generateQuads(Mat &image, vector<Rect>&outQuads);
+
 };
 
 #endif //__kinect_H_
