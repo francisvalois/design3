@@ -21,12 +21,11 @@ public:
     SquarePair getRedSquarePair(const cv::Mat& srcHSV);
 
 private:
-    const static int NUMBER_AREA_MAX = 3000;
-    const static int NUMBER_AREA_MIN = 200;
-    const static int NUMBER_DILATE_SIZE = 1;
-
     cv::Scalar white;
     cv::Scalar black;
-};
 
+    std::vector<cv::Rect> getRedSquareRects(std::vector<std::vector<cv::Point> > & squareContour,
+            std::vector<std::vector<cv::Point> > &squareContoursPoly);
+
+};
 #endif
