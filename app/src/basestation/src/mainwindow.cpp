@@ -14,6 +14,9 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     updateROSTimer->start(200);
 
     applicationTimer = new QTimer(this);
+    timeValue = new QTime(0, 10, 0); //10 minutes
+    ui->TimeBeforeEnd->setPalette(Qt::black);
+    ui->TimeBeforeEnd->display(timeValue->toString());
     QObject::connect(applicationTimer, SIGNAL(timeout()), this, SLOT(timerSlot()));
 
     QObject::connect(&baseStation, SIGNAL(rosShutdown()), this, SLOT(close()));
@@ -56,8 +59,6 @@ void MainWindow::updateROSSlot () {
 void MainWindow::on_StartSequenceButton_clicked() {
     baseStation.setStateToSendStartLoopMessage();
     applicationTimer->start(1000);
-    applicationTimer->display(10);
-
 }
 
 void MainWindow::on_calibrateKinectButton_clicked() {
@@ -206,5 +207,13 @@ void MainWindow::updateTableImage(QImage image) {
 }
 
 void MainWindow::timerSlot() {
-    applicationTimer->display(applicationTimer->intValue() - 1);
+    timeValue->setHMS(0, timeValue->addSecs(-1).minute(), timeValue->addSecs(-1).second());
+    if(timeValue->minute() >= 0 && timeValue->second() >= 0) {
+        ui->TimeBeforeEnd->display(this->timeValue->toString());
+    } else {
+        applicationTimer->stop();
+        QTime *timeZero = new QTime(0,0,0);
+        ui->TimeBeforeEnd->display(timeZero->toString());
+    }
+
 }

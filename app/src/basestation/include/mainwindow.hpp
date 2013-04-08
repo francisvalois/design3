@@ -3,6 +3,7 @@
 
 #include <QtGui/QMainWindow>
 #include <QTimer>
+#include <QTime>
 #include <iostream>
 #include <string>
 #include <math.h>
@@ -49,6 +50,7 @@ private:
     vector<Position> kinoctoPositionUpdates;
 
     QTimer *applicationTimer;
+    QTime *timeValue;
 
     //PRINTING RELATED METHODS
     void printTable();
