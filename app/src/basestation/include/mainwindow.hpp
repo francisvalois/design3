@@ -37,6 +37,7 @@ private slots:
     void updateObstaclesPositions(int,int,int,int);
     void updateTableImage(QImage);
     void timerSlot();
+    void endLoop(QString);
 
 private:
     Ui::MainWindow *ui;

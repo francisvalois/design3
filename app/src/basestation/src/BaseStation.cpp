@@ -276,7 +276,7 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
         kinoctoPositionUpdates.clear();
     }
 
-    emit message("Kinocto : Loop Ended");
+    emit endLoop("Kinocto : Loop Ended");
 
     return true;
 }

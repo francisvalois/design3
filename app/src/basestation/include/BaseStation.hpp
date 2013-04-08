@@ -65,6 +65,7 @@ Q_SIGNALS:
     void traceRealTrajectorySignal(vector<Position>);
     void updateObstaclesPositions(int, int, int, int);
     void updateTableImage(QImage);
+    void endLoop(QString);
 
 private:
     int init_argc;

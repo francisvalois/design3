@@ -14,7 +14,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     updateROSTimer->start(200);
 
     applicationTimer = new QTimer(this);
-    timeValue = new QTime(0, 10, 0); //10 minutes
+    timeValue = new QTime(0, 0, 10); //10 minutes
     ui->TimeBeforeEnd->setPalette(Qt::black);
     ui->TimeBeforeEnd->display(timeValue->toString());
     QObject::connect(applicationTimer, SIGNAL(timeout()), this, SLOT(timerSlot()));
@@ -26,6 +26,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     QObject::connect(&baseStation, SIGNAL(traceRealTrajectorySignal(vector<Position>)), this, SLOT(traceRealTrajectory(vector<Position>)));
     QObject::connect(&baseStation, SIGNAL(updateObstaclesPositions(int,int,int,int)), this, SLOT(updateObstaclesPositions(int,int,int,int)));
     QObject::connect(&baseStation, SIGNAL(updateTableImage(QImage)), this, SLOT(updateTableImage(QImage)));
+    QObject::connect(&baseStation, SIGNAL(endLoop(QString)), this, SLOT(endLoop(QString)));
 
 
     white = Scalar(255, 255, 255);
@@ -206,14 +207,18 @@ void MainWindow::updateTableImage(QImage image) {
     ui->tableImage->show();
 }
 
+void MainWindow::endLoop(QString message) {
+    applicationTimer->stop();
+    showMessage(message);
+}
+
 void MainWindow::timerSlot() {
-    timeValue->setHMS(0, timeValue->addSecs(-1).minute(), timeValue->addSecs(-1).second());
-    if(timeValue->minute() >= 0 && timeValue->second() >= 0) {
-        ui->TimeBeforeEnd->display(this->timeValue->toString());
+    if(timeValue->minute() == 0 && timeValue->second() == 0) {
+        ui->TimeBeforeEnd->setPalette(Qt::red);
+        endLoop("Kinocto : Loop Ended, Elapsed Time");
     } else {
-        applicationTimer->stop();
-        QTime *timeZero = new QTime(0,0,0);
-        ui->TimeBeforeEnd->display(timeZero->toString());
+        timeValue->setHMS(0, timeValue->addSecs(-1).minute(), timeValue->addSecs(-1).second());
+        ui->TimeBeforeEnd->display(this->timeValue->toString());
     }
 
 }
