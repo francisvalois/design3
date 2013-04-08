@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+
 #include "KinectUtility.h"
 #include "RobotDetector.h"
 #include "KinectTransformator.h"
@@ -23,8 +22,8 @@ namespace {
 
     TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix1){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection3.xml");
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection3.jpg");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/robotdetection3.xml");
+        Mat rgbMatrix = imread("img/testKinect/robotdetection3.jpg");
         float valueZ = 1.32f;
         float valueX = 0.6f; 
         float angleValue = -0.43f;
@@ -45,8 +44,8 @@ namespace {
 
     TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix2){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml");
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/robotdetection4.xml");
+        Mat rgbMatrix = imread("img/testKinect/robotdetection4.jpg");
         float valueZ = 1.91f;
         float valueX = 0.78f; 
         float angleValue = 0.39f;
@@ -67,8 +66,8 @@ namespace {
 
     TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix3){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection5.xml");
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection5.jpg");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/robotdetection5.xml");
+        Mat rgbMatrix = imread("img/testKinect/robotdetection5.jpg");
         float valueZ = 1.82f;
         float valueX = 0.38f; 
         float angleValue = -0.26;
@@ -89,8 +88,8 @@ namespace {
 
     TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix4){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection6.xml");
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection6.jpg");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/robotdetection6.xml");
+        Mat rgbMatrix = imread("img/testKinect/robotdetection6.jpg");
         float valueZ = 1.83f;
         float valueX = 0.37f; 
         float angleValue = -0.07;

@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+
 #include "KinectUtility.h"
 #include "ObstaclesDetector.h"
 #include "KinectTransformator.h"
@@ -23,7 +22,7 @@ namespace {
 
     TEST_F(ObstaclesDetectorTest, GetDistanceForObstacleMatrix1){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle1.xml");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/table2Obstacle1.xml");
         
         float valueZ2 = 2.06f;
         float valueZ1 = 2.05f; 
@@ -49,7 +48,7 @@ namespace {
     
     TEST_F(ObstaclesDetectorTest, GetDistanceForObstacleMatrix2){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle2.xml");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/table2Obstacle2.xml");
         
         float valueX1 = 0.87f;
         float valueX2 = 0.335f;
@@ -75,7 +74,7 @@ namespace {
     
     TEST_F(ObstaclesDetectorTest, GetDistanceForObstacleMatrix3){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle3.xml");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/table2Obstacle3.xml");
         
         float valueX1 = 0.62f;
         float valueX2 = 0.49f;
@@ -103,7 +102,7 @@ namespace {
     //TODO : Find a way to detect the obstacle in the back. In that XML File, the distance map is stange
     TEST_F(ObstaclesDetectorTest, GetDistanceForObstacleMatrix4){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle4.xml");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/table2Obstacle4.xml");
         
         float valueX1 = 0.82f;
         float valueX2 = 0.27f;
