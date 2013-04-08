@@ -13,6 +13,12 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     QObject::connect(updateROSTimer, SIGNAL(timeout()), SLOT(updateROSSlot()));
     updateROSTimer->start(200);
 
+    applicationTimer = new QTimer(this);
+    timeValue = new QTime(0, 10, 0); //10 minutes
+    ui->TimeBeforeEnd->setPalette(Qt::black);
+    ui->TimeBeforeEnd->display(timeValue->toString());
+    QObject::connect(applicationTimer, SIGNAL(timeout()), this, SLOT(timerSlot()));
+
     QObject::connect(&baseStation, SIGNAL(rosShutdown()), this, SLOT(close()));
     QObject::connect(&baseStation, SIGNAL(showSolvedSudocubeSignal(QString,int)), this, SLOT(showSolvedSudocubeSlot(QString,int)));
     QObject::connect(&baseStation, SIGNAL(UpdatingRobotPositionSignal(float,float)), this, SLOT(UpdatingRobotPositionSlot(float,float)));
@@ -20,6 +26,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     QObject::connect(&baseStation, SIGNAL(traceRealTrajectorySignal(vector<Position>)), this, SLOT(traceRealTrajectory(vector<Position>)));
     QObject::connect(&baseStation, SIGNAL(updateObstaclesPositions(int,int,int,int)), this, SLOT(updateObstaclesPositions(int,int,int,int)));
     QObject::connect(&baseStation, SIGNAL(updateTableImage(QImage)), this, SLOT(updateTableImage(QImage)));
+    QObject::connect(&baseStation, SIGNAL(endLoop(QString)), this, SLOT(endLoop(QString)));
+
 
     white = Scalar(255, 255, 255);
     blue = Scalar(255, 0, 0);
@@ -51,6 +59,7 @@ void MainWindow::updateROSSlot () {
 
 void MainWindow::on_StartSequenceButton_clicked() {
     baseStation.setStateToSendStartLoopMessage();
+    applicationTimer->start(1000);
 }
 
 void MainWindow::on_calibrateKinectButton_clicked() {
@@ -59,7 +68,7 @@ void MainWindow::on_calibrateKinectButton_clicked() {
     KinectCalibrator kinectCalibrator;
 
     kinectCapture.openCapture();
-    kinectCalibrator.calibrate(kinectCapture.captureDepthMatrix());
+    kinectCalibrator.calibrate(kinectCapture.captureDepthMatrix(), kinectCapture.captureRGBMatrix());
     kinectCapture.closeCapture();
 }
 
@@ -196,4 +205,20 @@ void MainWindow::updateTableImage(QImage image) {
     QImage largeImage = image.scaled(Workspace::TABLE_X * 2, Workspace::TABLE_Y * 2, Qt::KeepAspectRatio);
     ui->tableImage->setPixmap(QPixmap::fromImage(largeImage));
     ui->tableImage->show();
+}
+
+void MainWindow::endLoop(QString message) {
+    applicationTimer->stop();
+    showMessage(message);
+}
+
+void MainWindow::timerSlot() {
+    if(timeValue->minute() == 0 && timeValue->second() == 0) {
+        ui->TimeBeforeEnd->setPalette(Qt::red);
+        endLoop("Kinocto : Loop Ended, Time Expired");
+    } else {
+        timeValue->setHMS(0, timeValue->addSecs(-1).minute(), timeValue->addSecs(-1).second());
+        ui->TimeBeforeEnd->display(this->timeValue->toString());
+    }
+
 }

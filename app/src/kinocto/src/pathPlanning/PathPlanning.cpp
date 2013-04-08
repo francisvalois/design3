@@ -60,7 +60,7 @@ void PathPlanning::setObstacles(Position o1, Position o2) {
 bool PathPlanning::obstaclesPositionsOK(Position obstacle1, Position obstacle2) {
     if (obstacle1.x < Workspace::DRAWING_ZONE || obstacle2.x < Workspace::DRAWING_ZONE) {
 //        cout << "Error : An obstacle is in the drawing zone" << endl;
-    	ROS_ERROR("Error : An obstacle is in the drawing zone");
+        ROS_ERROR("Error : An obstacle is in the drawing zone");
         return false;
     }
     if (obstacle1.x > Workspace::TABLE_X - Workspace::OBSTACLE_RADIUS || obstacle2.x > Workspace::TABLE_X - Workspace::OBSTACLE_RADIUS) {
@@ -126,6 +126,9 @@ vector<Position> PathPlanning::findPathInGraph() {
         nodePositions.push_back(currentPosition);
     }
 //	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
+    if(nodePositions.size() <= 1) {
+    	nodePositions.clear();
+    }
     return nodePositions;
 }
 
@@ -144,8 +147,10 @@ vector<Move> PathPlanning::convertToMoves(vector<Position> positions, float star
 
         moves.push_back(move);
     }
-    Move move((destinationAngle - robotCurrentAngle), 0, endPosition);
-    moves.push_back(move);
+    if(positions.size() > 0) {
+		Move move((destinationAngle - robotCurrentAngle), 0, endPosition);
+		moves.push_back(move);
+    }
     return moves;
 }
 
@@ -174,7 +179,7 @@ void PathPlanning::applyDijkstra() {
 
         for (unsigned int i = 0; i < neighbors.size(); i++) {
             float cost = node->getCost();
-            cost += (float)calculateCost(node->getPosition(), neighbors[i]->getPosition());
+            cost += (float) calculateCost(node->getPosition(), neighbors[i]->getPosition());
             if (cost < neighbors[i]->getCost()) {
                 neighbors[i]->setPredecessor(node);
                 neighbors[i]->setCost(cost);
@@ -244,16 +249,16 @@ void PathPlanning::createNodes() {
     vector<Position> obstacleCornerValues = getObstacleCorners();
 
     for (unsigned int i = 0; i < obstacleCornerValues.size(); i++) {
-    	int obstacleCornerValueX = (int) obstacleCornerValues[i].x;
-    	int obstacleCornerValueYplus = (int) (obstacleCornerValues[i].y + 1);
-    	int obstacleCornerValueYminus = (int) (obstacleCornerValues[i].y - 1);
+        int obstacleCornerValueX = (int) obstacleCornerValues[i].x;
+        int obstacleCornerValueYplus = (int) (obstacleCornerValues[i].y + 1);
+        int obstacleCornerValueYminus = (int) (obstacleCornerValues[i].y - 1);
 
         if (table[obstacleCornerValueX][obstacleCornerValueYplus] == 1) {
             int nextObstacleY = obstacleCornerValues[i].y + 1;
             do {
                 nextObstacleY++;
             } while (table[obstacleCornerValueX][nextObstacleY] == 1);
-            float nodeY = (float)(obstacleCornerValues[i].y + ((nextObstacleY - obstacleCornerValues[i].y) / 2));
+            float nodeY = (float) (obstacleCornerValues[i].y + ((nextObstacleY - obstacleCornerValues[i].y) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
             addNode(newNode);
         } else if (table[obstacleCornerValueX][obstacleCornerValueYminus] == 1) {
@@ -261,7 +266,7 @@ void PathPlanning::createNodes() {
             do {
                 nextObstacleY--;
             } while (table[obstacleCornerValueX][nextObstacleY] == 1);
-            float nodeY = (float)(obstacleCornerValues[i].y - ((obstacleCornerValues[i].y - nextObstacleY) / 2));
+            float nodeY = (float) (obstacleCornerValues[i].y - ((obstacleCornerValues[i].y - nextObstacleY) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
             addNode(newNode);
         }
@@ -318,6 +323,9 @@ void PathPlanning::connectNodes() {
                 }
             }
         }
+        if(isInObstacle(destinationNode->getPosition())) {
+        	ROS_ERROR("ERROR : The destination is within an obstacle");
+        }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), startNode->getPosition())) {
             listOfNodes[i]->addNeighbor(startNode);
             startNode->addNeighbor(listOfNodes[i]);
@@ -331,6 +339,14 @@ void PathPlanning::connectNodes() {
             destinationNode->addNeighbor(startNode);
         }
     }
+}
+
+bool PathPlanning::isInObstacle(Position position) {
+    updateMatrixTable();
+	if (table[(int) position.x][(int) position.y] == 9) {
+        return true;
+    }
+	return false;
 }
 
 bool PathPlanning::linePassesThroughObstacle(Position p1, Position p2) {
@@ -370,7 +386,7 @@ bool PathPlanning::linesCrosses(Position line1p1, Position line1p2, Position lin
 void PathPlanning::printTable() {
     updateMatrixTable();
 
-    Mat workspace = Mat(Workspace::TABLE_X + 1, Workspace::TABLE_Y + 1, CV_8UC3, white);
+    Mat workspace = Mat(Workspace::TABLE_X + 1, Workspace::TABLE_Y + 1, CV_8UC3, PathPlanning::white);
 
     for (int y = Workspace::TABLE_Y; y >= 0; y--) {
         for (int x = 0; x <= Workspace::TABLE_X; x++) {
@@ -401,7 +417,8 @@ void PathPlanning::updateMatrixTable() {
 //	WALLS IN BLACK
     for (int y = 0; y <= Workspace::TABLE_Y; y++) {
         for (int x = 0; x <= Workspace::TABLE_X; x++) {
-            if (y <= Workspace::BUFFER_SIZE || y >= Workspace::TABLE_Y - Workspace::BUFFER_SIZE || x <= Workspace::BUFFER_SIZE || x >= Workspace::TABLE_X - Workspace::BUFFER_SIZE) {
+            if (y <= Workspace::BUFFER_SIZE || y >= Workspace::TABLE_Y - Workspace::BUFFER_SIZE || x <= Workspace::BUFFER_SIZE
+                    || x >= Workspace::TABLE_X - Workspace::BUFFER_SIZE) {
                 table[x][y] = 9;
             } else {
                 table[x][y] = 1;
@@ -427,17 +444,17 @@ void PathPlanning::updateMatrixTable() {
     for (unsigned int i = 0; i < listOfNodes.size(); i++) {
         int x = (int) listOfNodes[i]->getPosition().x;
         int y = (int) listOfNodes[i]->getPosition().y;
-    	table[x][y] = 2;
+        table[x][y] = 2;
     }
     if (startNode != 0) {
         int x = (int) startNode->getPosition().x;
         int y = (int) startNode->getPosition().y;
-    	table[x][y] = 2;
+        table[x][y] = 2;
     }
     if (destinationNode != 0) {
         int x = (int) destinationNode->getPosition().x;
         int y = (int) destinationNode->getPosition().y;
-    	table[x][y] = 2;
+        table[x][y] = 2;
     }
 }
 

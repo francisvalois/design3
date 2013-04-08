@@ -56,6 +56,7 @@ private:
     float calculateAngle(float, Position, Position);
 
     //Helper functions for connectNodes();
+    bool isInObstacle(Position);
     bool linePassesThroughObstacle(Position, Position);
     bool linesCrosses(Position, Position, Position, Position);
     bool DoLineSegmentsIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4);

@@ -404,7 +404,7 @@ int main(void)
 					 		moveFront(-2650, 750);
 					 		//final_speed = 2800;
 							//drawingCondition = true;
-							moveLateral(-10602, 3071);
+							moveLateral(-10602, 3224);
 							segment_to_draw++;	
 							break;
 						case 6:
@@ -428,17 +428,17 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 2:
-							drawOffset0=1000;
-							drawOffset3=1000;
-							moveFront(-2710, 800);
-							moveLateral(-5243, 1548);
+							drawOffset0=1750;
+							drawOffset3=1750;
+							moveFront(-2560, 800);
+							moveLateral(-5500, 1650);
 							segment_to_draw++;
 							break;
 						case 3:
 							drawOffset0=2500;
 							drawOffset3=2500;
-							moveFront(-830, 700);
-							moveLateral(4973, 4200);
+							moveFront(-950, 700);
+							moveLateral(4600, 4200);
 							segment_to_draw++;
 							break;
 						case 4:
@@ -450,8 +450,8 @@ int main(void)
 					 	case 5:
 					 		drawOffset0=2500;
 							drawOffset3=2500;
-					 		moveFront(-1375, 700);
-							moveLateral(-5400, 2800);
+					 		moveFront(-1900, 700);
+							moveLateral(-5350, 2800);
 							segment_to_draw++;	
 							break;
 						case 6:
@@ -531,16 +531,22 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-4677, 518);
+							drawOffset0=2500;
+							drawOffset3=2500;
+							moveFront(-4827, 518);
 							moveLateral(10838, 1200);
 							segment_to_draw++;
 							break;
 						case 4:
-							moveFront(-2942, 778);
-							moveLateral(-10248, 2710);
+							drawOffset0=2500;
+							drawOffset3=2500;
+							moveFront(-2600,750);
+							moveLateral(-10863, 3108);
 							segment_to_draw++;
 							break;
 						case 5:
+							drawOffset0=0;
+							drawOffset3=0;
 							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
@@ -563,11 +569,15 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 3:
+							drawOffset0=1800;
+							drawOffset3=1800;
 							moveFront(-2339, 518);
 							moveLateral(5419, 1200);
 							segment_to_draw++;
 							break;
 						case 4:
+							drawOffset0=2500;
+							drawOffset3=2500;
 							moveFront(-1411, 778);
 							moveLateral(-4915, 2710);
 							segment_to_draw++;
@@ -587,24 +597,26 @@ int main(void)
 							offset=0;
 							offset2=-640;
 							descendrePrehenseur();
-							moveLateral(-5821, 1000);
+							moveLateral(-5821, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
 						case 2:
-							moveFront(-2408,803);
-							moveLateral(-4817, 1606);
+							drawOffset0=1500;
+							drawOffset3=1500;
+							moveFront(-2369,863);
+							moveLateral(-5560, 1790);
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-8330, 800);
+							moveFront(-8630, 800);
 							segment_to_draw++;
 							break;
 						case 4:
-							moveLateral(11078, 800);
+							moveLateral(11287, 800);
 							segment_to_draw++;
 							break;
 						case 5:
-							moveFront(4817, 800);
+							moveFront(5058, 800);
 							segment_to_draw++;
 							break;
 						case 6:
@@ -626,28 +638,28 @@ int main(void)
 							offset=0;
 							offset2=-640;
 							descendrePrehenseur();
-							moveLateral(-2771, 800);
+							moveLateral(-2611, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
 						case 2:
-							moveFront(-1204,803);
-							moveLateral(-2409, 1606);
+							moveFront(-1185,863);
+							moveLateral(-2780, 1790);
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-4165, 800);
+							moveFront(-4315, 800);
 							segment_to_draw++;
 							break;
 						case 4:
-							moveLateral(5539, 800);
+							moveLateral(5644, 800);
 							segment_to_draw++;
 							break;
 						case 5:
-							moveFront(2409, 800);
+							moveFront(2529, 800);
 							segment_to_draw++;
 							break;
 						case 6:
-							moveLateral(-5489, 800);
+							moveLateral(-5339, 800);
 							segment_to_draw++;
 							break;
 						case 7:
@@ -669,7 +681,7 @@ int main(void)
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
 						case 2:
-							moveLateral(13247, 800);
+							moveLateral(13447, 800);
 							segment_to_draw++;
 							break;
 						case 3:
@@ -700,7 +712,7 @@ int main(void)
 							segment_to_draw++; //Prochain mouvement faire prochain segment
 							break;
 						case 2:
-							moveLateral(6623, 800);
+							moveLateral(6724, 800);
 							segment_to_draw++;
 							break;
 						case 3:
