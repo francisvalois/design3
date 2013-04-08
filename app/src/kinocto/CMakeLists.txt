@@ -8,9 +8,9 @@ find_package(OpenCV REQUIRED)
 ## Declare ROS messages and services ##
 #######################################
 
- add_message_files(
-   FILES
- )
+ #add_message_files(
+ #  FILES
+ #)
 
 add_service_files(
   FILES
