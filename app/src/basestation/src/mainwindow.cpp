@@ -14,7 +14,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     updateROSTimer->start(200);
 
     applicationTimer = new QTimer(this);
-    timeValue = new QTime(0, 0, 10); //10 minutes
+    timeValue = new QTime(0, 10, 0); //10 minutes
     ui->TimeBeforeEnd->setPalette(Qt::black);
     ui->TimeBeforeEnd->display(timeValue->toString());
     QObject::connect(applicationTimer, SIGNAL(timeout()), this, SLOT(timerSlot()));
