@@ -215,7 +215,7 @@ void MainWindow::endLoop(QString message) {
 void MainWindow::timerSlot() {
     if(timeValue->minute() == 0 && timeValue->second() == 0) {
         ui->TimeBeforeEnd->setPalette(Qt::red);
-        endLoop("Kinocto : Loop Ended, Elapsed Time");
+        endLoop("Kinocto : Loop Ended, Time Expired");
     } else {
         timeValue->setHMS(0, timeValue->addSecs(-1).minute(), timeValue->addSecs(-1).second());
         ui->TimeBeforeEnd->display(this->timeValue->toString());
