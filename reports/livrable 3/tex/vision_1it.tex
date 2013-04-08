@@ -8,3 +8,118 @@
 
 \chapter{Vision 1$^{ère}$ itération}
 \label{vision1}
+
+\section{Localisation avec la caméra embarquée}
+
+La localisation avec la caméra embarquée est un système de localisation d'appoint dans le projet Kinocto. La classe Localisation doit recevoir une image et une orientation grossière selon le nord, sud, est ou ouest par rapport à la table. Elle doit ensuite être initialisée en fournissant un fichier .xml contenant les paramètres de calibration. Ces paramètres comprennent les paramètres intrinsèques de la caméra obtenus lors de la calibration, les paramètres liés à la distorsion de l'image par la lentille, les paramètres extrinsèques qui permettent de lier les points des images prises par la caméra à leur position par rapport à un système de référence virtuel ainsi que les paramètres qui permettent de recadrer ces coordonnées par rapport au centre du robot.
+
+Avec l'image et les paramètres provenant de la calibration, les méthodes de localisation, de détermination de l'orientation et de mesure de l'angle par rapport au mur peuvent être utilisées.
+
+\subsection{Localisation}
+
+\subsubsection{Transformations}
+
+Pour effectuer la localisation du robot, il faut trouver dans l'image reçue au moins deux points identifiables dont les coordonnées par rapport à la table sont connues. Dans le projet Kinocto, ces points incluent les coins de la table, les coins inférieurs des blocs de couleur, les coins du carré vert dessiné sur la table. Pour passer du système de coordonnées du robot à celui de la table, il faut résoudre le système d'équations suivant, où les points $P_1A$ et $P2_A$ sont les points dans le système de la table, $P_1R$ et $P_2R$ sont les mêmes points dans le système du robot et $t_X$ et $t_Y$ sont les coordonnées du robot dans le système de la table:
+
+\begin{equation}
+\label{eq1}
+X_{1A} = X_{1R}cos(\theta) - Y_{1R}sin(\theta) + t_X
+\end{equation}
+\begin{equation}
+\label{eq2}
+Y_{1A} = X_{1R}sin(\theta) + Y_{1R}cos(\theta) + t_Y
+\end{equation}
+\begin{equation}
+\label{eq3}
+X_{2A} = X_{2R}cos{\theta} - Y_{2R}sin(\theta) + t_X
+\end{equation}
+\begin{equation}
+\label{eq4}
+Y_{2A} = X_{2R}sin(\theta) + Y_{2R}cos(\theta) + t_Y
+\end{equation}
+
+En soustrayant l'équation~\ref{eq3} de l'équation~\ref{eq1} ainsi que l'équation~\ref{eq4} de l'équation~\ref{eq2}, on élimine $t_X$ et $t_Y$ et on se retrouve avec deux équations que l'on peut combiner pour obtenir une équation à une inconnue, $\theta$. Il s'agit d'une équation de la forme $a cos(\theta) + b sin(\theta) = c$. Ce type d'équation peut être résolu en considérant la relation suivante:
+
+\begin{equation}
+a cos(\theta) + b sin(\theta) = R cos(\theta - \alpha)
+\end{equation}
+
+Où $R = \sqrt{a^2 + b^2}$ et $tan(\alpha) = \frac{b}{a}$. En isolant $\theta$, on obtient donc:
+
+\begin{equation}
+\theta = cos^{-1}(\frac{c}{\sqrt{a^2 + b^2}}) + tan^{-1}(\frac{b}{a})
+\end{equation} 
+
+Il suffit ensuite d'utiliser $\theta$ dans deux des équations initiales pour retrouver les coordonnées du robot selon le système de référence de la table $t_X$ et $t_Y$.
+
+\subsubsection{Localisation des points}
+
+\begin{enumerate}
+\item{Coins de table}
+
+Les points correspondant aux coins de table sont trouvés dans l'image en effectuant d'abord une segmentation sur le noir et en utilisant ensuite l'algorithme des lignes de Hough pour retrouver les lignes de bas de mur. L'intersection entre les lignes de bas de mur constitue le coin de la table. Un intérêt de cette méthode est qu'elle permet de retrouver les coins de table même lorsqu'un obstacle se trouve devant celui-ci.
+
+\item{Coins du bas des blocs de couleur}
+
+Les coins du bas des blocs de couleurs peuvent être retrouvés en trouvant les intersections entre les lignes de bas de mur et la ligne du bas du bloc de couleur, trouvée après segmentation sur le bleu et l'orange.
+
+\item{Coins du carré vert}
+
+Les coins internes du carré vert peuvent être retrouvés en segmentant sur le vert et en retrouvant les intersections entre les lignes avec la méthode décrite plus haut.
+\end{enumerate}
+
+\subsection{Orientation et angle par rapport au mur}
+
+L'angle par rapport au mur peut être utile pour réorienter le robot pour la lecture des sudokus. Il est facilement obtenu en utilisant la ligne de bas de mur détectée précédemment. L'orientation peut être déduite en utilisant cet angle et l'orientation fournie à l'initialisation.
+
+\subsection{Extraire les contours d'un sudocube}
+
+La première étape d'extraction consiste à segmenter par couleur verte afin d'isoler le cadre du sudocube. Puis, un algorithme de détection des contours est appliqué pour trouver deux polygones rectangulaires. Ces polygones sont les bordures intérieures et extérieures du cadre. L'aire des rectangles est calculée pour vérifier que les polygones sont assez grands pour être ceux du cadre.
+
+Ensuite, à partir du polygone intérieur du cadre on isole une sous-région de l'image principale. L'image obtenue est convertie en noir et blanc afin d'appliquer à nouveau un algorithme de contours afin de trouver les cases du sudocube. On sélectionne les polygones résultants selon leur aire. Si jamais le nombre de cases sélectionné n'est pas de 47, on recommence avec un seuil de tolérance différent pour l'algorithme de contour. Le polygone de la case rouge est obtenu en segmentant par couleur rouge et en appliquant à nouveau un algorithme de contour. 
+
+Finalement, les images des cases sont triées en fonction de leur position en X et en Y dans l'image du sudocube et un algorithme de reconnaissance des caractères appliqué sur toutes les cases afin d'identifier les numéros. L'algorithme de reconnaissance utilise la technique KNearest. Les chiffres trouvés sont ajoutés dans la structure de données du sudocube et la position de la case rouge est spécifiée.
+
+\section{Localisation avec la Kinect}
+
+Pour aider au déplacement du robot, la Kinect a été utilisée afin de détecter la position des obstacles, la position du robot lui-même ainsi que sa position angulaire par rapport au point (0.0) de notre représentation cartésienne de la table. Toutefois, comme la Kinect est située à l'extérieur de la table de jeu, il faut une translation et une rotation des données obtenues afin de positionner les objets avec exactitude. Les 4 sections qui suivent expliquent en détail les différentes parties de l'algorithme de vision de la Kinect.
+
+\subsection{Transformation des distances}
+En premier lieu, il est important de clarifier quelles distances il est possible d'obtenir à l'aide de la Kinect. Le «Framework» OpenNI est capable de retourner 2 types de distances pour chacun des points dans l'image infrarouge obtenue de la Kinect. Le premier type de distances retourné est la longueur, en mètres, entre l'objectif et un point quelconque sur l'image. Le second type est dérivé du premier et correspond aux composantes X, Y et Z du vecteur de longueur entre l'objectif et la cible. Pour aider à la compréhension, les deux types de distances peuvent être représentés par les lignes vertes sur l'image \ref{fig:kinect_distance}. Toutefois, comme l'origine de notre représentation cartésienne de la table est située sur le coin inférieur droit de la table et que la Kinect n'est pas située à cet endroit, il est nécessaire d'obtenir la distance X et Y (lignes bleues sur l'image \ref{fig:kinect_distance}) entre l'origine et le point ciblé sur l'image obtenue de la Kinect. Pour y arriver, il suffit d'obtenir la position X et Y (lignes rouges sur l'image \ref{fig:kinect_distance}) de la lentille infrarouge de la Kinect ainsi que l'angle de la Kinect avec l'axe X de la table. Pour obtenir ces valeurs, nous utilisons une calibration simple présentée à la section \ref{s:kinectLocal}. Une fois la calibration effectuée, il est possible d'effectuer la transformation des distances de la Kinect vers les composantes X et Y recherchées à l'aide de règles de trigonométrie simples (Translation et Rotation). Toutefois, la Kinect possède une erreur de mesure qui augmente avec la distance. C'est pourquoi l'algorithme va toujours posséder une incertitude entre 1 et 3 cm pour chacun des points mesurés.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=0.5]{fig/kinect_distance.png}
+\caption{Schéma représentant la table et les différentes mesures obtenues avec la Kinect pour un point quelconque}
+\label{fig:kinect_distance}
+\end{figure}
+
+\subsection{Localisation de la Kinect à l'aide de la calibration}
+\label{s:kinectLocal}
+Le but de la calibration est d'obtenir l'angle de la Kinect avec l'axe X de la table ainsi que la position de son objectif en XY par rapport au coin inférieur droit de la zone de jeu qui constitue notre point (0.0). Pour y arriver, un système, qui possède des dimensions connues, va positionner une plaque constituée d'un "Chessboard" sur la table à un endroit prédéterminé (ligne noire sur la table dans l'image \ref{fig:kinect_calibration}). Par la suite, une image RGB de la table est capturée à l'aide de la Kinect et les 2 points les plus éloignés horizontalement sur le "Chessboard" sont localisés. Ces 2 points sont reportés sur l'image de distances correspondante pour obtenir la distance XYZ de chacun des 2 points (lignes vertes sur l'image \ref{fig:kinect_calibration}). À l'aide de ces deux distances, les dimensions du petit triangle entre les deux points de la plaque de calibration sont trouvées (le triangle se situe en dessous de la plaque de calibration sur l'image \ref{fig:kinect_calibration}). En ayant les dimensions du triangle, il est possible de trouver l'angle de la Kinect, car celui-ci est le même que l'angle interne droit du triangle. Il suffit d'utiliser l'équation suivante avec les dimensions obtenues précédemment :
+
+\begin{equation}
+		Angle = \arctan \left( \frac{oppose}{adjacent} \right)
+\end{equation}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=1]{fig/kinect_calibration.png}
+\caption{Schéma représentant la table et les vecteurs nécessaires à la mesure de l'angle de la Kinect}
+\label{fig:kinect_calibration}
+\end{figure}
+
+Pour obtenir la position de la Kinect, il est nécessaire de connaître la position réelle, par rapport au point (0.0), des 2 points utilisés pour la mesure de l'angle. En effectuant la rotation des distances de chacun, des points donnés par la Kinect pour ramener les mesures dans le plan XY de la table, les distances XY entre les points et l'objectif sont obtenues (lignes rouges pleines sur l'image \ref{fig:kinect_position}). En soustrayant les distances précédemment obtenues aux distances réelles mesurées (lignes bleues sur l'image \ref{fig:kinect_position}), la position de la Kinect est obtenue (lignes rouges pointillées sur l'image \ref{fig:kinect_position}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[scale=1]{fig/kinect_position.pdf}
+\caption{Schéma représentant la table et les vecteurs nécessaires à la localisation de la Kinect}
+\label{fig:kinect_position}
+\end{figure}
+
+\subsection{Détection des obstacles}
+Comme il est possible d'obtenir n'importe quelle distance entre l'origine et un point quelconque sur l'image, un algorithme de recherche d'obstacles a été créé. Sachant que les obstacles sont situés dans une zone précise sur la table et que ceux-ci font 40cm de hauteur, il suffit de rechercher tout objet de cette hauteur situé dans la zone prédéfinie. La Kinect retourne la hauteur de chacun des points sur l'image infrarouge et permet de localiser les obstacles. De plus, à l'aide de calculs statistiques, l'algorithme est en mesure de trouver les obstacles lorsqu'ils sont presque alignés ou obstrués par un autre objet comme le robot. Comme cet algorithme dépend entièrement de l'algorithme de transformation des distances, les positions obtenues pour chacun des obstacles possèdent la même incertitude de 1 à 3 cm sur chaque mesure de distance effectuée. Pour améliorer la validité des mesures obtenues, une moyenne sur 3 images de distance est effectuée. En ce qui concerne l'efficacité de l'algorithme, différents tests montrent un temps de calcul d'environ 30 ms sur un Core 2 Duo 2.4 GHz pour obtenir la position du centre des deux obstacles.
+
+\subsection{Détection du robot}
+En ce qui concerne la détection du robot, un algorithme semblable à la détection des obstacles a été utilisé. Comme le robot possède une hauteur d'environs 20cm et une profondeur semblable, il est possible d'isoler, dans la matrice de distance, un carré qui correspond aux dimensions du robot. En plus de cette méthode, 2 "Chessboard" de couleurs différentes sont placés sur 2 faces opposées du robot. En recherchant les carrés sur le robot, il est possible de déterminer sa position comme l'algorithme précédant, mais en plus d'obtenir son angle, car la distance entre les points est connue ainsi que son orientation, car les "Chessboard" ne sont pas de la même couleur. Pour contrer l'erreur de position causée par la Kinect, la méthode de moyenne des distances utilisée pour la détection des obstacles est aussi appliquée à la détection du robot. Le temps de calcul est un peu plus élevé que la détection du robot et se situe aux alentours de 50 à 60 ms. 

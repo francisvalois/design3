@@ -15,34 +15,33 @@ using namespace cv;
 
 int main( int argc, char** argv )
 {
-	string inputImage;
+	string inputImage = "/home/diane/workspace/localisation/Debug/244_166.4_66.2.png";
 	int orientation, locateOK, findAngleOK;
-	Mat image, intrinsic, extrinsic, distortionMatrix;
-	double paramX, paramY;
-	int i;
-//	for(i = 0; i < argc; i++)
-//	{
-//		const char* s = argv[i];
-//		if(strcmp(s, "-o") == 0)
-//		{
-//			if(sscanf(argv[++i]), "%d", &orientation) < 0 || orientation > 3)
-//			    return fprintf( stderr, "Invalid orientation\n" ), -1;
-//		}
-//		else if(strcmp(s, "-i") == 0)
-//			    inputImage = argv[++i];
-//		}
-//		else if (strcmp(s, "-p") == 0)
-//
-//			// TODO : read parameter file
-//		}
-//		else
-//		{
-//			return fprintf( stderr, "Unknown option %s", s ), -1;
-//		}
-//	}
+	orientation = WEST;
+	Mat image;
+	string filename = "/home/diane/workspace/localisation/Debug/paramsExt2.xml";
+
+
 	image = imread(inputImage,1);
-	localisation::localisation locate(image, orientation);
-	locate.initLocalisation(intrinsic, distortionMatrix, extrinsic, paramX, paramY);
+	localisation locate;
+	locate.initLocalisation(image, orientation, filename);
+	vector<double> test;
+	locate.getTransfoMatrix(test);
+	cout << test[0] << endl;
+
+	int nbLignesMur;
+	vector<Vec2f> lignesMur;
+	nbLignesMur = locate.findWallLines(lignesMur);
+	cout << nbLignesMur << endl;
+	cout << lignesMur.size() << endl;
+	double angle;
+	locate.angleRelativeToWall(lignesMur, angle);
+	double degres = 360*angle/(2*CV_PI);
+	cout << degres << endl;
+	double globalAngle;
+	locate.findAngle(globalAngle);
+	degres = 360*globalAngle/(2*CV_PI);
+	cout << degres << endl;
 }
 
 

@@ -21,6 +21,7 @@ struct response {
     float y2;
     float y1;
 };
+typedef struct response response;
 
 Mat captureDepthMatrix() {
     Mat depthMap;
@@ -32,8 +33,8 @@ Mat captureDepthMatrix() {
     else{
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
-            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection1.xml";
-            file << "robotdetection1.xml";
+            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle4.xml";
+            //file << "robotdetection1.xml";
             string fileString = file.str();
             cout << "Loading from file " << fileString << endl;
             
@@ -46,6 +47,10 @@ Mat captureDepthMatrix() {
             }
 
     }
+    
+    Vec3f rightPointDistance = depthMap.at<Vec3f>(265, 368);
+    
+    cout << rightPointDistance[0] << " " << rightPointDistance[2] << endl;
     
     return depthMap.clone();
 }
@@ -60,8 +65,8 @@ Mat captureRGBMatrix() {
     else{
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
-        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/RobotDetection1.xml";
-        file << "robotdetection1.jpg";
+        file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle4.jpg";
+        //file << "robotdetection1.jpg";
         string fileString = file.str();
         cout << "Loading from file " << fileString << endl;
         
@@ -79,7 +84,7 @@ Mat captureRGBMatrix() {
 }
 
 response findObstacle(){
-    response response;
+    response response = {0, 0, 0, 0};
     ObstaclesDetector obstaclesDetection;
     int const AVERAGECOUNT = 3;
     int obstacle1AverageCount = 0;
@@ -95,13 +100,17 @@ response findObstacle(){
         Vec2f obs1 = obstaclesDetection.getObstacle1();
         Vec2f obs2 = obstaclesDetection.getObstacle2();
         
-        if(obs1[0] > 0.10 || obs1[1] > 0.20){
+        if(obs1[0] < 0.10 || obs1[1] < 0.20 || obs2[0] < 0.10 || obs2[1] < 0.2){
+            continue;
+        }
+        
+        if(obs1[0] > 0.10 && obs1[1] > 0.20){
             response.x1 += obs1[1] * 100;
             response.y1 += obs1[0] * 100;
             obstacle1AverageCount++;
         }
         
-        if(obs2[0] > 0.10 || obs2[1] > 0.20){
+        if(obs2[0] > 0.10 && obs2[1] > 0.20){
             response.x2 += obs2[1] * 100;
             response.y2 += obs2[0] * 100;
             obstacle2AverageCount++;
@@ -123,18 +132,19 @@ response findObstacle(){
 
 vector<Point> calibrate(){
     KinectCalibrator calibrator;
+    Mat rgbMatrix = captureRGBMatrix();
     Mat depthMatrix = captureDepthMatrix();
-    calibrator.calibrate(depthMatrix);
-    vector<Point> test = calibrator.getSquarePositions();
+    calibrator.calibrate(rgbMatrix, depthMatrix);
+    vector<Point> squarePosition = calibrator.getSquarePositions();
     
-    return test;
+    return squarePosition;
 }
 
 response findRobot(){
     int const AVERAGECOUNT = 3;
     int robotPositionAverageCount = 0;
     
-    response response;
+    response response = {0, 0, 0, 0};
     RobotDetector robotDetection;
     
     for(int i  = 0; i < AVERAGECOUNT; i++){
@@ -153,6 +163,12 @@ response findRobot(){
             robotPositionAverageCount++;
         }
     }
+    
+    if(robotPositionAverageCount > 0){
+        response.x1 /= robotPositionAverageCount;
+        response.y1 /= robotPositionAverageCount;
+    }
+    
     
     return response;
 }
@@ -175,12 +191,15 @@ int main( /*int argc, char* argv[]*/ ) {
     capture.open(CV_CAP_OPENNI);
     capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
     
-    //vector<Point> test2 = calibrate();
     
+    
+    
+    //vector<Point> test2 = calibrate();
+    //Mat test9 = calibrate();
     RobotDetector robotDetection;
     response responseObstacle;
     response responseRobot;
-
+      
     responseObstacle = findObstacle();
     responseRobot = findRobot();
     
@@ -211,16 +230,23 @@ int main( /*int argc, char* argv[]*/ ) {
     
     world = captureDepthMatrix();
     Mat rgb = captureRGBMatrix();
-    imshow("depth", world);
     
     
-    //int pt1x = test2[0].x;
-    //int pt2x = test2[1].x;
-    //int pty = (test2[1].y - test2[0].y)/2 + test2[0].y;
     
-    //circle(rgb, Point((pt2x-pt1x)/ 2 +pt1x, pty), 4, Scalar(255, 255, 255));
+    //int pt1x = test2[15].x;
+    //int pt2x = test2[19].x;
+    //int pty = (test2[19].y - test2[15].y)/2 + test2[15].y;
     
+    //for(int i = 0; i < test2.size(); i++)
+    //{
+     //   circle(rgb, test2[i], 4, Scalar(255, 255, 255));
+    //}
+    
+    
+    //circle(world, test2[0], 4,  Scalar(255, 255, 255));
+    //circle(world, test2[4], 4, Scalar(255, 255, 255));
     imshow("chess8", rgb);
+    imshow("depth", world);
 
     do{
 

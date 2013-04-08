@@ -1,0 +1,15 @@
+Table 2 : Test 1
+Obstacle 1 : 17, 206
+Obstacle 2 : 91, 205
+
+Table 2 : Test 2
+Obstacle 1 : 33.5, 180.5
+Obstacle 2 : 88, 160.5
+
+Table 2 : Test 3
+Obstacle 1 : 62, 151.5
+Obstacle 2 : 49, 151.5
+
+Table 2 : Test 4
+Obstacle 1 : 27, 125.5
+Obstacle 2 : 82, 223
