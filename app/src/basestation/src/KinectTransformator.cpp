@@ -3,7 +3,7 @@
 #include <math.h>
 
 const float KinectTransformator::KINECTANGLE = 22.5f;
-float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 360.0 * 2.0 * M_PI);
+float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 180 * M_PI);
 Vec2f KinectTransformator::_kinectPosition = Vec2f(0.105f, -0.530f);
 
 void KinectTransformator::setKinectAngle(float angleRad){
@@ -30,7 +30,7 @@ Vec2f KinectTransformator::getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ) {
     float trueDepthX = sin(_kinectAngleRad) * depthZ - cos(_kinectAngleRad) * depthX;
     float trueDepthZ = sin(_kinectAngleRad) * depthX + cos(_kinectAngleRad) * depthZ;
     Vec2f trueDepth(trueDepthX, trueDepthZ);
-    
+
     return trueDepth;
 }
 

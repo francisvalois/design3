@@ -9,7 +9,7 @@ namespace {
     class KinectTransformatorTest : public ::testing::Test {
     protected:
         virtual void SetUp() {
-            KinectTransformator::setKinectAngle(22.5);
+            KinectTransformator::setKinectAngle(0.3926f);
             Vec2f kinectPosition(0.10f, -0.44f);
             KinectTransformator::setKinectPosition(kinectPosition);
         }
