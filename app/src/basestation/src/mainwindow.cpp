@@ -13,6 +13,9 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     QObject::connect(updateROSTimer, SIGNAL(timeout()), SLOT(updateROSSlot()));
     updateROSTimer->start(200);
 
+    applicationTimer = new QTimer(this);
+    QObject::connect(applicationTimer, SIGNAL(timeout()), this, SLOT(timerSlot()));
+
     QObject::connect(&baseStation, SIGNAL(rosShutdown()), this, SLOT(close()));
     QObject::connect(&baseStation, SIGNAL(showSolvedSudocubeSignal(QString,int)), this, SLOT(showSolvedSudocubeSlot(QString,int)));
     QObject::connect(&baseStation, SIGNAL(UpdatingRobotPositionSignal(float,float)), this, SLOT(UpdatingRobotPositionSlot(float,float)));
@@ -20,6 +23,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     QObject::connect(&baseStation, SIGNAL(traceRealTrajectorySignal(vector<Position>)), this, SLOT(traceRealTrajectory(vector<Position>)));
     QObject::connect(&baseStation, SIGNAL(updateObstaclesPositions(int,int,int,int)), this, SLOT(updateObstaclesPositions(int,int,int,int)));
     QObject::connect(&baseStation, SIGNAL(updateTableImage(QImage)), this, SLOT(updateTableImage(QImage)));
+
 
     white = Scalar(255, 255, 255);
     blue = Scalar(255, 0, 0);
@@ -51,6 +55,9 @@ void MainWindow::updateROSSlot () {
 
 void MainWindow::on_StartSequenceButton_clicked() {
     baseStation.setStateToSendStartLoopMessage();
+    applicationTimer->start(1000);
+    applicationTimer->display(10);
+
 }
 
 void MainWindow::on_calibrateKinectButton_clicked() {
@@ -196,4 +203,8 @@ void MainWindow::updateTableImage(QImage image) {
     QImage largeImage = image.scaled(Workspace::TABLE_X * 2, Workspace::TABLE_Y * 2, Qt::KeepAspectRatio);
     ui->tableImage->setPixmap(QPixmap::fromImage(largeImage));
     ui->tableImage->show();
+}
+
+void MainWindow::timerSlot() {
+    applicationTimer->display(applicationTimer->intValue() - 1);
 }

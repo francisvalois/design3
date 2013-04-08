@@ -35,6 +35,7 @@ private slots:
     void traceRealTrajectory(vector<Position>);
     void updateObstaclesPositions(int,int,int,int);
     void updateTableImage(QImage);
+    void timerSlot();
 
 private:
     Ui::MainWindow *ui;
@@ -46,6 +47,8 @@ private:
     Position actualPosition;
     vector<Position> plannedPath;
     vector<Position> kinoctoPositionUpdates;
+
+    QTimer *applicationTimer;
 
     //PRINTING RELATED METHODS
     void printTable();
