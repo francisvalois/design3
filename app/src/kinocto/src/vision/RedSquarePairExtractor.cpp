@@ -11,7 +11,6 @@ RedSquarePairExtractor::RedSquarePairExtractor() {
 RedSquarePairExtractor::~RedSquarePairExtractor() {
 }
 
-
 SquarePair RedSquarePairExtractor::getRedSquarePair(const Mat& srcHSV) {
     Mat segmentedRedSquare;
     Mat segmentedRedSquare2;
@@ -26,6 +25,19 @@ SquarePair RedSquarePairExtractor::getRedSquarePair(const Mat& srcHSV) {
     findContours(segmentedRedSquare, squareContour, squareHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
     vector<vector<Point> > squareContoursPoly(squareContour.size());
+    vector<Rect> squareBoundingRect = getRedSquareRects(squareContour, squareContoursPoly);
+
+    if (squareBoundingRect.empty() == true) {
+        cout << "Could not find the red square" << endl;
+        return SquarePair();
+    }
+
+    SquarePair squarePair(squareBoundingRect[0], squareContoursPoly[0]);
+
+    return squarePair;
+}
+
+vector<Rect> RedSquarePairExtractor::getRedSquareRects(vector<vector<Point> > & squareContour, vector<vector<Point> > & squareContoursPoly) {
     vector<Rect> squareBoundingRect(0);
     for (uint i = 0; i < squareContour.size(); i++) {
         approxPolyDP(Mat(squareContour[i]), squareContoursPoly[i], 3, true);
@@ -36,12 +48,5 @@ SquarePair RedSquarePairExtractor::getRedSquarePair(const Mat& srcHSV) {
         }
     }
 
-    if (squareBoundingRect.empty() == true) {
-        cout << "Could not find the red square" << endl;
-        return SquarePair();
-    }
-
-    SquarePair squarePair(squareBoundingRect[0], squareContoursPoly[0]);
-
-    return squarePair;
+    return squareBoundingRect;
 }
