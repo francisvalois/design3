@@ -1,9 +1,7 @@
 #include "gtest/gtest.h"
 #include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+
 #include "KinectUtility.h"
-#include "ObstaclesDetector.h"
 #include "KinectTransformator.h"
 #include "KinectCalibrator.h"
 
@@ -26,8 +24,8 @@ namespace {
     //TODO : Get real tests images. These ones only works with the old calibration algorithm
     TEST_F(KinectCalibratorTest, calibrateTest1){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration1.xml");
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration1.jpg");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/calibration1.xml");
+        Mat rgbMatrix = imread("img/testKinect/calibration1.jpg");
         float expectedPositionX = 0.10f;
         float expectedPositionZ = -0.45f; 
         float expectedAngle = 0.35f;
@@ -48,8 +46,8 @@ namespace {
 
     TEST_F(KinectCalibratorTest, calibrateTest2){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration2.xml");
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration2.jpg");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/calibration2.xml");
+        Mat rgbMatrix = imread("img/testKinect/calibration2.jpg");
         float expectedPositionX = 0.10f;
         float expectedPositionZ = -0.45f; 
         float expectedAngle = 0.35f;
@@ -70,8 +68,8 @@ namespace {
 
     TEST_F(KinectCalibratorTest, calibrateTest3){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration3.xml");
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/calibration3.jpg");
+        Mat testMatrix = Utility::readFromFile("img/testKinect/calibration3.xml");
+        Mat rgbMatrix = imread("img/testKinect/calibration3.jpg");
         float expectedPositionX = 0.10f;
         float expectedPositionZ = -0.45f; 
         float expectedAngle = 0.35f;

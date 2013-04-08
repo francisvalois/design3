@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 #include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+
 #include "KinectUtility.h"
 #include "ObstaclesDetector.h"
 #include "KinectTransformator.h"
@@ -23,7 +22,7 @@ namespace {
 
     TEST_F(ObjectDetectorTest, getGeneratedQuads1){
         //Arrange
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotDetection3.jpg");
+        Mat rgbMatrix = imread("img/testKinect/robotDetection3.jpg");
 
         float expectedQuadsCount = 14;
         Rect quad0 = Rect(347, 256, 8, 10);
@@ -44,7 +43,7 @@ namespace {
 
     TEST_F(ObjectDetectorTest, getGeneratedQuads2){
         //Arrange
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotDetection4.jpg");
+        Mat rgbMatrix = imread("img/testKinect/robotDetection4.jpg");
 
         float expectedQuadsCount = 12;
         Rect quad0 = Rect(368, 241, 9, 8);
@@ -65,7 +64,7 @@ namespace {
 
     TEST_F(ObjectDetectorTest, getGeneratedQuads3){
         //Arrange
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotDetection5.jpg");
+        Mat rgbMatrix = imread("img/testKinect/robotDetection5.jpg");
 
         float expectedQuadsCount = 5;
         Rect quad0 = Rect(458, 241, 9, 11);
@@ -82,7 +81,7 @@ namespace {
 
     TEST_F(ObjectDetectorTest, getGeneratedQuads4){
         //Arrange
-        Mat rgbMatrix = imread("C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotDetection6.jpg");
+        Mat rgbMatrix = imread("img/testKinect/robotDetection6.jpg");
 
         float expectedQuadsCount = 9;
         Rect quad0 = Rect(464, 241, 9, 8);
