@@ -103,8 +103,14 @@ target_link_libraries(BaseStation ${catkin_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_
 
 catkin_add_gtest(baseStationTest test/AllTests.cpp src/ObstaclesDetector.cpp 
 src/RobotDetector.cpp 
+src/KinectCalibrator.cpp 
 src/KinectUtility.cpp 
 src/ObjectDetector.cpp
 src/ObstaclesDetector.cpp
-src/KinectTransformator.cpp)
+src/KinectTransformator.cpp
+test/KinectCalibratorTest.cpp
+test/KinectTransformatorTest.cpp
+test/ObjectDetectorTest.cpp
+test/ObstacleDetectorTest.cpp
+test/RobotDetectorTest.cpp)
 target_link_libraries(baseStationTest ${catkin_LIBRARIES} ${OpenCV_LIBS})

@@ -7,15 +7,16 @@
 #include "ObjectDetector.h"
 #include <list>
 
+
 using namespace cv;
 using namespace std;
 
-class ObstaclesDetector: private ObjectDetector {
+class ObstaclesDetector : private ObjectDetector{
 
 private:
     const static float OBSTACLE_RADIUS;
     static float const OBSTACLE_HEIGHT;
-
+    
     const static int X_OBSTACLE_LEFT_THRESHOLD;
     const static int X_OBSTACLE_RIGHT_THRESHOLD;
     const static int Y_OBSTACLE_TOP_THRESHOLD;
@@ -35,8 +36,8 @@ public:
     ObstaclesDetector();
     ObstaclesDetector(Vec2f obstacle1, Vec2f obstacle2);
     Vec2f getObstacle1();
-    Vec2f getObstacle2();
-    vector<Vec2f> findCenteredObstacle(Mat depthMatrix);
+    Vec2f getObstacle2();    
+    vector<Vec2f> findCenteredObstacle(Mat depthMatrix); 
     static Vec3f addObstacleRadiusToDistance(Vec3f distanceExtObstacle);
 };
 

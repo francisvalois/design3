@@ -59,7 +59,7 @@ void MainWindow::on_calibrateKinectButton_clicked() {
     KinectCalibrator kinectCalibrator;
 
     kinectCapture.openCapture();
-    kinectCalibrator.calibrate(kinectCapture.captureDepthMatrix());
+    kinectCalibrator.calibrate(kinectCapture.captureDepthMatrix(), kinectCapture.captureRGBMatrix());
     kinectCapture.closeCapture();
 }
 
