@@ -3,7 +3,6 @@ project(kinocto)
 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation)
 find_package(OpenCV REQUIRED)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
 
 #######################################
 ## Declare ROS messages and services ##

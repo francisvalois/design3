@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8.3)
 project(microcontroller)
 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs message_generation)
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and scripts declared therein get installed
