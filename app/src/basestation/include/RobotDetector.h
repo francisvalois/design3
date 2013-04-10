@@ -13,28 +13,28 @@ using namespace std;
 class RobotDetector : private ObjectDetector{
 
 public:
-    static enum Orientation { NORTH, EAST, SOUTH, WEST };
+    enum { NORTH, EAST, SOUTH, WEST };
     RobotDetector();
     RobotDetector(Vec2f robot);
     void findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1 = Vec2f(), Vec2f obstacle2 = Vec2f());
     Vec2f getRobotPosition();
-    float getRobotAngle(); 
-    Orientation getOrientation();
+    float getRobotAngle();
+    int getOrientation();
 
 private:
     Vec2f _robotPosition;
     float _robotAngle;
     const static int X_ROBOT_LEFT_THRESHOLD;
     const static int X_ROBOT_RIGHT_THRESHOLD;
-    Orientation _orientation;
+    int _orientation;
     static float const ROBOT_RADIUS;
     static float const CAMERA_OFFSET;
 
     float getAngleFrom2Distances(Vec2f distance1, Vec2f distance2);
     void get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition, Vec2f &trueLeftPosition, Vec2f &trueRightPosition);
-    Vec2f findRobotCenterPosition(Vec2f trueRightPosition, Vec2f trueLeftPosition, float angleRad, Orientation orientation);    
+    Vec2f findRobotCenterPosition(Vec2f trueRightPosition, Vec2f trueLeftPosition, float angleRad, int orientation);
     vector<Point2f> getExtremePointsOfRobot( Mat depthMatrix, float angleRad, vector<Point2f> validRobotPosition);
-    Orientation findOrientation(quadColor color, float angle);
+    int findOrientation(quadColor color, float angle);
 };
 
 #endif //__kinect_H_

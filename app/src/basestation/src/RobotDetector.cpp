@@ -8,7 +8,7 @@ const float RobotDetector::CAMERA_OFFSET = 0.03f;
 const int RobotDetector::X_ROBOT_LEFT_THRESHOLD = 180;
 const int RobotDetector::X_ROBOT_RIGHT_THRESHOLD = 610;
 
-RobotDetector::Orientation RobotDetector::getOrientation(){
+int RobotDetector::getOrientation(){
     return _orientation;
 }
 
@@ -59,38 +59,38 @@ void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> val
     }
 }
 
-RobotDetector::Orientation RobotDetector::findOrientation(quadColor color, float angle){
+int RobotDetector::findOrientation(quadColor color, float angle){
     angle = angle / M_PI * 180;
     
-    if(color == quadColor::BLUE){
+    if(color == BLUE){
         if(angle > 45){
-            return Orientation::NORTH;
+            return NORTH;
         }
         else if (angle < -45)
         {
-            return Orientation::SOUTH;
+            return SOUTH;
         }
         else
         {
-            return Orientation::EAST;
+            return EAST;
         }
     }
-    else if (color == quadColor::BLACK){
+    else if (color == BLACK){
         if(angle > 45){
-            return Orientation::SOUTH;
+            return SOUTH;
         }
         else if (angle < -45)
         {
-            return Orientation::NORTH;
+            return NORTH;
         }
         else
         {
-            return Orientation::WEST;
+            return WEST;
         }
     }
     else
     {
-        return Orientation::NORTH;
+        return NORTH;
     }
 }
 
@@ -180,22 +180,22 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot( Mat depthMatrix, float a
     return pointsList;
 }
 
-Vec2f RobotDetector::findRobotCenterPosition( Vec2f trueRightPosition, Vec2f trueLeftPosition, 
-                                             float angleRad, Orientation orientation) 
+Vec2f RobotDetector::findRobotCenterPosition( Vec2f trueRightPosition, Vec2f trueLeftPosition,
+                                             float angleRad, int orientation)
 {
-    orientation = Orientation::NORTH;
-    float angle = angleRad / M_PI * 180;
+    orientation = NORTH;
+    float angle = (float) (angleRad / M_PI * 180);
 
     //Take account of the non-square robot because of the camera
-    if((orientation == Orientation::NORTH || orientation == Orientation::EAST) && angle >= 0 ){
+    if((orientation == NORTH || orientation == EAST) && angle >= 0 ){
         trueRightPosition[1] += CAMERA_OFFSET * sin(angleRad);
         trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);        
     }
-    else if((orientation == Orientation::NORTH || orientation == Orientation::WEST) && angle <= 0) {
+    else if((orientation == NORTH || orientation == WEST) && angle <= 0) {
         trueLeftPosition[1] += CAMERA_OFFSET * sin(angleRad);
         trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
     }
-    else if((orientation == Orientation::SOUTH || orientation == Orientation::EAST) && angle < 0){
+    else if((orientation == SOUTH || orientation == EAST) && angle < 0){
         trueRightPosition[1] -= CAMERA_OFFSET * sin(angleRad);
         trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
     }

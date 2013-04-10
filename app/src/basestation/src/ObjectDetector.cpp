@@ -267,9 +267,9 @@ ObjectDetector::quadColor ObjectDetector::findQuadColor( Mat &picture, const vec
     }
 
     if(coloredSquareCount > squares.size() * 0.5){
-        return quadColor::BLUE;
+        return BLUE;
     }
     else{
-        return quadColor::BLACK;
+        return BLACK;
     }
 }
