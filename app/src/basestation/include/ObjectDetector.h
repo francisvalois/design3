@@ -12,6 +12,9 @@ using namespace cv;
 using namespace std;
 
 class ObjectDetector {
+public:
+    int generateQuads(Mat &image, vector<Rect>&outQuads);
+    enum quadColor {BLUE, BLACK, RED};
 
 protected:
     static float const TABLE_WIDTH;
@@ -21,10 +24,7 @@ protected:
     int removeQuadsNotOnChessboard(vector<Rect>  & outQuads);
     void sortQuadsByPosition(vector<Rect>  & outQuads);
     int removeDoubleSquare(vector<Rect>  & outQuads);
-
-public:
-    int generateQuads(Mat &image, vector<Rect>&outQuads);
-
+    quadColor findQuadColor(Mat &image, const vector<Rect> &squares);
 };
 
 #endif //__kinect_H_
