@@ -46,18 +46,22 @@ void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> val
     Point2f leftPoint = validRobotPosition[0];
     Point2f rightPoint = validRobotPosition[validRobotPosition.size() - 1];
 
-    Vec3f leftPosition = depthMatrix.at<Vec3f>((int) leftPoint.y, (int) leftPoint.x);
-    trueLeftPosition = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
-    if (trueLeftPosition[1] <= 0) {
-        leftPosition = depthMatrix.at<Vec3f>((int) leftPoint.y + 5, (int) leftPoint.x + 5);
+    if ((int) leftPoint.y >= 0 && (int) leftPoint.x >= 0) {
+        Vec3f leftPosition = depthMatrix.at<Vec3f>((int) leftPoint.y, (int) leftPoint.x);
         trueLeftPosition = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
+        if (trueLeftPosition[1] <= 0 && (int) leftPoint.y <= 450 && (int) leftPoint.x <= X_ROBOT_RIGHT_THRESHOLD - 5) {
+            leftPosition = depthMatrix.at<Vec3f>((int) leftPoint.y + 5, (int) leftPoint.x + 5);
+            trueLeftPosition = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
+        }
     }
 
-    Vec3f rightPosition = depthMatrix.at<Vec3f>((int) rightPoint.y, (int) rightPoint.x);
-    trueRightPosition = KinectTransformator::getTrueCoordFromKinectCoord(rightPosition);
-    if (trueRightPosition[1] <= 0) {
-        rightPosition = depthMatrix.at<Vec3f>((int) rightPoint.y - 5, (int) rightPoint.x - 5);
+    if ((int) rightPoint.y >= 0 && (int) rightPoint.x >= 0) {
+        Vec3f rightPosition = depthMatrix.at<Vec3f>((int) rightPoint.y, (int) rightPoint.x);
         trueRightPosition = KinectTransformator::getTrueCoordFromKinectCoord(rightPosition);
+        if (trueRightPosition[1] <= 0 && (int) rightPoint.y >= 5 && (int) rightPoint.x >= 5) {
+            rightPosition = depthMatrix.at<Vec3f>((int) rightPoint.y - 5, (int) rightPoint.x - 5);
+            trueRightPosition = KinectTransformator::getTrueCoordFromKinectCoord(rightPosition);
+        }
     }
 }
 
@@ -129,6 +133,7 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
     Point leftRobotTrueCoords;
     Point rightRobotTrueCoords;
 
+    //Find left border
     for (int i = leftPoint.x; i > X_ROBOT_LEFT_THRESHOLD && consecutiveEndPoint < 3; i--) {
         Vec3f leftPosition = depthMatrix.at<Vec3f>(leftPoint.y, i);
         Vec2f position = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
@@ -143,6 +148,7 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
         }
     }
 
+    //Find right border
     consecutiveEndPoint = 0;
     for (int i = rightPoint.x; i < X_ROBOT_RIGHT_THRESHOLD && consecutiveEndPoint < 3; i++) {
         Vec3f rightPosition = depthMatrix.at<Vec3f>(rightPoint.y, i);
@@ -158,13 +164,16 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
         }
     }
 
+    if (leftRobotTrueCoords.x <= 0 || leftRobotTrueCoords.y <= 0 || rightRobotTrueCoords.x <= 0 || rightRobotTrueCoords.y <= 0) {
+        throw string("Unable to find robot borders, abort robot finding");
+    }
+
     pointsList.push_back(leftRobotTrueCoords);
     pointsList.push_back(rightRobotTrueCoords);
     return pointsList;
 }
 
 Vec2f RobotDetector::findRobotCenterPosition(Vec2f trueRightPosition, Vec2f trueLeftPosition, float angleRad, int orientation) {
-    orientation = NORTH;
     float angle = (float) (angleRad / M_PI * 180);
 
     //Take account of the non-square robot because of the camera
