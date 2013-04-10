@@ -256,21 +256,21 @@ tBoolean CommandHandler(void){
 		//degree = degree*16000/360;
 		long consigne = 0;
 		if(commande[1] == 'P' && degree > 29){
-			degree = (degree-5.6)*16200/360;
+			degree = (degree)*16000/360;
 			degree = -degree;
 			consigne = 1600;
 		}
 		else if(commande[1] == 'P'){
-			degree = (degree)*16200/360;
+			degree = (degree)*16000/360;
 			degree = -degree;
 			consigne = 800;
 		}
 		else if(commande[1] == 'N' && degree > 29){
-			degree = (degree-5.6)*16200/360;
+			degree = (degree)*16300/360;
 			consigne = 1600;
 		}
 		else if(commande[1] == 'N'){
-			degree = (degree)*16200/360;
+			degree = (degree)*16300/360;
 			consigne = 800;
 		}
 		else{

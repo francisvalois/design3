@@ -75,10 +75,10 @@ int ObjectDetector::getAverageFromPointList(list<Point> obstacle) {
     }
 }
 
-int ObjectDetector::generateQuads(Mat &image, vector<Rect>&outQuads){
+int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads){
     int minSize = 25;
     int maxContourApprox = 7;
-    Mat RGB = image.clone();
+    Mat RGB = picture.clone();
     Mat RGBGray;
     
     vector<Point> srcContour;
@@ -86,7 +86,7 @@ int ObjectDetector::generateQuads(Mat &image, vector<Rect>&outQuads){
     vector<vector<Point> > frameContours;
     vector<Vec4i> frameHierarchy;
 
-    cvtColor(image, RGBGray, CV_RGB2GRAY);
+    cvtColor(picture, RGBGray, CV_RGB2GRAY);
     
     Canny(RGBGray,RGBGray, 50,200, 3);
     findContours(RGBGray, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
@@ -248,4 +248,28 @@ int ObjectDetector::removeQuadsNotOnChessboard(vector<Rect> &outQuads){
 
 void ObjectDetector::sortQuadsByPosition(vector<Rect> &outQuads){
     sort(outQuads.begin(), outQuads.end(), SortByXY());
+}
+
+ObjectDetector::quadColor ObjectDetector::findQuadColor( Mat &picture, const vector<Rect> &squares )
+{
+    Mat HSVPicture;
+    cvtColor(picture, HSVPicture, CV_BGR2HSV);
+    
+    int coloredSquareCount = 0;
+
+    for(int i = 0; i < squares.size(); i++){
+        Rect square = squares[i];
+        cv::Vec3b pixel = HSVPicture.at<Vec3b>(square.x + (square.width / 2), square.y + (square.height / 2));
+
+        if(pixel[2] > 30 && pixel[0] > 100 && pixel[0] < 160){
+            coloredSquareCount++;
+        }
+    }
+
+    if(coloredSquareCount > squares.size() * 0.5){
+        return quadColor::BLUE;
+    }
+    else{
+        return quadColor::BLACK;
+    }
 }
