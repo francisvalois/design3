@@ -1,39 +1,46 @@
-#ifndef __kinect_robot_
-#define __kinect_robot_
+#ifndef __robot_detector_
+#define __robot_detector_
 
 #include <iostream>
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
+#include <math.h>
 #include <list>
+
+#include "opencv2/core/core.hpp"
+//#include "opencv2/highgui/highgui.hpp"
+
 #include "ObjectDetector.h"
+#include "KinectTransformator.h"
 
-using namespace cv;
-using namespace std;
+#define _USE_MATH_DEFINES
 
-class RobotDetector : private ObjectDetector{
+class RobotDetector: private ObjectDetector {
 
 public:
-    enum { NORTH, EAST, SOUTH, WEST };
+    enum {
+        NORTH, EAST, SOUTH, WEST
+    };
     RobotDetector();
-    RobotDetector(Vec2f robot);
-    void findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1 = Vec2f(), Vec2f obstacle2 = Vec2f());
-    Vec2f getRobotPosition();
+    RobotDetector(cv::Vec2f robot);
+    void findRobotWithAngle(cv::Mat depthMatrix, cv::Mat rgbMatrix, cv::Vec2f obstacle1 = cv::Vec2f(), cv::Vec2f obstacle2 = cv::Vec2f());
+    cv::Vec2f getRobotPosition();
     float getRobotAngle();
     int getOrientation();
 
 private:
-    Vec2f _robotPosition;
-    float _robotAngle;
     const static int X_ROBOT_LEFT_THRESHOLD;
     const static int X_ROBOT_RIGHT_THRESHOLD;
-    int _orientation;
     static float const ROBOT_RADIUS;
     static float const CAMERA_OFFSET;
 
-    float getAngleFrom2Distances(Vec2f distance1, Vec2f distance2);
-    void get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition, Vec2f &trueLeftPosition, Vec2f &trueRightPosition);
-    Vec2f findRobotCenterPosition(Vec2f trueRightPosition, Vec2f trueLeftPosition, float angleRad, int orientation);
-    vector<Point2f> getExtremePointsOfRobot( Mat depthMatrix, float angleRad, vector<Point2f> validRobotPosition);
+    cv::Vec2f _robotPosition;
+    float _robotAngle;
+    int _orientation;
+
+    float getAngleFrom2Distances(cv::Vec2f distance1, cv::Vec2f distance2);
+    void get2MajorPointsDistance(cv::Mat depthMatrix, std::vector<cv::Point2f> validRobotPosition, cv::Vec2f &trueLeftPosition,
+            cv::Vec2f &trueRightPosition);
+    cv::Vec2f findRobotCenterPosition(cv::Vec2f trueRightPosition, cv::Vec2f trueLeftPosition, float angleRad, int orientation);
+    std::vector<cv::Point2f> getExtremePointsOfRobot(cv::Mat depthMatrix, float angleRad, std::vector<cv::Point2f> validRobotPosition);
     int findOrientation(quadColor color, float angle);
 };
 

@@ -33,7 +33,7 @@ private slots:
     void showSolvedSudocubeSlot(QString, int);
     void UpdatingRobotPositionSlot(float, float);
     void showMessage(QString);
-    void traceRealTrajectory(vector<Position>);
+    void traceRealTrajectory(std::vector<Position>);
     void updateObstaclesPositions(int,int,int,int);
     void updateTableImage(QImage);
     void timerSlot();
@@ -47,8 +47,8 @@ private:
     Position obstacle1;
     Position obstacle2;
     Position actualPosition;
-    vector<Position> plannedPath;
-    vector<Position> kinoctoPositionUpdates;
+    std::vector<Position> plannedPath;
+    std::vector<Position> kinoctoPositionUpdates;
 
     QTimer *applicationTimer;
     QTime *timeValue;

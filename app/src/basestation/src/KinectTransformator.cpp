@@ -1,6 +1,7 @@
 #include "KinectTransformator.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
+
+using namespace cv;
+using namespace std;
 
 const float KinectTransformator::KINECTANGLE = 21.9f;
 float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 180 * M_PI);

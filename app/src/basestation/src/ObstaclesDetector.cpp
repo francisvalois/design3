@@ -1,7 +1,7 @@
-//TODO : Faire des tests avec plusieurs positions de robot
-
 #include "ObstaclesDetector.h"
-#include "KinectTransformator.h"
+
+using namespace cv;
+using namespace std;
 
 const float ObstaclesDetector::OBSTACLE_RADIUS = 0.0565f;
 

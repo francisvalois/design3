@@ -1,15 +1,14 @@
-#ifndef __kinect_H_
-#define __kinect_H_
+#ifndef __obstacles_detector_H_
+#define __obstacles_detector_H_
 
 #include <iostream>
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "ObjectDetector.h"
 #include <list>
 
+#include "opencv2/core/core.hpp"
+//#include "opencv2/highgui/highgui.hpp"
 
-using namespace cv;
-using namespace std;
+#include "KinectTransformator.h"
+#include "ObjectDetector.h"
 
 class ObstaclesDetector : private ObjectDetector{
 
@@ -25,20 +24,20 @@ private:
     const static float OBSTACLE_DISTANCE_MAX_THRESHOLD;
     const static float OBSTACLE_HEIGHT_THRESHOLD_PERCENT;
 
-    Vec2f _obstacle1;
-    Vec2f _obstacle2;
+    cv::Vec2f _obstacle1;
+    cv::Vec2f _obstacle2;
 
-    void findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point> &obstacle1, list<Point> &obstacle2);
-    list<Vec2f> getSomeYDistanceAssociatedWithXForObstacle(int obstaclePositionX, Mat depthMatrix);
-    Vec2f getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle);
+    void findAllPossiblePositionForEachObstacle(cv::Mat depthMatrix, std::list<cv::Point> &obstacle1, std::list<cv::Point> &obstacle2);
+    std::list<cv::Vec2f> getSomeYDistanceAssociatedWithXForObstacle(int obstaclePositionX, cv::Mat depthMatrix);
+    cv::Vec2f getAveragePositionForObstacle(cv::Mat depthMatrix, std::list<cv::Point> obstacle);
 
 public:
     ObstaclesDetector();
-    ObstaclesDetector(Vec2f obstacle1, Vec2f obstacle2);
-    Vec2f getObstacle1();
-    Vec2f getObstacle2();    
-    vector<Vec2f> findCenteredObstacle(Mat depthMatrix); 
-    static Vec3f addObstacleRadiusToDistance(Vec3f distanceExtObstacle);
+    ObstaclesDetector(cv::Vec2f obstacle1, cv::Vec2f obstacle2);
+    cv::Vec2f getObstacle1();
+    cv::Vec2f getObstacle2();
+    std::vector<cv::Vec2f> findCenteredObstacle(cv::Mat depthMatrix);
+    static cv::Vec3f addObstacleRadiusToDistance(cv::Vec3f distanceExtObstacle);
 };
 
-#endif //__kinect_H_
+#endif

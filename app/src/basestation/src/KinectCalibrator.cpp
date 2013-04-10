@@ -1,13 +1,6 @@
-//
-//  KinectCalibrator.cpp
-//  OpenCVTest
-//
-//  Created by Francis Valois on 2013-03-19.
-//  Copyright (c) 2013 Francis Valois. All rights reserved.
-//
-
 #include "KinectCalibrator.h"
-#include "KinectTransformator.h"
+
+using namespace cv;
 
 Vec2f KinectCalibrator::BASE_POSITION_FROM_ORIGIN = Vec2f(0.545f, 0.775f);
 
