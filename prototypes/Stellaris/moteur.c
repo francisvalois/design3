@@ -296,7 +296,7 @@ void asservirMoteurs(void){
 			GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 			GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
 			GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
-			a_atteint_consigne = true;
+			est_en_rotation = false;
 		}
 		else{
 			turn(consigne_rotation-measured_value, 500);
@@ -449,7 +449,7 @@ void asservirMoteurs(void){
 	PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, (periodPWM*fraction3));
 	
 	//Si le robot est immobile
-	if(a_atteint_consigne && measured_speed0==0 && measured_speed1==0 && measured_speed2==0 && measured_speed3==0){
+	if(a_atteint_consigne && !est_en_rotation && measured_speed0==0 && measured_speed1==0 && measured_speed2==0 && measured_speed3==0){
 		resetVariables();
 		resetQEIs();
 		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_0, 0);//periodPWM / 4);
@@ -457,7 +457,6 @@ void asservirMoteurs(void){
 		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, 0);
 		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, 0);
 		est_en_mouvement = false;
-		est_en_rotation = false;
 		consigne_rotation=0;
 	}
 	else{
