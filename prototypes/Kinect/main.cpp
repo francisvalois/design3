@@ -33,8 +33,8 @@ Mat captureDepthMatrix() {
     else{
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
-            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
-            //file << "robotdetection1.xml";
+            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
+            file << "robotdetection4.xml";
             string fileString = file.str();
             //cout << "Loading from file " << fileString << endl;
             
@@ -62,8 +62,8 @@ Mat captureRGBMatrix() {
     else{
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
-        file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
-        //file << "robotdetection1.jpg";
+        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
+        file << "robotdetection4.jpg";
         string fileString = file.str();
         //cout << "Loading from file " << fileString << endl;
         
@@ -154,7 +154,7 @@ response findRobot(){
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
         float angle = robotDetection.getRobotAngle();
-        RobotDetector::Orientation test = robotDetection.get();
+        int test = robotDetection.getOrientation();
         
         if(robot[0] > 0.10 || robot[1] > 0.20){
             response.x1 += robot[1] * 100;
