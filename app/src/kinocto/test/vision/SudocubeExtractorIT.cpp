@@ -100,11 +100,9 @@ Mat loadSudocubeNo(int no) {
 }
 
 bool isSudocubeCorrectlyExtracted(int sudocubeNo, Sudocube correctSudocube, SudocubeExtractor & sudocubeExtractor) {
-    bool correctlyExtracted = false;
     Mat img = loadSudocubeNo(sudocubeNo);
-    Sudocube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
-    correctlyExtracted = correctSudocube.equals(*sudokubeExtracted);
-    delete sudokubeExtracted;
+    Sudocube sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
+    bool correctlyExtracted = correctSudocube.equals(sudokubeExtracted);
 
     return correctlyExtracted;
 }
