@@ -18,9 +18,12 @@ volatile long previous_pos0, previous_pos1, previous_pos2, previous_pos3;
 volatile long previous_speed0, previous_speed1, previous_speed2, previous_speed3;
 volatile long measured_speed0, measured_speed1, measured_speed2, measured_speed3;
 volatile long previous_error0, previous_error1, previous_error2, previous_error3;
+volatile long ri_previous_error;
+volatile float ri_I;
 volatile float I0, I1, I2, I3; //Integrale de l'asservissement
 volatile long consigne0, consigne1, consigne2, consigne3; //Consigne de vitesse
 volatile long dist_cible0, dist_cible1, dist_cible2, dist_cible3; //Consigne de position
+volatile long consigne_rotation;
 volatile long output0, output1, output2, output3; //Commande
 volatile long offset, offset2;
 volatile long drawOffset0, drawOffset1, drawOffset2, drawOffset3;
@@ -37,6 +40,7 @@ volatile tBoolean drawingConditionFront = false;
 volatile tBoolean drawingConditionLateral = false;
 tBoolean est_demi_consigne;
 tBoolean est_en_mouvement;
+tBoolean est_en_rotation;
 tBoolean a_atteint_consigne;
 extern tBoolean is_drawing;
 extern volatile long final_speed;
@@ -53,6 +57,7 @@ long adjustStartSpeed(long final_speed);
 void motorTurnCCW(volatile long mnumber);
 void motorTurnCW(volatile long mnumber);
 void ajustementVitesse(void);
+void turn(long distance, long vitesse);
 //qei
 void resetQEIs(void);
 
@@ -64,6 +69,7 @@ void resetQEIs(void);
   * Fonction qui reset les variables utilisé par l'asservissement
   */
  void resetVariables(void){
+ 	ri_I=0;
  	I0=0;
  	I1=0;
  	I2=0;
@@ -72,6 +78,7 @@ void resetQEIs(void);
  	consigne1=0;
  	consigne2=0;
  	consigne3=0;
+ 	consigne_rotation=0;
  	time=0;
  	output0=0;
  	output1=0;
@@ -85,6 +92,7 @@ void resetQEIs(void);
  	previous_error1=0;
  	previous_error2=0;
  	previous_error3=0;
+  	ri_previous_error=0;
  	pos0=0;
  	pos1=0;
  	pos2=0;
@@ -103,6 +111,7 @@ void resetQEIs(void);
    	measured_speed3=0;
    	est_demi_consigne = false;
    	est_en_mouvement = false;
+   	est_en_rotation = false;
    	a_atteint_consigne = true;
    	offset=0;
    	offset2=-640;
@@ -114,6 +123,14 @@ void resetQEIs(void);
  }
 
 //Filtre PID, ref: http://www.telecom-robotics.org/node/326
+long RotationIHandler(volatile float *I, volatile long *previous_error, float dt, 
+volatile long measured_value, volatile long distance_cible){
+	long error = distance_cible - measured_value;
+	*I = *I + error*dt;
+	long ouput = error*0.765+*I*0.61;
+	*previous_error = error;
+	return ouput;
+}
 
 long PIDHandler0(volatile long *consigne, volatile long *measured_value, volatile float *I, volatile long *previous_error, float dt)
 {
@@ -267,7 +284,59 @@ void asservirMoteurs(void){
 	pos2 = position_m2;
 	pos3 = position_m3;
 	
-	ajustementVitesse();
+
+	long measured_value = (pos0+pos1+pos2+pos3)/4;
+	long consigne;
+
+	if(est_en_rotation && a_atteint_consigne){
+		if(consigne_rotation==0){
+			consigne_rotation = dist_cible0;
+		}
+		if(consigne_rotation-50<measured_value && consigne_rotation+50>measured_value){
+			GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
+			GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
+			GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
+			a_atteint_consigne = true;
+		}
+		else{
+			turn(consigne_rotation-measured_value, 500);
+		}
+		/*
+		long abs_distance_cible0;
+		consigne = RotationIHandler(&ri_I, &ri_previous_error, dt, measured_value, consigne_rotation);
+		consigne =consigne-measured_value;
+		if(consigne<0){
+			abs_distance_cible0 = -consigne;
+		}
+		else{
+			abs_distance_cible0 = consigne;
+		}
+		if(consigne_rotation-100<measured_value && consigne_rotation+100>measured_value){
+			GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
+			GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
+			GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
+			a_atteint_consigne = true;
+		}
+		if(consigne > 1600){
+			turn(abs_distance_cible0, 1600);
+			//consigne0 = 1600;
+			//consigne1 = 1600;
+			//consigne2 = 1600;
+			//consigne3 = 1600;
+		}
+		else if(consigne < -1600){
+			turn(-abs_distance_cible0, 1600);
+		}
+		else if(consigne < 0){
+			turn(-abs_distance_cible0, 1600);
+		}
+		else{
+			turn(abs_distance_cible0, 1600);
+		}*/
+	}
+	else{
+		ajustementVitesse();
+	}
 	
 	//Motor 0
 	measured_speed0 =  (pos0 - previous_pos0)/dt;
@@ -388,6 +457,8 @@ void asservirMoteurs(void){
 		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_2, 0);
 		ROM_PWMPulseWidthSet(PWM_BASE, PWM_OUT_3, 0);
 		est_en_mouvement = false;
+		est_en_rotation = false;
+		consigne_rotation=0;
 	}
 	else{
 		est_en_mouvement = true;
@@ -400,9 +471,9 @@ void asservirMoteurs(void){
 	speed1_table[index%300]=measured_speed1;
 	speed2_table[index%300]=measured_speed2;
 	speed3_table[index%300]=measured_speed3;
-	output0_table[index%300]=output0;
-	output1_table[index%300]=output1;
-	output2_table[index%300]=output2;
+	output0_table[index%300]=measured_value;
+	output1_table[index%300]=consigne;
+	output2_table[index%300]=dist_cible0;
 	output3_table[index%300]=output3;
 	fraction0_table[index%300]=fraction0;
 	fraction1_table[index%300]=fraction1;
@@ -682,6 +753,7 @@ void moveFront(long distance, long vitesse){
 }
 void turn(long distance, long vitesse){
 	a_atteint_consigne = false;
+	est_en_rotation = true;
 	if(distance > 0){//Si distance positive tourner dans le sens horaire
 		
 		motorTurnCW(0);

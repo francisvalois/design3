@@ -20,6 +20,7 @@ void asservirMoteurs(void);
 void motorTurnCCW(volatile long mnumber);
 void moveLateral(long distance, long vitesse);
 void moveFront(long distance, long vitesse);
+void turn(long distance, long vitesse);
 //commande.c
 void draw(volatile long number);
 
@@ -43,9 +44,11 @@ void TimerInt(void){
     
     
     if(index==0){
+    	turn(-16300, 1600);
+    	//turn(16000, 1600); //***POUR ROTATION HORAIRE 1 tour = 16000
     	//moveFront(10000, 6400);
     	//moveLateral(6400, 800);
-    	draw(3);
+    	//draw(80);
     }
 
 	//Asservissement Moteurs
