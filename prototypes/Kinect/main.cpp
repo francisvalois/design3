@@ -160,7 +160,7 @@ response findRobot(){
             response.x1 += robot[1] * 100;
             response.y1 += robot[0] * 100;
             response.y2 += angle;
-            response.x2 = 
+            response.x2 = test;
             robotPositionAverageCount++;
         }
     }
@@ -193,9 +193,15 @@ int main( /*int argc, char* argv[]*/ ) {
     capture.open(CV_CAP_OPENNI);
     capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
     
-    KinectTransformator::setKinectAngle(22.5);
-    Vec2f kinectPosition(0.10f, -0.44f);
-    KinectTransformator::setKinectPosition(kinectPosition);
+    //KinectTransformator::setKinectAngle(22.5);
+    //Vec2f kinectPosition(0.10f, -0.44f);
+    //KinectTransformator::setKinectPosition(kinectPosition);
+    
+    Mat test1 = captureRGBMatrix();
+    Mat test2 = captureDepthMatrix();
+    
+    Utility::saveToFile(test2, "ExtremeObstacleCondition.xml");
+    imwrite("ExtremeObstacleCondition.jpg", test1);
     
     
     //vector<Point> test2 = calibrate();
@@ -203,8 +209,8 @@ int main( /*int argc, char* argv[]*/ ) {
     RobotDetector robotDetection;
     response responseObstacle = {0, 0, 0, 0};
     response responseRobot = {0, 0, 0, 0};
-      
-    //responseObstacle = findObstacle();
+    
+    responseObstacle = findObstacle();
     responseRobot = findRobot();
     
     namedWindow("depth", 1);

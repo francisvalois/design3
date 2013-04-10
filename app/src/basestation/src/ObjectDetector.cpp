@@ -2,6 +2,8 @@
 
 #include "ObjectDetector.h"
 #include "KinectTransformator.h"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
 const float ObjectDetector::TABLE_WIDTH = 1.10f;
 
@@ -168,6 +170,11 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads){
 
     sortQuadsByPosition(outQuads);
 
+    for (int i =0; i < outQuads.size(); i++) {
+        rectangle(RGB, outQuads[i],Scalar(0,0,255));
+    }
+    imshow("debug", RGB);
+    
     return outQuads.size();
 }
 

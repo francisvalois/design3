@@ -4,11 +4,12 @@
 #include <math.h>
 
 const float RobotDetector::ROBOT_RADIUS = 0.095f;
-const float RobotDetector::CAMERA_OFFSET = 0.03f;
+const float RobotDetector::CAMERA_OFFSET = 0.06f;
 const int RobotDetector::X_ROBOT_LEFT_THRESHOLD = 180;
 const int RobotDetector::X_ROBOT_RIGHT_THRESHOLD = 610;
 
 int RobotDetector::getOrientation(){
+    cout << _orientation << endl;
     return _orientation;
 }
 
