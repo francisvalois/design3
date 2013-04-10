@@ -10,27 +10,31 @@
 using namespace cv;
 using namespace std;
 
-class RobotDetector : private ObjectDetector{;
+class RobotDetector : private ObjectDetector{
 
-private:
-    Vec2f _robotPosition;
-    float _robotAngle;
-
-    static float const ROBOT_RADIUS;
-
-    float getAngleFrom2Distances(Vec2f distance1, Vec2f distance2);
-    void get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition, Vec2f &trueLeftPosition, Vec2f &trueRightPosition);
-    float findRobotAngleWithXAxis(Mat depthMatrix, vector<Point2f> validRobotPosition);
-    Vec2f findRobotCenterPosition(Mat depthMatrix, vector<Point2f> validRobotPosition, float angleRad);
-    Vec2f addRadiusToRobotFaceDistance(Vec2f distance,float angleRad);
 public:
-
+    static enum Orientation { NORTH, EAST, SOUTH, WEST };
     RobotDetector();
     RobotDetector(Vec2f robot);
     void findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1 = Vec2f(), Vec2f obstacle2 = Vec2f());
     Vec2f getRobotPosition();
-    float getRobotAngle();
-    
+    float getRobotAngle(); 
+    Orientation getOrientation();
+
+private:
+    Vec2f _robotPosition;
+    float _robotAngle;
+    const static int X_ROBOT_LEFT_THRESHOLD;
+    const static int X_ROBOT_RIGHT_THRESHOLD;
+    Orientation _orientation;
+    static float const ROBOT_RADIUS;
+    static float const CAMERA_OFFSET;
+
+    float getAngleFrom2Distances(Vec2f distance1, Vec2f distance2);
+    void get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition, Vec2f &trueLeftPosition, Vec2f &trueRightPosition);
+    Vec2f findRobotCenterPosition(Vec2f trueRightPosition, Vec2f trueLeftPosition, float angleRad, Orientation orientation);    
+    vector<Point2f> getExtremePointsOfRobot( Mat depthMatrix, float angleRad, vector<Point2f> validRobotPosition);
+    Orientation findOrientation(quadColor color, float angle);
 };
 
 #endif //__kinect_H_

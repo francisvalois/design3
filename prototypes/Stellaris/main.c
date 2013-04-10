@@ -455,6 +455,8 @@ int main(void)
 							segment_to_draw++;	
 							break;
 						case 6:
+							drawOffset0=0;
+							drawOffset3=0;
 							monterPrehenseur();
 							is_drawing = false;
 							number_to_draw = 0;
@@ -768,8 +770,8 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 8:
-							moveFront(7225, 803);
-							moveLateral(-9574,1070);
+							moveFront(7536, 800);
+							moveLateral(-9393,997);
 							segment_to_draw++;
 							break;
 						case 9:
