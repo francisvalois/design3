@@ -23,6 +23,9 @@ public:
     float getCost();
     void setCost(float);
 
+    float getScore();
+    void setScore(float);
+
     std::vector<Node*> getLeftNeighbors();
     std::vector<Node*> getRightNeighbors();
     void addNeighbor(Node*);
@@ -34,6 +37,7 @@ private:
     Position position;
     Node* predecessor;
     float cost;
+    float score;
     std::vector<Node*> leftNeighbors;
     std::vector<Node*> rightNeighbors;
 };
