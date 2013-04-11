@@ -4,21 +4,26 @@
 #include <iostream>
 
 #include "opencv2/core/core.hpp"
-//#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 #include "ObstaclesDetector.h"
 #include "KinectTransformator.h"
 
 class KinectCalibrator{
     private:
-        static cv::Vec2f BASE_POSITION_FROM_ORIGIN;
+        const static cv::Vec2f BASE_POSITION_FROM_ORIGIN;
+        const static cv::Vec2f KinectCalibrator::OBSTACLE_POSITION_2;
+        const static cv::Vec2f KinectCalibrator::OBSTACLE_POSITION_1;
+        const static cv::Point KinectCalibrator::CIRCLE_POSITION_2;
+        const static cv::Point KinectCalibrator::CIRCLE_POSITION_1;
     
-        static std::vector<cv::Point> _pointVector;
-        static std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);
-        static float findAndSetKinectAngle(cv::Mat depthMatrix);
+        std::vector<cv::Point> _pointVector;
+        std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);
+        float findAndSetKinectAngle(cv::Mat depthMatrix);
     public:
-        static bool calibrate(cv::Mat rgbMatrix, cv::Mat depthMatrix);
-        static std::vector<cv::Point> getSquarePositions();
+        bool calibrate(cv::Mat rgbMatrix, cv::Mat depthMatrix);
+        std::vector<cv::Point> getSquarePositions();
+        bool calibratev2(cv::VideoCapture capture);
 };
 
 #endif
