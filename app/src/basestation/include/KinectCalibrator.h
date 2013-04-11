@@ -12,10 +12,10 @@
 class KinectCalibrator{
     private:
         const static cv::Vec2f BASE_POSITION_FROM_ORIGIN;
-        const static cv::Vec2f KinectCalibrator::OBSTACLE_POSITION_2;
-        const static cv::Vec2f KinectCalibrator::OBSTACLE_POSITION_1;
-        const static cv::Point KinectCalibrator::CIRCLE_POSITION_2;
-        const static cv::Point KinectCalibrator::CIRCLE_POSITION_1;
+        const static cv::Vec2f OBSTACLE_POSITION_2;
+        const static cv::Vec2f OBSTACLE_POSITION_1;
+        const static cv::Point CIRCLE_POSITION_2;
+        const static cv::Point CIRCLE_POSITION_1;
     
         std::vector<cv::Point> _pointVector;
         std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);
