@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <queue>
+#include <algorithm>
 
 #include <ros/ros.h>
 #include "opencv2/highgui/highgui.hpp"
@@ -52,7 +53,7 @@ private:
     //FIND PATH
     std::vector<Position> findPathInGraph();
     void applyDijkstra();
-    int calculateCost(Position, Position);
+    int calculateDistance(Position, Position);
     float calculateAngle(float, Position, Position);
 
     //Helper functions for connectNodes();

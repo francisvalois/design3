@@ -200,7 +200,6 @@ namespace {
 		}
     }
 
-
   TEST_F(PathPlanningTest, IntegrationTestAntenna) {
 	  	obs1.set(110,75);
 		obs2.set(180,30);

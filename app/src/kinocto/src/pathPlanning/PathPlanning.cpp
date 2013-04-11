@@ -142,7 +142,7 @@ vector<Move> PathPlanning::convertToMoves(vector<Position> positions, float star
         startPosition = positions[i];
         endPosition = positions[i - 1];
 
-        Move move(calculateAngle(robotCurrentAngle, startPosition, endPosition), calculateCost(startPosition, endPosition), endPosition);
+        Move move(calculateAngle(robotCurrentAngle, startPosition, endPosition), calculateDistance(startPosition, endPosition), endPosition);
         robotCurrentAngle += move.angle;
 
         moves.push_back(move);
@@ -179,7 +179,7 @@ void PathPlanning::applyDijkstra() {
 
         for (unsigned int i = 0; i < neighbors.size(); i++) {
             float cost = node->getCost();
-            cost += (float) calculateCost(node->getPosition(), neighbors[i]->getPosition());
+            cost += (float) calculateDistance(node->getPosition(), neighbors[i]->getPosition());
             if (cost < neighbors[i]->getCost()) {
                 neighbors[i]->setPredecessor(node);
                 neighbors[i]->setCost(cost);
@@ -190,7 +190,7 @@ void PathPlanning::applyDijkstra() {
     } while (nodesToVisit.size() > 0);
 }
 
-int PathPlanning::calculateCost(Position p1, Position p2) {
+int PathPlanning::calculateDistance(Position p1, Position p2) {
     int x = p1.x - p2.x;
     if (x < 0) {
         x *= -1;
@@ -271,6 +271,13 @@ void PathPlanning::createNodes() {
             addNode(newNode);
         }
     }
+
+    int shortestObstacleX = min(obstacle1.x, obstacle2.x);
+    if(shortestObstacleX >= 150) {
+    	Node* newNode = new Node(shortestObstacleX/2, startNode->getPosition().y);
+    	addNode(newNode);
+    }
+
 }
 
 void PathPlanning::addNode(Node* newNode) {
@@ -318,8 +325,10 @@ void PathPlanning::connectNodes() {
         for (unsigned int j = 0; j < listOfNodes.size(); j++) {
             if (i < j) {
                 if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition())) {
-                    listOfNodes[i]->addNeighbor(listOfNodes[j]);
-                    listOfNodes[j]->addNeighbor(listOfNodes[i]);
+                	if(calculateDistance(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition()) < 80) {
+                		listOfNodes[i]->addNeighbor(listOfNodes[j]);
+                		listOfNodes[j]->addNeighbor(listOfNodes[i]);
+                	}
                 }
             }
         }
@@ -327,16 +336,22 @@ void PathPlanning::connectNodes() {
             ROS_ERROR("ERROR : The destination is within an obstacle");
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), startNode->getPosition())) {
-            listOfNodes[i]->addNeighbor(startNode);
-            startNode->addNeighbor(listOfNodes[i]);
+        	if(calculateDistance(listOfNodes[i]->getPosition(), startNode->getPosition()) < 80) {
+				listOfNodes[i]->addNeighbor(startNode);
+				startNode->addNeighbor(listOfNodes[i]);
+        	}
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), destinationNode->getPosition())) {
-            listOfNodes[i]->addNeighbor(destinationNode);
-            destinationNode->addNeighbor(listOfNodes[i]);
+        	if(calculateDistance(listOfNodes[i]->getPosition(), destinationNode->getPosition()) < 80) {
+				listOfNodes[i]->addNeighbor(destinationNode);
+				destinationNode->addNeighbor(listOfNodes[i]);
+        	}
         }
         if (!linePassesThroughObstacle(startNode->getPosition(), destinationNode->getPosition())) {
-            startNode->addNeighbor(destinationNode);
-            destinationNode->addNeighbor(startNode);
+        	if(calculateDistance(startNode->getPosition(), destinationNode->getPosition()) < 80) {
+				startNode->addNeighbor(destinationNode);
+				destinationNode->addNeighbor(startNode);
+        	}
         }
     }
 }
