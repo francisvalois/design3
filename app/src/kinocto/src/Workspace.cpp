@@ -1,5 +1,12 @@
 #include "Workspace.h"
 
+
+const float Workspace::MAX_X = 231.0f;
+const float Workspace::MAX_Y = 111.0f;
+const float Workspace::ROBOT_FRONT_SIZE = 12.5f;
+const float Workspace::ROBOT_SIDE_SIZE = 10.0f;
+const float Workspace::SUDOCUBE_FRONT_DISTANCE = 31.75f;
+
 Workspace::Workspace() {
     //Valeur à redéfinir dynamiquement;
     robot.set(0.0f, 0.0f);

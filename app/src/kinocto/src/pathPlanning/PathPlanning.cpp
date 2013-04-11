@@ -126,8 +126,8 @@ vector<Position> PathPlanning::findPathInGraph() {
         nodePositions.push_back(currentPosition);
     }
 //	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
-    if(nodePositions.size() <= 1) {
-    	nodePositions.clear();
+    if (nodePositions.size() <= 1) {
+        nodePositions.clear();
     }
     return nodePositions;
 }
@@ -138,7 +138,7 @@ vector<Move> PathPlanning::convertToMoves(vector<Position> positions, float star
     Position startPosition;
     Position endPosition;
 
-    for (unsigned int i = (positions.size() - 1); i > 0; i--) {
+    for (int i = (positions.size() - 1); i > 0; i--) {
         startPosition = positions[i];
         endPosition = positions[i - 1];
 
@@ -147,9 +147,9 @@ vector<Move> PathPlanning::convertToMoves(vector<Position> positions, float star
 
         moves.push_back(move);
     }
-    if(positions.size() > 0) {
-		Move move((destinationAngle - robotCurrentAngle), 0, endPosition);
-		moves.push_back(move);
+    if (positions.size() > 0) {
+        Move move((destinationAngle - robotCurrentAngle), 0, endPosition);
+        moves.push_back(move);
     }
     return moves;
 }
@@ -336,8 +336,8 @@ void PathPlanning::connectNodes() {
                 }
             }
         }
-        if(isInObstacle(destinationNode->getPosition())) {
-        	ROS_ERROR("ERROR : The destination is within an obstacle");
+        if (isInObstacle(destinationNode->getPosition())) {
+            ROS_ERROR("ERROR : The destination is within an obstacle");
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), startNode->getPosition())) {
             listOfNodes[i]->addNeighbor(startNode);
@@ -356,10 +356,10 @@ void PathPlanning::connectNodes() {
 
 bool PathPlanning::isInObstacle(Position position) {
     updateMatrixTable();
-	if (table[(int) position.x][(int) position.y] == 9) {
+    if (table[(int) position.x][(int) position.y] == 9) {
         return true;
     }
-	return false;
+    return false;
 }
 
 bool PathPlanning::linePassesThroughObstacle(Position p1, Position p2) {

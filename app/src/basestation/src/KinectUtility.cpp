@@ -1,28 +1,88 @@
-//
-// Created by francisvalois on 2013-02-28.
-//
-// To change the template use AppCode | Preferences | File Templates.
-//
-
-
 #include "KinectUtility.h"
 
-void Utility::saveToFile(Mat matrix, string fileName){
+using namespace cv;
+using namespace std;
+
+void Utility::saveToFile(Mat matrix, string fileName) {
     FileStorage fs(fileName, FileStorage::WRITE);
     fs << "cameraMatrix" << matrix;
 
     fs.release();
 }
 
-Mat Utility::readFromFile(string fileName){
+Mat Utility::readFromFile(string fileName) {
     FileStorage f;
     Mat matrix;
     f.open(fileName, FileStorage::READ);
-    if(!f.isOpened()){
+    if (!f.isOpened()) {
         throw string("Unable to open the file");
     }
     f["cameraMatrix"] >> matrix;
     f.release();
 
     return matrix;
+}
+
+Mat Utility::captureDepthMatrix(VideoCapture capture) {
+    Mat depthMap;
+
+    if (capture.isOpened()) {
+        capture.grab();
+        capture.retrieve(depthMap, CV_CAP_OPENNI_POINT_CLOUD_MAP);
+    }
+    else{
+        cout << "Cannot open a capture object." << endl;
+        std::stringstream file;
+        file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection8.xml";
+        //file << "robotdetection1.xml";
+        string fileString = file.str();
+        //cout << "Loading from file " << fileString << endl;
+
+        try{
+            depthMap =  Utility::readFromFile(fileString);
+            if(depthMap.rows != 480 || depthMap.cols != 640){
+                throw String("The picture is not of a good size");
+            }
+        }
+        catch(string e){
+            cout << e;
+            throw String("Unable to load the file");
+
+        }
+
+    }
+
+    Vec3f rightPointDistance = depthMap.at<Vec3f>(265, 368);    
+    return depthMap.clone();
+}
+
+Mat Utility::captureRGBMatrix(VideoCapture capture) {
+    Mat showRGB;
+
+    if (capture.isOpened()) {
+        capture.grab();
+        capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
+    }
+    else{
+        cout << "Cannot open a capture object." << endl;
+        std::stringstream file;
+        file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection8.jpg";
+        //file << "robotdetection1.jpg";
+        string fileString = file.str();
+        //cout << "Loading from file " << fileString << endl;
+
+        try{
+            showRGB = imread(fileString);
+            if(showRGB.rows != 480 || showRGB.cols != 640){
+                throw String("The picture is not of a good size");
+            }
+        }
+        catch(string e){
+            cout << e;
+            throw String("Unable to load the file");
+        }
+
+    }
+
+    return showRGB.clone();
 }

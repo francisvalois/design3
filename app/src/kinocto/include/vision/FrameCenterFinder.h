@@ -16,9 +16,9 @@ public:
     virtual ~FrameCenterFinder();
     double getXTranslation(cv::Mat & src);
 
-private:
-    const static double FRAME_PHYSICAL_SIZE = 16.5f;
+    const static double FRAME_PHYSICAL_SIZE;
 
+private:
     const static int FRAME_AREA_MIN = 300000;
     const static int FRAME_ERODE_SIZE = 1;
     const static int FRAME_DILATE_SIZE = 7;

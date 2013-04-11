@@ -24,11 +24,10 @@ private:
 
     static const int STEP_SIZE = 2;
 
-    double calculateAngleFrom(Point2d * first, Point2d * last);
+    double calculateAngleFrom(Point2d & first, Point2d & last);
     void applyErode(Mat & toErode, int size, int morphShape);
-    vector<cv::Point2d *> findSlopePoints(cv::Mat & wall);
-    double calculateSlopeAverage(vector<cv::Point2d *> points);
-    void deletePoints (vector<Point2d *> points);
+    vector<cv::Point2d> findSlopePoints(cv::Mat & wall);
+    double calculateSlopeAverage(vector<cv::Point2d> & points);
 };
 
 #endif
