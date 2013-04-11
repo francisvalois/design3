@@ -178,22 +178,13 @@ void PathPlanning::applyDijkstra() {
         }
 
         for (unsigned int i = 0; i < neighbors.size(); i++) {
-        	float cost = neighbors[i]->getCost();
-        	float score = node->getScore();
-        	score += cost;
-            if (score > neighbors[i]->getScore()) {
+            float cost = node->getCost();
+            cost += (float) calculateCost(node->getPosition(), neighbors[i]->getPosition());
+            if (cost < neighbors[i]->getCost()) {
                 neighbors[i]->setPredecessor(node);
-                neighbors[i]->setScore(score);
+                neighbors[i]->setCost(cost);
                 nodesToVisit.push(neighbors[i]);
             }
-
-//            float cost = node->getCost();
-//            cost += (float) calculateCost(node->getPosition(), neighbors[i]->getPosition());
-//            if (cost < neighbors[i]->getCost()) {
-//                neighbors[i]->setPredecessor(node);
-//                neighbors[i]->setCost(cost);
-//                nodesToVisit.push(neighbors[i]);
-//            }
         }
         neighbors.clear();
     } while (nodesToVisit.size() > 0);
@@ -269,7 +260,6 @@ void PathPlanning::createNodes() {
             } while (table[obstacleCornerValueX][nextObstacleY] == 1);
             float nodeY = (float) (obstacleCornerValues[i].y + ((nextObstacleY - obstacleCornerValues[i].y) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
-            newNode->setCost((nextObstacleY - obstacleCornerValues[i].y) / 2);
             addNode(newNode);
         } else if (table[obstacleCornerValueX][obstacleCornerValueYminus] == 1) {
             int nextObstacleY = obstacleCornerValues[i].y - 1;
@@ -278,7 +268,6 @@ void PathPlanning::createNodes() {
             } while (table[obstacleCornerValueX][nextObstacleY] == 1);
             float nodeY = (float) (obstacleCornerValues[i].y - ((obstacleCornerValues[i].y - nextObstacleY) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
-            newNode->setCost((obstacleCornerValues[i].y - nextObstacleY) / 2);
             addNode(newNode);
         }
     }
@@ -329,10 +318,8 @@ void PathPlanning::connectNodes() {
         for (unsigned int j = 0; j < listOfNodes.size(); j++) {
             if (i < j) {
                 if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition())) {
-                    if(calculateCost(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition()) < 80) {
-						listOfNodes[i]->addNeighbor(listOfNodes[j]);
-						listOfNodes[j]->addNeighbor(listOfNodes[i]);
-                    }
+                    listOfNodes[i]->addNeighbor(listOfNodes[j]);
+                    listOfNodes[j]->addNeighbor(listOfNodes[i]);
                 }
             }
         }

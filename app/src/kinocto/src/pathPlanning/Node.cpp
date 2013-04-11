@@ -6,14 +6,12 @@ Node::Node(int xx, int yy) {
 	position.set(xx,yy);
 	cost = 0;
 	predecessor = 0;
-	score = 0;
 }
 
 Node::Node(Position p) {
 	position = p;
 	cost = 0;
 	predecessor = 0;
-	score = 0;
 }
 
 Node::~Node() {
@@ -44,14 +42,6 @@ float Node::getCost() {
 
 void Node::setCost(float c) {
 	cost = c;
-}
-
-float Node::getScore() {
-	return score;
-}
-
-void Node::setScore(float s) {
-	score = s;
 }
 
 
