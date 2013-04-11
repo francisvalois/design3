@@ -20,4 +20,4 @@ private:
     cv::VideoCapture capture;
 };
 
-#endif /* KINECTCAPTURE_H_ */
+#endif

@@ -1,7 +1,7 @@
-//TODO : Faire des tests avec plusieurs positions de robot
-
 #include "ObstaclesDetector.h"
-#include "KinectTransformator.h"
+
+using namespace cv;
+using namespace std;
 
 const float ObstaclesDetector::OBSTACLE_RADIUS = 0.0565f;
 
@@ -10,7 +10,7 @@ const int ObstaclesDetector::X_OBSTACLE_RIGHT_THRESHOLD = 610;
 const int ObstaclesDetector::Y_OBSTACLE_TOP_THRESHOLD = 80;
 const int ObstaclesDetector::Y_OBSTACLE_BOTTOM_THRESHOLD = 272;
 const float ObstaclesDetector::OBSTACLE_DISTANCE_MIN_THRESHOLD = 0.8f;
-const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.3f;
+const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.225f;
 const float ObstaclesDetector::OBSTACLE_HEIGHT_THRESHOLD_PERCENT = 0.7f;
 
 Vec2f ObstaclesDetector::getObstacle1() {

@@ -33,10 +33,10 @@ Mat captureDepthMatrix() {
     else{
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
-            file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle4.xml";
-            //file << "robotdetection1.xml";
+            //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
+            file << "robotdetection4.xml";
             string fileString = file.str();
-            cout << "Loading from file " << fileString << endl;
+            //cout << "Loading from file " << fileString << endl;
             
             try{
                 depthMap =  Utility::readFromFile(fileString);
@@ -48,10 +48,7 @@ Mat captureDepthMatrix() {
 
     }
     
-    Vec3f rightPointDistance = depthMap.at<Vec3f>(265, 368);
-    
-    cout << rightPointDistance[0] << " " << rightPointDistance[2] << endl;
-    
+    Vec3f rightPointDistance = depthMap.at<Vec3f>(265, 368);    
     return depthMap.clone();
 }
 
@@ -65,10 +62,10 @@ Mat captureRGBMatrix() {
     else{
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
-        file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/table2Obstacle4.jpg";
-        //file << "robotdetection1.jpg";
+        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
+        file << "robotdetection4.jpg";
         string fileString = file.str();
-        cout << "Loading from file " << fileString << endl;
+        //cout << "Loading from file " << fileString << endl;
         
         try{
             showRGB = imread(fileString);
@@ -156,10 +153,14 @@ response findRobot(){
         
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
+        float angle = robotDetection.getRobotAngle();
+        int test = robotDetection.getOrientation();
         
         if(robot[0] > 0.10 || robot[1] > 0.20){
             response.x1 += robot[1] * 100;
             response.y1 += robot[0] * 100;
+            response.y2 += angle;
+            response.x2 = test;
             robotPositionAverageCount++;
         }
     }
@@ -167,6 +168,7 @@ response findRobot(){
     if(robotPositionAverageCount > 0){
         response.x1 /= robotPositionAverageCount;
         response.y1 /= robotPositionAverageCount;
+        response.y2 /= robotPositionAverageCount;
     }
     
     
@@ -191,15 +193,23 @@ int main( /*int argc, char* argv[]*/ ) {
     capture.open(CV_CAP_OPENNI);
     capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
     
+    //KinectTransformator::setKinectAngle(22.5);
+    //Vec2f kinectPosition(0.10f, -0.44f);
+    //KinectTransformator::setKinectPosition(kinectPosition);
     
+    Mat test1 = captureRGBMatrix();
+    Mat test2 = captureDepthMatrix();
+    
+    Utility::saveToFile(test2, "ExtremeObstacleCondition.xml");
+    imwrite("ExtremeObstacleCondition.jpg", test1);
     
     
     //vector<Point> test2 = calibrate();
     //Mat test9 = calibrate();
     RobotDetector robotDetection;
-    response responseObstacle;
-    response responseRobot;
-      
+    response responseObstacle = {0, 0, 0, 0};
+    response responseRobot = {0, 0, 0, 0};
+    
     responseObstacle = findObstacle();
     responseRobot = findRobot();
     
@@ -219,7 +229,7 @@ int main( /*int argc, char* argv[]*/ ) {
     cout << "Obstacle 1 : (" << responseObstacle.y1 << "cm en x, " << responseObstacle.x1 << "cm en z)" << endl;
     cout << "Obstacle 2 : (" << responseObstacle.y2 << "cm en x, " << responseObstacle.x2 << "cm en z)" << endl;
     cout << "Robot : (" << responseRobot.y1 << "m en x, " << responseRobot.x1 << "m en z) et "
-         << 0/M_PI*180 << " degre avec l'axe X" << endl;
+         << responseRobot.y2/M_PI*180 << " degre avec l'axe X" << endl;
 
 
     //world.convertTo(show, CV_8UC1, 0.05f);

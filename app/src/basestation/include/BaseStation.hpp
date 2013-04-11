@@ -62,7 +62,7 @@ Q_SIGNALS:
     void showSolvedSudocubeSignal(QString, int);
     void UpdatingRobotPositionSignal(float, float);
     void message(QString);
-    void traceRealTrajectorySignal(vector<Position>);
+    void traceRealTrajectorySignal(std::vector<Position>);
     void updateObstaclesPositions(int, int, int, int);
     void updateTableImage(QImage);
     void endLoop(QString);
@@ -91,13 +91,13 @@ private:
 
 
     cv::Mat3b createMatrix();
-    QImage Mat2QImage(const Mat3b&);
+    QImage Mat2QImage(const cv::Mat3b&);
 
     Position obstacle1;
     Position obstacle2;
     Position actualPosition;
-    vector<Position> plannedPath;
-    vector<Position> kinoctoPositionUpdates;
+    std::vector<Position> plannedPath;
+    std::vector<Position> kinoctoPositionUpdates;
 
     cv::Scalar white;
     cv::Scalar blue;

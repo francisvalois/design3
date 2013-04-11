@@ -4,6 +4,7 @@ using namespace basestation;
 using namespace std;
 using namespace boost;
 using namespace Qt;
+using namespace cv;
 
 MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
         QMainWindow(parent), ui(new Ui::MainWindow), baseStation(argc, argv) {

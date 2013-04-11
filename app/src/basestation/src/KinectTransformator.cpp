@@ -1,10 +1,11 @@
 #include "KinectTransformator.h"
-#define _USE_MATH_DEFINES
-#include <math.h>
 
-const float KinectTransformator::KINECTANGLE = 22.5f;
+using namespace cv;
+using namespace std;
+
+const float KinectTransformator::KINECTANGLE = 21.9f;
 float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 180 * M_PI);
-Vec2f KinectTransformator::_kinectPosition = Vec2f(0.105f, -0.530f);
+Vec2f KinectTransformator::_kinectPosition = Vec2f(0.105f, -0.53f);
 
 void KinectTransformator::setKinectAngle(float angleRad){
     if(angleRad > 0 && angleRad < M_PI){

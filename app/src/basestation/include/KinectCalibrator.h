@@ -1,23 +1,24 @@
-#ifndef __OpenCVTest__KinectCalibrator__
-#define __OpenCVTest__KinectCalibrator__
+#ifndef __KinectCalibrator__
+#define __KinectCalibrator__
 
 #include <iostream>
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "ObstaclesDetector.h"
 
-using namespace cv;
+#include "opencv2/core/core.hpp"
+//#include "opencv2/highgui/highgui.hpp"
+
+#include "ObstaclesDetector.h"
+#include "KinectTransformator.h"
 
 class KinectCalibrator{
     private:
-        static Vec2f BASE_POSITION_FROM_ORIGIN;
+        static cv::Vec2f BASE_POSITION_FROM_ORIGIN;
     
-        static std::vector<Point> _pointVector;
-        static std::vector<Point> findCalibrationSquare(Mat rgbMatrix);
-        static float findAndSetKinectAngle(Mat depthMatrix);
+        static std::vector<cv::Point> _pointVector;
+        static std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);
+        static float findAndSetKinectAngle(cv::Mat depthMatrix);
     public:
-        static bool calibrate(Mat rgbMatrix, Mat depthMatrix);
-        static std::vector<Point> getSquarePositions();
+        static bool calibrate(cv::Mat rgbMatrix, cv::Mat depthMatrix);
+        static std::vector<cv::Point> getSquarePositions();
 };
 
-#endif /* defined(__OpenCVTest__KinectCalibrator__) */
+#endif

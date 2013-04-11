@@ -3,6 +3,8 @@
 using namespace cv;
 using namespace std;
 
+const double FrameCenterFinder::FRAME_PHYSICAL_SIZE = 16.5f;
+
 FrameCenterFinder::FrameCenterFinder() {
 }
 

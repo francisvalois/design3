@@ -1,30 +1,32 @@
-#ifndef __kinect_detection_
-#define __kinect_detection_
+#ifndef __object_detector_
+#define __object_detector_
 
 #include <iostream>
-#include "opencv2/core/core.hpp"
 #include <list>
+
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/core/core.hpp"
 
-
-using namespace cv;
-using namespace std;
+#include "KinectTransformator.h"
 
 class ObjectDetector {
+public:
+    int generateQuads(cv::Mat &image, std::vector<cv::Rect>&outQuads);
+    enum quadColor {
+        BLUE, BLACK, RED
+    };
 
 protected:
     static float const TABLE_WIDTH;
 
-    int getAverageFromPointList(list<Point> obstacle);
-    Vec2f getAverageDistanceForPointLine(list<Vec2f> allDistances);
-    int removeQuadsNotOnChessboard(vector<Rect>  & outQuads);
-    void sortQuadsByPosition(vector<Rect>  & outQuads);
-    int removeDoubleSquare(vector<Rect>  & outQuads);
-
-public:
-    int generateQuads(Mat &image, vector<Rect>&outQuads);
-
+    int getAverageFromPointList(std::list<cv::Point> obstacle);
+    cv::Vec2f getAverageDistanceForPointLine(std::list<cv::Vec2f> allDistances);
+    int removeQuadsNotOnChessboard(std::vector<cv::Rect> & outQuads);
+    void sortQuadsByPosition(std::vector<cv::Rect> & outQuads);
+    int removeDoubleSquare(std::vector<cv::Rect> & outQuads);
+    quadColor findQuadColor(cv::Mat &image, const std::vector<cv::Rect> &squares);
 };
 
-#endif //__kinect_H_
+#endif

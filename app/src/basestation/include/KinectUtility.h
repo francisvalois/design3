@@ -1,15 +1,15 @@
-#ifndef __Utility_H_
-#define __Utility_H_
+#ifndef __KinectUtility_H_
+#define __KinectUtility_H_
 
 #include <iostream>
-#include "opencv2/core/core.hpp"
+#include <string>
 
-using namespace cv;
+#include "opencv2/core/core.hpp"
 
 class Utility {
 public:
-    static void saveToFile(Mat matrix, string fileName);
-    static Mat readFromFile(string fileName);
+    static void saveToFile(cv::Mat matrix, std::string fileName);
+    static cv::Mat readFromFile(std::string fileName);
 };
 
-#endif //__Utility_H_
+#endif
