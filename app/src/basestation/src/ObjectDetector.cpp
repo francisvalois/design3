@@ -244,7 +244,7 @@ ObjectDetector::quadColor ObjectDetector::findQuadColor(Mat &picture, const vect
     int coloredSquareCount = 0;
     for (int i = 0; i < squares.size(); i++) {
         Rect square = squares[i];
-        Vec3b pixel = HSVPicture.at<Vec3b>(square.x + (square.width / 2), square.y + (square.height / 2));
+        Vec3b pixel = HSVPicture.at<Vec3b>(square.y + (square.height / 2), square.x + (square.width / 2));
 
         if (pixel[2] > 30 && pixel[0] > 100 && pixel[0] < 160) {
             coloredSquareCount++;

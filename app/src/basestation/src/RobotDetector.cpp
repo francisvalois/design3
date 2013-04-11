@@ -1,4 +1,7 @@
 #include "RobotDetector.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 
 using namespace cv;
 using namespace std;
@@ -103,7 +106,8 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         Vec2f trueLeftPosition;
         Vec2f trueRightPosition;
 
-        //The first run find approximate angle and the seconde one the good angle with the good position;
+        //The first run find approximate the angle and the second one find the good angle, 
+        //the good orientation and the good position
         get2MajorPointsDistance(depthMatrix, validRobotPosition, trueLeftPosition, trueRightPosition);
         float angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
         vector<Point2f> extremePoints = getExtremePointsOfRobot(depthMatrix, angleRad, validRobotPosition);

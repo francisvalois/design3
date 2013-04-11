@@ -1,11 +1,14 @@
 #include "KinectCalibrator.h"
+#include "KinectUtility.h"
 
 using namespace cv;
+using namespace std;
 
-Vec2f KinectCalibrator::BASE_POSITION_FROM_ORIGIN = Vec2f(0.545f, 0.775f);
-
-std::vector<Point> KinectCalibrator::_pointVector;
-
+const Vec2f KinectCalibrator::BASE_POSITION_FROM_ORIGIN = Vec2f(0.545f, 0.775f);
+const Vec2f KinectCalibrator::OBSTACLE_POSITION_1 = Vec2f(0.448, 1.396);
+const Vec2f KinectCalibrator::OBSTACLE_POSITION_2 = Vec2f(0.19, 1.433);
+const Point KinectCalibrator::CIRCLE_POSITION_1 = Point(440, 225);
+const Point KinectCalibrator::CIRCLE_POSITION_2 = Point(523, 223);
 
 std::vector<Point> KinectCalibrator::getSquarePositions(){
     return KinectCalibrator::_pointVector;
@@ -54,4 +57,48 @@ bool KinectCalibrator::calibrate(Mat rgbMatrix, Mat depthMatrix){
     }
         
     return false;
+}
+
+bool KinectCalibrator::calibratev2(VideoCapture capture){
+    namedWindow("Calibration", 1);
+
+    for(;;){
+        Mat rgbPicture = Utility::captureRGBMatrix(capture);
+        Mat depthPicture = Utility::captureDepthMatrix(capture);
+
+        circle(rgbPicture, CIRCLE_POSITION_1,4,Scalar(255,255,255));
+        circle(rgbPicture, CIRCLE_POSITION_2,4,Scalar(255,255,255));
+    
+        Vec3f firstPosition = depthPicture.at<Vec3f>(CIRCLE_POSITION_1);
+        Vec2f trueFirstPosition = KinectTransformator::getTrueCoordFromKinectCoord(firstPosition);
+
+        Vec3f secondPosition = depthPicture.at<Vec3f>(CIRCLE_POSITION_2);
+        Vec2f trueSecondPosition = KinectTransformator::getTrueCoordFromKinectCoord(secondPosition);
+
+        if(trueFirstPosition[0] >= OBSTACLE_POSITION_1[0] - 0.01 && 
+            trueFirstPosition[0] <= OBSTACLE_POSITION_1[0] + 0.01 &&
+            trueFirstPosition[1] >= OBSTACLE_POSITION_1[1] - 0.01 && 
+            trueFirstPosition[1] <= OBSTACLE_POSITION_1[1] + 0.01){
+                cout << "Obstacle 1 is in range" << endl;
+        }
+
+        if(trueSecondPosition[0] >= OBSTACLE_POSITION_2[0] - 0.01 && 
+            trueSecondPosition[0] <= OBSTACLE_POSITION_2[0] + 0.01 &&
+            trueSecondPosition[1] >= OBSTACLE_POSITION_2[1] - 0.01 && 
+            trueSecondPosition[1] <= OBSTACLE_POSITION_2[1] + 0.01){
+                cout << "Obstacle 2 is in range" << endl;
+        }
+
+        imshow("Calibration", rgbPicture);
+
+        int key = waitKey(250);
+
+        if(key == 27){
+            break;
+        }
+    }
+
+    destroyWindow("Calibration");
+
+    return true;
 }
