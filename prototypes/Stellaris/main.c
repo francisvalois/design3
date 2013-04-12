@@ -8,6 +8,7 @@
 #include "driverlib/gpio.h"
 #include "driverlib/sysctl.h"
 #include "ecran.h"
+#include "gestionAntenne.h"
 
 #define BUFFER_LEN          256
 
@@ -203,6 +204,7 @@ int main(void)
     initUART();   
     initQEI();
     initTimer();
+	antenne_Initialiser();
     
 
 

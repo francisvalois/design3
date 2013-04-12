@@ -24,6 +24,9 @@ extern tBoolean a_atteint_consigne;
 extern volatile unsigned long index;
 //moteur.c
 extern volatile long offset, offset2;
+//antenne.c
+extern volatile char mot;
+extern volatile long test;
 
 //Variables globales
 volatile long commande[8];
@@ -70,7 +73,9 @@ void disableQEIs(void);
 void enableQEIs(void);
 void initQEI(void);
 //antenne.c
-void getAntenne(void);
+void antenne_Initialiser();
+void activerInterruptionsManchester();
+void desactiverInterruptionsManchester();
 
 /*
  * COMMANDE
@@ -256,12 +261,12 @@ tBoolean CommandHandler(void){
 		//degree = degree*16000/360;
 		long consigne = 0;
 
-		if(commande[1] == 'P' && degree > 29){
+		if(commande[1] == 'P' && degree > 69){
 			degree = (degree)*16300/360;
 			degree = -degree;
 			consigne = 1600;
 		}
-		else if(commande[1] == 'P'&& degree <= 29 && degree >15 ){
+		else if(commande[1] == 'P'&& degree >15 ){
 			degree = (degree)*16300/360;
 			degree = -degree;
 			consigne = 800;
@@ -269,19 +274,19 @@ tBoolean CommandHandler(void){
 		else if(commande[1] == 'P'&&degree<=15){
 			degree = (degree)*16300/360;
 			degree = -degree;
-			consigne = 500;
+			consigne = 800;
 		}
-		else if(commande[1] == 'N' && degree > 29){
+		else if(commande[1] == 'N' && degree > 69){
 			degree = (degree)*16000/360;
 			consigne = 1600;
 		}
-		else if(commande[1] == 'N' && degree <= 29 && degree >15){
+		else if(commande[1] == 'N' && degree >15){
 			degree = (degree)*16000/360;
 			consigne = 800;
 		}
 		else if(commande[1] == 'N'&&degree<=15){
 			degree = (degree)*16000/360;
-			consigne = 500;
+			consigne = 800;
 		}
 		else{
 			initCommande();
@@ -317,7 +322,73 @@ tBoolean CommandHandler(void){
 	else if(commande[0] == 'A'){ //Demander donnÃ©e antenne
 		disableTimer(); //Arrêter le timer  de l'asservissement
 		disableQEIs(); //Arrêter les calculs des QEIs
-		getAntenne();
+		test = 0;
+		antenne_Initialiser();
+		activerInterruptionsManchester();
+		while(test == 0){
+		}
+		/*long time_trigger = 0;
+		long time_trigger_start = 0;
+		long time_systick = 0;
+		//ROM_GPIOPinWrite(GPIO_PORTA_BASE, GPIO_PIN_5, 0xFF);
+		//Attend 10 us
+		time_trigger_start = ROM_SysTickValueGet();
+		while(time_trigger < 16000000){
+			time_systick = ROM_SysTickValueGet();
+			if(time_systick < time_trigger_start){
+				time_trigger = time_trigger_start - time_systick;
+			}
+			else{ //Si le systick a bouclé
+				time_trigger = time_trigger_start + ROM_SysTickPeriodGet() - time_systick;
+			}
+		}*/
+		desactiverInterruptionsManchester();
+		//char patate = mot & 0x02;
+		if(mot & 0x40){
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+		}
+		else{
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '0';
+		}
+		if(mot & 0x20){
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+		}
+		else{
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '0';
+		}
+		if(mot & 0x10){
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+		}
+		else{
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '0';
+		}
+		if(mot & 0x08){
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+		}
+		else{
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '0';
+		}
+		if(mot & 0x04){
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+		}
+		else{
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '0';
+		}
+		if(mot & 0x02){
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+		}
+		else{
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '0';
+		}
+		if(mot & 0x01){
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '1';
+		}
+		else{
+			send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= '0';
+		}
+		send_buffer.buffer[send_buffer.write++%BUFFER_LEN]= 'E';
+		//Fin attente 10 us
+		//getAntenne();
 		//enableQEIs(); //Permettre les calculs des QEIs
 		//enableTimer(); //Enabler le timer  de l'asservissement
 		initQEI();
