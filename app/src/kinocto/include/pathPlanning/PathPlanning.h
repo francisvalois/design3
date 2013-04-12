@@ -30,6 +30,8 @@ public:
     void setObstacles(Position, Position);
     void printTable();
 
+    bool verifySideSudocubeSpaceAvailable(int);
+
 private:
 
     //OBSTACLES

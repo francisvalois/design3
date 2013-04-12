@@ -200,6 +200,37 @@ namespace {
 		}
     }
 
+  TEST_F(PathPlanningTest, IntegrationTest8) {
+  	  	//CONFIGURATION POSSIBILITY 5
+  //	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  //	  xx00000000000000000000000000000000000xx
+  //	  xx0000000000xxxxxx00xxxxxx00000000000xx
+  //	  xx0000000000xxxxxx00xxxxxx00000000000xx
+  //	  xx0000000000xxxxxx00xxxxxx00000000000xx
+  //	  xx00000000000000000000000000000000000xx
+  //	  xx00000000000000000000000000000000000xx
+  //	  xx00000000000000000000000000000000000xx
+  //	  xx00000000000000000000000000000000000xx
+  //	  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+		obs1.set(130,35);
+		obs2.set(150,35);
+		start.set(60,15);
+
+  		pathPlanning.setObstacles(obs1,obs2);
+
+		for(int i = 1; i <=8; i++) {
+			pathPlanning.getPath(start, workspace.getSudocubePos(i));
+//			pathPlanning.printTable();
+		}
+//		vector<Position> pos = pathPlanning.getPath(start, workspace.getSudocubePos(7));
+//		cout << pos.size() << endl;
+//		for(unsigned int i = 0; i <pos.size(); i++) {
+//			cout << pos[i].x << "," << pos[i].y << endl;
+//		}
+//			pathPlanning.printTable();
+    }
+
   TEST_F(PathPlanningTest, IntegrationTestAntenna) {
 	  	obs1.set(110,75);
 		obs2.set(180,30);
@@ -233,5 +264,44 @@ namespace {
 
 		ASSERT_EQ(0, pathPlanning.getPath(start, workspace.getSudocubePos(1)).size());
 //		pathPlanning.printTable();
+  }
+
+  TEST_F(PathPlanningTest, verifySideSudocubeReturnsFalseWithWrongSudocubeNumber) {
+		obs1.set(130,35);
+		obs2.set(150,35);
+		start.set(60,15);
+
+		pathPlanning.setObstacles(obs1,obs2);
+
+		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(1));
+		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(-1));
+		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(-1023));
+		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(0));
+		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(5));
+		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(164));
+  }
+
+  TEST_F(PathPlanningTest, verifySideSudocubeReturnsTrueWhenNoObstacle) {
+		obs1.set(90,35);
+		obs2.set(150,35);
+		start.set(60,15);
+
+		pathPlanning.setObstacles(obs1,obs2);
+
+		ASSERT_TRUE(pathPlanning.verifySideSudocubeSpaceAvailable(3));
+
+//		pathPlanning.printTable();
+  }
+
+  TEST_F(PathPlanningTest, verifySideSudocubeReturnsFalseWhenObstacle) {
+		obs1.set(130,35);
+		obs2.set(200,60);
+		start.set(60,15);
+
+		pathPlanning.setObstacles(obs1,obs2);
+
+		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(3));
+//		pathPlanning.printTable();
+
   }
 }

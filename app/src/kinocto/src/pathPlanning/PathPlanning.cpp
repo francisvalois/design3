@@ -28,6 +28,21 @@ PathPlanning::~PathPlanning() {
     deleteAllNodes();
 }
 
+bool PathPlanning::verifySideSudocubeSpaceAvailable(int sudocubeNumber) {
+	Workspace workspace;
+	if(sudocubeNumber == 3) {
+		if(!linePassesThroughObstacle(workspace.getSudocubePos(3), workspace.getSudocubePos(4))) {
+			return true;
+		}
+	}
+	if(sudocubeNumber == 6) {
+		if(!linePassesThroughObstacle(workspace.getSudocubePos(6), workspace.getSudocubePos(5))) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void PathPlanning::deleteAllNodes() {
     for (int i = 0; i < listOfNodes.size(); i++) {
         Node * node = listOfNodes[i];
@@ -124,6 +139,7 @@ vector<Position> PathPlanning::findPathInGraph() {
 //		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
         Position currentPosition(current->getPosition().x, current->getPosition().y);
         nodePositions.push_back(currentPosition);
+//        cout << "clearance" << current->getClearance() << endl;
     }
 //	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
     if (nodePositions.size() <= 1) {
@@ -179,7 +195,8 @@ void PathPlanning::applyDijkstra() {
 
         for (unsigned int i = 0; i < neighbors.size(); i++) {
             float cost = node->getCost();
-            cost += (float) calculateDistance(node->getPosition(), neighbors[i]->getPosition());
+            cost -= neighbors[i]->getClearance();
+//            cost += (float) calculateDistance(node->getPosition(), neighbors[i]->getPosition());
             if (cost < neighbors[i]->getCost()) {
                 neighbors[i]->setPredecessor(node);
                 neighbors[i]->setCost(cost);
@@ -260,6 +277,9 @@ void PathPlanning::createNodes() {
             } while (table[obstacleCornerValueX][nextObstacleY] == 1);
             float nodeY = (float) (obstacleCornerValues[i].y + ((nextObstacleY - obstacleCornerValues[i].y) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
+//            cout << "creating node at " << obstacleCornerValues[i].x << "," << nodeY << endl;
+            newNode->setClearance((nextObstacleY - obstacleCornerValues[i].y));
+//            cout << "  with clearance " << newNode->getClearance() << endl;
             addNode(newNode);
         } else if (table[obstacleCornerValueX][obstacleCornerValueYminus] == 1) {
             int nextObstacleY = obstacleCornerValues[i].y - 1;
@@ -268,14 +288,9 @@ void PathPlanning::createNodes() {
             } while (table[obstacleCornerValueX][nextObstacleY] == 1);
             float nodeY = (float) (obstacleCornerValues[i].y - ((obstacleCornerValues[i].y - nextObstacleY) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
+            newNode->setClearance((obstacleCornerValues[i].y - nextObstacleY));
             addNode(newNode);
         }
-    }
-
-    int shortestObstacleX = min(obstacle1.x, obstacle2.x);
-    if(shortestObstacleX >= 150) {
-    	Node* newNode = new Node(shortestObstacleX/2, startNode->getPosition().y);
-    	addNode(newNode);
     }
 
 }
@@ -325,7 +340,7 @@ void PathPlanning::connectNodes() {
         for (unsigned int j = 0; j < listOfNodes.size(); j++) {
             if (i < j) {
                 if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition())) {
-                	if(calculateDistance(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition()) < 80) {
+                	if(calculateDistance(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition()) < 160) {
                 		listOfNodes[i]->addNeighbor(listOfNodes[j]);
                 		listOfNodes[j]->addNeighbor(listOfNodes[i]);
                 	}
@@ -336,19 +351,19 @@ void PathPlanning::connectNodes() {
             ROS_ERROR("ERROR : The destination is within an obstacle");
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), startNode->getPosition())) {
-        	if(calculateDistance(listOfNodes[i]->getPosition(), startNode->getPosition()) < 80) {
+        	if(calculateDistance(listOfNodes[i]->getPosition(), startNode->getPosition()) < 160) {
 				listOfNodes[i]->addNeighbor(startNode);
 				startNode->addNeighbor(listOfNodes[i]);
         	}
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), destinationNode->getPosition())) {
-        	if(calculateDistance(listOfNodes[i]->getPosition(), destinationNode->getPosition()) < 80) {
+        	if(calculateDistance(listOfNodes[i]->getPosition(), destinationNode->getPosition()) < 160) {
 				listOfNodes[i]->addNeighbor(destinationNode);
 				destinationNode->addNeighbor(listOfNodes[i]);
         	}
         }
         if (!linePassesThroughObstacle(startNode->getPosition(), destinationNode->getPosition())) {
-        	if(calculateDistance(startNode->getPosition(), destinationNode->getPosition()) < 80) {
+        	if(calculateDistance(startNode->getPosition(), destinationNode->getPosition()) < 160) {
 				startNode->addNeighbor(destinationNode);
 				destinationNode->addNeighbor(startNode);
         	}
@@ -415,14 +430,16 @@ void PathPlanning::printTable() {
     }
     transpose(workspace, workspace);
 
-    Node* current = destinationNode;
-    Node* predecessor = current->getPredecessor();
-    while (predecessor != 0) {
-        Point currentPoint(current->getPosition().x, Workspace::TABLE_Y - current->getPosition().y);
-        Point predecessorPoint(predecessor->getPosition().x, Workspace::TABLE_Y - predecessor->getPosition().y);
-        drawLine(workspace, currentPoint, predecessorPoint);
-        current = predecessor;
-        predecessor = current->getPredecessor();
+    if(destinationNode != 0) {
+		Node* current = destinationNode;
+		Node* predecessor = current->getPredecessor();
+		while (predecessor != 0) {
+			Point currentPoint(current->getPosition().x, Workspace::TABLE_Y - current->getPosition().y);
+			Point predecessorPoint(predecessor->getPosition().x, Workspace::TABLE_Y - predecessor->getPosition().y);
+			drawLine(workspace, currentPoint, predecessorPoint);
+			current = predecessor;
+			predecessor = current->getPredecessor();
+		}
     }
 
     showWindowWith("workspace", workspace);

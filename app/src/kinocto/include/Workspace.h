@@ -21,8 +21,8 @@ public:
     const static int TABLE_X = 231;
     const static int TABLE_Y = 111;
     const static int CAM_HEIGHT = 19;
-    const static int ROBOT_RADIUS = 13;
-    const static int OBSTACLE_RADIUS = 7;
+    const static int ROBOT_RADIUS = 11;
+    const static int OBSTACLE_RADIUS = 6;
     const static int DRAWING_ZONE = 89;
     const static int BUFFER_SIZE = ROBOT_RADIUS + 2;
     const static int TOTAL_OBSTACLE_RADIUS = (BUFFER_SIZE + OBSTACLE_RADIUS);

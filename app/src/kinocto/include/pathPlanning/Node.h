@@ -23,6 +23,9 @@ public:
     float getCost();
     void setCost(float);
 
+    float getClearance();
+    void setClearance(float);
+
     std::vector<Node*> getLeftNeighbors();
     std::vector<Node*> getRightNeighbors();
     void addNeighbor(Node*);
@@ -34,6 +37,7 @@ private:
     Position position;
     Node* predecessor;
     float cost;
+    float clearance;
     std::vector<Node*> leftNeighbors;
     std::vector<Node*> rightNeighbors;
 };

@@ -6,12 +6,14 @@ Node::Node(int xx, int yy) {
 	position.set(xx,yy);
 	cost = 0;
 	predecessor = 0;
+	clearance = 0;
 }
 
 Node::Node(Position p) {
 	position = p;
 	cost = 0;
 	predecessor = 0;
+	clearance = 0;
 }
 
 Node::~Node() {
@@ -44,6 +46,13 @@ void Node::setCost(float c) {
 	cost = c;
 }
 
+float Node::getClearance() {
+	return clearance;
+}
+
+void Node::setClearance(float c) {
+	clearance = c;
+}
 
 std::vector<Node*> Node::getLeftNeighbors() {
 	return leftNeighbors;
