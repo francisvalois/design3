@@ -109,7 +109,26 @@ void Kinocto::showAntennaParam() {
 
 void Kinocto::goToSudocubeX() {
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
+
+    vector<Position> positions;
+
+    bool isCaseSudocube3WithTranslation = false;
+    bool isCaseSudocube6WithTranslation = false;
+
+    if(antennaParam.getNumber() == 3) {
+    	if(pathPlanning.verifySideSudocubeSpaceAvailable(3)) {
+    		positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(4));
+    		isCaseSudocube3WithTranslation = true;
+    	}
+    }else if (antennaParam.getNumber() == 6) {
+    	if(pathPlanning.verifySideSudocubeSpaceAvailable(6)) {
+    		positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(5));
+    		isCaseSudocube6WithTranslation = true;
+    	}
+    }else {
+    	positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
+    }
+
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(antennaParam.getNumber()));
 
     baseStation->sendTrajectory(positions);
@@ -121,6 +140,13 @@ void Kinocto::goToSudocubeX() {
     workspace.setRobotPos(robotPos);
 
     executeMoves(moves);
+    if(isCaseSudocube3WithTranslation) {
+    	Position translation(0, -25);
+    	microcontroller->translate(translation);
+    }else if (isCaseSudocube6WithTranslation) {
+    	Position translation(0, 26);
+    	microcontroller->translate(translation);
+    }
 }
 
 double Kinocto::adjustAngleInFrontOfWall() {
