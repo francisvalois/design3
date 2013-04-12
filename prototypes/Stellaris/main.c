@@ -208,7 +208,7 @@ int main(void)
 
     while(1)
 	{
-		EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
+		//EncoderHandler(); // Traitement des encodeurs en quadrature pour les moteurs 2 et 3
 
 		//si un charactère dans la Receive FIFO
 		if(!(UART0_FR_R & UART_FR_RXFE)) //&& (send_buffer.read > send_buffer.write-256))
@@ -241,7 +241,7 @@ int main(void)
 			CommandHandler();
 		}
 		
-		if(is_waiting_for_action && a_atteint_consigne){
+		if(is_waiting_for_action && a_atteint_consigne && !est_en_mouvement){
 			send_buffer.buffer[send_buffer.write++%BUFFER_LEN] = 'E';
 			is_waiting_for_action = false;
 		}
