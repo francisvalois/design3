@@ -5,8 +5,8 @@ using namespace cv;
 using namespace std;
 
 const Vec2f KinectCalibrator::BASE_POSITION_FROM_ORIGIN = Vec2f(0.545f, 0.775f);
-const Vec2f KinectCalibrator::OBSTACLE_POSITION_1 = Vec2f(0.448, 1.396);
-const Vec2f KinectCalibrator::OBSTACLE_POSITION_2 = Vec2f(0.19, 1.433);
+const Vec2f KinectCalibrator::OBSTACLE_POSITION_1 = Vec2f(0.835, 1.52);
+const Vec2f KinectCalibrator::OBSTACLE_POSITION_2 = Vec2f(0.325, 1.52);
 const Point KinectCalibrator::CIRCLE_POSITION_1 = Point(440, 225);
 const Point KinectCalibrator::CIRCLE_POSITION_2 = Point(523, 223);
 

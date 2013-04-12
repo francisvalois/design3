@@ -18,6 +18,7 @@ private:
     static cv::Vec2f _kinectPosition;
 public:
     static cv::Vec2f translateXZCoordtoOrigin(cv::Vec2f rotatedXZ);
+    cv::Point findNeareastValueInLookupTable(int expectedValueX, int expectedValueY);
     static cv::Vec2f getTrueCoordFromKinectCoord(cv::Vec3f depthXYZ);
     static cv::Vec2f getRotatedXZCoordFromKinectCoord(cv::Vec3f depthXYZ);
     static void setKinectAngle(float angleRad);
