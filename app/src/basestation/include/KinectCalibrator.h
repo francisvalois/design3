@@ -20,6 +20,7 @@ class KinectCalibrator{
         std::vector<cv::Point> _pointVector;
         std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);
         float findAndSetKinectAngle(cv::Mat depthMatrix);
+
     public:
         bool calibrate(cv::Mat rgbMatrix, cv::Mat depthMatrix);
         std::vector<cv::Point> getSquarePositions();

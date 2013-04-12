@@ -266,7 +266,7 @@ tBoolean CommandHandler(void){
 			degree = -degree;
 			consigne = 800;
 		}
-		else if(commande[1] == 'P'&&degree<15){
+		else if(commande[1] == 'P'&&degree<=15){
 			degree = (degree)*16300/360;
 			degree = -degree;
 			consigne = 500;
@@ -279,7 +279,7 @@ tBoolean CommandHandler(void){
 			degree = (degree)*16000/360;
 			consigne = 800;
 		}
-		else if(commande[1] == 'N'&&degree<15){
+		else if(commande[1] == 'N'&&degree<=15){
 			degree = (degree)*16000/360;
 			consigne = 500;
 		}
