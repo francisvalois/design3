@@ -77,7 +77,12 @@ Point KinectTransformator::findNeareastValueInLookupTable(int expectedValueX, in
     //std::cout << "The first odd value is " << *it << '\n';
 
     std::vector<float>::iterator low;
-    low=std::lower_bound (test3.begin(), test3.end(), 1);
+    low=std::lower_bound (test3.begin(), test3.end(), expectedValueY);
+
+    float beforeValue = low - test3.begin();
+
+
+
 
 
 
