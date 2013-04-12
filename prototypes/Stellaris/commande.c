@@ -167,22 +167,25 @@ tBoolean CommandHandler(void){
 	 	}*/
 	 	long consignex=0;
 	 	long consigney=0;
-	 	if(deplacement_y > 0 && deplacement_y < 1745 && deplacement_x == 0){
+	 	if(deplacement_x > 0 && deplacement_x < 1745 && deplacement_y == 0||
+	 	(deplacement_x > 0 && deplacement_x < 1745 && deplacement_y == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 1600;
 	 		//deplacement_y -= 504;
 	 	}
-	 	else if(deplacement_y > 1745 && deplacement_y < 6000 && deplacement_x == 0){
+	 	else if(deplacement_x > 1745 && deplacement_x < 9050 && deplacement_y == 0||
+	 	(deplacement_y > 1745 && deplacement_y < 9050 && deplacement_x == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 3200;
 	 		//deplacement_y -= 504;
 	 	}
-	 	else if((deplacement_x_abs > 6000 && deplacement_y == 0) || (deplacement_y > 6000 && deplacement_x_abs == 0)){
+	 	else if((deplacement_x_abs > 9050 && deplacement_y == 0) ||
+	 	(deplacement_y > 9050 && deplacement_x_abs == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
-	 		consigne = 3200;
+	 		consigne = 6400;
 	 		//deplacement_x_abs -= 504;
 	 	}
 	 	else if(deplacement_x_abs !=0 && deplacement_y !=0){
@@ -256,12 +259,12 @@ tBoolean CommandHandler(void){
 		//degree = degree*16000/360;
 		long consigne = 0;
 
-		if(commande[1] == 'P' && degree > 29){
+		if(commande[1] == 'P' && degree > 70){
 			degree = (degree)*16300/360;
 			degree = -degree;
 			consigne = 1600;
 		}
-		else if(commande[1] == 'P'&& degree <= 29 && degree >15 ){
+		else if(commande[1] == 'P'&& degree <= 70 && degree >15 ){
 			degree = (degree)*16300/360;
 			degree = -degree;
 			consigne = 800;
@@ -271,11 +274,11 @@ tBoolean CommandHandler(void){
 			degree = -degree;
 			consigne = 500;
 		}
-		else if(commande[1] == 'N' && degree > 29){
+		else if(commande[1] == 'N' && degree > 70){
 			degree = (degree)*16000/360;
 			consigne = 1600;
 		}
-		else if(commande[1] == 'N' && degree <= 29 && degree >15){
+		else if(commande[1] == 'N' && degree <= 70 && degree >15){
 			degree = (degree)*16000/360;
 			consigne = 800;
 		}
