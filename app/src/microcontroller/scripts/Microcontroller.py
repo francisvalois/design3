@@ -267,7 +267,7 @@ def Microcontroller():
     rospy.loginfo("Creating Serial Communication")
     ser = serial.Serial()
     # ser.port = ('/dev/ttyUSB0') 
-    ser.port = ('/dev/serial/by-id/usb-TXI_Luminary_Micro_ICDI_Board_0B01015D-if01-port0')
+    ser.port = ('/dev/serial/by-id/usb-TXI_Luminary_Micro_ICDI_Board_0B010140-if01-port0')
     ser.baudrate = 115200
     ser.parity = serial.PARITY_EVEN
     ser.stopbits = 1
