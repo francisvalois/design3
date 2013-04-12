@@ -10,16 +10,16 @@
 using namespace cv;
 using namespace std;
 
-localisation::localisation()
+Localisation::Localisation()
 {
 }
 
-localisation::~localisation()
+Localisation::~Localisation()
 {
 
 }
 
-void localisation::initLocalisation(Mat & image, int orientation, string & paramsCalib)
+void Localisation::initLocalisation(Mat & image, int orientation, string & paramsCalib)
 {
 	FileStorage fs(paramsCalib, FileStorage::READ);
 	bool okFile = fs.isOpened();
@@ -30,12 +30,31 @@ void localisation::initLocalisation(Mat & image, int orientation, string & param
 	fs["distMat"] >> distMat;
 	fs["extrinsic"] >> extrinsic;
 
+	KnownPoint CoinNE, CoinNW, CoinSE, CoinSW;
+	CoinNE.x = 0;
+	CoinNW.x = 0;
+	CoinSE.x = 110.7;
+	CoinSW.x = 110.7;
+	CoinNE.y = 0;
+	CoinNW.y = 230.5;
+	CoinSE.y = 0;
+	CoinSW.y = 230.5;
+	CoinNE.ID = NE_CORNER;
+	CoinNW.ID = NW_CORNER;
+	CoinSE.ID = SE_CORNER;
+	CoinSW.ID = SW_CORNER;
+	reperes.push_back(CoinNE);
+	reperes.push_back(CoinNW);
+	reperes.push_back(CoinSE);
+	reperes.push_back(CoinSW);
+
 	Mat params;
 	fs["paramsRobot"] >> params;
 
 	mParams.push_back(params.at<double>(0));
 	mParams.push_back(params.at<double>(1));
-	undistort(image, mImage, intrinsic, distMat);
+	//undistort(image, mImage, intrinsic, distMat);
+	mImage = image;
 	Mat transfoMatrix = intrinsic*extrinsic;
 	m11 = transfoMatrix.at<double>(0,0);
 	m12 = transfoMatrix.at<double>(0,1);
@@ -52,7 +71,7 @@ void localisation::initLocalisation(Mat & image, int orientation, string & param
 	initOK = true;
 }
 
-void localisation::getTransfoMatrix(vector<double> & matrix)
+void Localisation::getTransfoMatrix(vector<double> & matrix)
 {
 	matrix.push_back(m11);
 	matrix.push_back(m12);
@@ -69,7 +88,7 @@ void localisation::getTransfoMatrix(vector<double> & matrix)
 	matrix.push_back(m34);
 }
 
-void localisation::findAngle(double & angle)
+void Localisation::findAngle(double & angle)
 {
 	double wallAngle;
 	vector<Vec2f> wallLines;
@@ -96,12 +115,12 @@ void localisation::findAngle(double & angle)
 	}
 }
 
-int localisation::findPosition(double coordonnees[2])
+int Localisation::findPosition(double coordonnees[2])
 {
 	return 0;
 }
 
-void localisation::angleRelativeToWall(vector<Vec2f> wallLines, double & wallAngle)
+void Localisation::angleRelativeToWall(vector<Vec2f> wallLines, double & wallAngle)
 {
 	int size = wallLines.size();
 	double a, b;
@@ -128,11 +147,13 @@ void localisation::angleRelativeToWall(vector<Vec2f> wallLines, double & wallAng
 		{
 			a = a1;
 			b = b1;
+			rho = rho1;
 		}
 		else
 		{
 			a = a2;
 			b = b2;
+			rho = rho2;
 		}
 	}
 
@@ -143,24 +164,22 @@ void localisation::angleRelativeToWall(vector<Vec2f> wallLines, double & wallAng
 	double y = m*PIXEL_X + ori;
 	imP2.x = PIXEL_X;
 	imP2.y = y;
-	positionRelativeToTarget(imP1, objP1);
-	positionRelativeToTarget(imP2, objP2);
 	cout << y << endl;
-	double d = objP1.y - objP2.y;
-	double c = objP1.x - objP2.x;
+	double d = (y - ori);
+	double c = PIXEL_X;
 	if(c == 0)
 		wallAngle = 0;
 	else
 	{
-		if(d > 0)
-			wallAngle = CV_PI/2 - atan(fabs(d)/fabs(c));
-		else
-			wallAngle = atan(fabs(d)/fabs(c));
+		wallAngle = atan(d/c);
+		//if(d < 0)
+		//	wallAngle = -(CV_PI/2 + atan(d/c));
+		//else
+		//	wallAngle = atan(d/c);
 	}
-
 }
 
-int localisation::coinOrange(vector<Vec2f> orangeLines)
+int Localisation::coinOrange(vector<Vec2f> & orangeLines)
 {
 	//Mat blur;
 	//Size sf;
@@ -199,7 +218,7 @@ int localisation::coinOrange(vector<Vec2f> orangeLines)
 
 	double yG = 0;
 	int G=0;
-	HoughLines(edges, lines, 0.5, CV_PI/180, 40, 0, 0);
+	HoughLines(edges, lines, 0.5, CV_PI/180, 70, 0, 0);
 	cout << lines.size() << endl;
 	if(lines.size() > 0)
 	{
@@ -254,7 +273,7 @@ int localisation::coinOrange(vector<Vec2f> orangeLines)
 	return 0;
 }
 
-int localisation::coinBleu(vector<Vec2f> blueLines)
+int Localisation::coinBleu(vector<Vec2f> & blueLines)
 {
 	//Mat blur;
 	//Size sf;
@@ -296,7 +315,7 @@ int localisation::coinBleu(vector<Vec2f> blueLines)
 
 	double yG = 0, yD = 0;
 	int G=0, D=0;
-	HoughLines(edges, lines, 0.5, CV_PI/180, 30, 0, 0);
+	HoughLines(edges, lines, 0.5, CV_PI/180, 70, 0, 0);
 	if(lines.size() > 0)
 	{
 	   for(size_t i =0; i < lines.size(); i++)
@@ -349,7 +368,7 @@ int localisation::coinBleu(vector<Vec2f> blueLines)
 	return 0;
 }
 
-int localisation::ligneVerte(std::vector<cv::Vec2f> greenLines)
+int Localisation::ligneVerte(std::vector<cv::Vec2f> & greenLines)
 {
 	Mat segmentedFrame;
 	inRange(mImage, Scalar(30, 30, 0), Scalar(80, 255, 255), segmentedFrame);
@@ -391,10 +410,17 @@ int localisation::ligneVerte(std::vector<cv::Vec2f> greenLines)
 	}
 	return 0;
 }
-int localisation::findWallLines(std::vector<cv::Vec2f> & wallLines)
+int Localisation::findWallLines(std::vector<cv::Vec2f> & wallLines)
 {
+	Mat blur;
+	Size sf;
+	sf.width = 7;
+	sf.height = 7;
+	double sigmaX = 1.4;
+	GaussianBlur(mImage, blur, sf, sigmaX);
+
 	Mat segmentedFrame;
-	inRange(mImage, Scalar(0, 0, 0), Scalar(255,255,50), segmentedFrame);
+	inRange(blur, Scalar(0, 0, 0), Scalar(255,255,60), segmentedFrame);
 
 	int size = 1;
 	Point erodePoint(size, size);
@@ -418,9 +444,10 @@ int localisation::findWallLines(std::vector<cv::Vec2f> & wallLines)
 	cvtColor(segmentedFrame, cdst, CV_GRAY2BGR);
 
 	vector<Vec2f> lines;
-	double yG = 0, yD = 0, yM =0;
-	int G=0, D=0, M=0;
-	HoughLines(edges,lines, 0.5, CV_PI/150, 70, 0, 0);
+	vector<Vec2f> linesG, linesD;
+	double yG = 0, yD = 0;
+	int G=0, D=0;
+	HoughLines(edges,lines, 0.5, CV_PI/180, 70, 0, 0);
 	for(size_t i =0; i < lines.size(); i++)
 	{
 	   float rho = lines[i][0], theta = lines[i][1];
@@ -446,29 +473,86 @@ int localisation::findWallLines(std::vector<cv::Vec2f> & wallLines)
 		yD_actuel = -1;
 		yM_actuel = -1;
 	   }
-	   if((yG_actuel > yG) && (yG_actuel < PIXEL_Y))
+	   if((yG_actuel > yG) && (yG_actuel < PIXEL_Y + 400))
 	   {
 		yG = yG_actuel;
 		G = i;
-		cout << "G  "<< i << " y = " << m << "x + " << ori << endl;
+		cout << "Wall G  "<< i << " y = " << m << "x + " << ori << endl;
 	   }
-	   if((yD_actuel > yD) && (yD_actuel < PIXEL_Y))
+	   if((yD_actuel > yD) && (yD_actuel < PIXEL_Y + 400))
 	   {
 	        yD = yD_actuel;
 		D = i;
-		cout << "D  " << i << " y = " << m << "x + " << ori << endl;
+		cout << "Wall D  " << i << " y = " << m << "x + " << ori << endl;
 	   }
 	   pt1.x = cvRound(x0 + 2000*(-b));
 	   pt1.y = cvRound(y0 + 2000*(a));
 	   pt2.x = cvRound(x0 - 2000*(-b));
 	   pt2.y = cvRound(y0 - 2000*(a));
-	   line(cdst, pt1, pt2, Scalar(0,255,255),CV_AA);
+	   line(cdst, pt1, pt2, Scalar(0,255,255), 0.4, CV_AA);
 	}
-	wallLines.push_back(lines[G]);
-	if(D != G)
-	    wallLines.push_back(lines[D]);
+
+	// moyenne
+
+	for(size_t k = 0; k < lines.size(); k++)
+	{
+        float diffOriG = lines[k][0] - lines[G][0];
+	    float diffOriD = lines[k][0] - lines[D][0];
+	    float diffPenteG = lines[k][1] - lines[G][1];
+	    float diffPenteD = lines[k][1] - lines[D][1];
+	    if((fabs(diffOriG) < 10) && (fabs(diffPenteG) < 0.1))
+	    {
+	    	linesG.push_back(lines[k]);
+	    	cout << "G k :" << k << "  rho: " << lines[k][0] << "  theta: " << lines[k][1] << endl;
+	    }
+	    if(D != G)
+	    {
+	         if((fabs(diffOriD) < 10) && (fabs(diffPenteD) < 0.1))
+	         {
+	        	 linesD.push_back(lines[k]);
+	        	 cout << "D k :" << k << "  rho: " << lines[k][0] << "  theta: " << lines[k][1] << endl;
+	         }
+	    }
+	}
+
+	float rhoG = 0, rhoD = 0, thetaD = 0, thetaG = 0;
+	cout << linesG.size() << endl;
+	for(size_t l = 0; l < linesG.size(); l++)
+	{
+	    rhoG = linesG[l][0] + rhoG;
+	    thetaG = linesG[l][1] + thetaG;
+	}
+	cout << linesD.size() << endl;
+	for(size_t m = 0; m < linesD.size(); m++)
+	{
+	    rhoD = linesD[m][0] + rhoD;
+	    thetaD = linesD[m][1] + thetaD;
+	}
+
+	Vec2f ligneG, ligneD;
+	cout << rhoG << ", " << thetaG << endl;
+	cout << rhoD << ", " << thetaD << endl;
+
+	if(linesG.size() > 0)
+	{
+	    ligneG[0] = rhoG/linesG.size();
+	    ligneG[1] = thetaG/linesG.size();
+	    wallLines.push_back(ligneG);
+	}
+	if(linesD.size() > 0)
+	{
+	    ligneD[0] = rhoD/linesD.size();
+	    ligneD[1] = thetaD/linesD.size();
+	    wallLines.push_back(ligneD);
+	}
+
 
 	cout << wallLines.size() << endl;
+	if(wallLines.size() > 0)
+		cout << "Final G: rho = " << wallLines[0][0] << " theta = " << wallLines[0][1] << endl;
+	if(wallLines.size() > 1)
+		cout << "Final D: rho = " << wallLines[1][0] << " theta = " << wallLines[1][1] << endl;
+
 
 	for(size_t j = 0; j < wallLines.size(); j++)
 	{
@@ -480,16 +564,15 @@ int localisation::findWallLines(std::vector<cv::Vec2f> & wallLines)
 	   pta1.y = cvRound(y0 + 2000*(a));
 	   pta2.x = cvRound(x0 - 2000*(-b));
 	   pta2.y = cvRound(y0 - 2000*(a));
-	   line(cdst, pta1, pta2, Scalar(0,0,255),CV_AA);
+	   line(cdst, pta1, pta2, Scalar(0,0,255), 0.4, CV_AA);
 	}
-	cout << "testWL" << endl;
 
 	namedWindow("black stuff", CV_WINDOW_KEEPRATIO);
 	imshow("black stuff", cdst);
-	return wallLines.size();
+	return 0;
 }
 
-int localisation::findPoints(std::vector<KnownPoint> pointsID)
+int Localisation::findPoints(std::vector<KnownPoint> & pointsID)
 {
 	vector<Vec2f> wallLines, blueLines, orangeLines, greenLines, redLines;
 
@@ -586,7 +669,7 @@ int localisation::findPoints(std::vector<KnownPoint> pointsID)
 	return 0;
 }
 
-void localisation::findIntersection(cv::Vec2f & ligne1, cv::Vec2f & ligne2, cv::Point & pt)
+void Localisation::findIntersection(cv::Vec2f & ligne1, cv::Vec2f & ligne2, cv::Point & pt)
 {
 	float rho1 = ligne1[0], theta1 = ligne1[1];
 	float rho2 = ligne2[0], theta2 = ligne2[1];
@@ -634,7 +717,7 @@ void localisation::findIntersection(cv::Vec2f & ligne1, cv::Vec2f & ligne2, cv::
 	}
 }
 
-void localisation::positionRelativeToTarget(KnownPoint & imagePoint, KnownPoint & objectPoint)
+void Localisation::positionRelativeToTarget(KnownPoint & imagePoint, KnownPoint & objectPoint)
 {
 	double u,v,s;
 	u = imagePoint.x;
@@ -642,15 +725,16 @@ void localisation::positionRelativeToTarget(KnownPoint & imagePoint, KnownPoint 
 	s = (m11 - u*m31)*(m22 - v*m32) + (m12 - u*m32)*(-m21 + v*m31);
 	objectPoint.x = ((-m14 + u*m34)*(m22 - v*m32) - (m24 - v*m34)*(-m12 + u*m32))/s;
 	objectPoint.y = ((-m14 + u*m34)*(-m21 + v*m31) - (m24 - v*m34)*(m11 - u*m31))/s;
+	objectPoint.ID = imagePoint.ID;
 }
 
-void localisation::positionRelativeToRobot(KnownPoint & point)
+void Localisation::positionRelativeToRobot(KnownPoint & point)
 {
 	point.x = point.x - mParams[0];
 	point.y = point.y - mParams[1];
 }
 
-void localisation::translateToTableReference(KnownPoint & P1R, KnownPoint & P2R, Point & t)
+void Localisation::translateToTableReference(KnownPoint & P1R, KnownPoint & P2R, Point & t)
 {
 	int P1A, P2A;
 	for(unsigned int i = 0; i < reperes.size(); i++)
@@ -668,7 +752,7 @@ void localisation::translateToTableReference(KnownPoint & P1R, KnownPoint & P2R,
 	t.y = reperes[P1A].y - P1R.x * sin(theta) - P1R.y * cos(theta);
 }
 
-void localisation::translateToTableReference(KnownPoint & P1R, double & theta, Point & t)
+void Localisation::translateToTableReference(KnownPoint & P1R, double & theta, Point & t)
 {
 	int P1A;
 	for(unsigned int i = 0; i < reperes.size(); i++)
@@ -678,6 +762,20 @@ void localisation::translateToTableReference(KnownPoint & P1R, double & theta, P
 	}
 	t.x = reperes[P1A].x - P1R.x * cos(theta) + P1R.y * sin(theta);
 	t.y = reperes[P1A].y - P1R.x * sin(theta) - P1R.y * cos(theta);
+}
+
+unsigned int Localisation::findElementInTable(double position)
+{
+	if(position < 0 || position > MAX_TABLE)
+	{
+		return -1;
+	}
+	unsigned int Index = 0;
+	while(mTable[Index][0] < position)
+	{
+		Index++;
+	}
+	return Index;
 }
 
 

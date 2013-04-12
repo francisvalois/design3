@@ -15,33 +15,46 @@ using namespace cv;
 
 int main( int argc, char** argv )
 {
-	string inputImage = "/home/diane/workspace/localisation/Debug/244_166.4_66.2.png";
+	string inputImage = "/home/diane/workspace/localisation/Debug/1717_568_210.png";
 	int orientation, locateOK, findAngleOK;
-	orientation = WEST;
+	orientation = SOUTH;
 	Mat image;
 	string filename = "/home/diane/workspace/localisation/Debug/paramsExt2.xml";
 
 
 	image = imread(inputImage,1);
-	localisation locate;
+	Localisation locate;
 	locate.initLocalisation(image, orientation, filename);
-	vector<double> test;
-	locate.getTransfoMatrix(test);
-	cout << test[0] << endl;
 
 	int nbLignesMur;
 	vector<Vec2f> lignesMur;
 	nbLignesMur = locate.findWallLines(lignesMur);
 	cout << nbLignesMur << endl;
-	cout << lignesMur.size() << endl;
 	double angle;
 	locate.angleRelativeToWall(lignesMur, angle);
 	double degres = 360*angle/(2*CV_PI);
 	cout << degres << endl;
-	double globalAngle;
+	double globalAngle, globDegres;
 	locate.findAngle(globalAngle);
-	degres = 360*globalAngle/(2*CV_PI);
-	cout << degres << endl;
+	globDegres = 360*globalAngle/(2*CV_PI);
+	cout << globDegres << endl;
+
+	//vector<Localisation::KnownPoint> pointsID;
+	//Localisation::KnownPoint pointRobot;
+	//locate.findPoints(pointsID);
+	//cout << pointsID.size() << endl;
+
+
+	//locate.positionRelativeToTarget(pointsID[0], pointRobot);
+	//locate.positionRelativeToRobot(pointRobot);
+
+	//pointRobot.ID = NW_CORNER;
+	//cout << "Coordonnee du coin : " << pointRobot.x << ", " << pointRobot.y << endl;
+	//Point t;
+	//double angle1 = (270.0/360)*2*CV_PI;
+	//cout << angle1 << endl;
+	//locate.translateToTableReference(pointRobot, angle1, t);
+	//cout << "Coordonnees robot : " << t.x << ", " << t.y << endl;
 }
 
 
