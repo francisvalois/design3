@@ -149,7 +149,7 @@ tBoolean CommandHandler(void){
 	 	long consigne;
 	 	long deplacement_x_abs;
 	 	tBoolean x_is_negative = false;
-	 	//Valeur absolue de x pour les comparaisons, y est deja en abs
+	 	//Valeur absolue de x pour les comparaisons
 	 	if(deplacement_x < 0){
 	 		deplacement_x_abs = -deplacement_x;
 	 		x_is_negative = true;
@@ -172,15 +172,15 @@ tBoolean CommandHandler(void){
 	 	}*/
 	 	long consignex=0;
 	 	long consigney=0;
-	 	if((deplacement_x_abs > 0 && deplacement_x_abs < 1745 && deplacement_y == 0) ||
-	 	(deplacement_y > 0 && deplacement_y < 1745 && deplacement_x_abs == 0)){
+	 	if(deplacement_x > 0 && deplacement_x < 1745 && deplacement_y == 0||
+	 	(deplacement_x > 0 && deplacement_x < 1745 && deplacement_y == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 1600;
 	 		//deplacement_y -= 504;
 	 	}
-	 	else if((deplacement_x_abs > 1745 && deplacement_x_abs < 9050 && deplacement_y == 0) ||
-	 	(deplacement_y > 1745 && deplacement_y < 9050 && deplacement_x_abs == 0)){
+	 	else if(deplacement_x > 1745 && deplacement_x < 9050 && deplacement_y == 0||
+	 	(deplacement_y > 1745 && deplacement_y < 9050 && deplacement_x == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 3200;
@@ -258,38 +258,41 @@ tBoolean CommandHandler(void){
 	}
 	else if(commande[0] == 'T'){
 		long degree;
-		degree = (commande[2]-'0')*100;
+		degree =  (commande[2]-'0')*100;
 		degree += (commande[3]-'0')*10;
 		degree += (commande[4]-'0');
-		//degree = degree*16000/360;
+		degree += (commande[5]-'0')*0.1;
+		degree += (commande[6]-'0')*0.01;
+		degree += (commande[7]-'0')*0.001;
+		degree = degree*1000;//To use the decimals 
 		long consigne = 0;
 
 		if(commande[1] == 'P' && degree > 70){
-			degree = (degree)*16300/360;
+			degree = (degree)*16300/360000;
 			degree = -degree;
 			consigne = 1600;
 		}
 		else if(commande[1] == 'P'&& degree <= 70 && degree >15 ){
-			degree = (degree)*16300/360;
+			degree = (degree)*16300/(360*1000);//to raise the calculus accuracy on angle
 			degree = -degree;
 			consigne = 800;
 		}
 		else if(commande[1] == 'P'&&degree<=15){
-			degree = (degree)*16300/360;
+			degree = (degree)*16300/360000;
 			degree = -degree;
 			consigne = 500;
 		}
 
 		else if(commande[1] == 'N' && degree > 70){
-			degree = (degree)*16000/360;
+			degree = (degree)*16000/360000;
 			consigne = 1600;
 		}
 		else if(commande[1] == 'N' && degree <= 70 && degree >15){
-			degree = (degree)*16000/360;
+			degree = (degree)*16000/360000;
 			consigne = 800;
 		}
 		else if(commande[1] == 'N'&&degree<=15){
-			degree = (degree)*16000/360;
+			degree = (degree)*16000/360000;
 			consigne = 500;
 		}
 		else{
