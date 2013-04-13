@@ -46,18 +46,21 @@ bool Kinocto::setStartLoop(kinocto::StartLoop::Request & request, kinocto::Start
 
 void Kinocto::startLoop() {
     if (state == LOOPING) {
-        state = WAITING;
+        state = WAITING; // On reset pour pas refaire en boucle
 
         microcontroller->turnLED(false);
         getObstaclesPosition();
         getRobotPosition();
-        //TROUVER L'ANGLE ET LA POSITION
         goToAntenna();
         decodeAntennaParam();
         showAntennaParam();
-        adjustAngleWithGreenBorder();
-        goToSudocubeX();
 
+        Position robotPos = workspace.getRobotPos();
+        robotPos.translateY(10.0f);
+        workspace.setRobotPos(robotPos);
+        adjustAngleWithGreenBorder();
+
+        goToSudocubeX();
         adjustFrontPosition();
         adjustAngleInFrontOfWall();
         adjustSidePositionWithGreenFrame();
@@ -110,10 +113,28 @@ void Kinocto::decodeAntennaParam() {
 
 void Kinocto::showAntennaParam() {
     microcontroller->writeToLCD(antennaParam);
+}
 
-    Position robotPos = workspace.getRobotPos();
-    robotPos.translateY(10.0f);
-    workspace.setRobotPos(robotPos);
+double Kinocto::adjustAngleWithGreenBorder() {
+    double camAngle = -31;
+    microcontroller->rotateCam(camAngle, 0);
+    cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
+
+    for (int i = 0; i < 3; i++) { // X nbr de fois pour être certain
+        Mat greenBorder = cameraCapture.takePicture();
+        if (greenBorder.data == false) {
+            return 0;
+        }
+
+        AngleFinder angleFinder;
+        double angle = angleFinder.findGreenBorderAngle(greenBorder);
+        microcontroller->rotate(angle);
+    }
+
+    cameraCapture.closeCapture();
+    microcontroller->rotateCam(0, 0);
+
+    return angle;
 }
 
 void Kinocto::goToSudocubeX() {
@@ -175,24 +196,9 @@ double Kinocto::adjustAngleInFrontOfWall() {
     return angle;
 }
 
-double Kinocto::adjustAngleWithGreenBorder() {
-    double camAngle = -31;
+void Kinocto::adjustSidePositionWithGreenFrame() {
     microcontroller->rotateCam(camAngle, 0);
 
-    cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
-    Mat greenBorder = cameraCapture.takePicture();
-    cameraCapture.closeCapture();
-
-    AngleFinder angleFinder;
-    double angle = angleFinder.findGreenBorderAngle(greenBorder);
-    microcontroller->rotate(angle);
-
-    microcontroller->rotateCam(0, 0);
-
-    return angle;
-}
-
-void Kinocto::adjustSidePositionWithGreenFrame() {
     cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
     Mat frameImg = cameraCapture.takePicture();
     cameraCapture.closeCapture();
