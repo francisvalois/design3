@@ -15,7 +15,6 @@
 #include "vision/SudocubeExtractor.h"
 #include "vision/WallAngleFinder.h"
 #include "vision/FrameCenterFinder.h"
-#include "vision/GreenBorderAngleFinder.h"
 
 #include "sudocube/Sudocube.h"
 #include "sudocube/SudocubeSolver.h"
