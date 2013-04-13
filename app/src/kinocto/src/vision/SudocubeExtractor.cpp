@@ -14,8 +14,8 @@ SudocubeExtractor::SudocubeExtractor() {
 SudocubeExtractor::~SudocubeExtractor() {
 }
 
-Sudocube  SudocubeExtractor::extractSudocube(Mat & src) {
-    Sudocube sudokube;
+Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
+    Sudocube * sudokube = new Sudocube();
 
     Mat srcGray;
     cleanGraySrc(src, srcGray);
@@ -85,7 +85,7 @@ Sudocube  SudocubeExtractor::extractSudocube(Mat & src) {
     }
 
     sudocubeNo++;
-    insertAllNumber(sudokube, orderedNumber);
+    insertAllNumber(*sudokube, orderedNumber);
 
     return sudokube;
 }

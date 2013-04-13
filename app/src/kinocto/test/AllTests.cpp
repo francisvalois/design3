@@ -5,7 +5,7 @@
 #include "sudocube/SudocubeSolverTest.cpp"
 #include "pathPlanning/PathPlanningTest.cpp"
 #include "vision/NumberReaderIT.cpp"
-#include "vision/WallAngleFinderIT.cpp"
+#include "vision/AngleFinderIT.cpp"
 #include "vision/FrameCenterFinderIT.cpp"
 
 int main(int argc, char **argv) {

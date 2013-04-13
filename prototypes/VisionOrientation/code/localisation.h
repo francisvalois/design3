@@ -16,8 +16,9 @@
 
 // Changer selon la resolution des images capturees
 
-#define PIXEL_X 640
-#define PIXEL_Y 480
+#define PIXEL_X 1600
+#define PIXEL_Y 1200
+#define MAX_TABLE 230.5
 
 #define NORTH 0
 #define SOUTH 1
@@ -45,18 +46,19 @@
 #define NE_INS_CORNER 15
 
 
-class localisation
+class Localisation
 {
+public:
 	class KnownPoint{
 		public:
 			double x;
 			double y;
 			int ID;
 		};
-public:
-	localisation();
+//public:
+	Localisation();
 
-	virtual ~localisation();
+	virtual ~Localisation();
 
 	//   Initialisation
 	//   -Initialisation des parametres a partir d'une matrice de transformation
@@ -83,17 +85,17 @@ public:
 
 //private:
 
-	int coinOrange(std::vector<cv::Vec2f> orangeLines);
+	int coinOrange(std::vector<cv::Vec2f> & orangeLines);
 
-	int coinBleu(std::vector<cv::Vec2f> orangeLines);
+	int coinBleu(std::vector<cv::Vec2f> & orangeLines);
 
-	int ligneVerte(std::vector<cv::Vec2f> greenLines);
+	int ligneVerte(std::vector<cv::Vec2f> & greenLines);
 
-	int ligneRouge(std::vector<cv::Vec2f> redLines);
+	int ligneRouge(std::vector<cv::Vec2f> & redLines);
 
 	int findWallLines(std::vector<cv::Vec2f> & wallLines);
 
-	int findPoints(std::vector<KnownPoint> points);
+	int findPoints(std::vector<KnownPoint> & points);
 
 	void findIntersection(cv::Vec2f & ligne1, cv::Vec2f & ligne2, cv::Point & pt);
 
@@ -105,9 +107,15 @@ public:
 
 	void translateToTableReference(KnownPoint & P1R, double & theta, cv::Point & t);
 
+	unsigned int findElementInTable(double position);
+
+	double interpolateValue(unsigned int index);
+
 private:
 	// image en entree
 	cv::Mat mImage;
+	// table des valeurs image <-> table
+	std::vector<std::vector<double> > mTable;
 	// parametres pour passer de l'image au repere de calibrage
 	double m11, m12, m13, m14, m21, m22, m23, m24, m31, m32, m33, m34;
 	// matrice des parametres de distortion

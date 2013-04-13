@@ -18,13 +18,14 @@ private:
     static cv::Vec2f _kinectPosition;
 public:
     static cv::Vec2f translateXZCoordtoOrigin(cv::Vec2f rotatedXZ);
-    cv::Point findNeareastValueInLookupTable(int expectedValueX, int expectedValueY);
+    float findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY);
     static cv::Vec2f getTrueCoordFromKinectCoord(cv::Vec3f depthXYZ);
     static cv::Vec2f getRotatedXZCoordFromKinectCoord(cv::Vec3f depthXYZ);
     static void setKinectAngle(float angleRad);
     static void setKinectPosition(cv::Vec2f kinectPosition);
     static float getKinectAngle();
     static cv::Vec2f getKinectPosition();
+    float polynomial3Interpolate(float expectedValue, cv::Vec3f interpolateValues, cv::Vec3f interpolateCoords);
 
 };
 

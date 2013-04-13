@@ -31,6 +31,7 @@ void Kinocto::loop() {
             cout << "waiting" << endl;
         } else if (state == LOOPING) {
             cout << "looping" << endl;
+            startLoop();
         }
 
         sleep(1);
@@ -38,8 +39,13 @@ void Kinocto::loop() {
     }
 }
 
+bool Kinocto::startLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response) {
+    state = LOOPING;
+    return true;
+}
+
 void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
-    if (state == WAITING) {
+    if (state == LOOPING) {
         state = LOOPING;
         baseStation->sendConfirmRobotStarted();
 
@@ -50,6 +56,33 @@ void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
         goToAntenna();
         decodeAntennaParam();
         showAntennaParam();
+        //Avancer le robot ici...
+        adjustAngleWithGreenBorder();
+        goToSudocubeX();
+
+        adjustFrontPosition();
+        adjustAngleInFrontOfWall();
+        adjustSidePositionWithGreenFrame();
+
+        extractAndSolveSudocube();
+        goToDrawingZone();
+        drawNumber();
+        endLoop();
+    }
+}
+
+void Kinocto::startLoop() {
+    if (state == LOOPING) {
+        state = WAITING;
+
+        microcontroller->turnLED(false);
+        getObstaclesPosition();
+        getRobotPosition();
+        //TROUVER L'ANGLE ET LA POSITION
+        goToAntenna();
+        decodeAntennaParam();
+        showAntennaParam();
+        adjustAngleWithGreenBorder();
         goToSudocubeX();
 
         adjustFrontPosition();
@@ -105,11 +138,34 @@ void Kinocto::decodeAntennaParam() {
 
 void Kinocto::showAntennaParam() {
     microcontroller->writeToLCD(antennaParam);
+
+    Position robotPos = workspace.getRobotPos();
+    robotPos.translateY(10.0f);
+    workspace.setRobotPos(robotPos);
 }
 
 void Kinocto::goToSudocubeX() {
     pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
+
+    vector<Position> positions;
+
+    bool isCaseSudocube3WithTranslation = false;
+    bool isCaseSudocube6WithTranslation = false;
+
+    if (antennaParam.getNumber() == 3) {
+        if (pathPlanning.verifySideSudocubeSpaceAvailable(3)) {
+            positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(4));
+            isCaseSudocube3WithTranslation = true;
+        }
+    } else if (antennaParam.getNumber() == 6) {
+        if (pathPlanning.verifySideSudocubeSpaceAvailable(6)) {
+            positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(5));
+            isCaseSudocube6WithTranslation = true;
+        }
+    } else {
+        positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
+    }
+
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(antennaParam.getNumber()));
 
     baseStation->sendTrajectory(positions);
@@ -121,20 +177,45 @@ void Kinocto::goToSudocubeX() {
     workspace.setRobotPos(robotPos);
 
     executeMoves(moves);
+    if (isCaseSudocube3WithTranslation) {
+        Position translation(0, -25);
+        microcontroller->translate(translation);
+    } else if (isCaseSudocube6WithTranslation) {
+        Position translation(0, 26);
+        microcontroller->translate(translation);
+    }
 }
 
 double Kinocto::adjustAngleInFrontOfWall() {
     double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
-
     microcontroller->rotateCam(camAngle, 0);
+
     cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
-    Mat wallImg = cameraCapture.takePicture();
+    Mat wall = cameraCapture.takePicture();
     cameraCapture.closeCapture();
+
+    AngleFinder angleFinder;
+    double angle = angleFinder.findWallAngle(wall);
+    microcontroller->rotate(angle);
+
     microcontroller->rotateCam(0, 0);
 
-    WallAngleFinder wallAngleFinder;
-    double angle = wallAngleFinder.findAngle(wallImg);
+    return angle;
+}
+
+double Kinocto::adjustAngleWithGreenBorder() {
+    double camAngle = -31;
+    microcontroller->rotateCam(camAngle, 0);
+
+    cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
+    Mat greenBorder = cameraCapture.takePicture();
+    cameraCapture.closeCapture();
+
+    AngleFinder angleFinder;
+    double angle = angleFinder.findGreenBorderAngle(greenBorder);
     microcontroller->rotate(angle);
+
+    microcontroller->rotateCam(0, 0);
 
     return angle;
 }
@@ -202,7 +283,7 @@ float Kinocto::adjustFrontPosition() {
 void Kinocto::extractAndSolveSudocube() {
     microcontroller->rotateCam(0, 0);
 
-    vector<Sudocube> sudocubes = extractSudocubes();
+    vector<Sudocube *> sudocubes = extractSudocubes();
     if (sudocubes.size() < 2) {
         ROS_ERROR("DID NOT FIND ENOUGTH SUDOCUBES TO CHOOSE");
         return;
@@ -211,13 +292,15 @@ void Kinocto::extractAndSolveSudocube() {
     String solvedSudocube;
     solveSudocube(sudocubes, solvedSudocube, numberToDraw);
 
+    deleteSudocubes(sudocubes);
+
     baseStation->sendSolvedSudocube(solvedSudocube, numberToDraw);
 }
 
-vector<Sudocube> Kinocto::extractSudocubes() {
+vector<Sudocube *> Kinocto::extractSudocubes() {
     cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
-    vector<Sudocube> sudokubes;
+    vector<Sudocube *> sudokubes;
     for (int i = 1; i <= 10 && sudokubes.size() <= 5; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
 
@@ -225,10 +308,10 @@ vector<Sudocube> Kinocto::extractSudocubes() {
             return sudokubes;
         }
 
-        Sudocube sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
-        if (sudokube.isEmpty() == false) {
+        Sudocube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
+        if (sudokube->isEmpty() == false) {
             sudokubes.push_back(sudokube);
-            ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube.print().c_str());
+            ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
         }
     }
 
@@ -237,16 +320,16 @@ vector<Sudocube> Kinocto::extractSudocubes() {
     return sudokubes;
 }
 
-void Kinocto::solveSudocube(vector<Sudocube> & sudocubes, string & solvedSudocube, int & redCaseValue) {
+void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
     int goodSudocubeNo = findAGoodSudocube(sudocubes);
 
     if (goodSudocubeNo != -1) {
-        Sudocube goodSudocube = sudocubes[goodSudocubeNo];
-        sudokubeSolver.solve(goodSudocube);
-        if (goodSudocube.isSolved()) {
-            ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube.getRedCaseValue(), goodSudocube.print().c_str());
-            redCaseValue = goodSudocube.getRedCaseValue();
-            solvedSudocube = goodSudocube.print();
+        Sudocube * goodSudocube = sudocubes[goodSudocubeNo];
+        sudokubeSolver.solve(*goodSudocube);
+        if (goodSudocube->isSolved()) {
+            ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
+            redCaseValue = goodSudocube->getRedCaseValue();
+            solvedSudocube = goodSudocube->print();
         } else {
             ROS_ERROR("%s", "Could not solve the Sudocube");
         }
@@ -255,10 +338,20 @@ void Kinocto::solveSudocube(vector<Sudocube> & sudocubes, string & solvedSudocub
     }
 }
 
-int Kinocto::findAGoodSudocube(vector<Sudocube> & sudocubes) {
+void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {
+    for (int i = 0; i < sudocubes.size(); i++) {
+        if (sudocubes[i] != NULL) {
+            Sudocube * sudocube = sudocubes[i];
+            sudocubes[i] = 0;
+            delete sudocube;
+        }
+    }
+}
+
+int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
     for (int i = 0; i < sudocubes.size(); i++) {
         for (int j = i + 1; j < sudocubes.size(); j++) {
-            if (sudocubes[i].equals(sudocubes[i + 1])) {
+            if (sudocubes[i]->equals(*sudocubes[i + 1])) {
                 return i;
             }
         }
@@ -494,6 +587,14 @@ bool Kinocto::testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositi
     return true;
 }
 
+bool Kinocto::testAdjustAngleGreenBorder(kinocto::TestAdjustAngleGreenBorder::Request & request,
+        kinocto::TestAdjustAngleGreenBorder::Response & response) {
+
+    adjustAngleWithGreenBorder();
+
+    return true;
+}
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "kinocto");
     ros::NodeHandle nodeHandle;
@@ -519,6 +620,10 @@ int main(int argc, char **argv) {
     ros::ServiceServer service11 = nodeHandle.advertiseService("kinocto/TestAdjustAngle", &Kinocto::testAdjustAngle, &kinocto);
     ros::ServiceServer service12 = nodeHandle.advertiseService("kinocto/TestAdjustSidePositionWithGreenFrame",
             &Kinocto::testAdjustSidePositionWithGreenFrame, &kinocto);
+    ros::ServiceServer service13 = nodeHandle.advertiseService("kinocto/TestAdjustAngleGreenBorder", &Kinocto::testAdjustAngleGreenBorder, &kinocto);
+
+    ros::ServiceServer service14 = nodeHandle.advertiseService("kinocto/startLoop", &Kinocto::startLoop, &kinocto);
+
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();

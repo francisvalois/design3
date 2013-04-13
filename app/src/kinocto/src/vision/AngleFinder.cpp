@@ -1,18 +1,21 @@
-#include "vision/WallAngleFinder.h"
+#include "vision/AngleFinder.h"
 
-WallAngleFinder::WallAngleFinder() {
+using namespace cv;
+using namespace std;
+
+AngleFinder::AngleFinder() {
 }
 
-WallAngleFinder::~WallAngleFinder() {
+AngleFinder::~AngleFinder() {
 }
 
-void WallAngleFinder::applyErode(Mat & toErode, int size, int morphShape) {
+void AngleFinder::applyErode(Mat & toErode, int size, int morphShape) {
     Point erodePoint(size, size);
     Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
     erode(toErode, toErode, erodeElem);
 }
 
-double WallAngleFinder::calculateAngleFrom(Point2d & first, Point2d & last) {
+double AngleFinder::calculateAngleFrom(Point2d & first, Point2d & last) {
     double xComp = last.x - first.x;
     double yComp = last.y - first.y;
 
@@ -22,7 +25,7 @@ double WallAngleFinder::calculateAngleFrom(Point2d & first, Point2d & last) {
     return angle;
 }
 
-vector<Point2d> WallAngleFinder::findSlopePoints(Mat & wall) {
+vector<Point2d> AngleFinder::findSlopePoints(Mat & wall) {
     vector<Point2d> points;
     for (int i = 0; i < wall.cols; i += STEP_SIZE) {
         for (int j = 0; j < wall.rows; j++) {
@@ -37,7 +40,7 @@ vector<Point2d> WallAngleFinder::findSlopePoints(Mat & wall) {
     return points;
 }
 
-double WallAngleFinder::calculateSlopeAverage(vector<Point2d> & points) {
+double AngleFinder::calculateSlopeAverage(vector<Point2d> & points) {
     double average = 0.0f;
     for (int i = 0; i < (points.size() / 2); i++) {
         Point2d first = points[i];
@@ -49,13 +52,31 @@ double WallAngleFinder::calculateSlopeAverage(vector<Point2d> & points) {
     return average;
 }
 
-double WallAngleFinder::findAngle(Mat & wall) {
+double AngleFinder::findWallAngle(Mat & wall) {
     Mat grayWall;
     cvtColor(wall, grayWall, CV_RGB2GRAY);
     threshold(grayWall, grayWall, 100, 250, THRESH_BINARY);
     applyErode(grayWall, 7, MORPH_ELLIPSE);
 
     vector<Point2d> points = findSlopePoints(grayWall);
+    double angle = calculateSlopeAverage(points);
+
+    return angle;
+}
+
+double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
+    GaussianBlur(greenBorder, greenBorder, Size(11, 11), 1, 1);
+
+    Mat hsv;
+    cvtColor(greenBorder, hsv, CV_BGR2HSV);
+
+    Mat segmentedFrame;
+    inRange(hsv, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
+
+    VisionUtility::applyErode(segmentedFrame, 4, MORPH_ELLIPSE);
+    VisionUtility::applyDilate(segmentedFrame, 7, MORPH_RECT);
+
+    vector<Point2d> points = findSlopePoints(segmentedFrame);
     double angle = calculateSlopeAverage(points);
 
     return angle;

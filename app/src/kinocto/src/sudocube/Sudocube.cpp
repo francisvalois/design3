@@ -10,7 +10,8 @@ Sudocube::Sudocube() {
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
             for (int k = 0; k < CUBE_FACE_LENGTH; k++) {
-                container[i][j][k] = new Case(i + 1, j + 1, k + 1);
+                
+            container[i][j][k] = new Case(i + 1, j + 1, k + 1);
             }
         }
     }
@@ -25,9 +26,11 @@ Sudocube::~Sudocube() {
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
             for (int k = 0; k < CUBE_FACE_LENGTH; k++) {
-                aCase = container[i][j][k];
-                delete aCase;
-                aCase = NULL;
+                if (container[i][j][k] != NULL) {
+                    aCase = container[i][j][k];
+                    delete aCase;
+                    aCase = NULL;
+                } 
             }
         }
     }

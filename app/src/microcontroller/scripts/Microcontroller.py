@@ -161,54 +161,20 @@ def handleDecodeAntenna(req):
     rospy.loginfo("Decoding antenna param...")
 
     response = DecodeAntennaResponse()
-    fini = False
-    index = 0
-    while fini == False:
-        rospy.loginfo("index %d", index)
-        nomFichier = "patate.{0}".format(index%5)
-        ser.open()
-        ser.write(bytes("A0000000"))
-
-        byte = ' '.encode('ascii')
-        donnees = bytearray()
-
-        while byte != '\n'.encode('ascii'):
-            byte = ser.read(1);
-            donnees = donnees + byte
-
-        dataArray = formatDonnees(donnees)
-        if dataArray != 0:
-            fichierCVS(dataArray, nomFichier)
-        else:
-            print("Erreur de formattage des donnees\n")
-            
-        ser.close()
-        
-        #if index%5 == 4:
-        test = traiterDonneesAntennes("patate")
-        if test:
-            response.number = test[0]*pow(2,2)+test[1]*pow(2,1)+test[2] + 1
-            if test[3] == 0 and test[4] == 0:
-                response.orientation = DecodeAntennaResponse.NORTH
-            elif test[3] == 0 and test[4] == 1:
-                response.orientation = DecodeAntennaResponse.EAST
-            elif test[3] == 1 and test[4] == 0:
-                response.orientation = DecodeAntennaResponse.SOUTH
-            elif test[3] == 1 and test[4] == 1:
-                response.orientation = DecodeAntennaResponse.WEST
-            if test[5] == 1:
-                response.isBig = True
-            else:
-                response.isBig = False
-            fini = True
-        else:
-            print("!!!! PAS DE SUCCES !!!!")
-                
-            
-        #index += 1
-        #except:
-        #print("!!!! ERREUR DECODAGE !!!! on recommance!")
-    
+    test = sendCommandToController("A0000000")
+    response.number = int(test[0])*pow(2,2)+int(test[1])*pow(2,1)+int(test[2]) + 1
+    if int(test[3]) == 0 and int(test[4]) == 0:
+        response.orientation = DecodeAntennaResponse.NORTH
+    elif int(test[3]) == 0 and int(test[4]) == 1:
+        response.orientation = DecodeAntennaResponse.EAST
+    elif int(test[3]) == 1 and int(test[4]) == 0:
+        response.orientation = DecodeAntennaResponse.SOUTH
+    elif int(test[3]) == 1 and int(test[4]) == 1:
+        response.orientation = DecodeAntennaResponse.WEST
+    if int(test[5]) == 1:
+        response.isBig = True
+    else:
+        response.isBig = False
     rospy.loginfo("Decoded Antenna Param are... number:%d orientation:%d isBig?:%s ", response.number, response.orientation, response.isBig)
     
     return response

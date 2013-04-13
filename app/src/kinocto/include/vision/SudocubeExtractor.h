@@ -21,7 +21,7 @@ class SudocubeExtractor {
 public:
     SudocubeExtractor();
     virtual ~SudocubeExtractor();
-    Sudocube extractSudocube(cv::Mat & src);
+    Sudocube * extractSudocube(cv::Mat & src);
 
 private:
     const static char OUTPUT_PATH[];

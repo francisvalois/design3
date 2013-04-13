@@ -13,7 +13,7 @@
 
 #include "vision/CameraCapture.h"
 #include "vision/SudocubeExtractor.h"
-#include "vision/WallAngleFinder.h"
+#include "vision/AngleFinder.h"
 #include "vision/FrameCenterFinder.h"
 
 #include "sudocube/Sudocube.h"
@@ -31,6 +31,8 @@
 
 //Topics du robot
 #include "basestation/StartLoop.h"
+#include "kinocto/StartLoop.h"
+
 
 //Services de test
 #include "kinocto/TestGoToSudocubeX.h"
@@ -45,6 +47,7 @@
 #include "kinocto/TestAdjustSidePosition.h"
 #include "kinocto/TestAdjustAngle.h"
 #include "kinocto/TestAdjustSidePositionWithGreenFrame.h"
+#include "kinocto/TestAdjustAngleGreenBorder.h"
 
 #define WAITING 1
 #define LOOPING 2
@@ -72,6 +75,7 @@ private:
     BaseStationDecorator * baseStation;
     MicrocontrollerDecorator * microcontroller;
 
+    void startLoop();
     void getObstaclesPosition();
     void getRobotPosition();
     void goToAntenna();
@@ -80,14 +84,16 @@ private:
     void showAntennaParam();
     void goToSudocubeX();
     double adjustAngleInFrontOfWall();
+    double adjustAngleWithGreenBorder();
     void adjustSidePosition();
     float getSonarDistance();
     float adjustFrontPosition();
     void adjustSidePositionWithGreenFrame();
     void extractAndSolveSudocube();
-    std::vector<Sudocube> extractSudocubes();
-    void solveSudocube(std::vector<Sudocube> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
-    int findAGoodSudocube(std::vector<Sudocube> & sudocubes);
+    std::vector<Sudocube *> extractSudocubes();
+    void deleteSudocubes(std::vector<Sudocube *> & sudocubes);
+    void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
+    int findAGoodSudocube(std::vector<Sudocube *> & sudocubes);
     void goToDrawingZone();
     void drawNumber();
     void endLoop();
@@ -97,6 +103,7 @@ public:
     ~Kinocto();
     void loop();
     void startLoop(const std_msgs::String::ConstPtr& msg);
+    bool startLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
@@ -111,8 +118,9 @@ public:
     bool testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request & request, kinocto::TestAdjustFrontPosition::Response & response);
     bool testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response);
     bool testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response);
-    bool testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request, kinocto::TestAdjustSidePositionWithGreenFrame::Response & response);
-
+    bool testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request,
+            kinocto::TestAdjustSidePositionWithGreenFrame::Response & response);
+    bool testAdjustAngleGreenBorder(kinocto::TestAdjustAngleGreenBorder::Request & request, kinocto::TestAdjustAngleGreenBorder::Response & response);
 };
 
 #endif

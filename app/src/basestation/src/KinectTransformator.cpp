@@ -60,31 +60,76 @@ Vec2f KinectTransformator::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
 
 
 
-Point KinectTransformator::findNeareastValueInLookupTable(int expectedValueX, int expectedValueY){
-    float B22data[] = {1, 2, 3, 4};
-    Mat B22 = Mat(2, 2, CV_32F, B22data).clone();
-    cout << B22 << endl;
+float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY){
+    expectedValueY = 2.5;
+    expectedValueX = 14;
 
-    vector<float> test3 = B22.row(0);
+    float B22data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27,
+                        28, 29, 30, 31, 32, 33, 34, 35, 36};
+    Mat lookupTable = Mat(6, 6, CV_32F, B22data).clone();
 
-    cout << test3[0] << endl;
+    vector<float> yRow = lookupTable.row(0);
+    Mat lookupTableTransposed = lookupTable.t();
+    vector<float> xRow = lookupTableTransposed.row(0);
 
-    struct {
-        int operator()(int a, int b) {return a > b;}
-    } comparator;
+    cout << xRow[0] << " " << xRow[1] << endl;
 
-    //std::vector<int>::iterator it = std::find_if (test3.begin(), test3.end(), comparator);
-    //std::cout << "The first odd value is " << *it << '\n';
+    //Find X and Y Position of each points near the expected values
+    std::vector<float>::iterator lowBoundY, lowBoundX;
+    lowBoundY = std::lower_bound (yRow.begin(), yRow.end(), expectedValueY);
+    int lowBoundYIndex = distance(yRow.begin(), lowBoundY) - 1;
 
-    std::vector<float>::iterator low;
-    low=std::lower_bound (test3.begin(), test3.end(), expectedValueY);
+    lowBoundX = std::lower_bound (xRow.begin(), xRow.end(), expectedValueX);
+    int lowBoundXIndex = distance(xRow.begin(), lowBoundX) - 1;
 
-    float beforeValue = low - test3.begin();
+    if(lowBoundYIndex > lookupTable.cols - 1 || lowBoundYIndex < 1){
+        throw string("The the expected Y value is out of range of the lookupTable");
+    }
 
+    if(lowBoundXIndex > lookupTable.rows - 1 || lowBoundXIndex < 1){
+        throw string("The the expected X value is out of range of the lookupTable");
+    }
 
+    //Find the values for the quad interpolate
+    float point01 = lookupTable.at<float>(lowBoundXIndex - 1, lowBoundYIndex);
+    float point02 = lookupTable.at<float>(lowBoundXIndex - 1, lowBoundYIndex + 1);
+    float point10 = lookupTable.at<float>(lowBoundXIndex, lowBoundYIndex - 1);
+    float point11 = lookupTable.at<float>(lowBoundXIndex, lowBoundYIndex);
+    float point12 = lookupTable.at<float>(lowBoundXIndex, lowBoundYIndex + 1);
+    float point20 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex - 1);
+    float point21 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex);
+    float point22 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex + 1);
+      
+    //Create interpolate coords + values
+    Vec3f interpolate3 = Vec3f(point01, point11, point21);
+    Vec3f interpolate4 = Vec3f(point02, point12, point22);
+    Vec3f interpolate1 = Vec3f(point10, point11, point12);
+    Vec3f interpolate2 = Vec3f(point20, point21, point22);
 
+    Vec3f interpolate1Coords = Vec3f(lowBoundY - 1 - yRow.begin(), lowBoundY - yRow.begin(), lowBoundY + 1 - yRow.begin());
+    Vec3f interpolate2Coords = Vec3f(interpolate1Coords);
+    Vec3f interpolate3Coords = Vec3f(lowBoundX - 1 - xRow.begin(), lowBoundX - xRow.begin(), lowBoundX + 1 - xRow.begin());
+    Vec3f interpolate4Coords = Vec3f(interpolate3Coords);
 
+    //Cubic interpolation for each axis
+    float interpolateValue1 = polynomial3Interpolate(expectedValueY, interpolate1, interpolate1Coords);
+    float interpolateValue2 = polynomial3Interpolate(expectedValueY, interpolate2, interpolate2Coords);
+    float interpolateValue3 = polynomial3Interpolate(expectedValueX, interpolate3, interpolate3Coords);
+    float interpolateValue4 = polynomial3Interpolate(expectedValueX, interpolate4, interpolate4Coords);
 
-
-    cout << low - test3.begin() << endl;
+    return (interpolateValue1 + interpolateValue2 + interpolateValue3 + interpolateValue4) / 4;
 }
+
+
+float KinectTransformator::polynomial3Interpolate(float expectedValue, Vec3f interpolateValues, Vec3f interpolateCoords)
+{
+    float polynom1 = (expectedValue - interpolateCoords[1])*(expectedValue - interpolateCoords[2])/
+        ((interpolateCoords[0] - interpolateCoords[1])*(interpolateCoords[0] - interpolateCoords[2]));
+    float polynom2 = (expectedValue - interpolateCoords[0])*(expectedValue - interpolateCoords[2])/
+        ((interpolateCoords[1] - interpolateCoords[0])*(interpolateCoords[1] - interpolateCoords[2]));
+    float polynom3 = (expectedValue - interpolateCoords[0])*(expectedValue - interpolateCoords[1])/
+        ((interpolateCoords[2] - interpolateCoords[0])*(interpolateCoords[2] - interpolateCoords[1]));
+    
+    return(interpolateValues[0] * polynom1 + interpolateValues[1] * polynom2 + interpolateValues[2] * polynom3);
+}
+
