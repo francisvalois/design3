@@ -10,9 +10,10 @@ include(${QT_USE_FILE})
 ## Declare ROS messages and services ##
 #######################################
 
- #add_message_files(
- #  FILES
- #)
+ add_message_files(
+   FILES
+   StartLoop.msg
+ )
 
 add_service_files(
   FILES
@@ -22,6 +23,7 @@ add_service_files(
   TraceRealTrajectory.srv
   UpdateRobotPosition.srv
   ShowSolvedSudocube.srv
+  ShowConfirmStartRobot.srv
 )
 
 generate_messages(

@@ -56,12 +56,16 @@ bool BaseStation::init() {
 }
 
 void BaseStation::initHandlers(ros::NodeHandle & node) {
+    startLoopPublisher = node.advertise<std_msgs::String>("basestation/startLoop", 1);
+
     getObstaclesPositionService = node.advertiseService("basestation/getObstaclesPosition", &BaseStation::getObstaclesPosition, this);
     findRobotPositionAndAngleService = node.advertiseService("basestation/findRobotPositionAndAngle", &BaseStation::findRobotPositionAndAngle, this);
     showSolvedSudocubeService = node.advertiseService("basestation/showSolvedSudocube", &BaseStation::showSolvedSudocube, this);
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
     updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
+    showConfirmStartRobotMessageService = node.advertiseService("basestation/showConfirmStartRobotMessage",
+            &BaseStation::showConfirmStartRobotdMessage, this);
 
     startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
 }
@@ -87,13 +91,27 @@ void BaseStation::setStateToSendStartLoopMessage() {
 }
 
 void BaseStation::sendStartLoopMessage() {
+    //std_msgs::String msg;
+    //msg.data = "Démarrage de la loop";
+    //ROS_INFO("%s", msg.data.c_str());
+
     kinocto::StartLoop srv;
     if (startLoopClient.call(srv) == true) {
-        state = LOOP;
-        emit message("Kinocto : Start");
+        //AFFICHER MESSAGE DE CONFIRMATION ICI
+        //ROS_INFO("The robot position is x:%f y:%f angle:%f", srv.response.x, srv.response.y, srv.response.angle);
     } else {
         ROS_ERROR("Failed to call service kinocto/startLoop");
     }
+
+}
+
+bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request & request, ShowConfirmStartRobot::Response & response) {
+    ROS_INFO("Showing Confirmation of Start Robot");
+    state = LOOP;
+
+    emit message("Kinocto : Start");
+
+    return true;
 }
 
 bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, GetObstaclesPosition::Response & response) {

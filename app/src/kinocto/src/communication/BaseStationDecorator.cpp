@@ -13,6 +13,7 @@ BaseStationDecorator::BaseStationDecorator(NodeHandle & node) {
     loopEndedClient = nodeHandle.serviceClient<LoopEnded>("basestation/loopEnded");
     traceRealTrajectoryClient = nodeHandle.serviceClient<TraceRealTrajectory>("basestation/traceRealTrajectory");
     updateRobotPositionClient = nodeHandle.serviceClient<UpdateRobotPosition>("basestation/updateRobotPosition");
+    showConfirmStartRobotClient = nodeHandle.serviceClient<ShowConfirmStartRobot>("basestation/showConfirmStartRobotMessage");
 }
 
 BaseStationDecorator::~BaseStationDecorator() {
@@ -90,5 +91,14 @@ void BaseStationDecorator::sendUpdateRobotPositionMessage(Position position) {
 
     if (updateRobotPositionClient.call(srv) == false) {
         ROS_ERROR("Failed to call service basestation/updateRobotPosition");
+    }
+}
+
+void BaseStationDecorator::sendConfirmRobotStarted() {
+    ROS_INFO("Sending Confirmation of Robot Just Started to basestation");
+
+    ShowConfirmStartRobot srv;
+    if (showConfirmStartRobotClient.call(srv) == false) {
+        ROS_ERROR("Failed to call service basestation/showConfirmStartRobotMessage");
     }
 }
