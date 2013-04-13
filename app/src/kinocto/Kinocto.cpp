@@ -307,7 +307,7 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
     for (int i = 1; i <= 10 && sudokubes.size() <= 5; i++) {
         Mat sudocubeImg = cameraCapture.takePicture();
 
-        if (sudocubeImg.data == true) {
+        if (!sudocubeImg.data == false) {
             Sudocube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
             if (sudokube->isEmpty() == false) {
                 sudokubes.push_back(sudokube);
@@ -369,9 +369,12 @@ void Kinocto::goToDrawingZone() {
 
     // Correction de la position du robot dans la zone de dessin
     getRobotPosition();
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
-    adjustAngleWithGreenBorder(); // TODO Nécessaire?
+    vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
+    vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
+    executeMoves(moves);
+
+    // TODO Nécessaire?
+    adjustAngleWithGreenBorder();
 
     //Translation pour placer le robot dans le centre
     microcontroller->move(-13.0f);
