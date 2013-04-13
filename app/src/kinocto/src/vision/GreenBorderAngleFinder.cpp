@@ -1,15 +1,12 @@
 #include "vision/GreenBorderAngleFinder.h"
 
+using namespace cv;
+using namespace std;
+
 GreenBorderAngleFinder::GreenBorderAngleFinder() {
 }
 
 GreenBorderAngleFinder::~GreenBorderAngleFinder() {
-}
-
-void GreenBorderAngleFinder::applyErode(Mat & toErode, int size, int morphShape) {
-    Point erodePoint(size, size);
-    Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
-    erode(toErode, toErode, erodeElem);
 }
 
 double GreenBorderAngleFinder::calculateAngleFrom(Point2d & first, Point2d & last) {
@@ -26,7 +23,7 @@ vector<Point2d> GreenBorderAngleFinder::findSlopePoints(Mat & wall) {
     vector<Point2d> points;
     for (int i = 0; i < wall.cols; i += STEP_SIZE) {
         for (int j = 0; j < wall.rows; j++) {
-            if (wall.at<uchar>(j, i) == 250) {
+            if (wall.at<uchar>(j, i) == 255) {
                 Point2d point(i, j);
                 points.push_back(point);
                 break;
@@ -50,14 +47,23 @@ double GreenBorderAngleFinder::calculateSlopeAverage(vector<Point2d> & points) {
 }
 
 double GreenBorderAngleFinder::findAngle(Mat & wall) {
+    GaussianBlur(wall, wall, Size(11, 11), 1, 1);
+
     Mat hsv;
+    cvtColor(wall, hsv, CV_BGR2HSV);
+
     Mat segmentedFrame;
-    cvtColor(wall, hsv, CV_RGB2GRAY);
-    inRange(hsv, Scalar(30, 30, 0), Scalar(80, 255, 255), segmentedFrame);
-    applyErode(segmentedFrame, 7, MORPH_ELLIPSE);
+    inRange(hsv, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
+
+    VisionUtility::applyErode(segmentedFrame, 4, MORPH_ELLIPSE);
+    VisionUtility::applyDilate(segmentedFrame, 7, MORPH_RECT);
 
     vector<Point2d> points = findSlopePoints(segmentedFrame);
     double angle = calculateSlopeAverage(points);
+
+    namedWindow("test", CV_WINDOW_FREERATIO);
+    imshow("test", segmentedFrame);
+    waitKey(0);
 
     return angle;
 }

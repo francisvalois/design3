@@ -7,6 +7,7 @@
 #include "vision/NumberReaderIT.cpp"
 #include "vision/WallAngleFinderIT.cpp"
 #include "vision/FrameCenterFinderIT.cpp"
+#include "vision/GreenBorderAngleFinderIT.cpp"
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
