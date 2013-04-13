@@ -43,6 +43,111 @@ bool PathPlanning::verifySideSudocubeSpaceAvailable(int sudocubeNumber) {
 	return false;
 }
 
+bool PathPlanning::canUseSonarWithSideSudocube(int sudocubeNumber) {
+	if(sudocubeNumber == 2 || sudocubeNumber == 7) {
+		return true;
+	}
+	if(sudocubeNumber == 1) {
+		Position robotPosition = workspace.getSudocubePos(1);
+		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(2))) {
+			Position position2;
+			position2.x = robotPosition.x + 33;
+			position2.y = robotPosition.y - 20;
+			if(!linePassesThroughObstacle(robotPosition, position2)) {
+				return true;
+			}
+		}
+	}
+	if(sudocubeNumber == 8) {
+		Position robotPosition = workspace.getSudocubePos(8);
+		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(7))) {
+			Position position2;
+			position2.x = robotPosition.x + 33;
+			position2.y = robotPosition.y + 20;
+			if(!linePassesThroughObstacle(robotPosition, position2)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool PathPlanning::canUseSonarAtLeftWithBackSudocube(int sudocubeNumber) {
+//	if(sudocubeNumber == 3) {
+//		return false;
+//	}
+	if(sudocubeNumber == 4) {
+		Position robotPosition = workspace.getSudocubePos(4);
+		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
+			Position position2(169, 101); //with 30° of sonar
+			if(!linePassesThroughObstacle(robotPosition, position2)) {
+				return true;
+			}
+		}
+	}
+	if(sudocubeNumber == 5) {
+		if (canUseSonarAtRightWithBackSudocube(5)) {
+			return false;
+		}
+		Position robotPosition = workspace.getSudocubePos(5);
+		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
+			Position position2(154, 101); //with 30° of sonar
+			if(!linePassesThroughObstacle(robotPosition, position2)) {
+				return true;
+			}
+		}
+	}
+	if(sudocubeNumber == 6) {
+		Position robotPosition = workspace.getSudocubePos(6);
+		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
+			Position position2(139, 101); //with 30° of sonar
+			if(!linePassesThroughObstacle(robotPosition, position2)) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool PathPlanning::canUseSonarAtRightWithBackSudocube(int sudocubeNumber) {
+	if(sudocubeNumber == 3) {
+		Position robotPosition = workspace.getSudocubePos(3);
+		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
+			Position position2(139, 13); //with 30° of sonar
+			if(!linePassesThroughObstacle(robotPosition, position2)) {
+				return true;
+			}
+		}
+	}
+	if(sudocubeNumber == 4) {
+		if (canUseSonarAtLeftWithBackSudocube(4)) {
+			return false;
+		}
+		Position robotPosition = workspace.getSudocubePos(4);
+		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
+			Position position2(154, 13); //with 30° of sonar
+			if(!linePassesThroughObstacle(robotPosition, position2)) {
+				return true;
+			}
+		}
+	}
+	if(sudocubeNumber == 5) {
+		Position robotPosition = workspace.getSudocubePos(5);
+		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
+			Position position2(169, 13); //with 30° of sonar
+			if(!linePassesThroughObstacle(robotPosition, position2)) {
+				return true;
+			}
+		}
+	}
+//	if(sudocubeNumber == 6) {
+//		return false;
+//	}
+
+	return false;
+}
+
 void PathPlanning::deleteAllNodes() {
     for (int i = 0; i < listOfNodes.size(); i++) {
         Node * node = listOfNodes[i];

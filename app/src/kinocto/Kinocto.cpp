@@ -218,25 +218,43 @@ void Kinocto::adjustSidePosition() {
     int sudocubeNo = antennaParam.getNumber();
 
     if (sudocubeNo <= 2) {
-        microcontroller->rotate(90);
-        float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (Workspace::MAX_X - distance - Workspace::ROBOT_FRONT_SIZE));
-        microcontroller->rotate(-90);
+    	if(pathPlanning.canUseSonarWithSideSudocube(sudocubeNo)) {
+			microcontroller->rotate(90);
+			float distance = getSonarDistance();
+			microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (Workspace::MAX_X - distance - Workspace::ROBOT_FRONT_SIZE));
+			microcontroller->rotate(-90);
+    	}
     } else if (sudocubeNo <= 4) {
-        microcontroller->rotate(-90);
-        float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (Workspace::MAX_Y - distance - Workspace::ROBOT_FRONT_SIZE));
-        microcontroller->rotate(90);
+    	if(pathPlanning.canUseSonarAtLeftWithBackSudocube(sudocubeNo)) {
+            microcontroller->rotate(-90);
+            float distance = getSonarDistance();
+            microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (Workspace::MAX_Y - distance - Workspace::ROBOT_FRONT_SIZE));
+            microcontroller->rotate(90);
+    	} else if (pathPlanning.canUseSonarAtRightWithBackSudocube(sudocubeNo)) {
+			microcontroller->rotate(90);
+			float distance = getSonarDistance();
+			microcontroller->move((distance + Workspace::ROBOT_FRONT_SIZE) - workspace.getSudocubePos(sudocubeNo).y);
+			microcontroller->rotate(-90);
+    	}
     } else if (sudocubeNo <= 6) {
-        microcontroller->rotate(90);
-        float distance = getSonarDistance();
-        microcontroller->move((distance + Workspace::ROBOT_FRONT_SIZE) - workspace.getSudocubePos(sudocubeNo).y);
-        microcontroller->rotate(-90);
+    	if(pathPlanning.canUseSonarAtRightWithBackSudocube(sudocubeNo)) {
+            microcontroller->rotate(90);
+            float distance = getSonarDistance();
+            microcontroller->move((distance + Workspace::ROBOT_FRONT_SIZE) - workspace.getSudocubePos(sudocubeNo).y);
+            microcontroller->rotate(-90);
+    	} else if (pathPlanning.canUseSonarAtLeftWithBackSudocube(sudocubeNo)) {
+			microcontroller->rotate(-90);
+			float distance = getSonarDistance();
+			microcontroller->move(workspace.getSudocubePos(sudocubeNo).y - (Workspace::MAX_Y - distance - Workspace::ROBOT_FRONT_SIZE));
+			microcontroller->rotate(90);
+    	}
     } else if (sudocubeNo <= 8) {
-        microcontroller->rotate(-90);
-        float distance = getSonarDistance();
-        microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (Workspace::MAX_X - distance - Workspace::ROBOT_FRONT_SIZE));
-        microcontroller->rotate(90);
+    	if(pathPlanning.canUseSonarWithSideSudocube(sudocubeNo)) {
+			microcontroller->rotate(-90);
+			float distance = getSonarDistance();
+			microcontroller->move(workspace.getSudocubePos(sudocubeNo).x - (Workspace::MAX_X - distance - Workspace::ROBOT_FRONT_SIZE));
+			microcontroller->rotate(90);
+    	}
     }
 }
 

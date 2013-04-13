@@ -31,6 +31,9 @@ public:
     void printTable();
 
     bool verifySideSudocubeSpaceAvailable(int);
+    bool canUseSonarWithSideSudocube(int);
+    bool canUseSonarAtLeftWithBackSudocube(int);
+    bool canUseSonarAtRightWithBackSudocube(int);
 
 private:
 
