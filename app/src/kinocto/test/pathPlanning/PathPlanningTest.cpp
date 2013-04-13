@@ -265,43 +265,4 @@ namespace {
 		ASSERT_EQ(0, pathPlanning.getPath(start, workspace.getSudocubePos(1)).size());
 //		pathPlanning.printTable();
   }
-
-  TEST_F(PathPlanningTest, verifySideSudocubeReturnsFalseWithWrongSudocubeNumber) {
-		obs1.set(130,35);
-		obs2.set(150,35);
-		start.set(60,15);
-
-		pathPlanning.setObstacles(obs1,obs2);
-
-		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(1));
-		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(-1));
-		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(-1023));
-		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(0));
-		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(5));
-		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(164));
-  }
-
-  TEST_F(PathPlanningTest, verifySideSudocubeReturnsTrueWhenNoObstacle) {
-		obs1.set(90,35);
-		obs2.set(150,35);
-		start.set(60,15);
-
-		pathPlanning.setObstacles(obs1,obs2);
-
-		ASSERT_TRUE(pathPlanning.verifySideSudocubeSpaceAvailable(3));
-
-//		pathPlanning.printTable();
-  }
-
-  TEST_F(PathPlanningTest, verifySideSudocubeReturnsFalseWhenObstacle) {
-		obs1.set(130,35);
-		obs2.set(200,60);
-		start.set(60,15);
-
-		pathPlanning.setObstacles(obs1,obs2);
-
-		ASSERT_FALSE(pathPlanning.verifySideSudocubeSpaceAvailable(3));
-//		pathPlanning.printTable();
-
-  }
 }
