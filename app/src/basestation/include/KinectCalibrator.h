@@ -25,6 +25,7 @@ class KinectCalibrator{
         bool calibrate(cv::Mat rgbMatrix, cv::Mat depthMatrix);
         std::vector<cv::Point> getSquarePositions();
         bool calibratev2(cv::VideoCapture capture);
+        bool find4PointsForReference(cv::Mat rgbMatrix, cv::Mat depthMatrix);
 };
 
 #endif
