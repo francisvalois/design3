@@ -100,6 +100,7 @@ void Kinocto::executeMoves(vector<Move> & moves) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
 
+        //TODO Update de la position avec la kinect pour pas que ça soit similaire au path parfait?
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
         workspace.setRobotPos(moves[i].destination);
         baseStation->sendUpdateRobotPositionMessage(moves[i].destination);
@@ -115,7 +116,7 @@ void Kinocto::showAntennaParam() {
     microcontroller->writeToLCD(antennaParam);
 }
 
-double Kinocto::adjustAngleWithGreenBorder() {
+void Kinocto::adjustAngleWithGreenBorder() {
     double camAngle = -31;
     microcontroller->rotateCam(camAngle, 0);
     cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
@@ -123,7 +124,8 @@ double Kinocto::adjustAngleWithGreenBorder() {
     for (int i = 0; i < 3; i++) { // X nbr de fois pour être certain
         Mat greenBorder = cameraCapture.takePicture();
         if (greenBorder.data == false) {
-            return 0;
+            ROS_ERROR("NO IMAGE TO RECTIFY ");
+            return;
         }
 
         AngleFinder angleFinder;
@@ -133,8 +135,6 @@ double Kinocto::adjustAngleWithGreenBorder() {
 
     cameraCapture.closeCapture();
     microcontroller->rotateCam(0, 0);
-
-    return angle;
 }
 
 void Kinocto::goToSudocubeX() {
@@ -179,35 +179,38 @@ void Kinocto::goToSudocubeX() {
     }
 }
 
-double Kinocto::adjustAngleInFrontOfWall() {
+void Kinocto::adjustAngleInFrontOfWall() {
     double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
     microcontroller->rotateCam(camAngle, 0);
-
     cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
-    Mat wall = cameraCapture.takePicture();
+
+    for (int i = 0; i <= 2; i++) {
+        Mat wall = cameraCapture.takePicture();
+
+        AngleFinder angleFinder;
+        double angle = angleFinder.findWallAngle(wall);
+        microcontroller->rotate(angle);
+    }
     cameraCapture.closeCapture();
-
-    AngleFinder angleFinder;
-    double angle = angleFinder.findWallAngle(wall);
-    microcontroller->rotate(angle);
-
     microcontroller->rotateCam(0, 0);
-
-    return angle;
 }
 
 void Kinocto::adjustSidePositionWithGreenFrame() {
-    microcontroller->rotateCam(camAngle, 0);
-
+    microcontroller->rotateCam(0, 0);
     cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
-    Mat frameImg = cameraCapture.takePicture();
+
+    for (int i = 0; i <= 2; i++) {
+        Mat frameImg = cameraCapture.takePicture();
+
+        FrameCenterFinder frameCenterFinder;
+        double translateX = frameCenterFinder.getXTranslation(frameImg);
+
+        Position translePos(translateX, 0.0f);
+        microcontroller->translate(translePos);
+    }
+
     cameraCapture.closeCapture();
 
-    FrameCenterFinder frameCenterFinder;
-    double translateX = frameCenterFinder.getXTranslation(frameImg);
-
-    Position translePos(translateX, 0.0f);
-    microcontroller->translate(translePos);
 }
 
 void Kinocto::adjustSidePosition() {
@@ -236,9 +239,17 @@ void Kinocto::adjustSidePosition() {
     }
 }
 
+void Kinocto::adjustFrontPosition() {
+    for (int i = 0; i <= 2; i++) {
+        float frontDistance = getSonarDistance();
+        microcontroller->move(frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE);
+    }
+}
+
 float Kinocto::getSonarDistance() {
     int NB_OF_SAMPLE = 5;
     vector<float> distances;
+
     for (int i = 0; i < NB_OF_SAMPLE; i++) {
         distances.push_back(microcontroller->getSonarDistance(1));
         if (i >= 1) {
@@ -249,13 +260,6 @@ float Kinocto::getSonarDistance() {
     }
 
     return 0.0f;
-}
-
-float Kinocto::adjustFrontPosition() {
-    float frontDistance = getSonarDistance();
-    microcontroller->move(frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE);
-
-    return frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE;
 }
 
 void Kinocto::extractAndSolveSudocube() {
@@ -347,6 +351,9 @@ void Kinocto::goToDrawingZone() {
     microcontroller->move(-13.0f);
     Position robotPos = workspace.getRobotPos();
 
+    //TODO Update de la position du robot avec la kinect
+    adjustAngleWithGreenBorder();
+
     int orientation = antennaParam.getOrientation();
     if (orientation == Workspace::NORTH) {
         robotPos.translateY(13.0f);
@@ -374,13 +381,14 @@ void Kinocto::drawNumber() {
 }
 
 void Kinocto::endLoop() {
-//float angle;
-//Position robotPos;
-//baseStation->requestRobotPositionAndAngle(robotPos, angle);
-//workspace.setRobotPos(robotPos);
-//vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
-//vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-//executeMoves(moves);
+    //TODO CORRIGER TRÈS BIENTÔT
+    //float angle;
+    //Position robotPos;
+    //baseStation->requestRobotPositionAndAngle(robotPos, angle);
+    //workspace.setRobotPos(robotPos);
+    //vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
+    //vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+    //executeMoves(moves);
 
     microcontroller->turnLED(true);
     baseStation->sendLoopEndedMessage();
@@ -600,7 +608,6 @@ int main(int argc, char **argv) {
             &Kinocto::testAdjustSidePositionWithGreenFrame, &kinocto);
     ros::ServiceServer service13 = nodeHandle.advertiseService("kinocto/TestAdjustAngleGreenBorder", &Kinocto::testAdjustAngleGreenBorder, &kinocto);
     ros::ServiceServer service14 = nodeHandle.advertiseService("kinocto/startLoop", &Kinocto::setStartLoop, &kinocto);
-
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();

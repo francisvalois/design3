@@ -82,11 +82,11 @@ private:
     void decodeAntennaParam();
     void showAntennaParam();
     void goToSudocubeX();
-    double adjustAngleInFrontOfWall();
-    double adjustAngleWithGreenBorder();
+    void adjustAngleInFrontOfWall();
+    void adjustAngleWithGreenBorder();
     void adjustSidePosition();
     float getSonarDistance();
-    float adjustFrontPosition();
+    void adjustFrontPosition();
     void adjustSidePositionWithGreenFrame();
     void extractAndSolveSudocube();
     std::vector<Sudocube *> extractSudocubes();
