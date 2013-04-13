@@ -153,9 +153,11 @@ void Kinocto::goToSudocubeX() {
 
     if (antennaParam.getNumber() == 3) {
         finalPosition = pathPlanning.findDerivatePosition(3);
+        positions = pathPlanning.getPath(workspace.getRobotPos(), finalPosition);
 		isCaseSudocube3WithTranslation = true;
     } else if (antennaParam.getNumber() == 6) {
         finalPosition = pathPlanning.findDerivatePosition(6);
+        positions = pathPlanning.getPath(workspace.getRobotPos(), finalPosition);
 		isCaseSudocube6WithTranslation = true;
     } else {
         positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
