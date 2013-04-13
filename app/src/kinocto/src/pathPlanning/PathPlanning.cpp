@@ -303,8 +303,8 @@ void PathPlanning::applyDijkstra() {
 
         for (unsigned int i = 0; i < neighbors.size(); i++) {
             float cost = node->getCost();
-            cost -= neighbors[i]->getClearance();
-//            cost += (float) calculateDistance(node->getPosition(), neighbors[i]->getPosition());
+//            cost -= neighbors[i]->getClearance();
+            cost += (float) calculateDistance(node->getPosition(), neighbors[i]->getPosition());
             if (cost < neighbors[i]->getCost()) {
                 neighbors[i]->setPredecessor(node);
                 neighbors[i]->setCost(cost);
