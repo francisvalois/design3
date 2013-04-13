@@ -10,6 +10,7 @@
 //Messages
 #include "std_msgs/String.h"
 #include "basestation/StartLoop.h"
+#include "kinocto/StartLoop.h"
 
 //Services
 #include "basestation/GetObstaclesPosition.h"
@@ -78,6 +79,7 @@ private:
     RobotDetector robotDetection;
 
     ros::Publisher startLoopPublisher;
+    ros::ServiceClient startLoopClient;
 
     ros::ServiceServer getObstaclesPositionService;
     ros::ServiceServer findRobotPositionAndAngleService;

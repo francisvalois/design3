@@ -27,6 +27,7 @@ add_service_files(
   TestAdjustAngle.srv
   TestAdjustSidePositionWithGreenFrame.srv
   TestAdjustAngleGreenBorder.srv
+  StartLoop.srv
 )
 
 generate_messages(

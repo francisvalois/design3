@@ -31,6 +31,8 @@
 
 //Topics du robot
 #include "basestation/StartLoop.h"
+#include "kinocto/StartLoop.h"
+
 
 //Services de test
 #include "kinocto/TestGoToSudocubeX.h"
@@ -73,6 +75,7 @@ private:
     BaseStationDecorator * baseStation;
     MicrocontrollerDecorator * microcontroller;
 
+    void startLoop();
     void getObstaclesPosition();
     void getRobotPosition();
     void goToAntenna();
@@ -100,6 +103,7 @@ public:
     ~Kinocto();
     void loop();
     void startLoop(const std_msgs::String::ConstPtr& msg);
+    bool startLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,

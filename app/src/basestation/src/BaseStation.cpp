@@ -66,6 +66,8 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
     showConfirmStartRobotMessageService = node.advertiseService("basestation/showConfirmStartRobotMessage",
             &BaseStation::showConfirmStartRobotdMessage, this);
+
+    startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
 }
 
 void BaseStation::loop() {
@@ -89,11 +91,18 @@ void BaseStation::setStateToSendStartLoopMessage() {
 }
 
 void BaseStation::sendStartLoopMessage() {
-    std_msgs::String msg;
-    msg.data = "Démarrage de la loop";
+    //std_msgs::String msg;
+    //msg.data = "Démarrage de la loop";
+    //ROS_INFO("%s", msg.data.c_str());
 
-    ROS_INFO("%s", msg.data.c_str());
-    startLoopPublisher.publish(msg);
+    kinocto::StartLoop srv;
+    if (startLoopClient.call(srv) == true) {
+        //AFFICHER MESSAGE DE CONFIRMATION ICI
+        //ROS_INFO("The robot position is x:%f y:%f angle:%f", srv.response.x, srv.response.y, srv.response.angle);
+    } else {
+        ROS_ERROR("Failed to call service kinocto/startLoop");
+    }
+
 }
 
 bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request & request, ShowConfirmStartRobot::Response & response) {
