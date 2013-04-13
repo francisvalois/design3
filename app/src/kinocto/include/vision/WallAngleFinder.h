@@ -9,8 +9,7 @@
 #include <iostream>
 #include <math.h>
 
-using namespace cv;
-using namespace std;
+#include "vision/VisionUtility.h"
 
 class WallAngleFinder {
 
@@ -18,16 +17,17 @@ public:
     WallAngleFinder();
     virtual ~WallAngleFinder();
 
-    double findAngle(Mat & wallImg);
+    double findWallAngle(cv::Mat & wall);
+    double findGreenBorderAngle(cv::Mat & greenBorder);
 
 private:
 
     static const int STEP_SIZE = 2;
 
-    double calculateAngleFrom(Point2d & first, Point2d & last);
-    void applyErode(Mat & toErode, int size, int morphShape);
-    vector<cv::Point2d> findSlopePoints(cv::Mat & wall);
-    double calculateSlopeAverage(vector<cv::Point2d> & points);
+    double calculateAngleFrom(cv::Point2d & first, cv::Point2d & last);
+    void applyErode(cv::Mat & toErode, int size, int morphShape);
+    std::vector<cv::Point2d> findSlopePoints(cv::Mat & wall);
+    double calculateSlopeAverage(std::vector<cv::Point2d> & points);
 };
 
 #endif

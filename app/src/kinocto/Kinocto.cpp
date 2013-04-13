@@ -151,33 +151,34 @@ void Kinocto::goToSudocubeX() {
 
 double Kinocto::adjustAngleInFrontOfWall() {
     double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
-
     microcontroller->rotateCam(camAngle, 0);
+
     cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
     Mat wallImg = cameraCapture.takePicture();
     cameraCapture.closeCapture();
-    microcontroller->rotateCam(0, 0);
 
     WallAngleFinder wallAngleFinder;
-    double angle = wallAngleFinder.findAngle(wallImg);
+    double angle = wallAngleFinder.findWallAngle(wallImg);
     microcontroller->rotate(angle);
+
+    microcontroller->rotateCam(0, 0);
 
     return angle;
 }
 
 double Kinocto::adjustAngleWithGreenBorder() {
-    //double camAngle = -1 * asin(Workspace::CAM_HEIGHT / 22) * 180.0 / CV_PI;
     double camAngle = -31;
-
     microcontroller->rotateCam(camAngle, 0);
-    cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
-    Mat wallImg = cameraCapture.takePicture();
-    cameraCapture.closeCapture();
-    microcontroller->rotateCam(0, 0);
 
-    GreenBorderAngleFinder greenBorderAngleFinder;
-    double angle = greenBorderAngleFinder.findAngle(wallImg);
+    cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
+    Mat greenBorder = cameraCapture.takePicture();
+    cameraCapture.closeCapture();
+
+    WallAngleFinder greenBorderAngleFinder;
+    double angle = greenBorderAngleFinder.findGreenBorderAngle(greenBorder);
     microcontroller->rotate(angle);
+
+    microcontroller->rotateCam(0, 0);
 
     return angle;
 }

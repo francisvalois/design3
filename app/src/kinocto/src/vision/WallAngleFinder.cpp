@@ -1,5 +1,8 @@
 #include "vision/WallAngleFinder.h"
 
+using namespace cv;
+using namespace std;
+
 WallAngleFinder::WallAngleFinder() {
 }
 
@@ -49,13 +52,31 @@ double WallAngleFinder::calculateSlopeAverage(vector<Point2d> & points) {
     return average;
 }
 
-double WallAngleFinder::findAngle(Mat & wall) {
+double WallAngleFinder::findWallAngle(Mat & wall) {
     Mat grayWall;
     cvtColor(wall, grayWall, CV_RGB2GRAY);
     threshold(grayWall, grayWall, 100, 250, THRESH_BINARY);
     applyErode(grayWall, 7, MORPH_ELLIPSE);
 
     vector<Point2d> points = findSlopePoints(grayWall);
+    double angle = calculateSlopeAverage(points);
+
+    return angle;
+}
+
+double WallAngleFinder::findGreenBorderAngle(Mat & greenBorder) {
+    GaussianBlur(greenBorder, greenBorder, Size(11, 11), 1, 1);
+
+    Mat hsv;
+    cvtColor(greenBorder, hsv, CV_BGR2HSV);
+
+    Mat segmentedFrame;
+    inRange(hsv, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
+
+    VisionUtility::applyErode(segmentedFrame, 4, MORPH_ELLIPSE);
+    VisionUtility::applyDilate(segmentedFrame, 7, MORPH_RECT);
+
+    vector<Point2d> points = findSlopePoints(segmentedFrame);
     double angle = calculateSlopeAverage(points);
 
     return angle;
