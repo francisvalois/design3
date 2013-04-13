@@ -39,36 +39,9 @@ void Kinocto::loop() {
     }
 }
 
-bool Kinocto::startLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response) {
+bool Kinocto::setStartLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response) {
     state = LOOPING;
     return true;
-}
-
-void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
-    if (state == LOOPING) {
-        state = LOOPING;
-        baseStation->sendConfirmRobotStarted();
-
-        microcontroller->turnLED(false);
-        getObstaclesPosition();
-        getRobotPosition();
-        //TROUVER L'ANGLE ET LA POSITION
-        goToAntenna();
-        decodeAntennaParam();
-        showAntennaParam();
-        //Avancer le robot ici...
-        adjustAngleWithGreenBorder();
-        goToSudocubeX();
-
-        adjustFrontPosition();
-        adjustAngleInFrontOfWall();
-        adjustSidePositionWithGreenFrame();
-
-        extractAndSolveSudocube();
-        goToDrawingZone();
-        drawNumber();
-        endLoop();
-    }
 }
 
 void Kinocto::startLoop() {
@@ -87,7 +60,6 @@ void Kinocto::startLoop() {
 
         adjustFrontPosition();
         adjustAngleInFrontOfWall();
-        //adjustSidePosition(); //Utilise les sonars mais est problématique
         adjustSidePositionWithGreenFrame();
 
         extractAndSolveSudocube();
@@ -604,7 +576,7 @@ int main(int argc, char **argv) {
     ROS_INFO("%s", "Creating services and messages handler for Kinocto");
 
 //Message handlers
-    ros::Subscriber sub = nodeHandle.subscribe("basestation/startLoop", 10, &Kinocto::startLoop, &kinocto);
+    //ros::Subscriber sub = nodeHandle.subscribe("basestation/startLoop", 10, &Kinocto::startLoop, &kinocto);
 
 //Services de test seulement
     ros::ServiceServer service1 = nodeHandle.advertiseService("kinocto/TestExtractSudocubeAndSolve", &Kinocto::testExtractSudocubeAndSolve, &kinocto);
@@ -621,8 +593,7 @@ int main(int argc, char **argv) {
     ros::ServiceServer service12 = nodeHandle.advertiseService("kinocto/TestAdjustSidePositionWithGreenFrame",
             &Kinocto::testAdjustSidePositionWithGreenFrame, &kinocto);
     ros::ServiceServer service13 = nodeHandle.advertiseService("kinocto/TestAdjustAngleGreenBorder", &Kinocto::testAdjustAngleGreenBorder, &kinocto);
-
-    ros::ServiceServer service14 = nodeHandle.advertiseService("kinocto/startLoop", &Kinocto::startLoop, &kinocto);
+    ros::ServiceServer service14 = nodeHandle.advertiseService("kinocto/startLoop", &Kinocto::setStartLoop, &kinocto);
 
 
     ROS_INFO("%s", "Kinocto Initiated");

@@ -30,7 +30,6 @@
 #include "communication/MicrocontrollerDecorator.h"
 
 //Topics du robot
-#include "basestation/StartLoop.h"
 #include "kinocto/StartLoop.h"
 
 
@@ -102,8 +101,7 @@ public:
     Kinocto(ros::NodeHandle node);
     ~Kinocto();
     void loop();
-    void startLoop(const std_msgs::String::ConstPtr& msg);
-    bool startLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response);
+    bool setStartLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,

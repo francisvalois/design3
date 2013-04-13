@@ -56,16 +56,12 @@ bool BaseStation::init() {
 }
 
 void BaseStation::initHandlers(ros::NodeHandle & node) {
-    startLoopPublisher = node.advertise<std_msgs::String>("basestation/startLoop", 1);
-
     getObstaclesPositionService = node.advertiseService("basestation/getObstaclesPosition", &BaseStation::getObstaclesPosition, this);
     findRobotPositionAndAngleService = node.advertiseService("basestation/findRobotPositionAndAngle", &BaseStation::findRobotPositionAndAngle, this);
     showSolvedSudocubeService = node.advertiseService("basestation/showSolvedSudocube", &BaseStation::showSolvedSudocube, this);
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
     updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
-    showConfirmStartRobotMessageService = node.advertiseService("basestation/showConfirmStartRobotMessage",
-            &BaseStation::showConfirmStartRobotdMessage, this);
 
     startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
 }
@@ -91,27 +87,16 @@ void BaseStation::setStateToSendStartLoopMessage() {
 }
 
 void BaseStation::sendStartLoopMessage() {
-    //std_msgs::String msg;
-    //msg.data = "Démarrage de la loop";
-    //ROS_INFO("%s", msg.data.c_str());
-
     kinocto::StartLoop srv;
     if (startLoopClient.call(srv) == true) {
-        //AFFICHER MESSAGE DE CONFIRMATION ICI
-        //ROS_INFO("The robot position is x:%f y:%f angle:%f", srv.response.x, srv.response.y, srv.response.angle);
+        //COnfirmation
+        ROS_INFO("Showing Confirmation of Start Robot");
+        state = LOOP;
+        emit message("Kinocto : Start");
     } else {
         ROS_ERROR("Failed to call service kinocto/startLoop");
     }
 
-}
-
-bool BaseStation::showConfirmStartRobotdMessage(ShowConfirmStartRobot::Request & request, ShowConfirmStartRobot::Response & response) {
-    ROS_INFO("Showing Confirmation of Start Robot");
-    state = LOOP;
-
-    emit message("Kinocto : Start");
-
-    return true;
 }
 
 bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, GetObstaclesPosition::Response & response) {
@@ -120,7 +105,6 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
     int obstacle2AverageCount = 0;
 
     //Average the measure for a better precision when the kinect is doing obscure things
-
     kinectCapture.openCapture();
     for (int i = 0; i < AVERAGECOUNT; i++) {
         Mat depthMatrix = kinectCapture.captureDepthMatrix();
@@ -169,8 +153,8 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
 
     //emit updateObstaclesPositions(response.x1, response.y1, response.x2, response.y2);
 
-    obstacle1.set(response.x1,response.y1);
-    obstacle2.set(response.x2,response.y2);
+    obstacle1.set(response.x1, response.y1);
+    obstacle2.set(response.x2, response.y2);
 
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);
@@ -201,7 +185,6 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
         }
     }
     kinectCapture.closeCapture();
-
 
     if (robotPositionAverageCount > 0) {
         response.x /= robotPositionAverageCount;
@@ -251,12 +234,12 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
 
     stringstream buff;
 
-    if(request.x.size() > 0) {
+    if (request.x.size() > 0) {
         plannedPath.clear();
 
         for (int i = 0; i < request.x.size(); i++) {
             buff << "(" << request.x[i] << "," << request.y[i] << ")" << endl;
-            Position position(request.x[i],request.y[i]);
+            Position position(request.x[i], request.y[i]);
             plannedPath.push_back(position);
         }
     }
@@ -278,10 +261,10 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
 bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & response) {
     ROS_INFO("Show Loop Ended Message");
 
-    if(plannedPath.size() > 0) {
+    if (plannedPath.size() > 0) {
         plannedPath.clear();
     }
-    if(kinoctoPositionUpdates.size() > 0) {
+    if (kinoctoPositionUpdates.size() > 0) {
         kinoctoPositionUpdates.clear();
     }
 
@@ -318,7 +301,7 @@ Mat3b BaseStation::createMatrix() {
     if (obstacle1.x != 0 && obstacle1.y != 0) {
         for (int y = (obstacle1.y - Workspace::OBSTACLE_RADIUS); y <= (obstacle1.y + Workspace::OBSTACLE_RADIUS); y++) {
             for (int x = (obstacle1.x - Workspace::OBSTACLE_RADIUS); x <= (obstacle1.x + Workspace::OBSTACLE_RADIUS); x++) {
-                colorPixel(tableWorkspace, black, x, Workspace::TABLE_Y -  y);
+                colorPixel(tableWorkspace, black, x, Workspace::TABLE_Y - y);
             }
         }
     }
@@ -344,19 +327,19 @@ Mat3b BaseStation::createMatrix() {
     transpose(tableWorkspace, tableWorkspace);
 
     //Drawing kinoctoPositionUpdates
-    if(kinoctoPositionUpdates.size() > 0) {
-        for(unsigned int i = 0; i < kinoctoPositionUpdates.size() - 1; i++) {
+    if (kinoctoPositionUpdates.size() > 0) {
+        for (unsigned int i = 0; i < kinoctoPositionUpdates.size() - 1; i++) {
             Point currentPoint(kinoctoPositionUpdates[i].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i].y);
-            Point nextPoint(kinoctoPositionUpdates[i+1].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i+1].y);
+            Point nextPoint(kinoctoPositionUpdates[i + 1].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i + 1].y);
             drawLine(tableWorkspace, currentPoint, nextPoint, red);
         }
     }
 
     //Drawing plannedPath
-    if(plannedPath.size() > 0) {
-        for(unsigned int i = 0; i < plannedPath.size() - 1; i++) {
+    if (plannedPath.size() > 0) {
+        for (unsigned int i = 0; i < plannedPath.size() - 1; i++) {
             Point currentPoint(plannedPath[i].x, Workspace::TABLE_Y - plannedPath[i].y);
-            Point nextPoint(plannedPath[i+1].x, Workspace::TABLE_Y - plannedPath[i+1].y);
+            Point nextPoint(plannedPath[i + 1].x, Workspace::TABLE_Y - plannedPath[i + 1].y);
             drawLine(tableWorkspace, currentPoint, nextPoint, blue);
         }
     }
@@ -367,11 +350,11 @@ Mat3b BaseStation::createMatrix() {
 QImage BaseStation::Mat2QImage(const Mat3b &src) {
     QImage dest(src.cols, src.rows, QImage::Format_ARGB32);
     for (int y = 0; y < src.rows; ++y) {
-            const cv::Vec3b *srcrow = src[y];
-            QRgb *destrow = (QRgb*)dest.scanLine(y);
-            for (int x = 0; x < src.cols; ++x) {
-                    destrow[x] = qRgba(srcrow[x][2], srcrow[x][1], srcrow[x][0], 255);
-            }
+        const cv::Vec3b *srcrow = src[y];
+        QRgb *destrow = (QRgb*) dest.scanLine(y);
+        for (int x = 0; x < src.cols; ++x) {
+            destrow[x] = qRgba(srcrow[x][2], srcrow[x][1], srcrow[x][0], 255);
+        }
     }
     return dest;
 }
