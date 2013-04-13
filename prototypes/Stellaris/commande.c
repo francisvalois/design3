@@ -149,7 +149,7 @@ tBoolean CommandHandler(void){
 	 	long consigne;
 	 	long deplacement_x_abs;
 	 	tBoolean x_is_negative = false;
-	 	//Valeur absolue de x pour les comparaisons
+	 	//Valeur absolue de x pour les comparaisons, y est deja en abs
 	 	if(deplacement_x < 0){
 	 		deplacement_x_abs = -deplacement_x;
 	 		x_is_negative = true;
@@ -172,15 +172,15 @@ tBoolean CommandHandler(void){
 	 	}*/
 	 	long consignex=0;
 	 	long consigney=0;
-	 	if(deplacement_x > 0 && deplacement_x < 1745 && deplacement_y == 0||
-	 	(deplacement_x > 0 && deplacement_x < 1745 && deplacement_y == 0)){
+	 	if((deplacement_x_abs > 0 && deplacement_x_abs < 1745 && deplacement_y == 0) ||
+	 	(deplacement_y > 0 && deplacement_y < 1745 && deplacement_x_abs == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 1600;
 	 		//deplacement_y -= 504;
 	 	}
-	 	else if(deplacement_x > 1745 && deplacement_x < 9050 && deplacement_y == 0||
-	 	(deplacement_y > 1745 && deplacement_y < 9050 && deplacement_x == 0)){
+	 	else if((deplacement_x_abs > 1745 && deplacement_x_abs < 9050 && deplacement_y == 0) ||
+	 	(deplacement_y > 1745 && deplacement_y < 9050 && deplacement_x_abs == 0)){
 	 		offset = 0; //Offset sur commande des moteurs
 	 		offset2 = 0; //Offset sur commande moteur 2 (moteur plus brusque)
 	 		consigne = 3200;

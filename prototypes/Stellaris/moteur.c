@@ -462,7 +462,7 @@ void asservirMoteurs(void){
 	else{
 		est_en_mouvement = true;
 	}
-	pos0_table[index%300]=pos0;
+	/*pos0_table[index%300]=pos0;
 	pos1_table[index%300]=pos1;
 	pos2_table[index%300]=pos2;
 	pos3_table[index%300]=pos3;
@@ -477,7 +477,7 @@ void asservirMoteurs(void){
 	fraction0_table[index%300]=fraction0;
 	fraction1_table[index%300]=fraction1;
 	fraction2_table[index%300]=fraction2;
-	fraction3_table[index%300]=fraction3;
+	fraction3_table[index%300]=fraction3;*/
 	
 }
 
