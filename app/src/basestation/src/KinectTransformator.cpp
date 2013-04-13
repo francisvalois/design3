@@ -60,12 +60,13 @@ Vec2f KinectTransformator::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
 
 
 
-Point KinectTransformator::findNeareastValueInLookupTable(float expectedValueX, float expectedValueY){
-    expectedValueY = 1.5;
-    expectedValueX = 1.3;
+float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY){
+    expectedValueY = 2.5;
+    expectedValueX = 14;
 
-    float B22data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
-    Mat lookupTable = Mat(4, 4, CV_32F, B22data).clone();
+    float B22data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27,
+                        28, 29, 30, 31, 32, 33, 34, 35, 36};
+    Mat lookupTable = Mat(6, 6, CV_32F, B22data).clone();
 
     vector<float> yRow = lookupTable.row(0);
     Mat lookupTableTransposed = lookupTable.t();
@@ -81,55 +82,54 @@ Point KinectTransformator::findNeareastValueInLookupTable(float expectedValueX, 
     lowBoundX = std::lower_bound (xRow.begin(), xRow.end(), expectedValueX);
     int lowBoundXIndex = distance(xRow.begin(), lowBoundX) - 1;
 
+    if(lowBoundYIndex > lookupTable.cols - 1 || lowBoundYIndex < 1){
+        throw string("The the expected Y value is out of range of the lookupTable");
+    }
+
+    if(lowBoundXIndex > lookupTable.rows - 1 || lowBoundXIndex < 1){
+        throw string("The the expected X value is out of range of the lookupTable");
+    }
 
     //Find the values for the quad interpolate
-    Vec3f interpolate1, interpolate2, interpolate3, interpolate4;
-
-    float point11 = lookupTable.at<float>(lowBoundXIndex , lowBoundYIndex);
-    float point12 = lookupTable.at<float>(lowBoundXIndex , lowBoundYIndex + 1);
+    float point01 = lookupTable.at<float>(lowBoundXIndex - 1, lowBoundYIndex);
+    float point02 = lookupTable.at<float>(lowBoundXIndex - 1, lowBoundYIndex + 1);
+    float point10 = lookupTable.at<float>(lowBoundXIndex, lowBoundYIndex - 1);
+    float point11 = lookupTable.at<float>(lowBoundXIndex, lowBoundYIndex);
+    float point12 = lookupTable.at<float>(lowBoundXIndex, lowBoundYIndex + 1);
+    float point20 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex - 1);
     float point21 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex);
     float point22 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex + 1);
+      
+    //Create interpolate coords + values
+    Vec3f interpolate3 = Vec3f(point01, point11, point21);
+    Vec3f interpolate4 = Vec3f(point02, point12, point22);
+    Vec3f interpolate1 = Vec3f(point10, point11, point12);
+    Vec3f interpolate2 = Vec3f(point20, point21, point22);
 
-    if(lookupTable.rows >= lowBoundYIndex + 2){
-        float point31 = lookupTable.at<float>(lowBoundXIndex + 2, lowBoundYIndex);
-        float point32 = lookupTable.at<float>(lowBoundXIndex + 2, lowBoundYIndex + 1);
-        interpolate3 = Vec3f(point11, point21, point31);
-        interpolate4 = Vec3f(point12, point22, point32);
-    }else{
-        float point31 = lookupTable.at<float>(lowBoundXIndex - 1, lowBoundYIndex);
-        float point32 = lookupTable.at<float>(lowBoundXIndex - 1, lowBoundYIndex + 1);
-        interpolate3 = Vec3f(point31, point11, point21);
-        interpolate4 = Vec3f(point32, point22, point32);
-    }
+    Vec3f interpolate1Coords = Vec3f(lowBoundY - 1 - yRow.begin(), lowBoundY - yRow.begin(), lowBoundY + 1 - yRow.begin());
+    Vec3f interpolate2Coords = Vec3f(interpolate1Coords);
+    Vec3f interpolate3Coords = Vec3f(lowBoundX - 1 - xRow.begin(), lowBoundX - xRow.begin(), lowBoundX + 1 - xRow.begin());
+    Vec3f interpolate4Coords = Vec3f(interpolate3Coords);
 
-    if(lookupTable.cols >= lowBoundXIndex + 2){
-        float point13 = lookupTable.at<float>(lowBoundXIndex, lowBoundYIndex + 2);
-        float point23 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex + 2);
-        interpolate1 = Vec3f(point11, point12, point13);
-        interpolate2 = Vec3f(point21, point22, point23);
-    }else{
-        float point13 = lookupTable.at<float>(lowBoundXIndex, lowBoundYIndex - 1);
-        float point23 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex - 1);
-        interpolate1 = Vec3f(point13, point11, point12);
-        interpolate2 = Vec3f(point23, point21, point22);
-    }
+    //Cubic interpolation for each axis
+    float interpolateValue1 = polynomial3Interpolate(expectedValueY, interpolate1, interpolate1Coords);
+    float interpolateValue2 = polynomial3Interpolate(expectedValueY, interpolate2, interpolate2Coords);
+    float interpolateValue3 = polynomial3Interpolate(expectedValueX, interpolate3, interpolate3Coords);
+    float interpolateValue4 = polynomial3Interpolate(expectedValueX, interpolate4, interpolate4Coords);
 
-    float interpolateValue1 = quadInterpolate(expectedValueX, interpolate1[0], interpolate1[1], interpolate1[2]);
-    float interpolateValue2 = quadInterpolate(expectedValueX, interpolate2[0], interpolate2[1], interpolate2[2]);
-    float interpolateValue3 = quadInterpolate(expectedValueY, interpolate3[0], interpolate3[1], interpolate3[2]);
-    float interpolateValue4 = quadInterpolate(expectedValueY, interpolate4[0], interpolate4[1], interpolate4[2]);
-
-
-    cout << point11 << endl;
+    return (interpolateValue1 + interpolateValue2 + interpolateValue3 + interpolateValue4) / 4;
 }
 
 
-float KinectTransformator::quadInterpolate( float expectedValue, float negPoint, float zeroPoint, float posPoint)
+float KinectTransformator::polynomial3Interpolate(float expectedValue, Vec3f interpolateValues, Vec3f interpolateCoords)
 {
-    //if( expectedValue <= -1 )  return negPoint;
-    //if( expectedValue >= 1 )  return posPoint;
-    float left = zeroPoint - expectedValue * (negPoint - zeroPoint);
-    float right = zeroPoint + expectedValue * (posPoint - zeroPoint);
-    return (left + right + expectedValue * (right - left)) / 2;
+    float polynom1 = (expectedValue - interpolateCoords[1])*(expectedValue - interpolateCoords[2])/
+        ((interpolateCoords[0] - interpolateCoords[1])*(interpolateCoords[0] - interpolateCoords[2]));
+    float polynom2 = (expectedValue - interpolateCoords[0])*(expectedValue - interpolateCoords[2])/
+        ((interpolateCoords[1] - interpolateCoords[0])*(interpolateCoords[1] - interpolateCoords[2]));
+    float polynom3 = (expectedValue - interpolateCoords[0])*(expectedValue - interpolateCoords[1])/
+        ((interpolateCoords[2] - interpolateCoords[0])*(interpolateCoords[2] - interpolateCoords[1]));
+    
+    return(interpolateValues[0] * polynom1 + interpolateValues[1] * polynom2 + interpolateValues[2] * polynom3);
 }
 
