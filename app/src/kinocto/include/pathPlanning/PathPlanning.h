@@ -30,7 +30,7 @@ public:
     void setObstacles(Position, Position);
     void printTable();
 
-    bool verifySideSudocubeSpaceAvailable(int);
+    Position findDerivatePosition(int);
     bool canUseSonarWithSideSudocube(int);
     bool canUseSonarAtLeftWithBackSudocube(int);
     bool canUseSonarAtRightWithBackSudocube(int);

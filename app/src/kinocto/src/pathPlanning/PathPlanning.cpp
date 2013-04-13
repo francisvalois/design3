@@ -28,19 +28,39 @@ PathPlanning::~PathPlanning() {
     deleteAllNodes();
 }
 
-bool PathPlanning::verifySideSudocubeSpaceAvailable(int sudocubeNumber) {
+Position PathPlanning::findDerivatePosition(int sudocubeNumber) {
 	Workspace workspace;
 	if(sudocubeNumber == 3) {
-		if(!linePassesThroughObstacle(workspace.getSudocubePos(3), workspace.getSudocubePos(4))) {
-			return true;
+		Position derivatedPosition = workspace.getSudocubePos(4);
+		Position derivatedPositionBehindSudocube = workspace.getSudocubePos(3);
+		if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)) {
+			return derivatedPosition;
+		}
+		for(int i = 0; i < 3; i++) {
+			derivatedPosition.x = derivatedPosition.x - 10;
+			derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
+			if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
+					!linePassesThroughObstacle(derivatedPositionBehindSudocube, workspace.getSudocubePos(3))) {
+				return derivatedPosition;
+			}
 		}
 	}
 	if(sudocubeNumber == 6) {
-		if(!linePassesThroughObstacle(workspace.getSudocubePos(6), workspace.getSudocubePos(5))) {
-			return true;
+		Position derivatedPosition = workspace.getSudocubePos(5);
+		Position derivatedPositionBehindSudocube = workspace.getSudocubePos(6);
+		if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)) {
+			return derivatedPosition;
+		}
+		for(int i = 0; i < 3; i++) {
+			derivatedPosition.x = derivatedPosition.x - 10;
+			derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
+			if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
+					!linePassesThroughObstacle(derivatedPositionBehindSudocube, workspace.getSudocubePos(6))) {
+				return derivatedPosition;
+			}
 		}
 	}
-	return false;
+	return workspace.getSudocubePos(sudocubeNumber);
 }
 
 bool PathPlanning::canUseSonarWithSideSudocube(int sudocubeNumber) {
