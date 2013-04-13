@@ -36,7 +36,7 @@ Position PathPlanning::findDerivatePosition(int sudocubeNumber) {
 		if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)) {
 			return derivatedPosition;
 		}
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < 6; i++) {
 			derivatedPosition.x = derivatedPosition.x - 10;
 			derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
 			if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
@@ -51,7 +51,7 @@ Position PathPlanning::findDerivatePosition(int sudocubeNumber) {
 		if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)) {
 			return derivatedPosition;
 		}
-		for(int i = 0; i < 3; i++) {
+		for(int i = 0; i < 6; i++) {
 			derivatedPosition.x = derivatedPosition.x - 10;
 			derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
 			if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
