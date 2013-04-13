@@ -114,7 +114,7 @@ def handleMove(req):
     sendCommandToController(commande)
 
     commande = " 0000000"
-    distance = int(req.distance / 21.7 * 6533)
+    distance = int(req.distance * 6533 / 21.7 )
     if(distance != 0):
         sign = ' '
         if(distance < 0):
