@@ -150,11 +150,15 @@ void Kinocto::goToSudocubeX() {
         if (pathPlanning.verifySideSudocubeSpaceAvailable(3)) {
             positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(4));
             isCaseSudocube3WithTranslation = true;
+        } else {
+        	positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
         }
     } else if (antennaParam.getNumber() == 6) {
         if (pathPlanning.verifySideSudocubeSpaceAvailable(6)) {
             positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(5));
             isCaseSudocube6WithTranslation = true;
+        }else {
+        	positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
         }
     } else {*/
         positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));

@@ -207,12 +207,12 @@ void PathPlanning::applyDijkstra() {
     } while (nodesToVisit.size() > 0);
 }
 
-int PathPlanning::calculateDistance(Position p1, Position p2) {
-    int x = p1.x - p2.x;
+float PathPlanning::calculateDistance(Position p1, Position p2) {
+    float x = p1.x - p2.x;
     if (x < 0) {
         x *= -1;
     }
-    int y = p1.y - p2.y;
+    float y = p1.y - p2.y;
     if (y < 0) {
         y *= -1;
     }
