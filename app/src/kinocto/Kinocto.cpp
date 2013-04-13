@@ -260,10 +260,12 @@ void Kinocto::extractAndSolveSudocube() {
     String solvedSudocube;
     solveSudocube(sudocubes, solvedSudocube, numberToDraw);
 
+    deleteSudocubes(sudocubes);
+
     baseStation->sendSolvedSudocube(solvedSudocube, numberToDraw);
 }
 
-vector<Sudocube * > Kinocto::extractSudocubes() {
+vector<Sudocube *> Kinocto::extractSudocubes() {
     cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
     vector<Sudocube *> sudokubes;
@@ -291,7 +293,7 @@ void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudoc
 
     if (goodSudocubeNo != -1) {
         Sudocube * goodSudocube = sudocubes[goodSudocubeNo];
-        sudokubeSolver.solve( *goodSudocube);
+        sudokubeSolver.solve(*goodSudocube);
         if (goodSudocube->isSolved()) {
             ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
             redCaseValue = goodSudocube->getRedCaseValue();
@@ -304,13 +306,15 @@ void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudoc
     }
 }
 
-/*void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {
+void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {
     for (int i = 0; i < sudocubes.size(); i++) {
-        Sudocube * sudocube = sudocubes[i];
-        sudocubes[i] = 0;
-        delete sudocube;
+        if (sudocubes[i] != NULL) {
+            Sudocube * sudocube = sudocubes[i];
+            sudocubes[i] = 0;
+            delete sudocube;
+        }
     }
-}*/
+}
 
 int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
     for (int i = 0; i < sudocubes.size(); i++) {

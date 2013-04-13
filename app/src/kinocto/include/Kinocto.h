@@ -88,6 +88,7 @@ private:
     void adjustSidePositionWithGreenFrame();
     void extractAndSolveSudocube();
     std::vector<Sudocube *> extractSudocubes();
+    void Kinocto::deleteSudocubes(std::vector<Sudocube *> & sudocubes);
     void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
     int findAGoodSudocube(std::vector<Sudocube *> & sudocubes);
     void goToDrawingZone();
