@@ -55,7 +55,7 @@ private:
     //FIND PATH
     std::vector<Position> findPathInGraph();
     void applyDijkstra();
-    int calculateDistance(Position, Position);
+    float calculateDistance(Position, Position);
     float calculateAngle(float, Position, Position);
 
     //Helper functions for connectNodes();
