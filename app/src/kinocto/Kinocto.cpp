@@ -50,14 +50,15 @@ void Kinocto::startLoop() {
         microcontroller->turnLED(false);
         microcontroller->rotateCam(0, 0);
 
-        getObstaclesPosition();
+        //TODO Déplacer le robot pour les obstacles???
         getRobotPosition();
+        getObstaclesPosition();
 
         goToAntenna();
         decodeAntennaParam();
         showAntennaParam();
 
-        //TODO Est-ce vraiment nécessaire
+        //TODO Est-ce vraiment nécessaire pour la correction? Trouver coefficient à cet endroit
         Position robotPos = workspace.getRobotPos();
         robotPos.translateY(10.0f);
         workspace.setRobotPos(robotPos);
@@ -76,11 +77,6 @@ void Kinocto::startLoop() {
     }
 }
 
-void Kinocto::getObstaclesPosition() {
-    vector<Position> obsPos = baseStation->requestObstaclesPosition();
-    workspace.setObstaclesPos(obsPos[0], obsPos[1]);
-    pathPlanning.setObstacles(obsPos[0], obsPos[1]);
-}
 
 void Kinocto::getRobotPosition() {
     float angle;
@@ -90,6 +86,12 @@ void Kinocto::getRobotPosition() {
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(angle);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
+}
+
+void Kinocto::getObstaclesPosition() {
+    vector<Position> obsPos = baseStation->requestObstaclesPosition();
+    workspace.setObstaclesPos(obsPos[0], obsPos[1]);
+    pathPlanning.setObstacles(obsPos[0], obsPos[1]);
 }
 
 void Kinocto::goToAntenna() {
@@ -104,7 +106,7 @@ void Kinocto::executeMoves(vector<Move> & moves) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
 
-        // Position théorique
+        // POSITION THÉORIQUE DU ROBOT SEULEMENT
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
         workspace.setRobotPos(moves[i].destination);
 
@@ -125,7 +127,9 @@ void Kinocto::showAntennaParam() {
 
 void Kinocto::adjustAngleWithGreenBorder() {
     double camAngle = -31;
-    microcontroller->rotateCam(camAngle, -2);
+    double camHBiais = -2;
+
+    microcontroller->rotateCam(camAngle, camHBiais);
     cameraCapture.openCapture();
 
     Mat greenBorder = cameraCapture.takePicture();
@@ -134,7 +138,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
     microcontroller->rotate(angle);
 
     cameraCapture.closeCapture();
-    microcontroller->rotateCam(0, -2);
+    microcontroller->rotateCam(0, camHBiais);
 }
 
 void Kinocto::goToSudocubeX() {
@@ -184,27 +188,30 @@ void Kinocto::goToSudocubeX() {
 
 void Kinocto::adjustAngleInFrontOfWall() {
     double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
-    microcontroller->rotateCam(camAngle, -2);
+    double camHBias = -2;
+    double angleCorrection = 2.09;
+
+    microcontroller->rotateCam(camAngle, camHBias);
     cameraCapture.openCapture();
 
     Mat wall = cameraCapture.takePicture();
 
     AngleFinder angleFinder;
-    double angle = angleFinder.findWallAngle(wall) * 2.09;
+    double angle = angleFinder.findWallAngle(wall) * angleCorrection;
     microcontroller->rotate(angle);
 
     cameraCapture.closeCapture();
-    microcontroller->rotateCam(0, -2);
+    microcontroller->rotateCam(0, camHBias);
 }
 
 void Kinocto::adjustSidePositionWithGreenFrame() {
     microcontroller->rotateCam(0, 0);
     cameraCapture.openCapture();
 
-    Mat frameImg = cameraCapture.takePicture();
+    Mat greenFrame = cameraCapture.takePicture();
 
     FrameCenterFinder frameCenterFinder;
-    double translateX = frameCenterFinder.getXTranslation(frameImg);
+    double translateX = frameCenterFinder.getXTranslation(greenFrame);
 
     Position translePos(translateX, 0.0f);
     microcontroller->translate(translePos);
@@ -257,7 +264,7 @@ void Kinocto::adjustSidePosition() {
 }
 
 void Kinocto::adjustFrontPosition() {
-    for (int i = 0; i <= 2; i++) {
+    for (int i = 1; i <= 2; i++) {
         float frontDistance = getSonarDistance();
         microcontroller->move(frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE);
     }
@@ -409,7 +416,6 @@ void Kinocto::endLoop() {
 
     microcontroller->turnLED(true);
     baseStation->sendLoopEndedMessage();
-    state = WAITING;
 }
 
 bool Kinocto::testExtractSudocubeAndSolve(TestExtractSudocubeAndSolve::Request & request, TestExtractSudocubeAndSolve::Response & response) {
