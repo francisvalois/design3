@@ -44,6 +44,7 @@ bool PathPlanning::verifySideSudocubeSpaceAvailable(int sudocubeNumber) {
 }
 
 bool PathPlanning::canUseSonarWithSideSudocube(int sudocubeNumber) {
+	Workspace workspace;
 	if(sudocubeNumber == 2 || sudocubeNumber == 7) {
 		return true;
 	}
@@ -73,6 +74,7 @@ bool PathPlanning::canUseSonarWithSideSudocube(int sudocubeNumber) {
 }
 
 bool PathPlanning::canUseSonarAtLeftWithBackSudocube(int sudocubeNumber) {
+	Workspace workspace;
 //	if(sudocubeNumber == 3) {
 //		return false;
 //	}
@@ -111,6 +113,7 @@ bool PathPlanning::canUseSonarAtLeftWithBackSudocube(int sudocubeNumber) {
 }
 
 bool PathPlanning::canUseSonarAtRightWithBackSudocube(int sudocubeNumber) {
+	Workspace workspace;
 	if(sudocubeNumber == 3) {
 		Position robotPosition = workspace.getSudocubePos(3);
 		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
