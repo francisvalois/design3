@@ -51,6 +51,7 @@ void Kinocto::startLoop() {
         microcontroller->turnLED(false);
         getObstaclesPosition();
         getRobotPosition();
+
         goToAntenna();
         decodeAntennaParam();
         showAntennaParam();
@@ -64,8 +65,8 @@ void Kinocto::startLoop() {
         adjustFrontPosition();
         adjustAngleInFrontOfWall();
         adjustSidePositionWithGreenFrame();
-
         extractAndSolveSudocube();
+
         goToDrawingZone();
         drawNumber();
         endLoop();
@@ -123,7 +124,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
 
     for (int i = 0; i < 3; i++) { // X nbr de fois pour être certain
         Mat greenBorder = cameraCapture.takePicture();
-        if (greenBorder.data == false) {
+        if (!greenBorder.data) {
             ROS_ERROR("NO IMAGE TO RECTIFY ");
             return;
         }
@@ -145,7 +146,7 @@ void Kinocto::goToSudocubeX() {
     bool isCaseSudocube3WithTranslation = false;
     bool isCaseSudocube6WithTranslation = false;
 
-    if (antennaParam.getNumber() == 3) {
+    /*if (antennaParam.getNumber() == 3) {
         if (pathPlanning.verifySideSudocubeSpaceAvailable(3)) {
             positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(4));
             isCaseSudocube3WithTranslation = true;
@@ -155,28 +156,27 @@ void Kinocto::goToSudocubeX() {
             positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(5));
             isCaseSudocube6WithTranslation = true;
         }
-    } else {
+    } else {*/
         positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
-    }
+    //}
 
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(antennaParam.getNumber()));
 
     baseStation->sendTrajectory(positions);
 
-    microcontroller->move(-0.75f); // P'tit hack pour enlever le slack dans les roues
-
-    Position robotPos = workspace.getRobotPos();
-    robotPos.translateX(-0.75f);
-    workspace.setRobotPos(robotPos);
+    //microcontroller->move(-0.75f); // P'tit hack pour enlever le slack dans les roues
+    //Position robotPos = workspace.getRobotPos();
+    //robotPos.translateX(-0.75f);
+    //workspace.setRobotPos(robotPos);
 
     executeMoves(moves);
-    if (isCaseSudocube3WithTranslation) {
+   /* if (isCaseSudocube3WithTranslation) {
         Position translation(0, -25);
         microcontroller->translate(translation);
     } else if (isCaseSudocube6WithTranslation) {
         Position translation(0, 26);
         microcontroller->translate(translation);
-    }
+    }*/
 }
 
 void Kinocto::adjustAngleInFrontOfWall() {
@@ -199,18 +199,15 @@ void Kinocto::adjustSidePositionWithGreenFrame() {
     microcontroller->rotateCam(0, 0);
     cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
-    for (int i = 0; i <= 2; i++) {
-        Mat frameImg = cameraCapture.takePicture();
+    Mat frameImg = cameraCapture.takePicture();
 
-        FrameCenterFinder frameCenterFinder;
-        double translateX = frameCenterFinder.getXTranslation(frameImg);
+    FrameCenterFinder frameCenterFinder;
+    double translateX = frameCenterFinder.getXTranslation(frameImg);
 
-        Position translePos(translateX, 0.0f);
-        microcontroller->translate(translePos);
-    }
+    Position translePos(translateX, 0.0f);
+    microcontroller->translate(translePos);
 
     cameraCapture.closeCapture();
-
 }
 
 void Kinocto::adjustSidePosition() {
