@@ -174,6 +174,7 @@ void Kinocto::goToSudocubeX() {
         Position translation;
         translation.x = workspace.getSudocubePos(6).x - finalPosition.x;
         translation.y = workspace.getSudocubePos(6).y - finalPosition.y;
+        microcontroller->translate(translation);
     }
 }
 
