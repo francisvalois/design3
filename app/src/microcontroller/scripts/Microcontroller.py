@@ -136,22 +136,22 @@ def handleRotate(req):
         angle_abs = abs(req.angle)
         if(req.angle > 0):  # Si angle positif
             if(abs(req.angle) > 99):  # Si un angle de plus de 2 digits
-                commande = "TP" + str(angle_abs).substring(0, 6)
+                commande = "TP" + str(angle_abs * 1000)[0:6]
             elif (abs(req.angle) >= 10 and abs(req.angle) <= 99):
                 print(angle_abs)
-                commande = "TP0" + str(angle_abs).substring(0, 5)
+                commande = "TP0" + str(angle_abs * 1000)[0:5]
             else:
                 print(angle_abs)
-                commande = "TP00" + str(angle_abs).substring(0, 4)
+                commande = "TP00" + str(angle_abs * 1000)[0:4]
         else: 
             if(abs(req.angle) > 99):
-                commande = "TN" + str(angle_abs).substring(0, 6)
+                commande = "TN" + str(angle_abs * 1000)[0:6]
             elif (abs(req.angle) >= 10 and abs(req.angle) <= 99):
-                commande = "TN0" + str(angle_abs).substring(0, 5)
+                commande = "TN0" + str(angle_abs * 1000)[0:5]
             else:
-                commande = "TN00" + str(angle_abs).substring(0, 4)
+                commande = "TN00" + str(angle_abs * 1000)[0:4]
                 
-        commande += "000"
+        #commande += "000"
         
     sendCommandToController(commande)
     
