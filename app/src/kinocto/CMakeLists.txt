@@ -26,6 +26,7 @@ add_service_files(
   TestAdjustSidePosition.srv
   TestAdjustAngle.srv
   TestAdjustSidePositionWithGreenFrame.srv
+  TestAdjustAngleGreenBorder.srv
 )
 
 generate_messages(

@@ -115,18 +115,18 @@ void Kinocto::goToSudocubeX() {
     bool isCaseSudocube3WithTranslation = false;
     bool isCaseSudocube6WithTranslation = false;
 
-    if(antennaParam.getNumber() == 3) {
-    	if(pathPlanning.verifySideSudocubeSpaceAvailable(3)) {
-    		positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(4));
-    		isCaseSudocube3WithTranslation = true;
-    	}
-    }else if (antennaParam.getNumber() == 6) {
-    	if(pathPlanning.verifySideSudocubeSpaceAvailable(6)) {
-    		positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(5));
-    		isCaseSudocube6WithTranslation = true;
-    	}
-    }else {
-    	positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
+    if (antennaParam.getNumber() == 3) {
+        if (pathPlanning.verifySideSudocubeSpaceAvailable(3)) {
+            positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(4));
+            isCaseSudocube3WithTranslation = true;
+        }
+    } else if (antennaParam.getNumber() == 6) {
+        if (pathPlanning.verifySideSudocubeSpaceAvailable(6)) {
+            positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(5));
+            isCaseSudocube6WithTranslation = true;
+        }
+    } else {
+        positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSudocubePos(antennaParam.getNumber()));
     }
 
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), workspace.getSudocubeAngle(antennaParam.getNumber()));
@@ -140,17 +140,17 @@ void Kinocto::goToSudocubeX() {
     workspace.setRobotPos(robotPos);
 
     executeMoves(moves);
-    if(isCaseSudocube3WithTranslation) {
-    	Position translation(0, -25);
-    	microcontroller->translate(translation);
-    }else if (isCaseSudocube6WithTranslation) {
-    	Position translation(0, 26);
-    	microcontroller->translate(translation);
+    if (isCaseSudocube3WithTranslation) {
+        Position translation(0, -25);
+        microcontroller->translate(translation);
+    } else if (isCaseSudocube6WithTranslation) {
+        Position translation(0, 26);
+        microcontroller->translate(translation);
     }
 }
 
 double Kinocto::adjustAngleInFrontOfWall() {
-    double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
+    double camAngle = -1 * asin(Workspace::CAM_HEIGHT / 31) * 180.0 / CV_PI;
 
     microcontroller->rotateCam(camAngle, 0);
     cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
@@ -160,6 +160,22 @@ double Kinocto::adjustAngleInFrontOfWall() {
 
     WallAngleFinder wallAngleFinder;
     double angle = wallAngleFinder.findAngle(wallImg);
+    microcontroller->rotate(angle);
+
+    return angle;
+}
+
+double Kinocto::adjustAngleWithGreenBorder() {
+    double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
+
+    microcontroller->rotateCam(camAngle, 0);
+    cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
+    Mat wallImg = cameraCapture.takePicture();
+    cameraCapture.closeCapture();
+    microcontroller->rotateCam(0, 0);
+
+    GreenBorderAngleFinder greenBorderAngleFinder;
+    double angle = greenBorderAngleFinder.findAngle(wallImg);
     microcontroller->rotate(angle);
 
     return angle;
@@ -520,6 +536,14 @@ bool Kinocto::testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositi
     return true;
 }
 
+bool Kinocto::testAdjustAngleGreenBorder(kinocto::TestAdjustAngleGreenBorder::Request & request,
+        kinocto::TestAdjustAngleGreenBorder::Response & response) {
+
+    adjustAngleWithGreenBorder();
+
+    return true;
+}
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "kinocto");
     ros::NodeHandle nodeHandle;
@@ -545,6 +569,7 @@ int main(int argc, char **argv) {
     ros::ServiceServer service11 = nodeHandle.advertiseService("kinocto/TestAdjustAngle", &Kinocto::testAdjustAngle, &kinocto);
     ros::ServiceServer service12 = nodeHandle.advertiseService("kinocto/TestAdjustSidePositionWithGreenFrame",
             &Kinocto::testAdjustSidePositionWithGreenFrame, &kinocto);
+    ros::ServiceServer service13 = nodeHandle.advertiseService("kinocto/TestAdjustAngleGreenBorder", &Kinocto::testAdjustAngleGreenBorder, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();
