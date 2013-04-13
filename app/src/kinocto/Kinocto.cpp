@@ -274,10 +274,10 @@ vector<Sudocube * > Kinocto::extractSudocubes() {
             return sudokubes;
         }
 
-        Sudocube sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
-        if (sudokube.isEmpty() == false) {
-            sudokubes.push_back(& sudokube);
-            ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube.print().c_str());
+        Sudocube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
+        if (sudokube->isEmpty() == false) {
+            sudokubes.push_back(sudokube);
+            ROS_INFO("%s\n%s", "The sudocube has been extracted", sudokube->print().c_str());
         }
     }
 
