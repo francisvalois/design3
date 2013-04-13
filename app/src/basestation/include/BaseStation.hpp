@@ -7,9 +7,6 @@
 #include <vector>
 #include <math.h>
 
-//Messages
-#include "std_msgs/String.h"
-#include "basestation/StartLoop.h"
 #include "kinocto/StartLoop.h"
 
 //Services
@@ -19,7 +16,6 @@
 #include "basestation/TraceRealTrajectory.h"
 #include "basestation/UpdateRobotPosition.h"
 #include "basestation/LoopEnded.h"
-#include "basestation/ShowConfirmStartRobot.h"
 
 #include "KinectCalibrator.h"
 #include "KinectCapture.h"
@@ -55,8 +51,6 @@ public:
     bool traceRealTrajectory(basestation::TraceRealTrajectory::Request & request, basestation::TraceRealTrajectory::Response & response);
     bool loopEnded(basestation::LoopEnded::Request & request, basestation::LoopEnded::Response & response);
     bool updateRobotPosition(basestation::UpdateRobotPosition::Request & request, basestation::UpdateRobotPosition::Response & response);
-    bool showConfirmStartRobotdMessage(basestation::ShowConfirmStartRobot::Request & request,
-            basestation::ShowConfirmStartRobot::Response & response);
 
 Q_SIGNALS:
     void rosShutdown();

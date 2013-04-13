@@ -10,7 +10,6 @@
 #include "basestation/LoopEnded.h"
 #include "basestation/TraceRealTrajectory.h"
 #include "basestation/UpdateRobotPosition.h"
-#include "basestation/ShowConfirmStartRobot.h"
 
 class BaseStationDecorator{
 public:
@@ -37,7 +36,6 @@ private:
     ros::ServiceClient loopEndedClient;
     ros::ServiceClient traceRealTrajectoryClient;
     ros::ServiceClient updateRobotPositionClient;
-    ros::ServiceClient showConfirmStartRobotClient;
 };
 
 #endif /* BASESTATIONDECORATION_H_ */

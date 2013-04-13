@@ -47,7 +47,6 @@ bool Kinocto::startLoop(kinocto::StartLoop::Request & request, kinocto::StartLoo
 void Kinocto::startLoop(const std_msgs::String::ConstPtr& msg) {
     if (state == LOOPING) {
         state = LOOPING;
-        baseStation->sendConfirmRobotStarted();
 
         microcontroller->turnLED(false);
         getObstaclesPosition();

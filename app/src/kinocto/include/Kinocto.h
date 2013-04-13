@@ -30,9 +30,7 @@
 #include "communication/MicrocontrollerDecorator.h"
 
 //Topics du robot
-#include "basestation/StartLoop.h"
 #include "kinocto/StartLoop.h"
-
 
 //Services de test
 #include "kinocto/TestGoToSudocubeX.h"
