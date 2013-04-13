@@ -13,7 +13,7 @@
 
 #include "vision/CameraCapture.h"
 #include "vision/SudocubeExtractor.h"
-#include "vision/WallAngleFinder.h"
+#include "vision/AngleFinder.h"
 #include "vision/FrameCenterFinder.h"
 
 #include "sudocube/Sudocube.h"

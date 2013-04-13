@@ -11,11 +11,11 @@
 
 #include "vision/VisionUtility.h"
 
-class WallAngleFinder {
+class AngleFinder {
 
 public:
-    WallAngleFinder();
-    virtual ~WallAngleFinder();
+    AngleFinder();
+    virtual ~AngleFinder();
 
     double findWallAngle(cv::Mat & wall);
     double findGreenBorderAngle(cv::Mat & greenBorder);

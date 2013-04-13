@@ -154,11 +154,11 @@ double Kinocto::adjustAngleInFrontOfWall() {
     microcontroller->rotateCam(camAngle, 0);
 
     cameraCapture.openCapture(CameraCapture::MEDIUM_FRAME);
-    Mat wallImg = cameraCapture.takePicture();
+    Mat wall = cameraCapture.takePicture();
     cameraCapture.closeCapture();
 
-    WallAngleFinder wallAngleFinder;
-    double angle = wallAngleFinder.findWallAngle(wallImg);
+    AngleFinder angleFinder;
+    double angle = angleFinder.findWallAngle(wall);
     microcontroller->rotate(angle);
 
     microcontroller->rotateCam(0, 0);
@@ -174,8 +174,8 @@ double Kinocto::adjustAngleWithGreenBorder() {
     Mat greenBorder = cameraCapture.takePicture();
     cameraCapture.closeCapture();
 
-    WallAngleFinder greenBorderAngleFinder;
-    double angle = greenBorderAngleFinder.findGreenBorderAngle(greenBorder);
+    AngleFinder angleFinder;
+    double angle = angleFinder.findGreenBorderAngle(greenBorder);
     microcontroller->rotate(angle);
 
     microcontroller->rotateCam(0, 0);

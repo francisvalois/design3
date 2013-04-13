@@ -5,9 +5,8 @@
 #include "sudocube/SudocubeSolverTest.cpp"
 #include "pathPlanning/PathPlanningTest.cpp"
 #include "vision/NumberReaderIT.cpp"
-#include "vision/WallAngleFinderIT.cpp"
+#include "vision/AngleFinderIT.cpp"
 #include "vision/FrameCenterFinderIT.cpp"
-#include "vision/GreenBorderAngleFinderIT.cpp"
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
