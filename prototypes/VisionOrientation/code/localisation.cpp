@@ -123,16 +123,18 @@ int Localisation::findPosition(double coordonnees[2])
 void Localisation::angleRelativeToWall(vector<Vec2f> wallLines, double & wallAngle)
 {
 	int size = wallLines.size();
-	double a, b;
-	float rho, theta;
-	KnownPoint imP1, imP2, objP1, objP2;
+	Vec2f ligneMur;
+	//double a, b;
+	//float rho, theta;
+	//KnownPoint imP1, imP2, objP1, objP2;
 
 	if(size == 1)
 	{
-		rho = wallLines[0][0];
-		theta = wallLines[0][1];
-		a = cos(theta);
-		b = sin(theta);
+		ligneMur = wallLines[0];
+		//rho = wallLines[0][0];
+		//theta = wallLines[0][1];
+		//a = cos(theta);
+		//b = sin(theta);
 	}
 	else if(size == 2)
 	{
@@ -142,41 +144,17 @@ void Localisation::angleRelativeToWall(vector<Vec2f> wallLines, double & wallAng
 		double a2 = cos(theta2), b2 = sin(theta2);
 
 		double m1 = -a1/b1, m2 = -a2/b2;
-		double ori1 = rho1/b1, ori2 = rho2/b2;
-		if(fabs(m1) < fabs(m2))
+		if(fabs(m1) > fabs(m2))
 		{
-			a = a1;
-			b = b1;
-			rho = rho1;
+			ligneMur = wallLines[0];
 		}
 		else
 		{
-			a = a2;
-			b = b2;
-			rho = rho2;
+			ligneMur = wallLines[1];
 		}
 	}
-
-	double m = -a/b;
-	double ori = rho/b;
-	imP1.x = 0;
-	imP1.y = ori;
-	double y = m*PIXEL_X + ori;
-	imP2.x = PIXEL_X;
-	imP2.y = y;
-	cout << y << endl;
-	double d = (y - ori);
-	double c = PIXEL_X;
-	if(c == 0)
-		wallAngle = 0;
-	else
-	{
-		wallAngle = atan(d/c);
-		//if(d < 0)
-		//	wallAngle = -(CV_PI/2 + atan(d/c));
-		//else
-		//	wallAngle = atan(d/c);
-	}
+	double Dfuite = (ligneMur[0] - (PIXEL_Y/3) * sin(ligneMur[1])) / cos(ligneMur[1]);
+	wallAngle = atan(Dfuite);
 }
 
 int Localisation::coinOrange(vector<Vec2f> & orangeLines)
@@ -777,6 +755,8 @@ unsigned int Localisation::findElementInTable(double position)
 	}
 	return Index;
 }
+
+
 
 
 
