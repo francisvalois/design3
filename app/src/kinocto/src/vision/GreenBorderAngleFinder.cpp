@@ -61,9 +61,9 @@ double GreenBorderAngleFinder::findAngle(Mat & wall) {
     vector<Point2d> points = findSlopePoints(segmentedFrame);
     double angle = calculateSlopeAverage(points);
 
-    namedWindow("test", CV_WINDOW_FREERATIO);
+    /*namedWindow("test", CV_WINDOW_FREERATIO);
     imshow("test", segmentedFrame);
-    waitKey(0);
+    waitKey(0);*/
 
     return angle;
 }
