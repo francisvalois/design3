@@ -170,12 +170,12 @@ void Kinocto::goToSudocubeX() {
     if (isCaseSudocube3WithTranslation) {
         Position translation;
         translation.y = workspace.getSudocubePos(3).x - finalPosition.x;
-        translation.x = workspace.getSudocubePos(3).y - finalPosition.y;
+        translation.x = finalPosition.y - workspace.getSudocubePos(3).y;
         microcontroller->translate(translation);
     } else if (isCaseSudocube6WithTranslation) {
         Position translation;
         translation.y = workspace.getSudocubePos(6).x - finalPosition.x;
-        translation.x = workspace.getSudocubePos(6).y - finalPosition.y;
+        translation.x = finalPosition.y - workspace.getSudocubePos(6).y;
         microcontroller->translate(translation);
     }
 }
