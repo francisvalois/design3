@@ -16,7 +16,10 @@ private:
     static float _kinectAngleRad;
     static const float KINECTANGLE;
     static cv::Vec2f _kinectPosition;
+    static cv::Mat _distortionCorrectionMatrix;
+    static cv::Vec2f distortionCorrection(Vec2f distanceToCorrect);
 public:
+    static void setDistortionCorrectionMatrix(cv::Mat correctionMatrix);
     static cv::Vec2f translateXZCoordtoOrigin(cv::Vec2f rotatedXZ);
     float findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY);
     static cv::Vec2f getTrueCoordFromKinectCoord(cv::Vec3f depthXYZ);
@@ -26,7 +29,6 @@ public:
     static float getKinectAngle();
     static cv::Vec2f getKinectPosition();
     float polynomial3Interpolate(float expectedValue, cv::Vec3f interpolateValues, cv::Vec3f interpolateCoords);
-
 };
 
 #endif

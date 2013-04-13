@@ -9,6 +9,7 @@ using namespace std;
 const float KinectTransformator::KINECTANGLE = 22.5f;
 float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 180 * M_PI);
 Vec2f KinectTransformator::_kinectPosition = Vec2f(0.135f, -0.53f);
+Mat KinectTransformator::_distortionCorrectionMatrix = Mat();
 
 void KinectTransformator::setKinectAngle(float angleRad){
     if(angleRad > 0 && angleRad < M_PI){
@@ -46,19 +47,17 @@ Vec2f KinectTransformator::translateXZCoordtoOrigin(Vec2f rotatedXZ) {
     return modifiedXZPosition;
 }
 
-
 Vec2f KinectTransformator::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
     if(depthXYZ[2] < 0.5)
     {
         return Vec2f();
     }
-    
+
     Vec2f rotPosition = getRotatedXZCoordFromKinectCoord(depthXYZ);
     Vec2f realPosition = translateXZCoordtoOrigin(rotPosition);
-    return realPosition;
+    Vec2f realPositionCorrected = distortionCorrection(realPosition);
+    return realPositionCorrected;
 }
-
-
 
 float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY){
     expectedValueY = 2.5;
@@ -131,5 +130,32 @@ float KinectTransformator::polynomial3Interpolate(float expectedValue, Vec3f int
         ((interpolateCoords[2] - interpolateCoords[0])*(interpolateCoords[2] - interpolateCoords[1]));
     
     return(interpolateValues[0] * polynom1 + interpolateValues[1] * polynom2 + interpolateValues[2] * polynom3);
+}
+
+void KinectTransformator::setDistortionCorrectionMatrix(Mat correctionMatrix)
+{
+    if(correctionMatrix.cols == 3 && correctionMatrix.rows == 3){
+        _distortionCorrectionMatrix = correctionMatrix;
+    }
+}
+
+cv::Vec2f KinectTransformator::distortionCorrection( Vec2f distanceToCorrect )
+{
+    if(_distortionCorrectionMatrix.rows == 0 || _distortionCorrectionMatrix.cols == 0){
+        return distanceToCorrect;
+    }
+
+    float distanceCoeffs[] = {distanceToCorrect[0], distanceToCorrect[0], 1};
+    Mat distanceMat = Mat(3,1, CV_32F, distanceCoeffs).clone();
+
+    Mat correctedDistanceMat = _distortionCorrectionMatrix * distanceMat;
+
+    MatIterator_<float> it;
+    it = correctedDistanceMat.begin<float>();
+    float p1 = *it;
+    float p2 = *(it + 1);
+    float p3 = *(it + 2);
+
+    return Vec2f(p1/p3, p2/p3);
 }
 

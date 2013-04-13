@@ -102,3 +102,25 @@ bool KinectCalibrator::calibratev2(VideoCapture capture){
 
     return true;
 }
+
+bool KinectCalibrator::find4PointsForReference( cv::Mat rgbMatrix, cv::Mat depthMatrix )
+{
+    Point2f p[4];
+    p[0] =  Point2f(0.57f, 0.58f);
+    p[1] =  Point2f(0.58f, 0.62f);
+    p[2] =  Point2f(0.34f, 0.58f);
+    p[3] =  Point2f(0.27f, 0.72f);
+
+    Point2f p2[4];
+    p2[0] =  Point2f(0.56f, 0.63f);
+    p2[1] =  Point2f(0.55f, 0.64f);
+    p2[2] =  Point2f(0.33f, 0.62f);
+    p2[3] =  Point2f(0.26f, 0.78f);
+
+    Mat test = getPerspectiveTransform(p, p2);
+
+    KinectTransformator::setDistortionCorrectionMatrix(test);
+
+    return true;
+
+}
