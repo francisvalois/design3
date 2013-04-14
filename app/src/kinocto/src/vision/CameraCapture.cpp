@@ -50,7 +50,7 @@ void CameraCapture::setConfig(cv::VideoCapture & videoCapture, const int configN
 void CameraCapture::setSudocubeConfig(cv::VideoCapture & videoCapture) {
     videoCapture.set(CV_CAP_PROP_FRAME_WIDTH, 1600);
     videoCapture.set(CV_CAP_PROP_FRAME_HEIGHT, 1200);
-    videoCapture.set(CV_CAP_PROP_BRIGHTNESS, 0.509803f);
+    videoCapture.set(CV_CAP_PROP_BRIGHTNESS, 0.529441764f);
     videoCapture.set(CV_CAP_PROP_CONTRAST, 0.196078f);
     videoCapture.set(CV_CAP_PROP_SATURATION, 0.176470f);
 }
