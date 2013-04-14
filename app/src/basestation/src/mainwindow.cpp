@@ -64,14 +64,25 @@ void MainWindow::on_StartSequenceButton_clicked() {
 }
 
 void MainWindow::on_calibrateKinectButton_clicked() {
-    ui->consoleText->append("Calibration de la Kinect");
+    ui->consoleText->append("Calibration Automatique de la Kinect");
     KinectCapture kinectCapture;
     KinectCalibrator kinectCalibrator;
 
     kinectCapture.openCapture();
-    kinectCalibrator.calibrate(kinectCapture.captureDepthMatrix(), kinectCapture.captureRGBMatrix());
+    kinectCalibrator.calibrate(kinectCapture.captureRGBMatrix(), kinectCapture.captureDepthMatrix());
     kinectCapture.closeCapture();
 }
+
+void MainWindow::on_calibrateKinectManualButton_clicked() {
+    ui->consoleText->append("Calibration Manuelle de la Kinect");
+    KinectCapture kinectCapture;
+    KinectCalibrator kinectCalibrator;
+    
+    kinectCapture.openCapture();
+    kinectCalibrator.calibratev2(kinectCapture.captureDepthMatrix(), kinectCapture.captureRGBMatrix());
+    kinectCapture.closeCapture();
+}
+
 
 void MainWindow::showSolvedSudocubeSlot(QString solvedSudocube, int redCaseValue) {
     stringstream strs;
