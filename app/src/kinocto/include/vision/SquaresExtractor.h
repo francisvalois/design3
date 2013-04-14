@@ -15,7 +15,7 @@
 class SquaresExtractor {
 
 public:
-    const static int SQUARE_THRESHOLD_MIN = 165;
+    const static int SQUARE_THRESHOLD_MIN = 130;
     const static int SQUARE_THRESHOLD_MAX = 215;
     const static int SQUARE_AREA_MIN = 5000;
     const static int SQUARE_AREA_MAX = 160000;
