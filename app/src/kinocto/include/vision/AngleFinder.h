@@ -19,6 +19,7 @@ public:
 
     double findWallAngle(cv::Mat & wall);
     double findGreenBorderAngle(cv::Mat & greenBorder);
+    float findWallAngle2(cv::Mat & wall);
 
 private:
 

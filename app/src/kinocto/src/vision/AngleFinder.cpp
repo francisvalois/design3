@@ -82,3 +82,111 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     return angle;
 }
 
+float AngleFinder::findWallAngle2(Mat & wall) {
+    Mat blur;
+    Size sf;
+    sf.width = 7;
+    sf.height = 7;
+    double sigmaX = 1.4;
+    GaussianBlur(wall, blur, sf, sigmaX);
+
+    Mat segmentedFrame;
+    inRange(blur, Scalar(0, 0, 0), Scalar(255, 255, 60), segmentedFrame);
+
+    VisionUtility::applyErode(segmentedFrame, 1, MORPH_RECT);
+    VisionUtility::applyDilate(segmentedFrame, 12, MORPH_RECT);
+    VisionUtility::applyErode(segmentedFrame, 8, MORPH_RECT);
+
+    Mat edges;
+    Canny(segmentedFrame, edges, 50, 200, 3);
+
+    Mat cdst;
+    cvtColor(segmentedFrame, cdst, CV_GRAY2BGR);
+
+    vector<Vec2f> lines;
+    vector<Vec2f> linesG, linesD;
+    double yG = 0, yD = 0;
+    int G = 0, D = 0;
+    HoughLines(edges, lines, 0.5, CV_PI / 180, 70, 0, 0);
+    for (size_t i = 0; i < lines.size(); i++) {
+        float rho = lines[i][0], theta = lines[i][1];
+        Point pt1, pt2;
+        double a = cos(theta), b = sin(theta);
+        double x0 = a * rho, y0 = b * rho;
+        double ori = rho / b;
+        double m;
+        double yG_actuel, yD_actuel, yM_actuel;
+        if (b != 0) {
+            m = -a / b;
+            ori = rho / b;
+            yG_actuel = ori;
+            yD_actuel = m * wall.cols + ori;
+            yM_actuel = m * wall.cols / 2 + ori;
+        } else {
+            ori = rho;
+            yG_actuel = -1;
+            yD_actuel = -1;
+            yM_actuel = -1;
+        }
+        if ((yG_actuel > yG) && (yG_actuel < wall.rows + 400)) {
+            yG = yG_actuel;
+            G = i;
+        }
+        if ((yD_actuel > yD) && (yD_actuel < wall.rows + 400)) {
+            yD = yD_actuel;
+            D = i;
+        }
+        pt1.x = cvRound(x0 + 2000 * (-b));
+        pt1.y = cvRound(y0 + 2000 * (a));
+        pt2.x = cvRound(x0 - 2000 * (-b));
+        pt2.y = cvRound(y0 - 2000 * (a));
+        line(cdst, pt1, pt2, Scalar(0, 255, 255), 0.4, CV_AA);
+    }
+
+    for (size_t k = 0; k < lines.size(); k++) {
+        float diffOriG = lines[k][0] - lines[G][0];
+        float diffOriD = lines[k][0] - lines[D][0];
+        float diffPenteG = lines[k][1] - lines[G][1];
+        float diffPenteD = lines[k][1] - lines[D][1];
+        if ((fabs(diffOriG) < 10) && (fabs(diffPenteG) < 0.1)) {
+            linesG.push_back(lines[k]);
+        }
+        if (D != G) {
+            if ((fabs(diffOriD) < 10) && (fabs(diffPenteD) < 0.1)) {
+                linesD.push_back(lines[k]);
+            }
+        }
+    }
+
+    float rhoG = 0, rhoD = 0, thetaD = 0, thetaG = 0;
+    for (size_t l = 0; l < linesG.size(); l++) {
+        rhoG = linesG[l][0] + rhoG;
+        thetaG = linesG[l][1] + thetaG;
+    }
+    for (size_t m = 0; m < linesD.size(); m++) {
+        rhoD = linesD[m][0] + rhoD;
+        thetaD = linesD[m][1] + thetaD;
+    }
+
+    Vec2f ligneG, ligneD;
+    vector<Vec2f> wallLines;
+    if (linesG.size() > 0) {
+        ligneG[0] = rhoG / linesG.size();
+        ligneG[1] = thetaG / linesG.size();
+        wallLines.push_back(ligneG);
+    }
+    if (linesD.size() > 0) {
+        ligneD[0] = rhoD / linesD.size();
+        ligneD[1] = thetaD / linesD.size();
+        wallLines.push_back(ligneD);
+    }
+
+    if (fabs(wallLines[0][1] - CV_PI / 2) < fabs(wallLines[1][1] - CV_PI / 2)) {
+        return (wallLines[0][1] * 180.0 / CV_PI - 90);
+    } else {
+        return (wallLines[1][1] * 180.0 / CV_PI - 90);
+    }
+
+    return 0;
+}
+
