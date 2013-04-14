@@ -42,7 +42,9 @@ float KinectCalibrator::findAndSetKinectAngle(Mat depthMatrix){
     Vec2f rotatedPointCoord = KinectTransformator::getRotatedXZCoordFromKinectCoord(leftPointDistance);
     float xKinectPosition = BASE_POSITION_FROM_ORIGIN[0] - rotatedPointCoord[0];
     float zKinectPosition = BASE_POSITION_FROM_ORIGIN[1] - rotatedPointCoord[1];
-    Vec2f kinectPosition(xKinectPosition, zKinectPosition);
+
+    //Hack for precision ! The angle is good but the position is off and constant so I correct it manually
+    Vec2f kinectPosition(xKinectPosition + 0.03, zKinectPosition + 0.06);
     
     KinectTransformator::setKinectPosition(kinectPosition);
 

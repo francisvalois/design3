@@ -204,6 +204,7 @@ int main( /*int argc, char* argv[]*/ ) {
     //imwrite("CalibTable3.jpg", test1);
 
     KinectCalibrator calib;
+    calib.calibrate(test1, test2);
     //calib.calibratev2(capture);
     //calib.find4PointsForReference(test1, test2);
 
@@ -215,8 +216,8 @@ int main( /*int argc, char* argv[]*/ ) {
     response responseObstacle = {0, 0, 0, 0};
     response responseRobot = {0, 0, 0, 0};
     
-    //responseObstacle = findObstacle();
-    responseRobot = findRobot();
+    responseObstacle = findObstacle();
+    //responseRobot = findRobot();
     
     namedWindow("depth", 1);
     namedWindow("chess8", 1);
