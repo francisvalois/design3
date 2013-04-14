@@ -200,19 +200,23 @@ int main( /*int argc, char* argv[]*/ ) {
     Mat test1 = captureRGBMatrix();
     Mat test2 = captureDepthMatrix();
     
-    //Utility::saveToFile(test2, "ExtremeObstacleCondition.xml");
-    //imwrite("ExtremeObstacleCondition.jpg", test1);
+    //Utility::saveToFile(test2, "CalibTable3.xml");
+    //imwrite("CalibTable3.jpg", test1);
 
-    KinectTransformator test10;
-    test10.findNeareastValueInLookupTable(2, 2);
+    KinectCalibrator calib;
+    //calib.calibratev2(capture);
+    //calib.find4PointsForReference(test1, test2);
+
+    //KinectTransformator test10;
+    //test10.findNeareastValueInLookupTable(2, 2);
     //vector<Point> test2 = calibrate();
     //Mat test9 = calibrate();
     RobotDetector robotDetection;
     response responseObstacle = {0, 0, 0, 0};
     response responseRobot = {0, 0, 0, 0};
     
-    responseObstacle = findObstacle();
-    //responseRobot = findRobot();
+    //responseObstacle = findObstacle();
+    responseRobot = findRobot();
     
     namedWindow("depth", 1);
     namedWindow("chess8", 1);
@@ -239,8 +243,8 @@ int main( /*int argc, char* argv[]*/ ) {
     //    rectangle(showRGB, test1[j],Scalar(0,0,255));
     //}
     
-    world = captureDepthMatrix();
-    Mat rgb = captureRGBMatrix();
+    world = Utility::captureDepthMatrix(capture);
+    Mat rgb = Utility::captureRGBMatrix(capture);
     
     
     

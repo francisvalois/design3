@@ -7,8 +7,12 @@ using namespace std;
 const Vec2f KinectCalibrator::BASE_POSITION_FROM_ORIGIN = Vec2f(0.545f, 0.775f);
 const Vec2f KinectCalibrator::OBSTACLE_POSITION_1 = Vec2f(0.835, 1.52);
 const Vec2f KinectCalibrator::OBSTACLE_POSITION_2 = Vec2f(0.325, 1.52);
-const Point KinectCalibrator::CIRCLE_POSITION_1 = Point(440, 225);
-const Point KinectCalibrator::CIRCLE_POSITION_2 = Point(523, 223);
+const Point KinectCalibrator::CIRCLE_POSITION_1 = Point(368, 233);
+const Point KinectCalibrator::CIRCLE_POSITION_2 = Point(502, 230);
+const cv::Point KinectCalibrator::LINE_1_1 = Point(590, 280);
+const cv::Point KinectCalibrator::LINE_1_2 = Point(613, 300);
+const cv::Point KinectCalibrator::LINE_2_2 = Point(200, 287);
+const cv::Point KinectCalibrator::LINE_2_1 = Point(350, 273);
 
 std::vector<Point> KinectCalibrator::getSquarePositions(){
     return KinectCalibrator::_pointVector;
@@ -68,6 +72,8 @@ bool KinectCalibrator::calibratev2(VideoCapture capture){
 
         circle(rgbPicture, CIRCLE_POSITION_1,4,Scalar(255,255,255));
         circle(rgbPicture, CIRCLE_POSITION_2,4,Scalar(255,255,255));
+        line(rgbPicture, LINE_1_1, LINE_1_2, Scalar(0,255,0), 1);
+        line(rgbPicture, LINE_2_1, LINE_2_2, Scalar(0,255,0), 1);
     
         Vec3f firstPosition = depthPicture.at<Vec3f>(CIRCLE_POSITION_1);
         Vec2f trueFirstPosition = KinectTransformator::getTrueCoordFromKinectCoord(firstPosition);
@@ -106,20 +112,22 @@ bool KinectCalibrator::calibratev2(VideoCapture capture){
 bool KinectCalibrator::find4PointsForReference( cv::Mat rgbMatrix, cv::Mat depthMatrix )
 {
     Point2f p[4];
-    p[0] =  Point2f(0.57f, 0.58f);
-    p[1] =  Point2f(0.58f, 0.62f);
-    p[2] =  Point2f(0.34f, 0.58f);
-    p[3] =  Point2f(0.27f, 0.72f);
+    p[0] =  Point2f(1.0654f, 0.833f);
+    p[1] =  Point2f(1.07942f, 0.8736f);
+    p[2] =  Point2f(0.0726f, 2.34602f);
+    p[3] =  Point2f(0.0784f, 2.28083f);
 
     Point2f p2[4];
-    p2[0] =  Point2f(0.56f, 0.63f);
-    p2[1] =  Point2f(0.55f, 0.64f);
-    p2[2] =  Point2f(0.33f, 0.62f);
-    p2[3] =  Point2f(0.26f, 0.78f);
+    p2[0] =  Point2f(1.105f, 0.75f);
+    p2[1] =  Point2f(1.105f, 0.77f);
+    p2[2] =  Point2f(0.04f, 2.30f);
+    p2[3] =  Point2f(0.04f, 2.30f);
 
     Mat test = getPerspectiveTransform(p, p2);
 
-    KinectTransformator::setDistortionCorrectionMatrix(test);
+    cout << test << endl;
+
+    //KinectTransformator::setDistortionCorrectionMatrix(test);
 
     return true;
 

@@ -16,6 +16,10 @@ class KinectCalibrator{
         const static cv::Vec2f OBSTACLE_POSITION_1;
         const static cv::Point CIRCLE_POSITION_2;
         const static cv::Point CIRCLE_POSITION_1;
+        const static cv::Point LINE_1_1;
+        const static cv::Point LINE_1_2;
+        const static cv::Point LINE_2_1;
+        const static cv::Point LINE_2_2;
     
         std::vector<cv::Point> _pointVector;
         std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);

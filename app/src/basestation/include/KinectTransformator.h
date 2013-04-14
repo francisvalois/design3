@@ -24,6 +24,7 @@ public:
     float findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY);
     static cv::Vec2f getTrueCoordFromKinectCoord(cv::Vec3f depthXYZ);
     static cv::Vec2f getRotatedXZCoordFromKinectCoord(cv::Vec3f depthXYZ);
+    static cv::Vec2f getRotatedXZCoordFromKinectCoord(cv::Vec2f depthXYZ);
     static void setKinectAngle(float angleRad);
     static void setKinectPosition(cv::Vec2f kinectPosition);
     static float getKinectAngle();

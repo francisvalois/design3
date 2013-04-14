@@ -6,9 +6,9 @@
 using namespace cv;
 using namespace std;
 
-const float KinectTransformator::KINECTANGLE = 22.5f;
+const float KinectTransformator::KINECTANGLE = 23.0f;
 float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 180 * M_PI);
-Vec2f KinectTransformator::_kinectPosition = Vec2f(0.135f, -0.53f);
+Vec2f KinectTransformator::_kinectPosition = Vec2f(0.15f, -0.49f);
 Mat KinectTransformator::_distortionCorrectionMatrix = Mat();
 
 void KinectTransformator::setKinectAngle(float angleRad){
@@ -39,6 +39,16 @@ Vec2f KinectTransformator::getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ) {
     return trueDepth;
 }
 
+Vec2f KinectTransformator::getRotatedXZCoordFromKinectCoord(Vec2f depthXYZ) {
+    float depthZ = depthXYZ[1];
+    float depthX = depthXYZ[0];
+    float trueDepthX = sin(_kinectAngleRad) * depthZ - cos(_kinectAngleRad) * depthX;
+    float trueDepthZ = sin(_kinectAngleRad) * depthX + cos(_kinectAngleRad) * depthZ;
+    Vec2f trueDepth(trueDepthX, trueDepthZ);
+
+    return trueDepth;
+}
+
 Vec2f KinectTransformator::translateXZCoordtoOrigin(Vec2f rotatedXZ) {
     float positionZ = rotatedXZ[1] + _kinectPosition[1];
     float positionX = rotatedXZ[0] + _kinectPosition[0];
@@ -53,10 +63,12 @@ Vec2f KinectTransformator::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
         return Vec2f();
     }
 
-    Vec2f rotPosition = getRotatedXZCoordFromKinectCoord(depthXYZ);
+
+    Vec2f positionCorrected = distortionCorrection(Vec2f(depthXYZ[0], depthXYZ[2]));
+    Vec2f rotPosition = getRotatedXZCoordFromKinectCoord(positionCorrected);
     Vec2f realPosition = translateXZCoordtoOrigin(rotPosition);
-    Vec2f realPositionCorrected = distortionCorrection(realPosition);
-    return realPositionCorrected;
+
+    return realPosition;
 }
 
 float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY){
@@ -141,14 +153,21 @@ void KinectTransformator::setDistortionCorrectionMatrix(Mat correctionMatrix)
 
 cv::Vec2f KinectTransformator::distortionCorrection( Vec2f distanceToCorrect )
 {
-    if(_distortionCorrectionMatrix.rows == 0 || _distortionCorrectionMatrix.cols == 0){
+    if(_distortionCorrectionMatrix.rows != 0 || _distortionCorrectionMatrix.cols != 0){
         return distanceToCorrect;
     }
 
-    float distanceCoeffs[] = {distanceToCorrect[0], distanceToCorrect[0], 1};
+    float correctionMatrixCoords[] = {-0.051443474f, 0.01775852f, 0.04000356f,
+                                      -2.95724328f, 1.021181f, 2.299995f,
+                                      -1.28576f, 0.44399119f, 1};
+
+    float correctionMatrixCoords2[] = {106.2192, -0.9392, 0.8918, -0.1653, 97.1015, 3.9333, -0.00685, -0.0037928, 1};
+    Mat correctionMatrix = Mat(3, 3, CV_32F, correctionMatrixCoords2).clone();
+
+    float distanceCoeffs[] = {distanceToCorrect[0], distanceToCorrect[1], 1};
     Mat distanceMat = Mat(3,1, CV_32F, distanceCoeffs).clone();
 
-    Mat correctedDistanceMat = _distortionCorrectionMatrix * distanceMat;
+    Mat correctedDistanceMat = correctionMatrix * distanceMat;
 
     MatIterator_<float> it;
     it = correctedDistanceMat.begin<float>();
@@ -156,6 +175,6 @@ cv::Vec2f KinectTransformator::distortionCorrection( Vec2f distanceToCorrect )
     float p2 = *(it + 1);
     float p3 = *(it + 2);
 
-    return Vec2f(p1/p3, p2/p3);
+    return Vec2f(p1/p3/100, p2/p3/100);
 }
 
