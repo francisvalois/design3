@@ -17,7 +17,7 @@ private:
     static const float KINECTANGLE;
     static cv::Vec2f _kinectPosition;
     static cv::Mat _distortionCorrectionMatrix;
-    static cv::Vec2f distortionCorrection(Vec2f distanceToCorrect);
+    static cv::Vec2f distortionCorrection(cv::Vec2f distanceToCorrect);
 public:
     static void setDistortionCorrectionMatrix(cv::Mat correctionMatrix);
     static cv::Vec2f translateXZCoordtoOrigin(cv::Vec2f rotatedXZ);
