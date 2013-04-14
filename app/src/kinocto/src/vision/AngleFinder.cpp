@@ -9,12 +9,6 @@ AngleFinder::AngleFinder() {
 AngleFinder::~AngleFinder() {
 }
 
-void AngleFinder::applyErode(Mat & toErode, int size, int morphShape) {
-    Point erodePoint(size, size);
-    Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
-    erode(toErode, toErode, erodeElem);
-}
-
 double AngleFinder::calculateAngleFrom(Point2d & first, Point2d & last) {
     double xComp = last.x - first.x;
     double yComp = last.y - first.y;
@@ -56,7 +50,7 @@ double AngleFinder::findWallAngle(Mat & wall) {
     Mat grayWall;
     cvtColor(wall, grayWall, CV_RGB2GRAY);
     threshold(grayWall, grayWall, 100, 250, THRESH_BINARY);
-    applyErode(grayWall, 7, MORPH_ELLIPSE);
+    VisionUtility::applyErode(grayWall, 7, MORPH_ELLIPSE);
 
     vector<Point2d> points = findSlopePoints(grayWall);
     double angle = calculateSlopeAverage(points);
@@ -65,30 +59,33 @@ double AngleFinder::findWallAngle(Mat & wall) {
 }
 
 double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
-    GaussianBlur(greenBorder, greenBorder, Size(11, 11), 1, 1);
+    Mat blur;
+    GaussianBlur(greenBorder, blur, Size(7, 7), 1.4f);
 
     Mat hsv;
-    cvtColor(greenBorder, hsv, CV_BGR2HSV);
+    cvtColor(blur, hsv, CV_BGR2HSV);
 
     Mat segmentedFrame;
     inRange(hsv, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
 
-    VisionUtility::applyErode(segmentedFrame, 4, MORPH_ELLIPSE);
-    VisionUtility::applyDilate(segmentedFrame, 7, MORPH_RECT);
+    VisionUtility::applyErode(segmentedFrame, 5, MORPH_RECT);
+    VisionUtility::applyDilate(segmentedFrame, 16, MORPH_RECT);
+    //VisionUtility::applyErode(segmentedFrame, 8, MORPH_RECT);
 
+    //MON CODE
+    threshold(segmentedFrame, segmentedFrame, 100, 250, THRESH_BINARY);
     vector<Point2d> points = findSlopePoints(segmentedFrame);
-    double angle = calculateSlopeAverage(points);
+    return calculateSlopeAverage(points);
 
-    return angle;
+    // TEST AVEC METHODE DE DIANE
+    //Mat edges;
+    //Canny(segmentedFrame, edges, 50, 200, 3);
+    //return findAngle(edges);
 }
 
-float AngleFinder::findWallAngle2(Mat & wall) {
+double AngleFinder::findWallAngle2(Mat & wall) {
     Mat blur;
-    Size sf;
-    sf.width = 7;
-    sf.height = 7;
-    double sigmaX = 1.4;
-    GaussianBlur(wall, blur, sf, sigmaX);
+    GaussianBlur(wall, blur, Size(7, 7), 1.4f);
 
     Mat segmentedFrame;
     inRange(blur, Scalar(0, 0, 0), Scalar(255, 255, 60), segmentedFrame);
@@ -100,9 +97,10 @@ float AngleFinder::findWallAngle2(Mat & wall) {
     Mat edges;
     Canny(segmentedFrame, edges, 50, 200, 3);
 
-    Mat cdst;
-    cvtColor(segmentedFrame, cdst, CV_GRAY2BGR);
+    return findAngle(edges);
+}
 
+double AngleFinder::findAngle(Mat & edges) {
     vector<Vec2f> lines;
     vector<Vec2f> linesG, linesD;
     double yG = 0, yD = 0;
@@ -120,19 +118,19 @@ float AngleFinder::findWallAngle2(Mat & wall) {
             m = -a / b;
             ori = rho / b;
             yG_actuel = ori;
-            yD_actuel = m * wall.cols + ori;
-            yM_actuel = m * wall.cols / 2 + ori;
+            yD_actuel = m * edges.cols + ori;
+            yM_actuel = m * edges.cols / 2 + ori;
         } else {
             ori = rho;
             yG_actuel = -1;
             yD_actuel = -1;
             yM_actuel = -1;
         }
-        if ((yG_actuel > yG) && (yG_actuel < wall.rows + 400)) {
+        if ((yG_actuel > yG) && (yG_actuel < edges.rows + 400)) {
             yG = yG_actuel;
             G = i;
         }
-        if ((yD_actuel > yD) && (yD_actuel < wall.rows + 400)) {
+        if ((yD_actuel > yD) && (yD_actuel < edges.rows + 400)) {
             yD = yD_actuel;
             D = i;
         }
@@ -140,7 +138,6 @@ float AngleFinder::findWallAngle2(Mat & wall) {
         pt1.y = cvRound(y0 + 2000 * (a));
         pt2.x = cvRound(x0 - 2000 * (-b));
         pt2.y = cvRound(y0 - 2000 * (a));
-        line(cdst, pt1, pt2, Scalar(0, 255, 255), 0.4, CV_AA);
     }
 
     for (size_t k = 0; k < lines.size(); k++) {
@@ -186,7 +183,4 @@ float AngleFinder::findWallAngle2(Mat & wall) {
     } else {
         return (wallLines[1][1] * 180.0 / CV_PI - 90);
     }
-
-    return 0;
 }
-

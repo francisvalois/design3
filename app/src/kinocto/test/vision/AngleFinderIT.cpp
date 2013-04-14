@@ -14,27 +14,26 @@ protected:
     AngleFinder angleFinder;
 };
 
-TEST_F(AngleFinderIT, returnZeroWhenNotAGoodImage) {
-    Mat img = imread("img/testWallAngleFinder/empty.png");
+/*TEST_F(AngleFinderIT, returnZeroWhenNotAGoodImage) {
+ Mat img = imread("img/testWallAngleFinder/empty.png");
 
-    double angle = angleFinder.findWallAngle(img);
+ double angle = angleFinder.findWallAngle2(img);
 
-    ASSERT_NEAR(0.0, angle, PRECISION);
-}
+ ASSERT_NEAR(0.0, angle, PRECISION);
+ }*/
 
 TEST_F(AngleFinderIT, find1Degree) {
     Mat img = imread("img/testWallAngleFinder/1degree.png");
 
-    double angle = angleFinder.findWallAngle(img);
+    double angle = angleFinder.findWallAngle2(img);
 
     ASSERT_NEAR(1.0, angle, PRECISION);
 }
 
-
 TEST_F(AngleFinderIT, findMinus1Degree) {
     Mat img = imread("img/testWallAngleFinder/moin1degree.png");
 
-    double angle = angleFinder.findWallAngle(img);
+    double angle = angleFinder.findWallAngle2(img);
 
     ASSERT_NEAR(-1.0, angle, PRECISION);
 }
@@ -42,17 +41,65 @@ TEST_F(AngleFinderIT, findMinus1Degree) {
 TEST_F(AngleFinderIT, find3Degree) {
     Mat img = imread("img/testWallAngleFinder/3degree.png");
 
-    double angle = angleFinder.findWallAngle(img);
+    double angle = angleFinder.findWallAngle2(img);
 
     ASSERT_NEAR(3, angle, PRECISION);
 }
 
-TEST_F(AngleFinderIT, find3DegreeAngle2) {
-    Mat img = imread("img/testWallAngleFinder/3degree.png");
+TEST_F(AngleFinderIT, findMinus3Degree) {
+    Mat img = imread("img/testWallAngleFinder/moin3degree.png");
 
     double angle = angleFinder.findWallAngle2(img);
 
-    ASSERT_NEAR(3, angle, PRECISION);
+    ASSERT_NEAR(-3.0, angle, PRECISION);
+}
+
+TEST_F(AngleFinderIT, find6Degree) {
+    Mat img = imread("img/testWallAngleFinder/6degree.png");
+
+    double angle = angleFinder.findWallAngle2(img);
+
+    ASSERT_NEAR(6, angle, PRECISION);
+}
+
+TEST_F(AngleFinderIT, findMinus6Degree) {
+    Mat img = imread("img/testWallAngleFinder/moin6degree.png");
+
+    double angle = angleFinder.findWallAngle2(img);
+
+    ASSERT_NEAR(-6.0, angle, PRECISION);
+}
+
+TEST_F(AngleFinderIT, find15Degree) {
+    Mat img = imread("img/testWallAngleFinder/15degree.png");
+
+    double angle = angleFinder.findWallAngle2(img);
+
+    ASSERT_NEAR(15.0, angle, PRECISION);
+}
+
+TEST_F(AngleFinderIT, findMinus15Degree) {
+    Mat img = imread("img/testWallAngleFinder/moin15degree.png");
+
+    double angle = angleFinder.findWallAngle2(img);
+
+    ASSERT_NEAR(-15.0, angle, PRECISION);
+}
+
+TEST_F(AngleFinderIT, findDegreeOnMur1) {
+    Mat img = imread("img/testWallAngleFinder/mur1.png");
+
+    double angle = angleFinder.findWallAngle2(img);
+
+    ASSERT_NEAR(-1.5, angle, PRECISION);
+}
+
+TEST_F(AngleFinderIT, findDegreeOnMur2) {
+    Mat img = imread("img/testWallAngleFinder/mur2.png");
+
+    double angle = angleFinder.findWallAngle2(img);
+
+    ASSERT_NEAR(2.0, angle, PRECISION);
 }
 
 TEST_F(AngleFinderIT, findDeuxAngleGauche2) {
@@ -63,77 +110,12 @@ TEST_F(AngleFinderIT, findDeuxAngleGauche2) {
     ASSERT_NEAR(3, angle, PRECISION);
 }
 
-TEST_F(AngleFinderIT, findMur1Angle2) {
-    Mat img = imread("img/testWallAngleFinder/mur1.png");
-
-    double angle = angleFinder.findWallAngle2(img);
-
-    ASSERT_NEAR(-1.5, angle, PRECISION);
-}
-
-
 TEST_F(AngleFinderIT, findDeuxAngleDroite2) {
     Mat img = imread("img/testWallAngleFinder/deuxAnglesDroite.png");
 
     double angle = angleFinder.findWallAngle2(img);
 
     ASSERT_NEAR(-3, angle, PRECISION);
-}
-
-TEST_F(AngleFinderIT, findMinus3Degree) {
-    Mat img = imread("img/testWallAngleFinder/moin3degree.png");
-
-    double angle = angleFinder.findWallAngle(img);
-
-    ASSERT_NEAR(-3.0, angle, PRECISION);
-}
-
-TEST_F(AngleFinderIT, find6Degree) {
-    Mat img = imread("img/testWallAngleFinder/6degree.png");
-
-    double angle = angleFinder.findWallAngle(img);
-
-    ASSERT_NEAR(6, angle, PRECISION);
-}
-
-TEST_F(AngleFinderIT, findMinus6Degree) {
-    Mat img = imread("img/testWallAngleFinder/moin6degree.png");
-
-    double angle = angleFinder.findWallAngle(img);
-
-    ASSERT_NEAR(-6.0, angle, PRECISION);
-}
-
-TEST_F(AngleFinderIT, find15Degree) {
-    Mat img = imread("img/testWallAngleFinder/15degree.png");
-
-    double angle = angleFinder.findWallAngle(img);
-
-    ASSERT_NEAR(15.0, angle, PRECISION);
-}
-
-TEST_F(AngleFinderIT, findMinus15Degree) {
-    Mat img = imread("img/testWallAngleFinder/moin15degree.png");
-
-    double angle = angleFinder.findWallAngle(img);
-
-    ASSERT_NEAR(-15.0, angle, PRECISION);
-}
-
-TEST_F(AngleFinderIT, findDegreeOnMur1) {
-    Mat img = imread("img/testWallAngleFinder/mur1.png");
-
-    double angle = angleFinder.findWallAngle(img);
-
-    ASSERT_NEAR(-1.40, angle, PRECISION);
-}
-
-TEST_F(AngleFinderIT, findDegreeOnMur2) {
-    Mat img = imread("img/testWallAngleFinder/mur2.png");
-
-    double angle = angleFinder.findWallAngle(img);
-
-    ASSERT_NEAR(2.20, angle, PRECISION);
 }
 
 }

@@ -19,16 +19,16 @@ public:
 
     double findWallAngle(cv::Mat & wall);
     double findGreenBorderAngle(cv::Mat & greenBorder);
-    float findWallAngle2(cv::Mat & wall);
+    double findWallAngle2(cv::Mat & wall);
 
 private:
 
     static const int STEP_SIZE = 2;
 
     double calculateAngleFrom(cv::Point2d & first, cv::Point2d & last);
-    void applyErode(cv::Mat & toErode, int size, int morphShape);
     std::vector<cv::Point2d> findSlopePoints(cv::Mat & wall);
     double calculateSlopeAverage(std::vector<cv::Point2d> & points);
+    double findAngle(cv::Mat & edges);
 };
 
 #endif
