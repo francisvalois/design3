@@ -292,14 +292,14 @@ void asservirMoteurs(void){
 		if(consigne_rotation==0){
 			consigne_rotation = dist_cible0;
 		}
-		if(consigne_rotation-50<measured_value && consigne_rotation+50>measured_value){
+		if(consigne_rotation-20<measured_value && consigne_rotation+20>measured_value){
 			GPIOPinWrite(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_7, 0xF0);
 			GPIOPinWrite(GPIO_PORTC_BASE, GPIO_PIN_5 | GPIO_PIN_7, 0xA0);
 			GPIOPinWrite(GPIO_PORTE_BASE, GPIO_PIN_4 | GPIO_PIN_5, 0x30);
 			est_en_rotation = false;
 		}
 		else{
-			turn(consigne_rotation-measured_value, 500);
+			turn(consigne_rotation-measured_value, 200);
 		}
 		/*
 		long abs_distance_cible0;
