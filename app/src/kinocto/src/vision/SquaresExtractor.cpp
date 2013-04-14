@@ -16,8 +16,9 @@ SquaresExtractor::~SquaresExtractor() {
 
 bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded) {
     bool isExtracted = false;
+    bool step = 5;
 
-    for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
+    for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false && step == 0; threshValue++) {
         threshold(srcGray, srcThresholded, threshValue, 500, THRESH_BINARY);
         //sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
         //VisionUtility::saveImage(srcThresholded, filename);
@@ -37,6 +38,7 @@ bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & 
         removeInvalidSquaresPair(squaresPair);
 
         if (squaresPair.size() == 47) {
+            step--;
             isExtracted = true;
         }
     }
