@@ -68,19 +68,22 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     Mat segmentedFrame;
     inRange(hsv, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
 
-    VisionUtility::applyErode(segmentedFrame, 5, MORPH_RECT);
-    VisionUtility::applyDilate(segmentedFrame, 16, MORPH_RECT);
+    VisionUtility::applyErode(segmentedFrame, 5, MORPH_ELLIPSE);
+    VisionUtility::applyDilate(segmentedFrame, 16, MORPH_ELLIPSE);
     //VisionUtility::applyErode(segmentedFrame, 8, MORPH_RECT);
 
     //MON CODE
-    threshold(segmentedFrame, segmentedFrame, 100, 250, THRESH_BINARY);
-    vector<Point2d> points = findSlopePoints(segmentedFrame);
-    return calculateSlopeAverage(points);
+    //threshold(segmentedFrame, segmentedFrame, 100, 250, THRESH_BINARY);
+    //vector<Point2d> points = findSlopePoints(segmentedFrame);
+    //return calculateSlopeAverage(points);
 
+    namedWindow("test", CV_WINDOW_FREERATIO);
+    imshow("test", segmentedFrame);
+    waitKey(0);
     // TEST AVEC METHODE DE DIANE
-    //Mat edges;
-    //Canny(segmentedFrame, edges, 50, 200, 3);
-    //return findAngle(edges);
+    Mat edges;
+    Canny(segmentedFrame, edges, 50, 200, 3);
+    return findAngle(edges);
 }
 
 double AngleFinder::findWallAngle2(Mat & wall) {
@@ -106,6 +109,7 @@ double AngleFinder::findAngle(Mat & edges) {
     double yG = 0, yD = 0;
     int G = 0, D = 0;
     HoughLines(edges, lines, 0.5, CV_PI / 180, 70, 0, 0);
+
     for (size_t i = 0; i < lines.size(); i++) {
         float rho = lines[i][0], theta = lines[i][1];
         Point pt1, pt2;

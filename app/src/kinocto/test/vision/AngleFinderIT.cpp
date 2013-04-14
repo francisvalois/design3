@@ -13,14 +13,14 @@ protected:
     static const double PRECISION = 0.05;
     AngleFinder angleFinder;
 };
-
+/*
 TEST_F(AngleFinderIT, returnZeroWhenNotAGoodImage) {
  Mat img = imread("img/testWallAngleFinder/empty.png");
 
  double angle = angleFinder.findWallAngle2(img);
 
  ASSERT_NEAR(0.0, angle, PRECISION);
- }
+ }*/
 
 TEST_F(AngleFinderIT, find1Degree) {
     Mat img = imread("img/testWallAngleFinder/1degree.png");
