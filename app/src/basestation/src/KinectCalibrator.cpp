@@ -72,7 +72,7 @@ bool KinectCalibrator::calibratev2(){
     capture.openCapture();
 
     for(;;){
-        Mat rgbPicture = capture.captureRGBMatrix()
+        Mat rgbPicture = capture.captureRGBMatrix();
         Mat depthPicture = capture.captureDepthMatrix();
 
         circle(rgbPicture, CIRCLE_POSITION_1,4,Scalar(255,255,255));
