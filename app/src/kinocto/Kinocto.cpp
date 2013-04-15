@@ -68,16 +68,11 @@ void Kinocto::startLoop() {
         decodeAntennaParam();
         showAntennaParam();
 
-        //TODO Est-ce vraiment nécessaire pour la correction? Trouver coefficient à cet endroit
-        //Position robotPos = workspace.getRobotPos();
-        //robotPos.translateY(10.0f);
-        //workspace.setRobotPos(robotPos);
         adjustAngleWithGreenBorder();
 
         goToSudocubeX();
         adjustAngleInFrontOfWall();
         adjustFrontPosition();
-        adjustAngleInFrontOfWall();
         adjustSidePositionWithGreenFrame();
         extractAndSolveSudocube();
 
