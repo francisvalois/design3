@@ -85,7 +85,6 @@ void Kinocto::startLoop() {
 
 void Kinocto::getRobotPosition(float & angle, Position & robotPos) {
     baseStation->requestRobotPositionAndAngle(robotPos, angle);
-    baseStation->sendUpdateRobotPositionMessage(robotPos);
 }
 
 void Kinocto::getObstaclesPosition() {
