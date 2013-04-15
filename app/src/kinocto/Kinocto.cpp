@@ -62,7 +62,7 @@ void Kinocto::startLoop() {
         Position robotPos = workspace.getRobotPos();
         robotPos.translateY(10.0f);
         workspace.setRobotPos(robotPos);
-        adjustAngleWithGreenBorder();
+        //adjustAngleWithGreenBorder();
 
         goToSudocubeX();
         adjustAngleInFrontOfWall();
@@ -111,8 +111,8 @@ void Kinocto::executeMoves(vector<Move> & moves) {
         workspace.setRobotPos(moves[i].destination);
 
         //TODO Vérifier si la position s'affiche correctement dans l'interface
-        getRobotPosition();
-        //baseStation->sendUpdateRobotPositionMessage(moves[i].destination); // Position du path planning
+        //getRobotPosition();
+        baseStation->sendUpdateRobotPositionMessage(moves[i].destination); // Position du path planning
     }
 }
 
