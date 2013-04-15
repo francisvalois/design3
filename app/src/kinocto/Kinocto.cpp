@@ -94,23 +94,18 @@ void Kinocto::getObstaclesPosition() {
 }
 
 void Kinocto::getOutOfDrawingZone() {
-//    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
-//    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
-//
-//    executeMoves(moves);
-
     ROS_INFO("GETTING OUT OF THE DRAWING ZONE");
 
-	float angle = -1 * workspace.getRobotAngle();
-	microcontroller->rotate(angle);
+    float angle = -1 * workspace.getRobotAngle();
+    microcontroller->rotate(angle);
 
-	Position translation;
-	translation.x = workspace.getRobotPos().y - workspace.getKinectDeadAngle().y;
-	translation.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
-	microcontroller->translate(translation);
+    Position translation;
+    translation.x = workspace.getRobotPos().y - workspace.getKinectDeadAngle().y;
+    translation.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
+    microcontroller->translate(translation);
 
-	workspace.setRobotAngle(0.0f);
-	workspace.setRobotPos(workspace.getKinectDeadAngle());
+    workspace.setRobotAngle(0.0f);
+    workspace.setRobotPos(workspace.getKinectDeadAngle());
 }
 
 void Kinocto::goToAntenna() {
@@ -148,9 +143,8 @@ void Kinocto::showAntennaParam() {
 void Kinocto::adjustAngleWithGreenBorder() {
     ROS_INFO("RÉAJUSTEMENT DU ROBOT AVEC LE CADRE VERT");
     double camAngle = -31;
-    double camHBiais = -2;
 
-    microcontroller->rotateCam(camAngle, camHBiais);
+    microcontroller->rotateCam(camAngle, 0);
     cameraCapture->openCapture();
 
     Mat greenBorder = cameraCapture->takePicture();
@@ -159,7 +153,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
     microcontroller->rotate(angle);
 
     cameraCapture->closeCapture();
-    microcontroller->rotateCam(0, camHBiais);
+    microcontroller->rotateCam(0, 0);
 }
 
 void Kinocto::goToSudocubeX() {
