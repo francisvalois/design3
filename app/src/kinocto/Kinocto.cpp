@@ -188,22 +188,22 @@ void Kinocto::goToSudocubeX() {
 
     if (isCaseSudocube3WithTranslation) {
         Position translation1;
-        translation1.y = workspace.getSudocubePos(3).x - finalPosition.x;
+        translation1.x = finalPosition.y - workspace.getSudocubePos(3).y;
         translationStack.push(translation1);
         microcontroller->translate(translation1);
 
         Position translation2;
-        translation2.x = finalPosition.y - workspace.getSudocubePos(3).y;
+        translation2.y = workspace.getSudocubePos(3).x - finalPosition.x;
         translationStack.push(translation2);
         microcontroller->translate(translation2);
     } else if (isCaseSudocube6WithTranslation) {
         Position translation1;
-        translation1.y = workspace.getSudocubePos(6).x - finalPosition.x;
+        translation1.x = finalPosition.y - workspace.getSudocubePos(6).y;
         translationStack.push(translation1);
         microcontroller->translate(translation1);
 
         Position translation2;
-        translation2.x = finalPosition.y - workspace.getSudocubePos(6).y;
+        translation2.y = workspace.getSudocubePos(6).x - finalPosition.x;
         translationStack.push(translation2);
         microcontroller->translate(translation2);
     }
