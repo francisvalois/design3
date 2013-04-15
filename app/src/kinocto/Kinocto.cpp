@@ -122,7 +122,6 @@ void Kinocto::executeMoves(vector<Move> & moves) {
         microcontroller->rotate(moves[i].angle);
         microcontroller->move(moves[i].distance);
 
-        // POSITION THÉORIQUE DU ROBOT SEULEMENT
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
         workspace.setRobotPos(moves[i].destination);
 
@@ -208,8 +207,6 @@ void Kinocto::adjustAngleInFrontOfWall() {
     ROS_INFO("ADJUSTING ANGLE IN FRONT OF THE WALL");
 
     double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
-    double camHBias = -2;
-    //double angleCorrection = 2.09;
 
     microcontroller->rotateCam(camAngle, 0);
     cameraCapture->openCapture();
@@ -217,12 +214,11 @@ void Kinocto::adjustAngleInFrontOfWall() {
     Mat wall = cameraCapture->takePicture();
 
     AngleFinder angleFinder;
-    //double angle = angleFinder.findWallAngle(wall) * angleCorrection;
     double angle = angleFinder.findWallAngle2(wall);
     microcontroller->rotate(angle);
 
     cameraCapture->closeCapture();
-    microcontroller->rotateCam(0, camHBias);
+    microcontroller->rotateCam(0, 0);
 }
 
 void Kinocto::adjustSidePositionWithGreenFrame() {
@@ -409,9 +405,8 @@ void Kinocto::goToDrawingZone() {
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
     executeMoves(moves);
 
-    //TODO À faire
 // Correction de la position du robot dans la zone de dessin
-    /*float angle;
+    float angle;
     Position robotPos;
     getRobotPosition(angle, robotPos);
     workspace.setRobotAngle(angle);
@@ -419,13 +414,13 @@ void Kinocto::goToDrawingZone() {
 
     vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
-    executeMoves(moves);*/
+    executeMoves(moves);
 
     adjustAngleWithGreenBorder();
 
 //Translation pour placer le robot dans le centre
     microcontroller->move(-13.0f);
-    Position robotPos = workspace.getRobotPos();
+    robotPos = workspace.getRobotPos();
 
     int orientation = antennaParam.getOrientation();
     if (orientation == Workspace::NORTH) {
