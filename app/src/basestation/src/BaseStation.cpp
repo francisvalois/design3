@@ -192,18 +192,13 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
         response.angle /= robotPositionAverageCount;
         response.angle = response.angle * 180 / M_PI;
     }
-
+//////////////////////////////
     //Met a jour la position du robot dans l'interface
     actualPosition.set(response.x, response.y);
     kinoctoPositionUpdates.push_back(actualPosition);
 
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);
-
-    //TODO TEMPORAIRE PR TESTS
-    response.x = 35.5;
-    response.y = 76.5;
-    response.angle = 0.0f;
 
     ROS_INFO( "%s x:%f y:%f angle:%f", "Request Find Robot Position. Sending Values ", response.x, response.y, response.angle);
 
@@ -214,6 +209,12 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
+//////////////////////////////
+
+    //TODO TEMPORAIRE PR TESTS
+    response.x = 35.5;
+    response.y = 76.5;
+    response.angle = 0.0f;
 
     return true;
 }

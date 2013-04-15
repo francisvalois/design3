@@ -66,7 +66,7 @@ private:
     PathPlanning pathPlanning;
 
     //Pour la résolution des sudocubes
-    CameraCapture cameraCapture;
+    CameraCapture * cameraCapture;
     SudocubeSolver sudokubeSolver;
     SudocubeExtractor sudocubeExtractor;
 

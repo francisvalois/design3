@@ -12,6 +12,7 @@ Kinocto::Kinocto(NodeHandle node) {
     numberToDraw = 1;
     baseStation = new BaseStationDecorator(nodeHandle);
     microcontroller = new MicrocontrollerDecorator(nodeHandle);
+    cameraCapture = new CameraCapture();
 }
 
 Kinocto::~Kinocto() {
@@ -23,6 +24,8 @@ Kinocto::~Kinocto() {
         ros::waitForShutdown();
     }
     wait();
+
+    delete cameraCapture;
 }
 
 void Kinocto::loop() {
@@ -130,14 +133,14 @@ void Kinocto::adjustAngleWithGreenBorder() {
     double camHBiais = -2;
 
     microcontroller->rotateCam(camAngle, camHBiais);
-    cameraCapture.openCapture();
+    cameraCapture->openCapture();
 
-    Mat greenBorder = cameraCapture.takePicture();
+    Mat greenBorder = cameraCapture->takePicture();
     AngleFinder angleFinder;
     double angle = angleFinder.findGreenBorderAngle(greenBorder);
     microcontroller->rotate(angle);
 
-    cameraCapture.closeCapture();
+    cameraCapture->closeCapture();
     microcontroller->rotateCam(0, camHBiais);
 }
 
@@ -190,24 +193,24 @@ void Kinocto::adjustAngleInFrontOfWall() {
     //double angleCorrection = 2.09;
 
     microcontroller->rotateCam(camAngle, camHBias);
-    cameraCapture.openCapture();
+    cameraCapture->openCapture();
 
-    Mat wall = cameraCapture.takePicture();
+    Mat wall = cameraCapture->takePicture();
 
     AngleFinder angleFinder;
     //double angle = angleFinder.findWallAngle(wall) * angleCorrection;
     double angle = angleFinder.findWallAngle2(wall);
     microcontroller->rotate(angle);
 
-    cameraCapture.closeCapture();
+    cameraCapture->closeCapture();
     microcontroller->rotateCam(0, camHBias);
 }
 
 void Kinocto::adjustSidePositionWithGreenFrame() {
     microcontroller->rotateCam(0, 0);
-    cameraCapture.openCapture();
+    cameraCapture->openCapture();
 
-    Mat greenFrame = cameraCapture.takePicture();
+    Mat greenFrame = cameraCapture->takePicture();
 
     FrameCenterFinder frameCenterFinder;
     double translateX = frameCenterFinder.getXTranslation(greenFrame);
@@ -215,7 +218,7 @@ void Kinocto::adjustSidePositionWithGreenFrame() {
     Position translePos(translateX, 0.0f);
     microcontroller->translate(translePos);
 
-    cameraCapture.closeCapture();
+    cameraCapture->closeCapture();
 }
 
 void Kinocto::adjustSidePosition() {
@@ -305,11 +308,11 @@ void Kinocto::extractAndSolveSudocube() {
 }
 
 vector<Sudocube *> Kinocto::extractSudocubes() {
-    cameraCapture.openCapture(CameraCapture::SUDOCUBE_CONFIG);
+    cameraCapture->openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
     vector<Sudocube *> sudokubes;
     for (int i = 1; i <= 10 && sudokubes.size() <= 5; i++) {
-        Mat sudocubeImg = cameraCapture.takePicture();
+        Mat sudocubeImg = cameraCapture->takePicture();
 
         if (!sudocubeImg.data == false) {
             Sudocube * sudokube = sudocubeExtractor.extractSudocube(sudocubeImg);
@@ -320,7 +323,7 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
         }
     }
 
-    cameraCapture.closeCapture();
+    cameraCapture->closeCapture();
 
     return sudokubes;
 }
