@@ -126,6 +126,7 @@ void Kinocto::showAntennaParam() {
 }
 
 void Kinocto::adjustAngleWithGreenBorder() {
+    ROS_INFO("RÉAJUSTEMENT DU ROBOT AVEC LE CADRE VERT");
     double camAngle = -31;
     double camHBiais = -2;
 
