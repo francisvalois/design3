@@ -404,7 +404,7 @@ void Kinocto::goToDrawingZone() {
     executeMoves(moves);
 
 // Correction de la position du robot dans la zone de dessin
-    float angle;
+    /*float angle;
     Position robotPos;
     getRobotPosition(angle, robotPos);
     workspace.setRobotAngle(angle);
@@ -412,7 +412,7 @@ void Kinocto::goToDrawingZone() {
 
     vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
-    executeMoves(moves);
+    executeMoves(moves);*/
 
     adjustAngleWithGreenBorder();
 
