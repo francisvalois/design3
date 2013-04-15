@@ -11,8 +11,6 @@ CameraCapture::~CameraCapture() {
 }
 
 Mat CameraCapture::takePicture() {
-    setConfig(videoCapture, CameraCapture::SUDOCUBE_CONFIG);
-
     Mat picture;
     if (videoCapture.isOpened() == false) {
         ROS_ERROR("%s", "ERROR, COULD NOT TAKE A PICTURE");
