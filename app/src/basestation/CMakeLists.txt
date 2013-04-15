@@ -106,6 +106,7 @@ src/KinectUtility.cpp
 src/ObjectDetector.cpp
 src/ObstaclesDetector.cpp
 src/KinectTransformator.cpp
+src/KinectCapture.cpp
 test/KinectCalibratorTest.cpp
 test/KinectTransformatorTest.cpp
 test/ObjectDetectorTest.cpp
