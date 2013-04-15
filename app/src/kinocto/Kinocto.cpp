@@ -398,7 +398,7 @@ void Kinocto::goToDrawingZone() {
 
 //Translation pour placer le robot dans le centre
     microcontroller->move(-13.0f);
-    robotPos = workspace.getRobotPos();
+    Position robotPos = workspace.getRobotPos();
 
     int orientation = antennaParam.getOrientation();
     if (orientation == Workspace::NORTH) {
