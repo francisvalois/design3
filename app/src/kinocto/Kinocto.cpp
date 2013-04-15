@@ -283,7 +283,7 @@ void Kinocto::adjustSidePosition() {
 
 void Kinocto::adjustFrontPosition() {
     ROS_INFO("ADJUSTING FRONT POSITION");
-    for (int i = 1; i <= 2; i++) {
+    for (int i = 1; i <= 1; i++) {
         float frontDistance = getSonarDistance();
         float distance = frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE;
         if (distance >= -1 * Workspace::SUDOCUBE_FRONT_DISTANCE + 2) {
