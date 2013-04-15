@@ -61,6 +61,8 @@ void Kinocto::startLoop() {
         workspace.setRobotPos(robotPos);
         workspace.setRobotAngle(angle);
 
+        getOutOfDrawingZone();
+
         getObstaclesPosition();
 
         goToAntenna();
@@ -82,6 +84,7 @@ void Kinocto::startLoop() {
 
         goToDrawingZone();
         drawNumber();
+        getOutOfDrawingZone();
         endLoop();
     }
 }
@@ -94,6 +97,16 @@ void Kinocto::getObstaclesPosition() {
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
     pathPlanning.setObstacles(obsPos[0], obsPos[1]);
+}
+
+void Kinocto::getOutOfDrawingZone() {
+    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+
+    executeMoves(moves);
+
+    workspace.setRobotPos(workspace.getKinectDeadAngle());
+    workspace.setRobotAngle(0.0f);
 }
 
 void Kinocto::goToAntenna() {

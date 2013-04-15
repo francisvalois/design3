@@ -93,6 +93,7 @@ private:
     void adjustFrontPosition();
     void adjustSidePositionWithGreenFrame();
     void extractAndSolveSudocube();
+    void getOutOfDrawingZone();
     std::vector<Sudocube *> extractSudocubes();
     void deleteSudocubes(std::vector<Sudocube *> & sudocubes);
     void solveSudocube(std::vector<Sudocube *> & sudocubes, std::string & solvedSudocube, int & redCaseValue);
