@@ -15,13 +15,8 @@ find_package(OpenCV REQUIRED)
 add_service_files(
   FILES
   TestExtractSudocubeAndSolve.srv
-  TestFindRobotAngle.srv
-  TestFindRobotPosition.srv
-  TestGetAntennaParamAndShow.srv
   TestGoToSudocubeX.srv
-  TestFindObstacles.srv
   TestDrawNumber.srv
-  TestGoToGreenFrameAndDraw.srv
   TestAdjustFrontPosition.srv
   TestAdjustSidePosition.srv
   TestAdjustAngle.srv

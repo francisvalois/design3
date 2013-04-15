@@ -49,11 +49,9 @@ bool Kinocto::setStartLoop(kinocto::StartLoop::Request & request, kinocto::Start
 
 void Kinocto::startLoop() {
     if (state == LOOPING) {
-        state = WAITING; // On reset pour pas refaire en boucle
+        state = WAITING;
         microcontroller->turnLED(false);
         microcontroller->rotateCam(0, 0);
-
-        //TODO Déplacer le robot pour les obstacles???
 
         float angle;
         Position robotPos;
@@ -141,7 +139,7 @@ void Kinocto::showAntennaParam() {
 }
 
 void Kinocto::adjustAngleWithGreenBorder() {
-    ROS_INFO("RÉAJUSTEMENT DU ROBOT AVEC LE CADRE VERT");
+    ROS_INFO("ADJUSTING ROBOT ANGLE WITH GREEN BORDER");
     double camAngle = -31;
 
     microcontroller->rotateCam(camAngle, 0);
@@ -245,7 +243,7 @@ void Kinocto::adjustSidePositionWithGreenFrame() {
 }
 
 void Kinocto::adjustSidePosition() {
-    ROS_INFO("ADJUSTING SIDE POSITION WITH SONAR");
+    ROS_INFO("ADJUSTING SIDE POSITION WITH THE SONAR");
     int sudocubeNo = antennaParam.getNumber();
 
     if (sudocubeNo <= 2) {
@@ -290,7 +288,7 @@ void Kinocto::adjustSidePosition() {
 }
 
 void Kinocto::adjustFrontPosition() {
-    ROS_INFO("ADJUSTING FRONT POSITION");
+    ROS_INFO("ADJUSTING FRONT POSITION WITH THE SONAR");
     for (int i = 1; i <= 1; i++) {
         float frontDistance = getSonarDistance();
         float distance = frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE;
@@ -500,79 +498,6 @@ bool Kinocto::testGoToSudocubeX(TestGoToSudocubeX::Request & request, TestGoToSu
     return true;
 }
 
-bool Kinocto::testFindRobotAngle(TestFindRobotAngle::Request & request, TestFindRobotAngle::Response & response) {
-    ROS_INFO("TESTING FindRobotAngle");
-
-/////
-//TODO à venir
-// algoPourTrouverRotation()
-    workspace.setRobotAngle(0.0f);
-/////
-
-    return true;
-}
-
-bool Kinocto::testFindRobotPosition(TestFindRobotPosition::Request & request, TestFindRobotPosition::Response & response) {
-    ROS_INFO("TESTING FindRobotPosition");
-
-/////
-    float angle;
-    Position robotPos;
-    baseStation->requestRobotPositionAndAngle(robotPos, angle);
-    workspace.setRobotPos(robotPos);
-    baseStation->sendUpdateRobotPositionMessage(robotPos);
-/////
-
-    response.x = robotPos.x;
-    response.y = robotPos.y;
-
-    return true;
-}
-
-bool Kinocto::testGetAntennaParamAndShow(TestGetAntennaParamAndShow::Request & request, kinocto::TestGetAntennaParamAndShow::Response & response) {
-    ROS_INFO("TESTING GetAntennaParam");
-
-//Harcoding de la position du robot pour les tests
-    Position robotPos(37.5, 37.5);
-    workspace.setRobotPos(robotPos);
-    workspace.setRobotAngle(0.0f);
-    baseStation->sendUpdateRobotPositionMessage(robotPos);
-
-//Hardcoding de la pos des obstacles pour qu'ils ne soient dans les pattes
-    Position obs1(110, 75);
-    Position obs2(180, 30);
-    workspace.setObstaclesPos(obs1, obs2);
-    pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
-
-/////
-    goToAntenna();
-    decodeAntennaParam();
-    showAntennaParam();
-/////
-
-    response.isBig = antennaParam.isBig();
-    response.number = antennaParam.getNumber();
-    response.orientation = antennaParam.getOrientation();
-
-    return true;
-}
-
-bool Kinocto::testFindObstacles(TestFindObstacles::Request & request, TestFindObstacles::Response & response) {
-    ROS_INFO("TESTING FindObstacles");
-
-////
-    getObstaclesPosition();
-///
-    Position obs1 = workspace.getObstaclePos(1);
-    Position obs2 = workspace.getObstaclePos(2);
-    response.obs1x = obs1.x;
-    response.obs1y = obs1.y;
-    response.obs2x = obs2.x;
-    response.obs2y = obs2.y;
-
-    return true;
-}
-
 bool Kinocto::testDrawNumber(TestDrawNumber::Request & request, TestDrawNumber::Response & response) {
     ROS_INFO("TESTING DrawNumber");
     ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
@@ -581,33 +506,6 @@ bool Kinocto::testDrawNumber(TestDrawNumber::Request & request, TestDrawNumber::
     antennaParam.set(request.number, request.isBig, request.orientation);
 
 /////
-    drawNumber();
-/////
-
-    return true;
-}
-
-bool Kinocto::testGoToGreenFrameAndDraw(TestGoToGreenFrameAndDraw::Request & request, TestGoToGreenFrameAndDraw::Response & response) {
-    ROS_INFO("TESTING GoToGreenFrameAndDraw");
-    ROS_INFO("Drawing number=%d isBig=%d orientation=%d", request.number, request.isBig, request.orientation);
-
-//Init de l'Objet antennaParam
-    antennaParam.set(request.number, request.isBig, request.orientation);
-
-//Hardcodage de la position du robot pour les tests
-    Position robotPos(201, 58);
-    workspace.setRobotPos(robotPos);
-    workspace.setRobotAngle(-180.0f);
-    baseStation->sendUpdateRobotPositionMessage(robotPos);
-
-//Hardcodage des obstacles pour les tests
-    Position obs1(request.obs1x, request.obs1y);
-    Position obs2(request.obs2x, request.obs2y);
-    workspace.setObstaclesPos(obs1, obs2);
-    pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
-
-/////
-    goToDrawingZone();
     drawNumber();
 /////
 
@@ -657,26 +555,16 @@ int main(int argc, char **argv) {
     Kinocto kinocto(nodeHandle);
 
     ROS_INFO("%s", "Creating services and messages handler for Kinocto");
-
-//Message handlers
-//ros::Subscriber sub = nodeHandle.subscribe("basestation/startLoop", 10, &Kinocto::startLoop, &kinocto);
-
-//Services de test seulement
     ros::ServiceServer service1 = nodeHandle.advertiseService("kinocto/TestExtractSudocubeAndSolve", &Kinocto::testExtractSudocubeAndSolve, &kinocto);
     ros::ServiceServer service2 = nodeHandle.advertiseService("kinocto/TestGoToSudocubeX", &Kinocto::testGoToSudocubeX, &kinocto);
-    ros::ServiceServer service3 = nodeHandle.advertiseService("kinocto/TestFindRobotAngle", &Kinocto::testFindRobotAngle, &kinocto);
-    ros::ServiceServer service4 = nodeHandle.advertiseService("kinocto/TestFindRobotPosition", &Kinocto::testFindRobotPosition, &kinocto);
-    ros::ServiceServer service5 = nodeHandle.advertiseService("kinocto/TestGetAntennaParamAndShow", &Kinocto::testGetAntennaParamAndShow, &kinocto);
-    ros::ServiceServer service6 = nodeHandle.advertiseService("kinocto/TestFindObstacles", &Kinocto::testFindObstacles, &kinocto);
-    ros::ServiceServer service7 = nodeHandle.advertiseService("kinocto/TestDrawNumber", &Kinocto::testDrawNumber, &kinocto);
-    ros::ServiceServer service8 = nodeHandle.advertiseService("kinocto/TestGoToGreenFrameAndDraw", &Kinocto::testGoToGreenFrameAndDraw, &kinocto);
-    ros::ServiceServer service9 = nodeHandle.advertiseService("kinocto/TestAdjustFrontPosition", &Kinocto::testAdjustFrontPosition, &kinocto);
-    ros::ServiceServer service10 = nodeHandle.advertiseService("kinocto/TestAdjustSidePosition", &Kinocto::testAdjustSidePosition, &kinocto);
-    ros::ServiceServer service11 = nodeHandle.advertiseService("kinocto/TestAdjustAngle", &Kinocto::testAdjustAngle, &kinocto);
-    ros::ServiceServer service12 = nodeHandle.advertiseService("kinocto/TestAdjustSidePositionWithGreenFrame",
+    ros::ServiceServer service3 = nodeHandle.advertiseService("kinocto/TestDrawNumber", &Kinocto::testDrawNumber, &kinocto);
+    ros::ServiceServer service4 = nodeHandle.advertiseService("kinocto/TestAdjustFrontPosition", &Kinocto::testAdjustFrontPosition, &kinocto);
+    ros::ServiceServer service5 = nodeHandle.advertiseService("kinocto/TestAdjustSidePosition", &Kinocto::testAdjustSidePosition, &kinocto);
+    ros::ServiceServer service6 = nodeHandle.advertiseService("kinocto/TestAdjustAngle", &Kinocto::testAdjustAngle, &kinocto);
+    ros::ServiceServer service7 = nodeHandle.advertiseService("kinocto/TestAdjustSidePositionWithGreenFrame",
             &Kinocto::testAdjustSidePositionWithGreenFrame, &kinocto);
-    ros::ServiceServer service13 = nodeHandle.advertiseService("kinocto/TestAdjustAngleGreenBorder", &Kinocto::testAdjustAngleGreenBorder, &kinocto);
-    ros::ServiceServer service14 = nodeHandle.advertiseService("kinocto/startLoop", &Kinocto::setStartLoop, &kinocto);
+    ros::ServiceServer service8 = nodeHandle.advertiseService("kinocto/TestAdjustAngleGreenBorder", &Kinocto::testAdjustAngleGreenBorder, &kinocto);
+    ros::ServiceServer service9 = nodeHandle.advertiseService("kinocto/startLoop", &Kinocto::setStartLoop, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();
