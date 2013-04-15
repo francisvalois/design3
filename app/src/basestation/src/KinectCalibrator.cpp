@@ -1,5 +1,6 @@
 #include "KinectCalibrator.h"
 #include "KinectUtility.h"
+#include "KinectCapture.h"
 
 using namespace cv;
 using namespace std;
@@ -65,12 +66,14 @@ bool KinectCalibrator::calibrate(Mat rgbMatrix, Mat depthMatrix){
     return false;
 }
 
-bool KinectCalibrator::calibratev2(VideoCapture capture){
+bool KinectCalibrator::calibratev2(){
     namedWindow("Calibration", 1);
+    KinectCapture capture;
+    capture.openCapture();
 
     for(;;){
-        Mat rgbPicture = Utility::captureRGBMatrix(capture);
-        Mat depthPicture = Utility::captureDepthMatrix(capture);
+        Mat rgbPicture = capture.captureRGBMatrix();
+        Mat depthPicture = capture.captureDepthMatrix();
 
         circle(rgbPicture, CIRCLE_POSITION_1,4,Scalar(255,255,255));
         circle(rgbPicture, CIRCLE_POSITION_2,4,Scalar(255,255,255));
@@ -106,6 +109,7 @@ bool KinectCalibrator::calibratev2(VideoCapture capture){
         }
     }
 
+    capture.closeCapture();
     destroyWindow("Calibration");
 
     return true;
