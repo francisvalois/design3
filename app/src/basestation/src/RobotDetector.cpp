@@ -45,6 +45,18 @@ float RobotDetector::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2) {
     return 0;
 }
 
+float RobotDetector::correctAngleForOrientation(float angle, quadColor color) {
+    double newAngle = 0;
+    if (color == BLUE) {
+        newAngle = -1 * CV_PI/2 - angle;
+    }
+    else if (color == BLACK) {
+        newAngle = CV_PI/2 - angle;
+    }
+
+    return (float)newAngle;
+}
+
 void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition, Vec2f &trueLeftPosition, Vec2f &trueRightPosition) {
     Point2f leftPoint = validRobotPosition[0];
     Point2f rightPoint = validRobotPosition[validRobotPosition.size() - 1];
@@ -125,6 +137,8 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         _orientation = findOrientation(quadColor, angleRad);
 
         Vec2f centerPosition = findRobotCenterPosition(trueRightPosition, trueLeftPosition, angleRad, _orientation);
+
+        _robotAngle = correctAngleForOrientation(angleRad, quadColor);
 
         _robotAngle = angleRad;
         _robotPosition = centerPosition;

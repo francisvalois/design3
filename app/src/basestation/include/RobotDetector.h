@@ -25,6 +25,7 @@ public:
     cv::Vec2f getRobotPosition();
     float getRobotAngle();
     int getOrientation();
+    float correctAngleForOrientation(float angle, quadColor color);
 
 private:
     const static int X_ROBOT_LEFT_THRESHOLD;
