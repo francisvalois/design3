@@ -112,6 +112,13 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         float angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
         vector<Point2f> extremePoints = getExtremePointsOfRobot(depthMatrix, angleRad, validRobotPosition);
         get2MajorPointsDistance(depthMatrix, extremePoints, trueLeftPosition, trueRightPosition);
+
+        if (trueLeftPosition[0] <= 0 || trueLeftPosition[1] <= 0 || trueRightPosition[0] <= 0 || trueRightPosition[1] <= 0) {
+            _robotAngle = 0;
+            _robotPosition = Vec2f();
+            return;
+        }
+        
         angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
 
         quadColor quadColor = findQuadColor(rgbMatrix, validRectPosition);
@@ -169,7 +176,7 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
     }
 
     if (leftRobotTrueCoords.x <= 0 || leftRobotTrueCoords.y <= 0 || rightRobotTrueCoords.x <= 0 || rightRobotTrueCoords.y <= 0) {
-        throw string("Unable to find robot borders, abort robot finding");
+        cout << "Unable to detect Robot" << endl;
     }
 
     pointsList.push_back(leftRobotTrueCoords);
