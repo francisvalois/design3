@@ -67,7 +67,7 @@ private:
 
     int state;
 
-    KinectCapture kinectCapture;
+    KinectCapture * kinectCapture;
     ObstaclesDetector obstaclesDetection;
     RobotDetector robotDetection;
 

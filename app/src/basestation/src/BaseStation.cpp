@@ -25,10 +25,14 @@ BaseStation::BaseStation(int argc, char** argv) :
 
     state = LOOP;
 
+    kinectCapture = new KinectCapture();
+
     init();
 }
 
 BaseStation::~BaseStation() {
+    delete kinectCapture;
+
     if (ros::isStarted()) {
         ros::shutdown(); // explicitly needed since we use ros::start();
         ros::waitForShutdown();
@@ -107,9 +111,9 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
     int obstacle2AverageCount = 0;
 
     //Average the measure for a better precision when the kinect is doing obscure things
-    kinectCapture.openCapture();
+    kinectCapture->openCapture();
     for (int i = 0; i < AVERAGECOUNT; i++) {
-        Mat depthMatrix = kinectCapture.captureDepthMatrix();
+        Mat depthMatrix = kinectCapture->captureDepthMatrix();
         if (!depthMatrix.data) {
             return false;
         }
@@ -130,7 +134,7 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
             obstacle2AverageCount++;
         }
     }
-    kinectCapture.closeCapture();
+    kinectCapture->closeCapture();
 
     if (obstacle1AverageCount > 0) {
         response.x1 /= obstacle1AverageCount;
@@ -165,47 +169,59 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
 bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request & request, FindRobotPositionAndAngle::Response & response) {
     int const AVERAGECOUNT = 3;
     int robotPositionAverageCount = 0;
+    float positionX = 0.0f;
+    float positionY = 0.0f;
+    float robotAngle = 0.0f;
 
-    kinectCapture.openCapture();
+    kinectCapture->openCapture();
     for (int i = 0; i < AVERAGECOUNT; i++) {
-        Mat depthMatrix = kinectCapture.captureDepthMatrix();
-        Mat rgbMatrix = kinectCapture.captureRGBMatrix();
+        Mat depthMatrix = kinectCapture->captureDepthMatrix();
+        Mat rgbMatrix = kinectCapture->captureRGBMatrix();
         if (!rgbMatrix.data || !depthMatrix.data) {
             return false;
         }
 
+        imshow("test", rgbMatrix);
+
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition();
         float angle = robotDetection.getRobotAngle();
+        cout << angle << endl;
         if (robot[0] > 0.10 || robot[1] > 0.20) {
-            response.x += robot[1] * 100;
-            response.y += robot[0] * 100;
-            response.angle += angle;
+            positionX += robot[1] * 100;
+            positionY += robot[0] * 100;
+            robotAngle += angle;
             robotPositionAverageCount++;
         }
     }
-    kinectCapture.closeCapture();
+    kinectCapture->closeCapture();
 
     if (robotPositionAverageCount > 0) {
-        response.x /= robotPositionAverageCount;
-        response.y /= robotPositionAverageCount;
-        response.angle /= robotPositionAverageCount;
-        response.angle = response.angle * 180 / M_PI;
+        positionX /= robotPositionAverageCount;
+        positionY /= robotPositionAverageCount;
+        robotAngle /= robotPositionAverageCount;
+        robotAngle = robotAngle * 180 / M_PI;
     }
 
     //Met a jour la position du robot dans l'interface
-    actualPosition.set(response.x, response.y);
+    actualPosition.set(positionX, positionY);
     kinoctoPositionUpdates.push_back(actualPosition);
 
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);
 
-    ROS_INFO( "%s x:%f y:%f angle:%f", "Request Find Robot Position. Sending Values ", response.x, response.y, response.angle);
+    response.x = positionX;
+    response.y = positionY;
+    response.angle = robotAngle;
+
+    ROS_INFO( "%s x:%f y:%f angle:%f", "Request Find Robot Position. Sending Values ", positionX, positionY, robotAngle);
 
     stringstream info;
     info << "Kinocto : Demande de la position du robot \n";
     info << "Envoi de la position : ";
-    info << " (" << response.x << "," << response.y << ")";
+    info << " (" << positionX << "," << positionY << ")";
+    info << "Envoi de l'angle : ";
+    info << robotAngle;
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
