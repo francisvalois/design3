@@ -75,12 +75,9 @@ void MainWindow::on_calibrateKinectButton_clicked() {
 
 void MainWindow::on_calibrateKinectManualButton_clicked() {
     ui->consoleText->append("Calibration Manuelle de la Kinect");
-    KinectCapture kinectCapture;
     KinectCalibrator kinectCalibrator;
     
-    kinectCapture.openCapture();
-    kinectCalibrator.calibratev2(kinectCapture.captureDepthMatrix(), kinectCapture.captureRGBMatrix());
-    kinectCapture.closeCapture();
+    kinectCalibrator.calibratev2();
 }
 
 
