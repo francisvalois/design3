@@ -62,7 +62,7 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
     findRobotPositionAndAngleService = node.advertiseService("basestation/findRobotPositionAndAngle", &BaseStation::findRobotPositionAndAngle, this);
     showSolvedSudocubeService = node.advertiseService("basestation/showSolvedSudocube", &BaseStation::showSolvedSudocube, this);
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
-    updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
+    //updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
 
     startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
@@ -194,6 +194,7 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     }
 //////////////////////////////
     //Met a jour la position du robot dans l'interface
+
     actualPosition.set(response.x, response.y);
     kinoctoPositionUpdates.push_back(actualPosition);
 
