@@ -72,7 +72,7 @@ void Kinocto::startLoop() {
         //Position robotPos = workspace.getRobotPos();
         //robotPos.translateY(10.0f);
         //workspace.setRobotPos(robotPos);
-        //adjustAngleWithGreenBorder();
+        adjustAngleWithGreenBorder();
 
         goToSudocubeX();
         adjustAngleInFrontOfWall();
@@ -211,7 +211,7 @@ void Kinocto::adjustAngleInFrontOfWall() {
     double camHBias = -2;
     //double angleCorrection = 2.09;
 
-    microcontroller->rotateCam(camAngle, camHBias);
+    microcontroller->rotateCam(camAngle, 0);
     cameraCapture->openCapture();
 
     Mat wall = cameraCapture->takePicture();

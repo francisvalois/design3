@@ -201,7 +201,7 @@ def sendCommandToController(commande):
         
         if ser.isOpen():
             ser.write(bytes(commande))
-            time.sleep(0.1)
+            time.sleep(0.5)
             
             while('E' not in response):
                 response = ser.readline()  # Boucle while ici?? 
