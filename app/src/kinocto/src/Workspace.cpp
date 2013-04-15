@@ -49,7 +49,7 @@ Workspace::Workspace() {
     poleAngle[2] = -180.0f;
     poleAngle[3] = 0.0f;
 
-    kinectDeadAngle.set(89.0f, 22.0f);
+    kinectDeadAngle.set(22.0f, 89.0f);
 
     numbersInitDrawPos[0].set(-3.0f, 5.0f);
     numbersInitDrawPos[1].set(-7.0f, 7.0f);
