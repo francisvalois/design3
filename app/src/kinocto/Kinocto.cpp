@@ -332,10 +332,13 @@ void Kinocto::extractAndSolveSudocube() {
 
 vector<Sudocube *> Kinocto::extractSudocubes() {
     ROS_INFO("EXTRACTING SUDOCUBES");
+
     cameraCapture->openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
+    int MAX_POOL_SIZE = 10;
+    int MAX_NUMBER_CAPTURE = 20;
     vector<Sudocube *> sudokubes;
-    for (int i = 1; i <= 10 && sudokubes.size() <= 5; i++) {
+    for (int i = 1; i <= MAX_NUMBER_CAPTURE && sudokubes.size() <= MAX_POOL_SIZE; i++) {
         Mat sudocubeImg = cameraCapture->takePicture();
 
         if (!sudocubeImg.data == false) {
@@ -354,20 +357,17 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
 
 void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
     ROS_INFO("SOLVING SUDOCUBE");
-    int goodSudocubeNo = findAGoodSudocube(sudocubes);
 
-    if (goodSudocubeNo != -1) {
-        Sudocube * goodSudocube = sudocubes[goodSudocubeNo];
-        sudokubeSolver.solve(*goodSudocube);
-        if (goodSudocube->isSolved()) {
-            ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
-            redCaseValue = goodSudocube->getRedCaseValue();
-            solvedSudocube = goodSudocube->print();
-        } else {
-            ROS_ERROR("%s", "Could not solve the Sudocube");
-        }
+    int goodSudocubeNo = findAGoodSudocube(sudocubes);
+    Sudocube * goodSudocube = sudocubes[goodSudocubeNo];
+
+    sudokubeSolver.solve(*goodSudocube);
+    if (goodSudocube->isSolved()) {
+        ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
+        redCaseValue = goodSudocube->getRedCaseValue();
+        solvedSudocube = goodSudocube->print();
     } else {
-        ROS_ERROR("%s", "NO PAIR OF SUDOCUBE ARE EQUALS");
+        ROS_ERROR("%s", "Could not solve the Sudocube");
     }
 }
 
@@ -382,14 +382,34 @@ void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {
 }
 
 int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
+    vector<Sudocube *> pool;
+    vector<int> poolNumber;
+
     for (int i = 0; i < sudocubes.size(); i++) {
-        for (int j = i + 1; j < sudocubes.size(); j++) {
-            if (sudocubes[i]->equals(*sudocubes[i + 1])) {
-                return i;
+        bool isAlreadyAdded = false;
+        for (int j = 0; j < pool.size(); j++) {
+            if (sudocubes[i]->equals(*pool[j])) {
+                isAlreadyAdded = true;
+                poolNumber[j] = poolNumber[j] + 1;
             }
         }
+
+        if (isAlreadyAdded == false) {
+            pool.push_back(sudocubes[i]);
+            poolNumber.push_back(1);
+        }
     }
-    return -1;
+
+    int biggest = 0;
+    for (int i = 0; i < poolNumber.size(); i++) {
+        if (poolNumber[i] > poolNumber[biggest]) {
+            biggest = i;
+        }
+    }
+
+    pool.clear();
+
+    return biggest;
 }
 
 void Kinocto::goToDrawingZone() {
