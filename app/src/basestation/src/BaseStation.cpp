@@ -185,8 +185,6 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
             return false;
         }
 
-        imshow("test", rgbMatrix);
-
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition();
         float angle = robotDetection.getRobotAngle();

@@ -398,11 +398,14 @@ void Kinocto::goToDrawingZone() {
     ROS_INFO("GOING TO DRAWING ZONE");
 //Cas sudocube 3 et 6
     if (!translationStack.empty()) {
-        Position translation = translationStack.top();
-        translationStack.pop();
-        translation.x *= -1;
-        translation.y *= -1;
-        microcontroller->translate(translation);
+        int stackSize = translationStack.size();
+        for (int i = 0; i < stackSize; i++) {
+            Position translation = translationStack.top();
+            translationStack.pop();
+            translation.x *= -1;
+            translation.y *= -1;
+            microcontroller->translate(translation);
+        }
     }
 
 // Du sudocube à la zone de dessin
@@ -413,14 +416,14 @@ void Kinocto::goToDrawingZone() {
 
 // Correction de la position du robot dans la zone de dessin
     /*float angle;
-    Position robotPos;
-    getRobotPosition(angle, robotPos);
-    workspace.setRobotAngle(angle);
-    workspace.setRobotPos(robotPos);
+     Position robotPos;
+     getRobotPosition(angle, robotPos);
+     workspace.setRobotAngle(angle);
+     workspace.setRobotPos(robotPos);
 
-    vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
-    vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
-    executeMoves(moves);*/
+     vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
+     vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
+     executeMoves(moves);*/
 
     adjustAngleWithGreenBorder();
 
