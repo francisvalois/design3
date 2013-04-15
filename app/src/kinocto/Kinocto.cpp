@@ -97,13 +97,21 @@ void Kinocto::getObstaclesPosition() {
 }
 
 void Kinocto::getOutOfDrawingZone() {
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+//    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getKinectDeadAngle());
+//    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+//
+//    executeMoves(moves);
 
-    executeMoves(moves);
+	float angle = 0.0f - workspace.getRobotAngle();
+	microcontroller->rotate(angle);
 
-    workspace.setRobotPos(workspace.getKinectDeadAngle());
-    workspace.setRobotAngle(0.0f);
+	Position translation;
+	translation.x = workspace.getRobotPos().y - workspace.getKinectDeadAngle().y;
+	translation.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
+	microcontroller->translate(translation);
+
+	workspace.setRobotAngle(0.0f);
+	workspace.setRobotPos(workspace.getKinectDeadAngle());
 }
 
 void Kinocto::goToAntenna() {
