@@ -292,7 +292,7 @@ vector<Move> PathPlanning::convertToMoves(vector<Position> positions, float star
         moves.push_back(move);
     }
     if (positions.size() > 0) {
-        Move move((destinationAngle - robotCurrentAngle), 0, endPosition);
+        Move move((destinationAngle - robotCurrentAngle), 0, positions[0]);
         moves.push_back(move);
     }
     return moves;
