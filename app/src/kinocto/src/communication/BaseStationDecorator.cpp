@@ -25,6 +25,7 @@ void BaseStationDecorator::requestRobotPositionAndAngle(Position & pos, float & 
     if (findRobotPositionAndAngleClient.call(srv) == true) {
         ROS_INFO("The robot position is x:%f y:%f angle:%f", srv.response.x, srv.response.y, srv.response.angle);
         pos.set(srv.response.x, srv.response.y);
+        angle = srv.response.angle;
     } else {
         ROS_ERROR("Failed to call service basestation/findRobotPositionAndAngle");
     }

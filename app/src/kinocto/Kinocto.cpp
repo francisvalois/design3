@@ -101,7 +101,7 @@ void Kinocto::getOutOfDrawingZone() {
 
     ROS_INFO("GETTING OUT OF THE DRAWING ZONE");
 
-	float angle = 0.0f - workspace.getRobotAngle();
+	float angle = -1 * workspace.getRobotAngle();
 	microcontroller->rotate(angle);
 
 	Position translation;
