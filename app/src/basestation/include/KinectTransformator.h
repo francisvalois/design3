@@ -18,6 +18,8 @@ private:
     static cv::Vec2f _kinectPosition;
     static cv::Mat _distortionCorrectionMatrix;
     static cv::Vec2f distortionCorrection(cv::Vec2f distanceToCorrect);
+    static cv::Vec2f distortionZfromXPosition(cv::Vec2f positionToCorrect);
+    static cv::Vec2f distortionZfromZPosition(cv::Vec2f positionToCorrect);
 public:
     static void setDistortionCorrectionMatrix(cv::Mat correctionMatrix);
     static cv::Vec2f translateXZCoordtoOrigin(cv::Vec2f rotatedXZ);
