@@ -232,6 +232,7 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
 
     response.x =  35.5f;
     response.y = 76.5f;
+    response.angle = 0;
 
     return true;
 }
