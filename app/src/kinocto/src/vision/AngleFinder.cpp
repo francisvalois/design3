@@ -77,9 +77,9 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     //vector<Point2d> points = findSlopePoints(segmentedFrame);
     //return calculateSlopeAverage(points);
 
-    namedWindow("test", CV_WINDOW_FREERATIO);
-    imshow("test", segmentedFrame);
-    waitKey(0);
+    //namedWindow("test", CV_WINDOW_FREERATIO);
+    //imshow("test", segmentedFrame);
+    //waitKey(0);
     // TEST AVEC METHODE DE DIANE
     Mat edges;
     Canny(segmentedFrame, edges, 50, 200, 3);
