@@ -28,7 +28,7 @@ private:
     double calculateAngleFrom(cv::Point2d & first, cv::Point2d & last);
     std::vector<cv::Point2d> findSlopePoints(cv::Mat & wall);
     double calculateSlopeAverage(std::vector<cv::Point2d> & points);
-    double findAngle(cv::Mat & edges);
+    double findAngle(std::vector<cv::Vec2f> & lines, cv::Size size);
 };
 
 #endif

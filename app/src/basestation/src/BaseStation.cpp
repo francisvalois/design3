@@ -193,6 +193,13 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
         response.angle = response.angle * 180 / M_PI;
     }
 
+    //Met a jour la position du robot dans l'interface
+    actualPosition.set(response.x, response.y);
+    kinoctoPositionUpdates.push_back(actualPosition);
+
+    QImage image = Mat2QImage(createMatrix());
+    emit updateTableImage(image);
+
     //TODO TEMPORAIRE PR TESTS
     response.x = 35.5;
     response.y = 76.5;
@@ -207,12 +214,6 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
-
-    actualPosition.set(response.x, response.y);
-    kinoctoPositionUpdates.push_back(actualPosition);
-
-    QImage image = Mat2QImage(createMatrix());
-    emit updateTableImage(image);
 
     return true;
 }
@@ -284,6 +285,8 @@ bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, Up
     stringstream info;
     info << "Kinocto : Mise a jour de la position du robot :  \n";
     info << " (" << request.x << "," << request.y << ")";
+
+
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
