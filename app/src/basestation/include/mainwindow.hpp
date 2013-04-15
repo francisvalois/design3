@@ -30,6 +30,7 @@ private slots:
     void updateROSSlot();
     void on_StartSequenceButton_clicked();
     void on_calibrateKinectButton_clicked();
+    void on_calibrateKinectManualButton_clicked();
     void showSolvedSudocubeSlot(QString, int);
     void UpdatingRobotPositionSlot(float, float);
     void showMessage(QString);
