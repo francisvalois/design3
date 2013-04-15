@@ -11,7 +11,6 @@ CameraCapture::~CameraCapture() {
 }
 
 Mat CameraCapture::takePicture() {
-    videoCapture.open(0);
     setConfig(videoCapture, CameraCapture::SUDOCUBE_CONFIG);
 
     Mat picture;
@@ -26,17 +25,17 @@ Mat CameraCapture::takePicture() {
 }
 
 void CameraCapture::openCapture() {
-    //videoCapture.open(0);
-    //setConfig(videoCapture, CameraCapture::SUDOCUBE_CONFIG);
+    videoCapture.open(0);
+    setConfig(videoCapture, CameraCapture::SUDOCUBE_CONFIG);
 }
 
 void CameraCapture::openCapture(const int configNo) {
-    //videoCapture.open(0);
-    //setConfig(videoCapture, configNo);
+    videoCapture.open(0);
+    setConfig(videoCapture, configNo);
 }
 
 void CameraCapture::closeCapture() {
-    //videoCapture.release();
+   videoCapture.release();
 }
 
 void CameraCapture::setConfig(cv::VideoCapture & videoCapture, const int configNo) {

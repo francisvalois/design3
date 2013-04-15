@@ -201,10 +201,9 @@ def sendCommandToController(commande):
         
         if ser.isOpen():
             ser.write(bytes(commande))
-            time.sleep(0.1)
-            
+
             while('E' not in response):
-                response = ser.readline()  # Boucle while ici?? 
+                response += ser.readline()  # Boucle while ici?? 
             print(repr("read data:" + response))
     
             ser.close()

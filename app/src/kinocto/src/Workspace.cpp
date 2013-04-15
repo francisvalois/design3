@@ -16,28 +16,28 @@ Workspace::Workspace() {
     obstacles[1].set(0.0f, 0.0f);
 
     //Valeurs fixes
-    sudocubesPos[0].set(176.0f, 66.75f);
+    sudocubesPos[0].set(176.0f, MAX_Y - SUDOCUBE_FRONT_DISTANCE - ROBOT_FRONT_SIZE);
     sudocubesAngle[0] = -90.0f;
 
-    sudocubesPos[1].set(209.0f, 66.75f);
+    sudocubesPos[1].set(209.0f, MAX_Y - SUDOCUBE_FRONT_DISTANCE - ROBOT_FRONT_SIZE);
     sudocubesAngle[1] = -90.0f;
 
-    sudocubesPos[2].set(186.75f, 95.0f);
+    sudocubesPos[2].set(MAX_X - SUDOCUBE_FRONT_DISTANCE - ROBOT_FRONT_SIZE, 95.0f);
     sudocubesAngle[2] = 0.0f;
 
-    sudocubesPos[3].set(186.75f, 70.0f);
+    sudocubesPos[3].set(MAX_X - SUDOCUBE_FRONT_DISTANCE - ROBOT_FRONT_SIZE, 70.0f);
     sudocubesAngle[3] = 0.0f;
 
-    sudocubesPos[4].set(186.75f, 42.0f);
+    sudocubesPos[4].set(MAX_X - SUDOCUBE_FRONT_DISTANCE - ROBOT_FRONT_SIZE, 42.0f);
     sudocubesAngle[4] = 0.0f;
 
-    sudocubesPos[5].set(186.75f, 18.0f);
+    sudocubesPos[5].set(MAX_X - SUDOCUBE_FRONT_DISTANCE - ROBOT_FRONT_SIZE, 18.0f);
     sudocubesAngle[5] = 0.0f;
 
-    sudocubesPos[6].set(209.0f, 44.25f);
+    sudocubesPos[6].set(209.0f, SUDOCUBE_FRONT_DISTANCE + ROBOT_FRONT_SIZE);
     sudocubesAngle[6] = 90.0f;
 
-    sudocubesPos[7].set(174.0f, 44.25f);
+    sudocubesPos[7].set(174.0f, SUDOCUBE_FRONT_DISTANCE + ROBOT_FRONT_SIZE);
     sudocubesAngle[7] = 90.0f;
 
     squareCenter.set(55.5f, 55.8f);
@@ -49,7 +49,7 @@ Workspace::Workspace() {
     poleAngle[2] = -180.0f;
     poleAngle[3] = 0.0f;
 
-    kinectDeadAngle.set(89.0f, 22.0f);
+    kinectDeadAngle.set(22.0f, 89.0f);
 
     numbersInitDrawPos[0].set(-3.0f, 5.0f);
     numbersInitDrawPos[1].set(-7.0f, 7.0f);
