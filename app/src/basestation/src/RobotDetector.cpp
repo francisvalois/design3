@@ -188,19 +188,19 @@ Vec2f RobotDetector::findRobotCenterPosition(Vec2f trueRightPosition, Vec2f true
     float angle = (float) (angleRad / M_PI * 180);
 
     //Take account of the non-square robot because of the camera
-    if ((orientation == NORTH || orientation == EAST) && angle >= 0) {
-        trueRightPosition[1] += CAMERA_OFFSET * sin(angleRad);
-        trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
-    } else if ((orientation == NORTH || orientation == WEST) && angle <= 0) {
-        trueLeftPosition[1] += CAMERA_OFFSET * sin(angleRad);
-        trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
-    } else if ((orientation == SOUTH || orientation == EAST) && angle < 0) {
-        trueRightPosition[1] -= CAMERA_OFFSET * sin(angleRad);
-        trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
-    } else {
-        trueLeftPosition[1] -= CAMERA_OFFSET * sin(angleRad);
-        trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
-    }
+//    if ((orientation == NORTH || orientation == EAST) && angle >= 0) {
+//        trueRightPosition[1] += CAMERA_OFFSET * sin(angleRad);
+//        trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
+//    } else if ((orientation == NORTH || orientation == WEST) && angle <= 0) {
+//        trueLeftPosition[1] += CAMERA_OFFSET * sin(angleRad);
+//        trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
+//    } else if ((orientation == SOUTH || orientation == EAST) && angle < 0) {
+//        trueRightPosition[1] -= CAMERA_OFFSET * sin(angleRad);
+//        trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
+//    } else {
+//        trueLeftPosition[1] -= CAMERA_OFFSET * sin(angleRad);
+//        trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
+//    }
 
     float xDistance = ROBOT_RADIUS * sin(angleRad);
     float yDistance = ROBOT_RADIUS * cos(angleRad);
