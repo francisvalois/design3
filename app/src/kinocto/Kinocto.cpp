@@ -366,6 +366,7 @@ int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
 }
 
 void Kinocto::goToDrawingZone() {
+    ROS_INFO("GOING TO DRAWING ZONE");
 //Cas sudocube 3 et 6
     if (!translationStack.empty()) {
         Position translation = translationStack.top();
@@ -382,7 +383,7 @@ void Kinocto::goToDrawingZone() {
     executeMoves(moves);
 
 // Correction de la position du robot dans la zone de dessin
-    float angle;
+    /*float angle;
     Position robotPos;
     getRobotPosition(angle, robotPos);
     workspace.setRobotAngle(angle);
@@ -390,7 +391,7 @@ void Kinocto::goToDrawingZone() {
 
     vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
-    executeMoves(moves);
+    executeMoves(moves);*/
 
 // TODO Nécessaire?
     adjustAngleWithGreenBorder();
@@ -413,6 +414,7 @@ void Kinocto::goToDrawingZone() {
 }
 
 void Kinocto::drawNumber() {
+    ROS_INFO("DRAWING NUMBER");
     Position translateTo = workspace.getNumberInitDrawPos(numberToDraw);
     if (antennaParam.isBig() == true) {
         translateTo.set(translateTo.x * 2, translateTo.y * 2);
@@ -426,6 +428,7 @@ void Kinocto::drawNumber() {
 }
 
 void Kinocto::endLoop() {
+    ROS_INFO("ENDING LOOP");
 //TODO CORRIGER TRÈS BIENTÔT
     float angle;
     Position robotPos;
