@@ -9,72 +9,23 @@ AngleFinder::AngleFinder() {
 AngleFinder::~AngleFinder() {
 }
 
-double AngleFinder::calculateAngleFrom(Point2d & first, Point2d & last) {
-    double xComp = last.x - first.x;
-    double yComp = last.y - first.y;
-
-    double hypo = sqrt(xComp * xComp + yComp * yComp);
-    double angle = asin(yComp / hypo) * 180.0 / CV_PI;
-
-    return angle;
-}
-
-vector<Point2d> AngleFinder::findSlopePoints(Mat & wall) {
-    vector<Point2d> points;
-    for (int i = 0; i < wall.cols; i += STEP_SIZE) {
-        for (int j = 0; j < wall.rows; j++) {
-            if (wall.at<uchar>(j, i) == 250) {
-                Point2d point(i, j);
-                points.push_back(point);
-                break;
-            }
-        }
-    }
-
-    return points;
-}
-
-double AngleFinder::calculateSlopeAverage(vector<Point2d> & points) {
-    double average = 0.0f;
-    for (int i = 0; i < (points.size() / 2); i++) {
-        Point2d first = points[i];
-        Point2d last = points[points.size() - i - 1];
-        double angle = calculateAngleFrom(first, last);
-        average += (angle / (points.size() / 2));
-    }
-
-    return average;
-}
-
-double AngleFinder::findWallAngle(Mat & wall) {
-    Mat grayWall;
-    cvtColor(wall, grayWall, CV_RGB2GRAY);
-    threshold(grayWall, grayWall, 100, 250, THRESH_BINARY);
-    VisionUtility::applyErode(grayWall, 7, MORPH_ELLIPSE);
-
-    vector<Point2d> points = findSlopePoints(grayWall);
-    double angle = calculateSlopeAverage(points);
-
-    return angle;
-}
-
 double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
-    
     Mat blur;
     Size sf;
     sf.width = 11;
     sf.height = 11;
     double sigmaX = 1;
 
-    double d[] = {5.3049382516541385e-02, -8.3096662051120498e-02,-1.1345776472333211e-03, 2.5208106546648732e-03,-1.2073151061566005e-01};
-    double m[3][3] = {{1.3225939376373308e+03, 0., 7.8950053275576806e+02},{0.,1.3197235387739179e+03, 5.2292007793085895e+02},{0., 0., 1.}};
+    double d[] = { 5.3049382516541385e-02, -8.3096662051120498e-02, -1.1345776472333211e-03, 2.5208106546648732e-03, -1.2073151061566005e-01 };
+    double m[3][3] =
+            { { 1.3225939376373308e+03, 0., 7.8950053275576806e+02 }, { 0., 1.3197235387739179e+03, 5.2292007793085895e+02 }, { 0., 0., 1. } };
 
     Mat undistorted;
-    Mat intrinsic = Mat(3,3,CV_64F, m);
-    Mat distMat = Mat(1,5, CV_64F, d);
-    undistort(srcHSV, undistorted, intrinsic, distMat);
-    cvtColor(undistorted, srcHSV, CV_RGB2HSV);
-    GaussianBlur(srcHSV, blur, sf, sigmaX);
+    Mat intrinsic = Mat(3, 3, CV_64F, m);
+    Mat distMat = Mat(1, 5, CV_64F, d);
+    undistort(greenBorder, undistorted, intrinsic, distMat);
+    cvtColor(undistorted, greenBorder, CV_RGB2HSV);
+    GaussianBlur(greenBorder, blur, sf, sigmaX);
 
     Mat segmentedFrame;
     inRange(blur, Scalar(30, 30, 0), Scalar(80, 255, 255), segmentedFrame);
@@ -86,15 +37,13 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     GaussianBlur(segmentedFrame, blur, sf, sigmaX);
 
     Mat edges;
-    Canny(blur,edges,50, 200, 3);
+    Canny(blur, edges, 50, 200, 3);
 
     Mat cdst;
     cvtColor(blur, cdst, CV_GRAY2BGR);
 
     vector<Vec2f> lines;
-
-    HoughLines(edges,lines, 1, CV_PI/150, 200, 0, 0);
-
+    HoughLines(edges, lines, 1, CV_PI / 150, 200, 0, 0);
 
     //Mat blur;
     //GaussianBlur(greenBorder, blur, Size(7, 7), 1.4f);
@@ -120,12 +69,9 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     // TEST AVEC METHODE DE DIANE
     //Mat edges;
     //Canny(segmentedFrame, edges, 50, 200, 3);
-    if(lines.size() != 0)
-    {
-        return findAngle(edges);    
-    }
-    else
-    {
+    if (lines.size() != 0) {
+        return findAngle(lines, greenBorder.size());
+    } else {
         return 0;
     }
 }
@@ -146,18 +92,15 @@ double AngleFinder::findWallAngle2(Mat & wall) {
     Canny(segmentedFrame, edges, 50, 200, 3);
     HoughLines(edges, lines, 0.5, CV_PI / 180, 70, 0, 0);
 
-    if(lines.size() != 0)
-    {
-        return findAngle(lines);
-    }
-    else
-    {
+    if (lines.size() != 0) {
+        return findAngle(lines, wall.size());
+    } else {
         return 0;
     }
 
 }
 
-double AngleFinder::findAngle(vector<Vec2f> & lines) {
+double AngleFinder::findAngle(vector<Vec2f> & lines, Size size) {
     vector<Vec2f> linesG, linesD;
     double yG = 0, yD = 0;
     int G = 0, D = 0;
@@ -174,19 +117,19 @@ double AngleFinder::findAngle(vector<Vec2f> & lines) {
             m = -a / b;
             ori = rho / b;
             yG_actuel = ori;
-            yD_actuel = m * edges.cols + ori;
-            yM_actuel = m * edges.cols / 2 + ori;
+            yD_actuel = m * size.width + ori;
+            yM_actuel = m * size.width / 2 + ori;
         } else {
             ori = rho;
             yG_actuel = -1;
             yD_actuel = -1;
             yM_actuel = -1;
         }
-        if ((yG_actuel > yG) && (yG_actuel < edges.rows + 400)) {
+        if ((yG_actuel > yG) && (yG_actuel < size.height + 400)) {
             yG = yG_actuel;
             G = i;
         }
-        if ((yD_actuel > yD) && (yD_actuel < edges.rows + 400)) {
+        if ((yD_actuel > yD) && (yD_actuel < size.height + 400)) {
             yD = yD_actuel;
             D = i;
         }
@@ -234,13 +177,11 @@ double AngleFinder::findAngle(vector<Vec2f> & lines) {
         wallLines.push_back(ligneD);
     }
 
-    if(wallLines.size() == 0)
-    {
+    if (wallLines.size() == 0) {
         return 0;
     }
 
-    if(wallLines == 1)
-    {
+    if (wallLines.size() == 1) {
         return (wallLines[0][1] * 180.0 / CV_PI - 90);
     }
 

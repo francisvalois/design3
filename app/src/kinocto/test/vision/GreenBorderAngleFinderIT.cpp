@@ -30,12 +30,20 @@ TEST_F(GreenBorderAngleFinderIT, returnRightAngle2) {
     ASSERT_NEAR(-2.33, angle, PRECISION);
 }
 
-TEST_F(GreenBorderAngleFinderIT, 3degree) {
+TEST_F(GreenBorderAngleFinderIT, returnRightAngle3) {
+    Mat img = imread("img/testGreenBorder/3.png");
+
+    double angle = angleFinder.findGreenBorderAngle(img);
+
+    ASSERT_NEAR(-2.33, angle, PRECISION);
+}
+
+/*TEST_F(GreenBorderAngleFinderIT, 3degree) {
     Mat img = imread("img/testGreenBorder/3degree.png");
 
     double angle = angleFinder.findGreenBorderAngle(img);
 
     ASSERT_NEAR(3, angle, PRECISION);
-}
+}*/
 
 }
