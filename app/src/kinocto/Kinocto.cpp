@@ -51,7 +51,13 @@ void Kinocto::startLoop() {
         microcontroller->rotateCam(0, 0);
 
         //TODO Déplacer le robot pour les obstacles???
-        getRobotPosition();
+
+        float angle;
+        Position robotPos;
+        getRobotPosition(angle, robotPos);
+        workspace.setRobotPos(robotPos);
+        workspace.setRobotAngle(angle);
+
         getObstaclesPosition();
 
         goToAntenna();
@@ -59,9 +65,9 @@ void Kinocto::startLoop() {
         showAntennaParam();
 
         //TODO Est-ce vraiment nécessaire pour la correction? Trouver coefficient à cet endroit
-        Position robotPos = workspace.getRobotPos();
-        robotPos.translateY(10.0f);
-        workspace.setRobotPos(robotPos);
+        //Position robotPos = workspace.getRobotPos();
+        //robotPos.translateY(10.0f);
+        //workspace.setRobotPos(robotPos);
         //adjustAngleWithGreenBorder();
 
         goToSudocubeX();
@@ -77,14 +83,8 @@ void Kinocto::startLoop() {
     }
 }
 
-
-void Kinocto::getRobotPosition() {
-    float angle;
-    Position robotPos;
+void Kinocto::getRobotPosition(float & angle, Position & robotPos) {
     baseStation->requestRobotPositionAndAngle(robotPos, angle);
-
-    workspace.setRobotPos(robotPos);
-    workspace.setRobotAngle(angle);
     baseStation->sendUpdateRobotPositionMessage(robotPos);
 }
 
@@ -110,10 +110,9 @@ void Kinocto::executeMoves(vector<Move> & moves) {
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
         workspace.setRobotPos(moves[i].destination);
 
-        //TODO Vérifier si la position s'affiche correctement dans l'interface
-        //getRobotPosition();
-
-        baseStation->sendUpdateRobotPositionMessage(moves[i].destination); // Position du path planning
+        float angle;
+        Position robotPos;
+        getRobotPosition(angle, robotPos);
     }
 }
 
@@ -378,7 +377,12 @@ void Kinocto::goToDrawingZone() {
     executeMoves(moves);
 
     // Correction de la position du robot dans la zone de dessin
-    getRobotPosition();
+    float angle;
+    Position robotPos;
+    getRobotPosition(angle, robotPos);
+    workspace.setRobotAngle(angle);
+    workspace.setRobotPos(robotPos);
+
     vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
     executeMoves(moves);
@@ -388,7 +392,7 @@ void Kinocto::goToDrawingZone() {
 
     //Translation pour placer le robot dans le centre
     microcontroller->move(-13.0f);
-    Position robotPos = workspace.getRobotPos();
+    robotPos = workspace.getRobotPos();
 
     int orientation = antennaParam.getOrientation();
     if (orientation == Workspace::NORTH) {
@@ -418,7 +422,11 @@ void Kinocto::drawNumber() {
 
 void Kinocto::endLoop() {
     //TODO CORRIGER TRÈS BIENTÔT
-    getRobotPosition();
+    float angle;
+    Position robotPos;
+    getRobotPosition(angle, robotPos);
+    workspace.setRobotAngle(angle);
+    workspace.setRobotPos(robotPos);
     //float angle;
     //Position robotPos;
     //baseStation->requestRobotPositionAndAngle(robotPos, angle);
