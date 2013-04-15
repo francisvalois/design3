@@ -143,7 +143,10 @@ void Kinocto::adjustAngleWithGreenBorder() {
 
 void Kinocto::goToSudocubeX() {
 	Position finalPosition; //a utiliser uniquement avec les cas des sudocubes 3 et 6
-    pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
+	for(int i = 0; i < translationStack.size(); i++) {
+		translationStack.pop();
+	}
+	pathPlanning.setObstacles(workspace.getObstaclePos(1), workspace.getObstaclePos(2));
 
     vector<Position> positions;
 
@@ -171,11 +174,13 @@ void Kinocto::goToSudocubeX() {
         Position translation;
         translation.y = workspace.getSudocubePos(3).x - finalPosition.x;
         translation.x = finalPosition.y - workspace.getSudocubePos(3).y;
+        translationStack.push(translation);
         microcontroller->translate(translation);
     } else if (isCaseSudocube6WithTranslation) {
         Position translation;
         translation.y = workspace.getSudocubePos(6).x - finalPosition.x;
         translation.x = finalPosition.y - workspace.getSudocubePos(6).y;
+        translationStack.push(translation);
         microcontroller->translate(translation);
     }
 }
@@ -356,6 +361,15 @@ int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
 }
 
 void Kinocto::goToDrawingZone() {
+	//Cas sudocube 3 et 6
+	if(!translationStack.empty()) {
+		Position translation = translationStack.top();
+		translationStack.pop();
+		translation.x *= -1;
+		translation.y *= -1;
+		microcontroller->translate(translation);
+	}
+
     // Du sudocube à la zone de dessin
     float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());

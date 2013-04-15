@@ -57,10 +57,7 @@ public:
 Q_SIGNALS:
     void rosShutdown();
     void showSolvedSudocubeSignal(QString, int);
-    void UpdatingRobotPositionSignal(float, float);
     void message(QString);
-    void traceRealTrajectorySignal(std::vector<Position>);
-    void updateObstaclesPositions(int, int, int, int);
     void updateTableImage(QImage);
     void endLoop(QString);
 
@@ -100,6 +97,8 @@ private:
     cv::Scalar blue;
     cv::Scalar black;
     cv::Scalar red;
+    cv::Scalar darkRed;
+    cv::Scalar green;
 
     void colorPixel(cv::Mat&, cv::Scalar, int, int);
     void drawLine(cv::Mat, cv::Point, cv::Point, cv::Scalar);

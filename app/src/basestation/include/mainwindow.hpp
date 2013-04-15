@@ -31,10 +31,7 @@ private slots:
     void on_StartSequenceButton_clicked();
     void on_calibrateKinectButton_clicked();
     void showSolvedSudocubeSlot(QString, int);
-    void UpdatingRobotPositionSlot(float, float);
     void showMessage(QString);
-    void traceRealTrajectory(std::vector<Position>);
-    void updateObstaclesPositions(int,int,int,int);
     void updateTableImage(QImage);
     void timerSlot();
     void endLoop(QString);
@@ -52,23 +49,6 @@ private:
 
     QTimer *applicationTimer;
     QTime *timeValue;
-
-    //PRINTING RELATED METHODS
-    void printTable();
-    void setObstaclesInMatrixTable();
-    // In array,
-    // 1 = normal area
-    // 2 = node
-    // 9 = wall or obstacle
-    int table[TABLE_X + 1][TABLE_Y + 1];
-
-    cv::Scalar white;
-    cv::Scalar blue;
-    cv::Scalar black;
-    cv::Scalar red;
-    void showWindowWith(const char*, const cv::Mat &);
-    void colorPixel(cv::Mat&, cv::Scalar, int, int);
-    void drawLine(cv::Mat, cv::Point, cv::Point, cv::Scalar);
 };
 
 #endif // MAINWINDOW_H

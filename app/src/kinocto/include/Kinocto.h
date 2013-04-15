@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <stack>
 #include "opencv2/opencv.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
@@ -73,6 +74,9 @@ private:
     ros::NodeHandle nodeHandle;
     BaseStationDecorator * baseStation;
     MicrocontrollerDecorator * microcontroller;
+
+    //Pour les cas des sudocubes 3 et 6
+    std::stack<Position> translationStack;
 
     void startLoop();
     void getObstaclesPosition();
