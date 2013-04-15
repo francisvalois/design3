@@ -4,6 +4,7 @@ using namespace cv;
 using namespace std;
 
 KinectCapture::KinectCapture() {
+
 }
 
 KinectCapture::~KinectCapture() {
@@ -14,7 +15,7 @@ void KinectCapture::openCapture() {
     capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
 
     Mat depthMap;
-    for (int i = 0; i < 30; i++) { // Pour avoir les bonnes valeurs dès la premier version
+    for (int i = 0; i < 25; i++) { // Pour avoir les bonnes valeurs dès la premier version
         capture.grab();
     }
 }
@@ -41,7 +42,7 @@ Mat KinectCapture::captureRGBMatrix() {
         capture.grab();
         capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
     } else {
-       ROS_ERROR("COULD NOT CAPTURE A PICTURE WITH THE KINECT");
+        ROS_ERROR("COULD NOT CAPTURE A PICTURE WITH THE KINECT");
     }
 
     return showRGB.clone();

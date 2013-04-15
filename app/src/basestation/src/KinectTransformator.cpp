@@ -8,7 +8,7 @@ using namespace std;
 
 const float KinectTransformator::KINECTANGLE = 22.63f;
 float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 180 * M_PI);
-Vec2f KinectTransformator::_kinectPosition = Vec2f(0.17f, -0.49f);
+Vec2f KinectTransformator::_kinectPosition = Vec2f(0.17f, -0.54f);
 Mat KinectTransformator::_distortionCorrectionMatrix = Mat();
 
 void KinectTransformator::setKinectAngle(float angleRad){

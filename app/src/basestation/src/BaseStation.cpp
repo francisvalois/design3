@@ -106,7 +106,7 @@ void BaseStation::sendStartLoopMessage() {
 }
 
 bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, GetObstaclesPosition::Response & response) {
-    int const AVERAGECOUNT = 3;
+    int const AVERAGECOUNT = 5;
     int obstacle1AverageCount = 0;
     int obstacle2AverageCount = 0;
 
@@ -121,6 +121,10 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
         obstaclesDetection.findCenteredObstacle(depthMatrix);
         Vec2f obs1 = obstaclesDetection.getObstacle1();
         Vec2f obs2 = obstaclesDetection.getObstacle2();
+
+        if ((obs1[0] < 0.10 || obs1[1] < 0.20) || obs2[0] < 0.10 || obs2[1] < 0.20) {
+            continue;
+        }
 
         if (obs1[0] > 0.10 || obs1[1] > 0.20) {
             response.x1 += obs1[1] * 100;
@@ -167,7 +171,7 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
 }
 
 bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request & request, FindRobotPositionAndAngle::Response & response) {
-    int const AVERAGECOUNT = 3;
+    int const AVERAGECOUNT = 5;
     int robotPositionAverageCount = 0;
     float positionX = 0.0f;
     float positionY = 0.0f;
@@ -225,6 +229,9 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
+
+    response.x =  35.5f;
+    response.y = 76.5f;
 
     return true;
 }
