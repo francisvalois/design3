@@ -12,6 +12,8 @@ BaseStation::BaseStation(int argc, char** argv) :
     blue = Scalar(255, 0, 0);
     black = Scalar(0, 0, 0);
     red = Scalar(0, 0, 255);
+    darkRed = Scalar(0, 0, 155);
+    green = Scalar(0,255,0);
 
     obstacle1.x = 0;
     obstacle1.y = 0;
@@ -151,8 +153,6 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
 
     emit message(infoQ);
 
-    //emit updateObstaclesPositions(response.x1, response.y1, response.x2, response.y2);
-
     obstacle1.set(response.x1, response.y1);
     obstacle2.set(response.x2, response.y2);
 
@@ -207,7 +207,12 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
-    emit UpdatingRobotPositionSignal(response.x, response.y);
+
+    actualPosition.set(response.x, response.y);
+    kinoctoPositionUpdates.push_back(actualPosition);
+
+    QImage image = Mat2QImage(createMatrix());
+    emit updateTableImage(image);
 
     return true;
 }
@@ -250,7 +255,6 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     infoQ.append((char*) buff.str().c_str());
 
     emit message(infoQ);
-    //emit traceRealTrajectorySignal(positions);
 
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);
@@ -267,6 +271,7 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
     if (kinoctoPositionUpdates.size() > 0) {
         kinoctoPositionUpdates.clear();
     }
+    actualPosition.set(0,0);
 
     emit endLoop("Kinocto : Loop Ended");
 
@@ -283,8 +288,6 @@ bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, Up
 
     emit message(infoQ);
 
-    //emit UpdatingRobotPositionSignal(request.x, request.y);
-
     actualPosition.set(request.x, request.y);
     kinoctoPositionUpdates.push_back(actualPosition);
 
@@ -296,6 +299,27 @@ bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, Up
 
 Mat3b BaseStation::createMatrix() {
     Mat3b tableWorkspace = Mat(Workspace::TABLE_X + 1, Workspace::TABLE_Y + 1, CV_8UC3, white);
+
+    //GREEN SQUARE
+    for(int i = 22; i <=25; i++) {
+        for(int j = 22; j <=88; j++) {
+            colorPixel(tableWorkspace, green, i, j);
+            colorPixel(tableWorkspace, green, j, i);
+        }
+    }
+    for(int i = 85; i <=88; i++) {
+        for(int j = 22; j <=88; j++) {
+            colorPixel(tableWorkspace, green, i, j);
+            colorPixel(tableWorkspace, green, j, i);
+        }
+    }
+
+    //REDLINE
+    for(int i = 150; i <=152; i++) {
+        for(int j = 0; j <=Workspace::TABLE_Y; j++) {
+            colorPixel(tableWorkspace, red, i, j);
+        }
+    }
 
     //OBSTACLE 1
     if (obstacle1.x != 0 && obstacle1.y != 0) {
@@ -331,7 +355,7 @@ Mat3b BaseStation::createMatrix() {
         for (unsigned int i = 0; i < kinoctoPositionUpdates.size() - 1; i++) {
             Point currentPoint(kinoctoPositionUpdates[i].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i].y);
             Point nextPoint(kinoctoPositionUpdates[i + 1].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i + 1].y);
-            drawLine(tableWorkspace, currentPoint, nextPoint, red);
+            drawLine(tableWorkspace, currentPoint, nextPoint, darkRed);
         }
     }
 
