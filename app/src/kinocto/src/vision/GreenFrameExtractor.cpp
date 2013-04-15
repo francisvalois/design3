@@ -13,7 +13,7 @@ GreenFrameExtractor::GreenFrameExtractor() {
 GreenFrameExtractor::~GreenFrameExtractor() {
 }
 
-Rect GreenFrameExtractor::getFrameRect(Mat& srcHSV) {
+Rect GreenFrameExtractor::getFrameRect(Mat& srcHSV, int sudocubeNo) {
     Mat segmentedFrame;
     inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
     VisionUtility::applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);

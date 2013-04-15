@@ -8,14 +8,18 @@ const char SudocubeExtractor::OUTPUT_PATH[] = "output";
 SudocubeExtractor::SudocubeExtractor() {
     white = cv::Scalar(255, 255, 255);
     black = cv::Scalar(0, 0, 0);
-    sudocubeNo = 1;
+    sudocubeNo = 0;
 }
 
 SudocubeExtractor::~SudocubeExtractor() {
 }
 
 Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
+    Size newSize(1027, 768);
+    cv::resize(src, src, newSize);
+
     Sudocube * sudokube = new Sudocube();
+    sudocubeNo++;
 
     Mat srcGray;
     cleanGraySrc(src, srcGray);
@@ -24,7 +28,7 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     cvtColor(src, srcHSV, CV_BGR2HSV);
 
     GreenFrameExtractor frameExtractor;
-    Rect frameRect = frameExtractor.getFrameRect(srcHSV);
+    Rect frameRect = frameExtractor.getFrameRect(srcHSV, sudocubeNo);
     if (frameRect.area() == 0) { //TODO Gestion exception
         cout << "Could not find the green frame" << endl;
         return sudokube;
@@ -35,7 +39,7 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     SquaresExtractor squaresExtractor;
     vector<SquarePair> squaresPair;
     Mat frameCroppedThresholded;
-    bool squaresAreExtracted = squaresExtractor.findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded);
+    bool squaresAreExtracted = squaresExtractor.findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded, sudocubeNo);
     if (squaresAreExtracted == false) {
         cout << "Could not extract all the square for sudocube" << endl; //TODO gestion d'exception
         return sudokube;
@@ -76,23 +80,25 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
             if (foundPossibleNumber == true) {
                 int numberFound = numberReader.identifyNumber(number);
                 (*itNum) = numberFound;
-
-                //int y = distance(orderedSquaresPair[i].begin(), itPair);
-                //sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
-                //VisionUtility::saveImage(number, filename);
+                if (number.size().width > 0 && number.size().height > 0) {
+                    int y = distance(orderedSquaresPair[i].begin(), itPair);
+                    //sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
+                    //VisionUtility::saveImage(number, filename);
+                }
             }
         }
     }
 
-    sudocubeNo++;
     insertAllNumber(*sudokube, orderedNumber);
+
+    //cout << sudokube->print() << endl;
 
     return sudokube;
 }
 
 void SudocubeExtractor::cleanGraySrc(Mat& src, Mat& srcGray) {
     cvtColor(src, srcGray, CV_BGR2GRAY);
-    GaussianBlur(srcGray, srcGray, Size(5, 5), 1, 1);
+    GaussianBlur(srcGray, srcGray, Size(7, 7), 1, 1);
 
     Mat laplacianImg;
     Laplacian(srcGray, laplacianImg, CV_8UC1, 3);

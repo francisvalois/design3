@@ -13,7 +13,7 @@ SquaresExtractor::SquaresExtractor() {
 SquaresExtractor::~SquaresExtractor() {
 }
 
-bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded) {
+bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded, int sudocubeNo) {
     bool isExtracted = false;
 
     for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {

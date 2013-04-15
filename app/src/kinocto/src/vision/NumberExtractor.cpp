@@ -23,6 +23,10 @@ bool NumberExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask
 
     vector<Rect> rects = getNumberRect(contours);
 
+    //namedWindow("test", CV_WINDOW_FREERATIO);
+    //imshow("test", inImage);
+    //waitKey(0);
+
     Mat ROI = Mat::zeros(Size(NumberReader::NUMBER_WIDTH, NumberReader::NUMBER_HEIGHT), CV_8UC3);
     if (rects.empty() == false) {
         ROI = thresholdedSquare(rects[0]);
@@ -39,7 +43,7 @@ vector<Rect> NumberExtractor::getNumberRect(vector<vector<Point> > contours) {
     for (uint i = 0; i < contours.size(); i++) {
         approxPolyDP(Mat(contours[i]), poly[i], 10, true);
         Rect rect = boundingRect(Mat(poly[i]));
-
+        //cout << rect.area() << endl;
         if (rect.area() > NUMBER_AREA_MIN && rect.area() < NUMBER_AREA_MAX) {
             rects.push_back(rect);
         }
