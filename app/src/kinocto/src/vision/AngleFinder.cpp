@@ -59,17 +59,54 @@ double AngleFinder::findWallAngle(Mat & wall) {
 }
 
 double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
+    
     Mat blur;
-    GaussianBlur(greenBorder, blur, Size(7, 7), 1.4f);
+    Size sf;
+    sf.width = 11;
+    sf.height = 11;
+    double sigmaX = 1;
 
-    Mat hsv;
-    cvtColor(blur, hsv, CV_BGR2HSV);
+    double d[] = {5.3049382516541385e-02, -8.3096662051120498e-02,-1.1345776472333211e-03, 2.5208106546648732e-03,-1.2073151061566005e-01};
+    double m[3][3] = {{1.3225939376373308e+03, 0., 7.8950053275576806e+02},{0.,1.3197235387739179e+03, 5.2292007793085895e+02},{0., 0., 1.}};
+
+    Mat undistorted;
+    Mat intrinsic = Mat(3,3,CV_64F, m);
+    Mat distMat = Mat(1,5, CV_64F, d);
+    undistort(srcHSV, undistorted, intrinsic, distMat);
+    cvtColor(undistorted, srcHSV, CV_RGB2HSV);
+    GaussianBlur(srcHSV, blur, sf, sigmaX);
 
     Mat segmentedFrame;
-    inRange(hsv, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
+    inRange(blur, Scalar(30, 30, 0), Scalar(80, 255, 255), segmentedFrame);
 
-    VisionUtility::applyErode(segmentedFrame, 5, MORPH_ELLIPSE);
-    VisionUtility::applyDilate(segmentedFrame, 16, MORPH_ELLIPSE);
+    VisionUtility::applyErode(segmentedFrame, 7, MORPH_ELLIPSE);
+    VisionUtility::applyDilate(segmentedFrame, 12, MORPH_ELLIPSE);
+    VisionUtility::applyErode(segmentedFrame, 2, MORPH_RECT);
+
+    GaussianBlur(segmentedFrame, blur, sf, sigmaX);
+
+    Mat edges;
+    Canny(blur,edges,50, 200, 3);
+
+    Mat cdst;
+    cvtColor(blur, cdst, CV_GRAY2BGR);
+
+    vector<Vec2f> lines;
+
+    HoughLines(edges,lines, 1, CV_PI/150, 200, 0, 0);
+
+
+    //Mat blur;
+    //GaussianBlur(greenBorder, blur, Size(7, 7), 1.4f);
+
+    //Mat hsv;
+    //cvtColor(blur, hsv, CV_BGR2HSV);
+
+    //Mat segmentedFrame;
+    //inRange(hsv, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
+
+    //VisionUtility::applyErode(segmentedFrame, 5, MORPH_ELLIPSE);
+    //VisionUtility::applyDilate(segmentedFrame, 16, MORPH_ELLIPSE);
     //VisionUtility::applyErode(segmentedFrame, 8, MORPH_RECT);
 
     //MON CODE
@@ -81,9 +118,16 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     //imshow("test", segmentedFrame);
     //waitKey(0);
     // TEST AVEC METHODE DE DIANE
-    Mat edges;
-    Canny(segmentedFrame, edges, 50, 200, 3);
-    return findAngle(edges);
+    //Mat edges;
+    //Canny(segmentedFrame, edges, 50, 200, 3);
+    if(lines.size() != 0)
+    {
+        return findAngle(edges);    
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 double AngleFinder::findWallAngle2(Mat & wall) {
@@ -98,17 +142,25 @@ double AngleFinder::findWallAngle2(Mat & wall) {
     VisionUtility::applyErode(segmentedFrame, 8, MORPH_RECT);
 
     Mat edges;
+    vector<Vec2f> lines;
     Canny(segmentedFrame, edges, 50, 200, 3);
+    HoughLines(edges, lines, 0.5, CV_PI / 180, 70, 0, 0);
 
-    return findAngle(edges);
+    if(lines.size() != 0)
+    {
+        return findAngle(lines);
+    }
+    else
+    {
+        return 0;
+    }
+
 }
 
-double AngleFinder::findAngle(Mat & edges) {
-    vector<Vec2f> lines;
+double AngleFinder::findAngle(vector<Vec2f> & lines) {
     vector<Vec2f> linesG, linesD;
     double yG = 0, yD = 0;
     int G = 0, D = 0;
-    HoughLines(edges, lines, 0.5, CV_PI / 180, 70, 0, 0);
 
     for (size_t i = 0; i < lines.size(); i++) {
         float rho = lines[i][0], theta = lines[i][1];
@@ -180,6 +232,16 @@ double AngleFinder::findAngle(Mat & edges) {
         ligneD[0] = rhoD / linesD.size();
         ligneD[1] = thetaD / linesD.size();
         wallLines.push_back(ligneD);
+    }
+
+    if(wallLines.size() == 0)
+    {
+        return 0;
+    }
+
+    if(wallLines == 1)
+    {
+        return (wallLines[0][1] * 180.0 / CV_PI - 90);
     }
 
     if (fabs(wallLines[0][1] - CV_PI / 2) < fabs(wallLines[1][1] - CV_PI / 2)) {
