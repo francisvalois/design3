@@ -140,7 +140,6 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
 
         _robotAngle = correctAngleForOrientation(angleRad, quadColor);
 
-        _robotAngle = angleRad;
         _robotPosition = centerPosition;
     }
 }
