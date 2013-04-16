@@ -13,14 +13,15 @@
 
 class ObjectDetector {
 public:
-    int generateQuads(cv::Mat &image, std::vector<cv::Rect>&outQuads);
+    int generateQuads(cv::Mat &image, std::vector<cv::Rect>&outQuads, bool applyCorrection = true);
     enum quadColor {
         BLUE, BLACK, RED
     };
 
 protected:
     static float const TABLE_WIDTH;
-
+    bool containsRedSquares(cv::Mat picture, cv::Rect bigSquare);
+    cv::Rect getQuadEnglobingOthers(std::vector<cv::Rect> quads);
     int getAverageFromPointList(std::list<cv::Point> obstacle);
     cv::Vec2f getAverageDistanceForPointLine(std::list<cv::Vec2f> allDistances);
     int removeQuadsNotOnChessboard(std::vector<cv::Rect> & outQuads);

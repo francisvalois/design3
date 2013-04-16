@@ -34,7 +34,7 @@ Mat captureDepthMatrix() {
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
             //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
-            file << "robotdetection4.xml";
+            file << "rougeRobot.xml";
             string fileString = file.str();
             //cout << "Loading from file " << fileString << endl;
             
@@ -63,7 +63,7 @@ Mat captureRGBMatrix() {
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
         //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
-        file << "robotdetection4.jpg";
+        file << "rougeRobot.jpg";
         string fileString = file.str();
         //cout << "Loading from file " << fileString << endl;
         
@@ -200,12 +200,12 @@ int main( /*int argc, char* argv[]*/ ) {
     Mat test1 = captureRGBMatrix();
     Mat test2 = captureDepthMatrix();
     
-    //Utility::saveToFile(test2, "CalibTable3.xml");
-    //imwrite("CalibTable3.jpg", test1);
+    //Utility::saveToFile(test2, "rougeRobot.xml");
+    //imwrite("rougeRobot.jpg", test1);
 
-    //KinectCalibrator calib;
+    KinectCalibrator calib;
     //calib.calibrate(test1, test2);
-    //calib.calibratev2(capture);
+    //calib.calibratev2();
     //calib.find4PointsForReference(test1, test2);
 
     //KinectTransformator test10;
