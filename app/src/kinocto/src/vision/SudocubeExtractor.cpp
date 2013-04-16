@@ -24,6 +24,7 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     Mat srcHSV;
     cvtColor(src, srcHSV, CV_BGR2HSV);
 
+    //Extraction du carré vert
     GreenFrameExtractor frameExtractor;
     Rect frameRect = frameExtractor.getFrameRect(srcHSV, sudocubeNo);
     if (frameRect.area() == 0) { //TODO Gestion exception
@@ -41,42 +42,15 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
     Size newSize(round(factorX), round(factorY));
     cv::resize(frameCroppedGray, frameCroppedGray, Size(round(factorX), round(factorY)));
 
-///////////////////////////
+    //Création d'un masque pour enlever les artéfacts autours du sudocube
     Mat croppedHSV = srcHSV(frameRect);
     Size newSizeHSV(round(factorX), round(factorY));
     cv::resize(croppedHSV, croppedHSV, newSize);
 
-    Mat segmentedBlueLine;
+    Mat sudocubeMask;
+    getSudocubeMask(croppedHSV, sudocubeMask);
 
-    inRange(croppedHSV, Scalar(80, 0, 0), Scalar(150, 255, 255), segmentedBlueLine);
-    VisionUtility::applyErode(segmentedBlueLine, 1, MORPH_RECT);
-    VisionUtility::applyDilate(segmentedBlueLine, 5, MORPH_RECT);
-
-    vector<vector<Point> > sudocubeContours;
-    vector<Vec4i> sudocubeHierarchy;
-    Mat thresContour;
-    segmentedBlueLine.copyTo(thresContour);
-    findContours(thresContour, sudocubeContours, sudocubeHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-    vector<Rect> sudocubeBoundingRect(0);
-    vector<vector<Point> > sudocubeContoursPoly(sudocubeContours.size());
-
-    int polyy = 0;
-    for (uint i = 0; i < sudocubeContours.size(); i++) {
-        approxPolyDP(Mat(sudocubeContours[i]), sudocubeContoursPoly[i], 3, true);
-        Rect rect = boundingRect(Mat(sudocubeContoursPoly[i]));
-
-        if (rect.area() > 200000) {
-            polyy = i;
-            sudocubeBoundingRect.push_back(rect);
-        }
-    }
-
-    Mat sudocubeMask = Mat::zeros(croppedHSV.size(), CV_8UC1);
-    fillConvexPoly(sudocubeMask, sudocubeContoursPoly[polyy], white);
-    sudocubeMask = 255 - sudocubeMask;
-/////////////////////
-
+    //Extraction des carrés
     SquaresExtractor squaresExtractor;
     vector<SquarePair> squaresPair;
     Mat frameCroppedThresholded;
@@ -86,10 +60,12 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
         return sudokube;
     }
 
+    //Extraction du carré rouge
     RedSquarePairExtractor redSquarePairExtractor;
-    SquarePair redSquarePair = redSquarePairExtractor.getRedSquarePair(srcHSV(frameRect));
+    SquarePair redSquarePair = redSquarePairExtractor.getRedSquarePair(croppedHSV, sudocubeMask);
     squaresPair.push_back(redSquarePair);
 
+    //Tri des cases selon leur XY
     SquaresPairSorter squarePairSorter;
     vector<vector<SquarePair> > orderedSquaresPair = squarePairSorter.sortSquaresPair(squaresPair, frameCroppedThresholded.cols);
 
@@ -100,11 +76,13 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
 
         vector<SquarePair>::iterator itPair;
         for (itPair = orderedSquaresPair[i].begin(); itPair != orderedSquaresPair[i].end(); itPair++, itNum++) {
+            //Vérification s'il s'agit de la case rouge
             if (itPair->rect.x == redSquarePair.rect.x && itPair->rect.y == redSquarePair.rect.y) {
                 (*itNum) = -1;
                 continue;
             }
 
+            //Création d'un masque pour extraire le chiffre sans les bordures des cases
             Mat squareMask = Mat::zeros(frameCroppedThresholded.size(), CV_8UC1);
             fillConvexPoly(squareMask, itPair->poly, white);
 
@@ -112,12 +90,13 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
             frameCroppedThresholded.copyTo(squareMasked, squareMask);
 
             Mat squareInversedMask = 255 - squareMask;
-            VisionUtility::applyDilate(squareInversedMask, 2, MORPH_RECT);
+            VisionUtility::applyDilate(squareInversedMask,4, MORPH_RECT);
 
             NumberExtractor numberExtractor;
             Mat number;
             bool foundPossibleNumber = numberExtractor.extractNumber(squareMasked, number, squareInversedMask);
 
+            //Ajout détection d'un rect de taille suffisament grang
             if (foundPossibleNumber == true) {
                 int numberFound = numberReader.identifyNumber(number);
                 (*itNum) = numberFound;
@@ -150,6 +129,38 @@ Rect SudocubeExtractor::getSmallestRectBetween(const Rect &rect1, const Rect &re
     }
 
     return rect2;
+}
+
+void SudocubeExtractor::getSudocubeMask(const Mat & croppedHSV, Mat & sudocubeMask) {
+    Mat segmentedBlueLine;
+
+    inRange(croppedHSV, Scalar(80, 0, 0), Scalar(150, 255, 255), segmentedBlueLine);
+    VisionUtility::applyErode(segmentedBlueLine, 1, MORPH_RECT);
+    VisionUtility::applyDilate(segmentedBlueLine, 5, MORPH_RECT);
+
+    vector<vector<Point> > sudocubeContours;
+    vector<Vec4i> sudocubeHierarchy;
+    Mat thresContour;
+    segmentedBlueLine.copyTo(thresContour);
+    findContours(thresContour, sudocubeContours, sudocubeHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+    vector<Rect> sudocubeBoundingRect(0);
+    vector<vector<Point> > sudocubeContoursPoly(sudocubeContours.size());
+
+    int polyy = 0;
+    for (uint i = 0; i < sudocubeContours.size(); i++) {
+        approxPolyDP(Mat(sudocubeContours[i]), sudocubeContoursPoly[i], 3, true);
+        Rect rect = boundingRect(Mat(sudocubeContoursPoly[i]));
+
+        if (rect.area() > 200000) {
+            polyy = i;
+            sudocubeBoundingRect.push_back(rect);
+        }
+    }
+
+    sudocubeMask = Mat::zeros(croppedHSV.size(), CV_8UC1);
+    fillConvexPoly(sudocubeMask, sudocubeContoursPoly[polyy], white);
+    sudocubeMask = 255 - sudocubeMask;
 }
 
 void SudocubeExtractor::insertAllNumber(Sudocube & sudokube, vector<vector<int> > orderedNumber) {

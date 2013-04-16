@@ -18,7 +18,7 @@ public:
     RedSquarePairExtractor();
     virtual ~RedSquarePairExtractor();
 
-    SquarePair getRedSquarePair(const cv::Mat& srcHSV);
+    SquarePair getRedSquarePair(const cv::Mat& srcHSV, const cv::Mat & sudocubeMask);
 
 private:
     cv::Scalar white;

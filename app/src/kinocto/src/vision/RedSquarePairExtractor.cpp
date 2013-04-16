@@ -11,14 +11,20 @@ RedSquarePairExtractor::RedSquarePairExtractor() {
 RedSquarePairExtractor::~RedSquarePairExtractor() {
 }
 
-SquarePair RedSquarePairExtractor::getRedSquarePair(const Mat& srcHSV) {
+SquarePair RedSquarePairExtractor::getRedSquarePair(const Mat& srcHSV, const Mat& sudocubeMask) {
     Mat segmentedRedSquare;
     Mat segmentedRedSquare2;
     inRange(srcHSV, Scalar(0, 100, 50), Scalar(25, 255, 255), segmentedRedSquare); // Pas le choix, en deux partie...
     inRange(srcHSV, Scalar(130, 100, 50), Scalar(255, 255, 255), segmentedRedSquare2);
     segmentedRedSquare += segmentedRedSquare2;
+    segmentedRedSquare -= sudocubeMask;
 
-    VisionUtility::applyErode(segmentedRedSquare, 2, MORPH_CROSS);
+    VisionUtility::applyErode(segmentedRedSquare, 4, MORPH_CROSS);
+    VisionUtility::applyDilate(segmentedRedSquare, 8, MORPH_RECT);
+
+    imshow("red square", segmentedRedSquare);
+    waitKey(0);
+
 
     vector<vector<Point> > squareContour;
     vector<Vec4i> squareHierarchy;
@@ -43,7 +49,7 @@ vector<Rect> RedSquarePairExtractor::getRedSquareRects(vector<vector<Point> > & 
         approxPolyDP(Mat(squareContour[i]), squareContoursPoly[i], 3, true);
         Rect rect = boundingRect(Mat(squareContoursPoly[i]));
 
-        //cout << rect.area() << endl;
+        cout << "RED SQUARE SIZE :" << rect.area() << endl;
         if (rect.area() > SquaresExtractor::SQUARE_AREA_MIN && rect.area() < SquaresExtractor::SQUARE_AREA_MAX) {
             squareBoundingRect.push_back(rect);
         }

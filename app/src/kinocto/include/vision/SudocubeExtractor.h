@@ -34,6 +34,7 @@ private:
 
     void cleanGraySrc(cv::Mat& src, cv::Mat& srcGray);
     cv::Rect getSmallestRectBetween(const cv::Rect &, const cv::Rect &);
+    void getSudocubeMask (const cv::Mat & croppedHSV, cv::Mat & sudocubeMask);
 
     void insertAllNumber(Sudocube & sudokube, std::vector<std::vector<int> > numbers);
     void insert(Sudocube & sudokube, int face, int j, int k, int value);
