@@ -16,6 +16,10 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     sf.height = 11;
     double sigmaX = 1;
 
+    if (!greenBorder.data == true) {
+        return 0;
+    }
+
     double d[] = { 5.3049382516541385e-02, -8.3096662051120498e-02, -1.1345776472333211e-03, 2.5208106546648732e-03, -1.2073151061566005e-01 };
     double m[3][3] =
             { { 1.3225939376373308e+03, 0., 7.8950053275576806e+02 }, { 0., 1.3197235387739179e+03, 5.2292007793085895e+02 }, { 0., 0., 1. } };
@@ -28,6 +32,7 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     Rect rect(50, 50, 1500, 1100);
     crop = greenBorder(rect);
     GaussianBlur(crop, blur, sf, sigmaX);
+
 
     Mat segmentedFrame;
     inRange(blur, Scalar(30, 30, 0), Scalar(80, 255, 255), segmentedFrame);
