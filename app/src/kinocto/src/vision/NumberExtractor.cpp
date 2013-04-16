@@ -43,7 +43,7 @@ vector<Rect> NumberExtractor::getNumberRect(vector<vector<Point> > contours) {
     for (uint i = 0; i < contours.size(); i++) {
         approxPolyDP(Mat(contours[i]), poly[i], 10, true);
         Rect rect = boundingRect(Mat(poly[i]));
-        //cout << rect.area() << endl;
+        cout << rect.area() << endl;
 
         if (rect.area() > NUMBER_AREA_MIN && rect.area() < NUMBER_AREA_MAX) {
             rects.push_back(rect);

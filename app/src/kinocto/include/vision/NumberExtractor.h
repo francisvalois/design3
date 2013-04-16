@@ -21,7 +21,7 @@ public:
 
 private:
     const static int NUMBER_AREA_MAX = 1200;
-    const static int NUMBER_AREA_MIN = 120;
+    const static int NUMBER_AREA_MIN = 100;
     const static int NUMBER_DILATE_SIZE = 1;
 
     std::vector<cv::Rect> getNumberRect(std::vector<std::vector<cv::Point> > contours);

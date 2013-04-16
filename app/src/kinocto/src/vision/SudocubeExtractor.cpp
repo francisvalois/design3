@@ -33,7 +33,7 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
 
     double factor;
     Mat frameCroppedGray = srcGray(frameRect);
-    factor = (double) 600 / (double) frameCroppedGray.cols;
+    factor = (double) 500 / (double) frameCroppedGray.cols;
 
     Size newSize(round(frameCroppedGray.cols * factor), round(frameCroppedGray.rows * factor));
     cv::resize(frameCroppedGray, frameCroppedGray, newSize);

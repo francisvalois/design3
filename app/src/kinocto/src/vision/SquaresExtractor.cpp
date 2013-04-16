@@ -21,7 +21,7 @@ bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & 
         VisionUtility::applyErode(srcThresholded, 1, MORPH_ELLIPSE);
 
         sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
-        VisionUtility::saveImage(srcThresholded, filename);
+        //VisionUtility::saveImage(srcThresholded, filename);
 
         vector<vector<Point> > squaresContours;
         vector<Vec4i> squaresHierarchy;
