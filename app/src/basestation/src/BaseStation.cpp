@@ -242,7 +242,7 @@ bool BaseStation::showSolvedSudocube(ShowSolvedSudocube::Request & request, Show
     buff << request.solvedSudocube;
     ROS_INFO( "%s\n red square value:%d\n solved sudocube:\n%s", "Show Solved Sudocube", request.redCaseValue, buff.str().c_str());
 
-    emit showSolvedSudocubeSignal(QString(buff.str().c_str()), request.redCaseValue);
+    emit showSolvedSudocubeSignal(QString(buff.str().c_str()), request.redCaseValue, request.redCasePosition);
 
     return true;
 }

@@ -56,7 +56,7 @@ public:
 
 Q_SIGNALS:
     void rosShutdown();
-    void showSolvedSudocubeSignal(QString, int);
+    void showSolvedSudocubeSignal(QString, int, int);
     void message(QString);
     void updateTableImage(QImage);
     void endLoop(QString);
@@ -82,7 +82,6 @@ private:
     ros::ServiceServer loopEndedService;
 
     void initHandlers(ros::NodeHandle & node);
-
 
     cv::Mat3b createMatrix();
     QImage Mat2QImage(const cv::Mat3b&);
