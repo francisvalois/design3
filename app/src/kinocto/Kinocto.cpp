@@ -54,7 +54,8 @@ void Kinocto::startLoop() {
 
         float angle;
         Position robotPos;
-        getRobotPosition(angle, robotPos);
+        //getRobotPosition(angle, robotPos);
+        getCriticalRobotPosition(angle, robotPos);
         workspace.setRobotPos(robotPos);
         workspace.setRobotAngle(angle);
 
@@ -84,6 +85,14 @@ void Kinocto::getRobotPosition(float & angle, Position & robotPos) {
     baseStation->requestRobotPositionAndAngle(robotPos, angle);
 }
 
+void Kinocto::getCriticalRobotPosition(float & angle, Position & robotPos) {
+	baseStation->requestRobotPositionAndAngle(robotPos, angle);
+	if(robotPos.x == 0 && robotPos.y == 0) {
+		microcontroller->rotate(90.0f);
+		baseStation->requestRobotPositionAndAngle(robotPos, angle);
+	}
+}
+
 void Kinocto::getObstaclesPosition() {
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
@@ -107,8 +116,11 @@ void Kinocto::getOutOfDrawingZone() {
 
 void Kinocto::goToAntenna() {
     ROS_INFO("GOING TO ANTENNA");
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaReadPos());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+
+    Position translation;
+    translation.x = workspace.getRobotPos().y - workspace.getAntennaReadPos().y;
+    translation.y = workspace.getAntennaReadPos().x - workspace.getRobotPos().x;
+    microcontroller->translate(translation);
 
     executeMoves(moves);
 }
@@ -434,7 +446,8 @@ void Kinocto::goToDrawingZone() {
 // Correction de la position du robot dans la zone de dessin
     /*float angle;
      Position robotPos;
-     getRobotPosition(angle, robotPos);
+     //getRobotPosition(angle, robotPos);
+     getCriticalRobotPosition(angle, robotPos);
      workspace.setRobotAngle(angle);
      workspace.setRobotPos(robotPos);
 
@@ -446,19 +459,6 @@ void Kinocto::goToDrawingZone() {
 
 //Translation pour placer le robot dans le centre
     microcontroller->move(-13.0f);
-    Position robotPos = workspace.getRobotPos();
-
-    int orientation = antennaParam.getOrientation();
-    if (orientation == Workspace::NORTH) {
-        robotPos.translateY(13.0f);
-    } else if (orientation == Workspace::SOUTH) {
-        robotPos.translateY(-13.0f);
-    } else if (orientation == Workspace::EAST) {
-        robotPos.translateX(13.0f);
-    } else if (orientation == Workspace::WEST) {
-        robotPos.translateX(-13.0f);
-    }
-    workspace.setRobotPos(robotPos);
 }
 
 void Kinocto::drawNumber() {

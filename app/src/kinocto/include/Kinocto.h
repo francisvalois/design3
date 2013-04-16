@@ -75,6 +75,7 @@ private:
     void startLoop();
     void getObstaclesPosition();
     void getRobotPosition(float & angle, Position & robotPos);
+    void getCriticalRobotPosition(float & angle, Position & robotPos);
     void goToAntenna();
     void executeMoves(std::vector<Move> & moves);
     void decodeAntennaParam();

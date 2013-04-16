@@ -33,8 +33,8 @@ Mat Utility::captureDepthMatrix(VideoCapture capture) {
     else{
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
-        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
-        file << "robotdetection4.xml";
+        file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
+        //file << "robotdetection4.xml";
         string fileString = file.str();
         //cout << "Loading from file " << fileString << endl;
 
@@ -66,8 +66,8 @@ Mat Utility::captureRGBMatrix(VideoCapture capture) {
     else{
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
-        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
-        file << "robotdetection4.jpg";
+        file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
+        //file << "robotdetection4.jpg";
         string fileString = file.str();
         //cout << "Loading from file " << fileString << endl;
 

@@ -32,15 +32,22 @@ Position PathPlanning::findDerivatePosition(int sudocubeNumber) {
 	Workspace workspace;
 	if(sudocubeNumber == 3) {
 		Position derivatedPosition = workspace.getSudocubePos(4);
+		Position clearSpaceBehindDerivatedPosition;
+		clearSpaceBehindDerivatedPosition.x = derivatedPosition.x - 5;
+		clearSpaceBehindDerivatedPosition.y = derivatedPosition.y;
 		Position derivatedPositionBehindSudocube = workspace.getSudocubePos(3);
-		if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)) {
+
+		if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
+				!linePassesThroughObstacle(clearSpaceBehindDerivatedPosition, derivatedPosition)) {
 			return derivatedPosition;
 		}
 		for(int i = 0; i < 6; i++) {
 			derivatedPosition.x = derivatedPosition.x - 10;
 			derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
+			clearSpaceBehindDerivatedPosition.x = clearSpaceBehindDerivatedPosition.x - 10;
 			if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
-					!linePassesThroughObstacle(derivatedPositionBehindSudocube, workspace.getSudocubePos(3))) {
+					!linePassesThroughObstacle(derivatedPositionBehindSudocube, workspace.getSudocubePos(3)) &&
+					!linePassesThroughObstacle(clearSpaceBehindDerivatedPosition, derivatedPosition)) {
 				return derivatedPosition;
 			}
 		}
