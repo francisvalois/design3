@@ -163,16 +163,16 @@ void Kinocto::adjustAngleWithGreenBorder() {
     ROS_INFO("ADJUSTING ROBOT ANGLE WITH GREEN BORDER");
     double camAngle = -31;
 
-    microcontroller->rotateCam(camAngle, 0);
+    microcontroller->rotateCam(camAngle, -2);
     cameraCapture->openCapture();
 
     Mat greenBorder = cameraCapture->takePicture();
     AngleFinder angleFinder;
     double angle = angleFinder.findGreenBorderAngle(greenBorder);
-    microcontroller->rotate(angle);
+    microcontroller->rotate(angle * 2.09); //MAGICK MAGICAL CONSTANT
 
     cameraCapture->closeCapture();
-    microcontroller->rotateCam(0, 0);
+    microcontroller->rotateCam(0, 2);
 }
 
 void Kinocto::goToSudocubeX() {
