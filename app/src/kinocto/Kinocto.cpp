@@ -165,7 +165,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
 
     microcontroller->rotateCam(camAngle, -2);
     cameraCapture->openCapture();
-    double angle = 0;
+    double angle = 1;
 
     while (angle > 0.5 && angle < -0.5) {
         Mat greenBorder = cameraCapture->takePicture();
