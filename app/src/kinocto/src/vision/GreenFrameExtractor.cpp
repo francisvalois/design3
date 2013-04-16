@@ -18,8 +18,8 @@ Rect GreenFrameExtractor::getFrameRect(Mat& srcHSV, int sudocubeNo) {
     inRange(srcHSV, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
     VisionUtility::applyErode(segmentedFrame, FRAME_ERODE_SIZE, MORPH_ELLIPSE);
     VisionUtility::applyDilate(segmentedFrame, FRAME_DILATE_SIZE, MORPH_RECT);
-    //sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
-    //VisionUtility::saveImage(segmentedFrame, filename);
+    sprintf(filename, "%s/frameSeg/%d.png", OUTPUT_PATH, sudocubeNo);
+    VisionUtility::saveImage(segmentedFrame, filename);
 
     vector<vector<Point> > frameContours = extractFrameContours(segmentedFrame);
     vector<Rect> frameBoundingRect = extractFrameRects(frameContours);
@@ -42,6 +42,7 @@ vector<Rect> GreenFrameExtractor::extractFrameRects(vector<vector<Point> > & fra
         approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
         Rect rect = boundingRect(Mat(frameContoursPoly[i]));
 
+        //cout << "frame size" << rect.area() << endl;
         if (rect.area() > FRAME_AREA_MIN) {
             frameBoundingRect.push_back(rect);
         }

@@ -18,14 +18,13 @@ Kinocto::Kinocto(NodeHandle node) {
 Kinocto::~Kinocto() {
     delete baseStation;
     delete microcontroller;
+    delete cameraCapture;
 
     if (ros::isStarted()) {
         ros::shutdown(); // explicitly needed since we use ros::start();
         ros::waitForShutdown();
     }
     wait();
-
-    delete cameraCapture;
 }
 
 void Kinocto::loop() {

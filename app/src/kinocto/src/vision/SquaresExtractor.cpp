@@ -18,8 +18,10 @@ bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & 
 
     for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
         threshold(srcGray, srcThresholded, threshValue, 500, THRESH_BINARY);
-        //sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
-        //VisionUtility::saveImage(srcThresholded, filename);
+        VisionUtility::applyErode(srcThresholded, 1, MORPH_ELLIPSE);
+
+        sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
+        VisionUtility::saveImage(srcThresholded, filename);
 
         vector<vector<Point> > squaresContours;
         vector<Vec4i> squaresHierarchy;
@@ -49,6 +51,8 @@ void SquaresExtractor::removeInvalidSquaresPair(vector<SquarePair>& squaresPair)
         if (squaresPair[i].rect.area() > SQUARE_AREA_MIN && squaresPair[i].rect.area() < SQUARE_AREA_MAX) {
             SquarePair squarePair(squaresPair[i].rect, squaresPair[i].poly);
             validSquaresPair.push_back(squarePair);
+            //cout << squaresPair[i].rect.area() << endl;
+            //cout << squaresPair[i].rect.x << " " << squaresPair[i].rect.y << endl;
         }
     }
 

@@ -43,6 +43,7 @@ vector<Rect> RedSquarePairExtractor::getRedSquareRects(vector<vector<Point> > & 
         approxPolyDP(Mat(squareContour[i]), squareContoursPoly[i], 3, true);
         Rect rect = boundingRect(Mat(squareContoursPoly[i]));
 
+        cout << "red square" << rect.area() << endl;
         if (rect.area() > SquaresExtractor::SQUARE_AREA_MIN && rect.area() < SquaresExtractor::SQUARE_AREA_MAX) {
             squareBoundingRect.push_back(rect);
         }
