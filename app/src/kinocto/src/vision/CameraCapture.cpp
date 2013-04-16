@@ -17,8 +17,7 @@ Mat CameraCapture::takePicture() {
         return picture;
     }
 
-    videoCapture.grab();
-    videoCapture >> picture;
+    videoCapture.read(picture);
 
     return picture.clone();
 }
