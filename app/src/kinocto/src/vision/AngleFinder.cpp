@@ -45,10 +45,10 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     cvtColor(blur, cdst, CV_GRAY2BGR);
 
     vector<Vec2f> lines;
-    HoughLines(edges, lines, 1, CV_PI / 150, 200, 0, 0);
+    HoughLines(edges, lines, 1, CV_PI / 150, 150, 0, 0);
 
     if (lines.size() != 0) {
-        return findAngle(lines, greenBorder.size());
+        return findAngle(lines, greenBorder.size()) * -1; // ATTENTION CETTE VALEURE EST IMPORTANTE
     } else {
         return 0;
     }
