@@ -55,7 +55,8 @@ void Kinocto::startLoop() {
 
         float angle;
         Position robotPos;
-        getRobotPosition(angle, robotPos);
+        //getRobotPosition(angle, robotPos);
+        getCriticalRobotPosition(angle, robotPos);
         workspace.setRobotPos(robotPos);
         workspace.setRobotAngle(angle);
 
@@ -83,6 +84,14 @@ void Kinocto::startLoop() {
 
 void Kinocto::getRobotPosition(float & angle, Position & robotPos) {
     baseStation->requestRobotPositionAndAngle(robotPos, angle);
+}
+
+void Kinocto::getCriticalRobotPosition(float & angle, Position & robotPos) {
+	baseStation->requestRobotPositionAndAngle(robotPos, angle);
+	if(robotPos.x == 0 && robotPos.y == 0) {
+		microcontroller->rotate(90.0f);
+		baseStation->requestRobotPositionAndAngle(robotPos, angle);
+	}
 }
 
 void Kinocto::getObstaclesPosition() {
@@ -435,7 +444,8 @@ void Kinocto::goToDrawingZone() {
 // Correction de la position du robot dans la zone de dessin
     /*float angle;
      Position robotPos;
-     getRobotPosition(angle, robotPos);
+     //getRobotPosition(angle, robotPos);
+     getCriticalRobotPosition(angle, robotPos);
      workspace.setRobotAngle(angle);
      workspace.setRobotPos(robotPos);
 
