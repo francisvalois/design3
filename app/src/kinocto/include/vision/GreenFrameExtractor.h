@@ -16,14 +16,14 @@ class GreenFrameExtractor {
 public:
     GreenFrameExtractor();
     virtual ~GreenFrameExtractor();
-    cv::Rect getFrameRect(cv::Mat& srcHSV);
+    cv::Rect getFrameRect(cv::Mat& srcHSV, int sudocubeNo);
 
 private:
     const static char OUTPUT_PATH[];
 
-    const static int FRAME_AREA_MIN = 300000;
+    const static int FRAME_AREA_MIN = 180000;
     const static int FRAME_ERODE_SIZE = 1;
-    const static int FRAME_DILATE_SIZE = 15;
+    const static int FRAME_DILATE_SIZE = 6;
 
     cv::Scalar white;
     cv::Scalar black;

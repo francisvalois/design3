@@ -8,7 +8,7 @@ using namespace std;
 
 const float KinectTransformator::KINECTANGLE = 22.63f;
 float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 180 * M_PI);
-Vec2f KinectTransformator::_kinectPosition = Vec2f(0.17f, -0.49f);
+Vec2f KinectTransformator::_kinectPosition = Vec2f(0.17f, -0.54f);
 Mat KinectTransformator::_distortionCorrectionMatrix = Mat();
 
 void KinectTransformator::setKinectAngle(float angleRad){
@@ -175,6 +175,25 @@ cv::Vec2f KinectTransformator::distortionCorrection( Vec2f distanceToCorrect )
     float p2 = *(it + 1);
     float p3 = *(it + 2);
 
-    return Vec2f(p1/p3/100, p2/p3/100);
+    Vec2f tempPosition = Vec2f(p1/p3/100, p2/p3/100);
+    Vec2f tempPositionCorrectedXFromX = distortionZfromXPosition(tempPosition);
+    Vec2f tempPositionCorrectedZFromZ = distortionZfromZPosition(tempPositionCorrectedXFromX);
+
+    return tempPositionCorrectedZFromZ;
+}
+
+cv::Vec2f KinectTransformator::distortionZfromXPosition( cv::Vec2f positionToCorrect )
+{
+    float error = -0.00001 * pow(positionToCorrect[0]*100, 3) + 0.0018 * pow(positionToCorrect[0]*100, 2) + 
+        0.0357 * positionToCorrect[0]*100+ 0.0283;
+
+    return Vec2f(positionToCorrect[0], positionToCorrect[1] + error/100);
+}
+
+cv::Vec2f KinectTransformator::distortionZfromZPosition( cv::Vec2f positionToCorrect )
+{
+    float error = 0;
+
+    return positionToCorrect;
 }
 

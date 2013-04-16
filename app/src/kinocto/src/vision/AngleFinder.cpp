@@ -45,30 +45,6 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     vector<Vec2f> lines;
     HoughLines(edges, lines, 1, CV_PI / 150, 200, 0, 0);
 
-    //Mat blur;
-    //GaussianBlur(greenBorder, blur, Size(7, 7), 1.4f);
-
-    //Mat hsv;
-    //cvtColor(blur, hsv, CV_BGR2HSV);
-
-    //Mat segmentedFrame;
-    //inRange(hsv, Scalar(30, 150, 50), Scalar(95, 255, 255), segmentedFrame);
-
-    //VisionUtility::applyErode(segmentedFrame, 5, MORPH_ELLIPSE);
-    //VisionUtility::applyDilate(segmentedFrame, 16, MORPH_ELLIPSE);
-    //VisionUtility::applyErode(segmentedFrame, 8, MORPH_RECT);
-
-    //MON CODE
-    //threshold(segmentedFrame, segmentedFrame, 100, 250, THRESH_BINARY);
-    //vector<Point2d> points = findSlopePoints(segmentedFrame);
-    //return calculateSlopeAverage(points);
-
-    //namedWindow("test", CV_WINDOW_FREERATIO);
-    //imshow("test", segmentedFrame);
-    //waitKey(0);
-    // TEST AVEC METHODE DE DIANE
-    //Mat edges;
-    //Canny(segmentedFrame, edges, 50, 200, 3);
     if (lines.size() != 0) {
         return findAngle(lines, greenBorder.size());
     } else {

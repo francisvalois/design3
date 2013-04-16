@@ -45,6 +45,18 @@ float RobotDetector::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2) {
     return 0;
 }
 
+float RobotDetector::correctAngleForOrientation(float angle, quadColor color) {
+    double newAngle = 0;
+    if (color == BLUE) {
+        newAngle = -1 * CV_PI/2 - angle;
+    }
+    else if (color == BLACK) {
+        newAngle = CV_PI/2 - angle;
+    }
+
+    return (float)newAngle;
+}
+
 void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> validRobotPosition, Vec2f &trueLeftPosition, Vec2f &trueRightPosition) {
     Point2f leftPoint = validRobotPosition[0];
     Point2f rightPoint = validRobotPosition[validRobotPosition.size() - 1];
@@ -126,7 +138,8 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
 
         Vec2f centerPosition = findRobotCenterPosition(trueRightPosition, trueLeftPosition, angleRad, _orientation);
 
-        _robotAngle = angleRad;
+        _robotAngle = correctAngleForOrientation(angleRad, quadColor);
+
         _robotPosition = centerPosition;
     }
 }
@@ -188,19 +201,19 @@ Vec2f RobotDetector::findRobotCenterPosition(Vec2f trueRightPosition, Vec2f true
     float angle = (float) (angleRad / M_PI * 180);
 
     //Take account of the non-square robot because of the camera
-    if ((orientation == NORTH || orientation == EAST) && angle >= 0) {
-        trueRightPosition[1] += CAMERA_OFFSET * sin(angleRad);
-        trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
-    } else if ((orientation == NORTH || orientation == WEST) && angle <= 0) {
-        trueLeftPosition[1] += CAMERA_OFFSET * sin(angleRad);
-        trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
-    } else if ((orientation == SOUTH || orientation == EAST) && angle < 0) {
-        trueRightPosition[1] -= CAMERA_OFFSET * sin(angleRad);
-        trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
-    } else {
-        trueLeftPosition[1] -= CAMERA_OFFSET * sin(angleRad);
-        trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
-    }
+//    if ((orientation == NORTH || orientation == EAST) && angle >= 0) {
+//        trueRightPosition[1] += CAMERA_OFFSET * sin(angleRad);
+//        trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
+//    } else if ((orientation == NORTH || orientation == WEST) && angle <= 0) {
+//        trueLeftPosition[1] += CAMERA_OFFSET * sin(angleRad);
+//        trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
+//    } else if ((orientation == SOUTH || orientation == EAST) && angle < 0) {
+//        trueRightPosition[1] -= CAMERA_OFFSET * sin(angleRad);
+//        trueRightPosition[0] -= CAMERA_OFFSET * cos(angleRad);
+//    } else {
+//        trueLeftPosition[1] -= CAMERA_OFFSET * sin(angleRad);
+//        trueLeftPosition[0] += CAMERA_OFFSET * cos(angleRad);
+//    }
 
     float xDistance = ROBOT_RADIUS * sin(angleRad);
     float yDistance = ROBOT_RADIUS * cos(angleRad);

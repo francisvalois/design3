@@ -9,8 +9,19 @@ namespace {
 
 class SudocubeExtractorIT: public ::testing::Test {
 protected:
-    SudocubeExtractor sudocubeExtractor;
+    static SudocubeExtractor * sudocubeExtractor;
+
+    static void SetUpTestCase() {
+        sudocubeExtractor = new SudocubeExtractor();
+    }
+
+    static void TearDownTestCase() {
+        delete sudocubeExtractor;
+    }
+
 };
+
+SudocubeExtractor * SudocubeExtractorIT::sudocubeExtractor = NULL;
 
 Sudocube getSudocube1() {
     Sudocube sudokube;
@@ -90,7 +101,9 @@ Sudocube getSudocube4() {
 
 Mat loadSudocubeNo(int no) {
     char filename[255];
-    sprintf(filename, "%s/%d.jpeg", "img/testSudocubesJpg", no);
+    //sprintf(filename, "%s/%d.jpeg", "img/testSudocubesJpg", no);
+    sprintf(filename, "%s/%d.png", "img/testSudocubes", no);
+
     Mat img = imread(filename);
     if (!img.data) {
         cout << "SudocubeExtractorIT could not load img sudocube test" << endl;
@@ -103,152 +116,107 @@ bool isSudocubeCorrectlyExtracted(int sudocubeNo, Sudocube correctSudocube, Sudo
     Mat img = loadSudocubeNo(sudocubeNo);
     Sudocube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
     bool correctlyExtracted = correctSudocube.equals(*sudokubeExtracted);
+    delete sudokubeExtracted;
 
     return correctlyExtracted;
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_1) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(1, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(1, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_2) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(2, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(2, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_3) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(3, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(3, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_4) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(4, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(4, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_5) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(5, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(5, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_6) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(6, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(6, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_7) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(7, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(7, getSudocube1(), *sudocubeExtractor));
 }
-
+TEST_F(SudocubeExtractorIT, testSudoku1_8) {
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(8, getSudocube1(), *sudocubeExtractor));
+}
 TEST_F(SudocubeExtractorIT, testSudoku1_9) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(9, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(9, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_10) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(10, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(10, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_11) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(11, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(11, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_12) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(12, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(12, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_13) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(13, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(13, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_14) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(14, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(14, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_15) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(15, getSudocube1(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(15, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_16) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(16, getSudocube2(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(16, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_17) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(17, getSudocube2(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(17, getSudocube1(), *sudocubeExtractor));
 }
-
 TEST_F(SudocubeExtractorIT, testSudoku1_18) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(18, getSudocube2(), sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(18, getSudocube1(), *sudocubeExtractor));
 }
 
-TEST_F(SudocubeExtractorIT, testSudoku1_21) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(21, getSudocube2(), sudocubeExtractor));
-}
+TEST_F(SudocubeExtractorIT, testSortSudocube) {
+    vector<Sudocube *> sudocubes;
+    vector<Sudocube *> pool;
+    vector<int> poolNumber;
+    for (int i = 1; i <= 10; i++) {
+        Mat img = loadSudocubeNo(i);
+        Sudocube * sudocube = sudocubeExtractor->extractSudocube(img);
+        sudocubes.push_back(sudocube);
+    }
 
-TEST_F(SudocubeExtractorIT, testSudoku1_22) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(22, getSudocube2(), sudocubeExtractor));
-}
+    for (int i = 0; i < sudocubes.size(); i++) {
+        bool isAlreadyIn = false;
+        for (int j = 0; j < pool.size(); j++) {
+            if (sudocubes[i]->equals(*pool[j])) {
+                isAlreadyIn = true;
+                poolNumber[j] = poolNumber[j] + 1;
+            }
+        }
 
-TEST_F(SudocubeExtractorIT, testSudoku1_24) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(24, getSudocube2(), sudocubeExtractor));
-}
+        if (isAlreadyIn == false) {
+            pool.push_back(sudocubes[i]);
+            poolNumber.push_back(1);
+        }
+    }
 
-TEST_F(SudocubeExtractorIT, testSudoku1_25) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(25, getSudocube3(), sudocubeExtractor));
-}
+    int biggest = 0;
+    for (int i = 0; i < poolNumber.size(); i++) {
+        if (poolNumber[i] > poolNumber[biggest]) {
+            biggest = i;
+        }
+    }
 
-TEST_F(SudocubeExtractorIT, testSudoku1_26) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(26, getSudocube3(), sudocubeExtractor));
-}
+    Sudocube correctSudocube = getSudocube1();
+    ASSERT_TRUE(pool[biggest]->equals(correctSudocube));
 
-TEST_F(SudocubeExtractorIT, testSudoku1_28) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(28, getSudocube3(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_29) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(29, getSudocube3(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_30) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(30, getSudocube3(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_31) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(31, getSudocube3(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_32) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(32, getSudocube3(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_33) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(33, getSudocube3(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_34) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(34, getSudocube3(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_35) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(35, getSudocube4(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_36) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(36, getSudocube4(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_37) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(37, getSudocube4(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_38) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(38, getSudocube4(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_39) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(39, getSudocube4(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_40) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(40, getSudocube4(), sudocubeExtractor));
-}
-
-TEST_F(SudocubeExtractorIT, testSudoku1_42) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(42, getSudocube4(), sudocubeExtractor));
+    pool.clear();
+    for (int i = 0; i < sudocubes.size(); i++) {
+        Sudocube * sudocube = sudocubes[i];
+        sudocubes[i] = NULL;
+        delete sudocube;
+    }
 }
 
 }
