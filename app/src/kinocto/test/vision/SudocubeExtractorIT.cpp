@@ -144,6 +144,24 @@ Sudocube getSudocube6() {
     return sudokube;
 }
 
+Sudocube getSudocube7() {
+    Sudocube sudokube;
+    sudokube.setCaseValue(1, 1, 4, 8);
+    sudokube.setCaseValue(1, 1, 3, 2);
+    sudokube.setCaseValue(1, 1, 2, 6);
+    sudokube.setCaseValue(1, 4, 1, 4);
+    sudokube.setCaseValue(3, 2, 4, 4);
+    sudokube.setCaseValue(3, 1, 1, 1);
+    sudokube.setCaseValue(3, 4, 3, 3);
+    sudokube.setCaseValue(2, 3, 2, 8);
+    sudokube.setCaseValue(2, 1, 2, 5);
+    sudokube.setCaseValue(2, 2, 3, 2);
+
+    sudokube.setRedCase(1, 3, 3);
+
+    return sudokube;
+}
+
 Mat loadSudocubeNo(int no) {
     char filename[255];
     //sprintf(filename, "%s/%d.jpeg", "img/testSudocubesJpg", no);
@@ -162,9 +180,9 @@ bool isSudocubeCorrectlyExtracted(int sudocubeNo, Sudocube correctSudocube, Sudo
     Sudocube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
     bool correctlyExtracted = correctSudocube.equals(*sudokubeExtracted);
 
-    cout << sudokubeExtracted->print() << endl;
-    int * redCase = sudokubeExtracted->getRedCase();
-    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
+    //cout << sudokubeExtracted->print() << endl;
+    //int * redCase = sudokubeExtracted->getRedCase();
+    //cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
 
     delete sudokubeExtracted;
 
@@ -172,9 +190,9 @@ bool isSudocubeCorrectlyExtracted(int sudocubeNo, Sudocube correctSudocube, Sudo
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_1) {
-    cout << getSudocube3().print() << endl;
+    /*cout << getSudocube3().print() << endl;
     int * redCase = getSudocube3().getRedCase();
-    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
+    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;*/
     ASSERT_TRUE(isSudocubeCorrectlyExtracted(1, getSudocube3(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_2) {
@@ -191,9 +209,9 @@ TEST_F(SudocubeExtractorIT, testSudoku1_5) {
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_6) {
-    cout << getSudocube4().print() << endl;
+    /*cout << getSudocube4().print() << endl;
     int * redCase = getSudocube4().getRedCase();
-    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
+    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;*/
     ASSERT_TRUE(isSudocubeCorrectlyExtracted(6, getSudocube4(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_7) {
@@ -210,9 +228,9 @@ TEST_F(SudocubeExtractorIT, testSudoku1_10) {
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_11) {
-    cout << getSudocube5().print() << endl;
+    /*cout << getSudocube5().print() << endl;
     int * redCase = getSudocube5().getRedCase();
-    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
+    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;*/
     ASSERT_TRUE(isSudocubeCorrectlyExtracted(11, getSudocube5(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_12) {
@@ -226,9 +244,9 @@ TEST_F(SudocubeExtractorIT, testSudoku1_14) {
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_15) {
-    cout << getSudocube2().print() << endl;
+    /*cout << getSudocube2().print() << endl;
     int * redCase = getSudocube2().getRedCase();
-    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
+    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;*/
     ASSERT_TRUE(isSudocubeCorrectlyExtracted(15, getSudocube2(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_16) {
@@ -245,25 +263,25 @@ TEST_F(SudocubeExtractorIT, testSudoku1_19) {
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_20) {
-    cout << getSudocube3().print() << endl;
-    int * redCase = getSudocube3().getRedCase();
-    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(20, getSudocube3(), *sudocubeExtractor));
+    /*cout << getSudocube7().print() << endl;
+    int * redCase = getSudocube7().getRedCase();
+    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;*/
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(20, getSudocube7(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_21) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(21, getSudocube3(), *sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(21, getSudocube7(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_22) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(22, getSudocube3(), *sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(22, getSudocube7(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_23) {
-    ASSERT_TRUE(isSudocubeCorrectlyExtracted(23, getSudocube3(), *sudocubeExtractor));
+    ASSERT_TRUE(isSudocubeCorrectlyExtracted(23, getSudocube7(), *sudocubeExtractor));
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_24) {
-    cout << getSudocube4().print() << endl;
+    /*cout << getSudocube4().print() << endl;
     int * redCase = getSudocube4().getRedCase();
-    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
+    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;*/
     ASSERT_TRUE(isSudocubeCorrectlyExtracted(24, getSudocube4(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_25) {
@@ -277,9 +295,9 @@ TEST_F(SudocubeExtractorIT, testSudoku1_27) {
 }
 
 TEST_F(SudocubeExtractorIT, testSudoku1_28) {
-    cout << getSudocube6().print() << endl;
+    /*cout << getSudocube6().print() << endl;
     int * redCase = getSudocube6().getRedCase();
-    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;
+    cout << "Red case:"<<  redCase[0] << "." << redCase[1] << "." << redCase[2] << endl;*/
     ASSERT_TRUE(isSudocubeCorrectlyExtracted(28, getSudocube6(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_29) {

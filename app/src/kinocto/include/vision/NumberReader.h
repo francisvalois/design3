@@ -13,7 +13,7 @@ class NumberReader {
 public:
     const static int NUMBER_WIDTH = 25;
     const static int NUMBER_HEIGHT = 30;
-    const static int TRAIN_SAMPLES = 40;
+    const static int TRAIN_SAMPLES = 45;
     const static int CLASSES = 8;
 
     NumberReader();
