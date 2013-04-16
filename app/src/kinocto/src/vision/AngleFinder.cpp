@@ -27,7 +27,7 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     cvtColor(undistorted, greenBorder, CV_RGB2HSV);
     Rect rect(50, 50, 1500, 1100);
     crop = greenBorder(rect);
-    GaussianBlur(rect, blur, sf, sigmaX);
+    GaussianBlur(crop, blur, sf, sigmaX);
 
     Mat segmentedFrame;
     inRange(blur, Scalar(30, 30, 0), Scalar(80, 255, 255), segmentedFrame);
