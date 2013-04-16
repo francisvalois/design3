@@ -16,9 +16,10 @@ Mat CameraCapture::takePicture() {
         ROS_ERROR("%s", "ERROR, COULD NOT TAKE A PICTURE");
         return picture;
     }
-    usleep(60000);
 
-    videoCapture.read(picture);
+    for (int i = 0; i < 10; i++) {
+        videoCapture.read(picture);
+    }
 
     return picture.clone();
 }
