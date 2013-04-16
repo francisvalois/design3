@@ -20,12 +20,14 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     double m[3][3] =
             { { 1.3225939376373308e+03, 0., 7.8950053275576806e+02 }, { 0., 1.3197235387739179e+03, 5.2292007793085895e+02 }, { 0., 0., 1. } };
 
-    Mat undistorted;
+    Mat undistorted, crop;
     Mat intrinsic = Mat(3, 3, CV_64F, m);
     Mat distMat = Mat(1, 5, CV_64F, d);
     undistort(greenBorder, undistorted, intrinsic, distMat);
     cvtColor(undistorted, greenBorder, CV_RGB2HSV);
-    GaussianBlur(greenBorder, blur, sf, sigmaX);
+    Rect rect(50, 50, 1500, 1100);
+    crop = greenBorder(rect);
+    GaussianBlur(rect, blur, sf, sigmaX);
 
     Mat segmentedFrame;
     inRange(blur, Scalar(30, 30, 0), Scalar(80, 255, 255), segmentedFrame);
