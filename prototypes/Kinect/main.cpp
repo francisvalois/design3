@@ -12,7 +12,7 @@
 
 using namespace cv;
 using namespace std;
-Mat world;
+Mat world, rgb;
 VideoCapture capture;
 
 struct response {
@@ -34,7 +34,7 @@ Mat captureDepthMatrix() {
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
             //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
-            file << "rougeRobot.xml";
+            file << "rouge.xml";
             string fileString = file.str();
             //cout << "Loading from file " << fileString << endl;
             
@@ -63,7 +63,7 @@ Mat captureRGBMatrix() {
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
         //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
-        file << "rougeRobot.jpg";
+        file << "rouge.jpg";
         string fileString = file.str();
         //cout << "Loading from file " << fileString << endl;
         
@@ -133,6 +133,7 @@ vector<Point> calibrate(){
     Mat depthMatrix = captureDepthMatrix();
     calibrator.calibrate(rgbMatrix, depthMatrix);
     vector<Point> squarePosition = calibrator.getSquarePositions();
+
     
     return squarePosition;
 }
@@ -184,6 +185,9 @@ void onMouse(int event, int x, int y, int flags, void *) {
         cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[2] << endl;
     }
     if (event == CV_EVENT_RBUTTONUP) {
+        Vec3f s = rgb.at<Vec3b>(x, y);
+        cout << (int)s[0] << " " << (int)s[1] << " " << (int)s[2] << endl;
+
         cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
     }
 }
@@ -245,7 +249,7 @@ int main( /*int argc, char* argv[]*/ ) {
     //}
     
     world = Utility::captureDepthMatrix(capture);
-    Mat rgb = Utility::captureRGBMatrix(capture);
+    rgb = Utility::captureRGBMatrix(capture);
     
     
     

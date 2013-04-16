@@ -12,7 +12,6 @@ const int RobotDetector::X_ROBOT_LEFT_THRESHOLD = 180;
 const int RobotDetector::X_ROBOT_RIGHT_THRESHOLD = 610;
 
 int RobotDetector::getOrientation() {
-    cout << _orientation << endl;
     return _orientation;
 }
 
@@ -47,7 +46,7 @@ float RobotDetector::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2) {
 
 float RobotDetector::correctAngleForOrientation(float angle, quadColor color) {
     double newAngle = 0;
-    if (color == BLUE) {
+    if (color == RED) {
         newAngle = -1 * CV_PI/2 - angle;
     }
     else if (color == BLACK) {
@@ -109,6 +108,12 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
 
     int generatedCount = generateQuads(rgbMatrix, validRectPosition);
 
+//    for (int i = 0; i < validRectPosition.size(); i++) {
+//        rectangle(rgbMatrix, validRectPosition[i], Scalar(0, 0, 255));
+//    }
+
+//    imshow("test", rgbMatrix);
+
     if (generatedCount >= 3) {
         vector<Point2f> validRobotPosition;
         for (int i = 0; i < validRectPosition.size(); i++) {
@@ -132,6 +137,8 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         }
         
         angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
+
+        imshow("test9", rgbMatrix);
 
         quadColor quadColor = findQuadColor(rgbMatrix, validRectPosition);
         _orientation = findOrientation(quadColor, angleRad);

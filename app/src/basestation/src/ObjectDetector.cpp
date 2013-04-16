@@ -5,6 +5,18 @@ using namespace std;
 
 const float ObjectDetector::TABLE_WIDTH = 1.10f;
 
+void applyErode(Mat & toErode, const int size, const int morphShape) {
+    Point erodePoint(size, size);
+    Mat erodeElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), erodePoint);
+    erode(toErode, toErode, erodeElem);
+}
+
+void applyDilate(Mat & toDilate, const int size, const int morphShape) {
+    Point dilatePoint(size, size);
+    Mat dilateElem = getStructuringElement(morphShape, Size(2 * size + 1, 2 * size + 1), dilatePoint);
+    dilate(toDilate, toDilate, dilateElem);
+}
+
 struct SortByXY {
     bool operator()(Rect const & L, Rect const & R) {
         if (L.x < R.x) {
@@ -95,10 +107,10 @@ int ObjectDetector::getAverageFromPointList(list<Point> obstacle) {
 }
 
 int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool applyCorrection) {
-    int minSize = 25;
+    int minSize = 15;
     int maxContourApprox = 7;
     Mat RGB = picture.clone();
-    Mat RGBGray;
+    Mat RGBG, RGBGray;
 
     vector<Point> srcContour;
 
@@ -106,89 +118,114 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
     vector<Vec4i> frameHierarchy;
 
     if(picture.channels() == 1){
-        RGBGray = picture.clone();
+        RGBG = picture.clone();
     }
     else{
-        cvtColor(picture, RGBGray, CV_RGB2GRAY);
+        cvtColor(picture, RGBG, CV_RGB2GRAY);
     }
 
-    Canny(RGBGray, RGBGray, 50, 200, 3);
-    findContours(RGBGray, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+    Canny(RGBG, RGBG, 50, 200, 3);
 
-    // get all the contours one by one
-    for (int j = 0; j < frameContours.size(); j++) {
-        srcContour = frameContours[j];
+    for(int i = 0; i <= 3; i++){
+        RGBGray = RGBG.clone();
+        applyDilate(RGBGray, i, MORPH_RECT);
+        applyErode(RGBGray, i, MORPH_RECT);
 
-        vector<Point> dstContour;
-        Rect rect = boundingRect(srcContour);
+        imshow("test2", RGBGray);
+        findContours(RGBGray, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-        // reject contours with too small perimeter
-        if (rect.width * rect.height >= minSize) {
-            for (int approxLevel = 1; approxLevel <= maxContourApprox; approxLevel++) {
-                approxPolyDP(srcContour, dstContour, 3, true);
-                if (dstContour.size() == 4)
-                    break;
 
-                // we call this again on its own output, because sometimes
-                // cvApproxPoly() does not simplify as much as it should.
-                approxPolyDP(dstContour, dstContour, 3, true);
-                if (dstContour.size() == 4)
-                    break;
-            }
 
-            // reject non-quadrangles
-            if (dstContour.size() == 4 && isContourConvex(dstContour)) {
-                Rect rect2 = boundingRect(Mat(dstContour));
+        // get all the contours one by one
+        for (int j = 0; j < frameContours.size(); j++) {
+            srcContour = frameContours[j];
 
-                double d1, d2;
-                double p = rect2.width * 2 + rect2.height * 2;
-                double area = fabs((float) rect2.area());
-                double dx, dy;
+            vector<Point> dstContour;
+            Rect rect = boundingRect(srcContour);
 
-                dx = dstContour[0].x - dstContour[2].x;
-                dy = dstContour[0].y - dstContour[2].y;
-                d1 = sqrt(dx * dx + dy * dy);
+            // reject contours with too small perimeter
+            if (rect.width * rect.height >= minSize) {
+                for (int approxLevel = 1; approxLevel <= maxContourApprox; approxLevel++) {
+                    approxPolyDP(srcContour, dstContour, 3, true);
+                    if (dstContour.size() == 4)
+                        break;
 
-                dx = dstContour[1].x - dstContour[3].x;
-                dy = dstContour[1].y - dstContour[3].y;
-                d2 = sqrt(dx * dx + dy * dy);
+                    // we call this again on its own output, because sometimes
+                    // cvApproxPoly() does not simplify as much as it should.
+                    approxPolyDP(dstContour, dstContour, 3, true);
+                    if (dstContour.size() == 4)
+                        break;
+                }
 
-                double d3, d4;
-                dx = dstContour[0].x - dstContour[1].x;
-                dy = dstContour[0].y - dstContour[1].y;
-                d3 = sqrt(dx * dx + dy * dy);
-                dx = dstContour[1].x - dstContour[2].x;
-                dy = dstContour[1].y - dstContour[2].y;
-                d4 = sqrt(dx * dx + dy * dy);
-                if ((d3 * 4 > d4 && d4 * 4 > d3 && d3 * d4 < area * 1.5 && area > minSize && d1 >= 0.15 * p && d2 >= 0.15 * p)) {
-                    if (outQuads.size() == 0) {
-                        outQuads.push_back(rect2);
-                    } else {
-                        for (int k = 0; k < outQuads.size(); k++) {
-                            Rect quad = outQuads[k];
-                            if (quad.x != rect2.x && quad.y != rect2.y && quad.width != rect2.width && quad.height != rect2.height) {
-                                outQuads.push_back(rect2);
-                                break;
+                // reject non-quadrangles
+                if (dstContour.size() == 4 && isContourConvex(dstContour)) {
+                    Rect rect2 = boundingRect(Mat(dstContour));
+
+                    double d1, d2;
+                    double p = rect2.width * 2 + rect2.height * 2;
+                    double area = fabs((float) rect2.area());
+                    double dx, dy;
+
+                    dx = dstContour[0].x - dstContour[2].x;
+                    dy = dstContour[0].y - dstContour[2].y;
+                    d1 = sqrt(dx * dx + dy * dy);
+
+                    dx = dstContour[1].x - dstContour[3].x;
+                    dy = dstContour[1].y - dstContour[3].y;
+                    d2 = sqrt(dx * dx + dy * dy);
+
+                    double d3, d4;
+                    dx = dstContour[0].x - dstContour[1].x;
+                    dy = dstContour[0].y - dstContour[1].y;
+                    d3 = sqrt(dx * dx + dy * dy);
+                    dx = dstContour[1].x - dstContour[2].x;
+                    dy = dstContour[1].y - dstContour[2].y;
+                    d4 = sqrt(dx * dx + dy * dy);
+                    if ((d3 * 4 > d4 && d4 * 4 > d3 && d3 * d4 < area * 1.5 && area > minSize && d1 >= 0.15 * p && d2 >= 0.15 * p)) {
+                        if (outQuads.size() == 0) {
+                            outQuads.push_back(rect2);
+                        } else {
+                            for (int k = 0; k < outQuads.size(); k++) {
+                                Rect quad = outQuads[k];
+                                if (quad.x != rect2.x && quad.y != rect2.y && quad.width != rect2.width && quad.height != rect2.height) {
+
+                                    outQuads.push_back(rect2);
+                                    break;
+                                }
                             }
                         }
                     }
                 }
             }
         }
+
+        Mat test2 = RGB.clone();
+
+        for (int j = 0; j < outQuads.size(); j++) {
+            rectangle(RGB, outQuads[j], Scalar(0, 0, 255));
+        }
+        imshow("debug", RGB);
+
+        cout << outQuads.size() << endl;
+
+        if(applyCorrection){
+            removeDoubleSquare(outQuads);
+
+            removeQuadsNotOnChessboard(outQuads);
+
+            sortQuadsByPosition(outQuads);
+        }
+        else if(i >= 1){
+            cout << "test" << endl;
+            return outQuads.size();
+
+        }
+
+        if(outQuads.size() >= 3){
+            return outQuads.size();
+        }
+
     }
-
-    if(applyCorrection){
-        removeDoubleSquare(outQuads);
-
-        removeQuadsNotOnChessboard(outQuads);
-
-        sortQuadsByPosition(outQuads);
-    }
-
-    for (int i = 0; i < outQuads.size(); i++) {
-        rectangle(RGB, outQuads[i], Scalar(0, 0, 255));
-    }
-    //imshow("debug", RGB);
 
     return outQuads.size();
 }
@@ -232,9 +269,11 @@ bool ObjectDetector::containsRedSquares(Mat picture, Rect bigSquare) {
 
     Mat segmentedRedSquare;
     Mat segmentedRedSquare2;
-    inRange(HSVCroppedMat, Scalar(0, 220, 0), Scalar(25, 255, 200), segmentedRedSquare); // Pas le choix, en deux partie...
-    inRange(HSVCroppedMat, Scalar(130, 220, 0), Scalar(255, 255, 200), segmentedRedSquare2);
-    segmentedRedSquare += segmentedRedSquare2;
+    inRange(HSVCroppedMat, Scalar(9, 100, 100), Scalar(16, 255, 230), segmentedRedSquare); // Pas le choix, en deux partie...
+    //inRange(HSVCroppedMat, Scalar(130, 100, 50), Scalar(180, 255, 230), segmentedRedSquare2);
+    //segmentedRedSquare += segmentedRedSquare2;
+
+    imshow("segmented", segmentedRedSquare);
 
     vector<Rect> redSquares;
     bool applyCorrection = false;

@@ -95,7 +95,6 @@ Vec2f ObstaclesDetector::getAveragePositionForObstacle(Mat depthMatrix, list<Poi
     //Vec3f positionObstacleWithRadius = addObstacleRadiusToDistance(positionObstacle3);
 
     Vec2f truePositionObstacle = KinectTransformator::getTrueCoordFromKinectCoord(positionObstacle3);
-    cout << truePositionObstacle << endl;
     return truePositionObstacle;
 }
 

@@ -83,8 +83,6 @@ float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX,
     Mat lookupTableTransposed = lookupTable.t();
     vector<float> xRow = lookupTableTransposed.row(0);
 
-    cout << xRow[0] << " " << xRow[1] << endl;
-
     //Find X and Y Position of each points near the expected values
     std::vector<float>::iterator lowBoundY, lowBoundX;
     lowBoundY = std::lower_bound (yRow.begin(), yRow.end(), expectedValueY);
