@@ -22,7 +22,7 @@ public:
     std::vector<Position> requestObstaclesPosition();
 
     //Messsages
-    void sendSolvedSudocube(Sudocube sudocube);
+    void sendSolvedSudocube(Sudocube * sudocube);
     void sendLoopEndedMessage();
     void sendTrajectory(std::vector<Position> positions);
     void sendUpdateRobotPositionMessage(Position position);

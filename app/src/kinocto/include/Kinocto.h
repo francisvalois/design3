@@ -91,7 +91,7 @@ private:
     void getOutOfDrawingZone();
     std::vector<Sudocube *> extractSudocubes();
     void deleteSudocubes(std::vector<Sudocube *> & sudocubes);
-    Sudocube solveSudocube(std::vector<Sudocube *> & sudocubes);
+    Sudocube * solveSudocube(std::vector<Sudocube *> & sudocubes);
     int findAGoodSudocube(std::vector<Sudocube *> & sudocubes);
     void goToDrawingZone();
     void drawNumber();

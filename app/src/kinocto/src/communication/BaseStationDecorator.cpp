@@ -48,13 +48,14 @@ vector<Position> BaseStationDecorator::requestObstaclesPosition() {
     return obsPos;
 }
 
-void BaseStationDecorator::sendSolvedSudocube(Sudocube sudocube) {
+void BaseStationDecorator::sendSolvedSudocube(Sudocube * sudocube) {
     ROS_INFO("Sending Solved Sudocube to the basestation");
 
     ShowSolvedSudocube srv;
-    srv.request.solvedSudocube = sudocube.print();
-    srv.request.redCaseValue = sudocube.getRedCaseValue();
-    srv.request.redCasePosition = transformPositionToInt(sudocube.getRedCase());
+    srv.request.solvedSudocube = sudocube->print();
+    srv.request.redCaseValue = sudocube->getRedCaseValue();
+    srv.request.redCasePosition = transformPositionToInt(sudocube->getRedCase());
+    cout << "test1" << endl;
 
     if (showSolvedSudocubeClient.call(srv) == false) {
         ROS_ERROR("Failed to call service basestation/showSolvedSudocube");
