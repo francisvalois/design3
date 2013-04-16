@@ -44,10 +44,10 @@ Workspace::Workspace() {
 
     antennaReadPos.set(43.0f, 56.0f);
 
-    poleAngle[0] = 90.0f;
-    poleAngle[1] = -90.0f;
-    poleAngle[2] = -180.0f;
-    poleAngle[3] = 0.0f;
+    poleAngle[0] = -90.0f; //NORTH
+    poleAngle[1] = 90.0f; //SOUTH
+    poleAngle[2] = 0.0f; //EAST
+    poleAngle[3] = -180.0f; //WEST
 
     kinectDeadAngle.set(22.0f, 89.0f);
 

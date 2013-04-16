@@ -430,18 +430,6 @@ void Kinocto::goToDrawingZone() {
 //Translation pour placer le robot dans le centre
     microcontroller->move(-13.0f);
     robotPos = workspace.getRobotPos();
-
-    int orientation = antennaParam.getOrientation();
-    if (orientation == Workspace::NORTH) {
-        robotPos.translateY(13.0f);
-    } else if (orientation == Workspace::SOUTH) {
-        robotPos.translateY(-13.0f);
-    } else if (orientation == Workspace::EAST) {
-        robotPos.translateX(13.0f);
-    } else if (orientation == Workspace::WEST) {
-        robotPos.translateX(-13.0f);
-    }
-    workspace.setRobotPos(robotPos);
 }
 
 void Kinocto::drawNumber() {
