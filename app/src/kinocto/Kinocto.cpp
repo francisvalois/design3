@@ -117,8 +117,11 @@ void Kinocto::getOutOfDrawingZone() {
 
 void Kinocto::goToAntenna() {
     ROS_INFO("GOING TO ANTENNA");
-    vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getAntennaReadPos());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), 0.0f);
+
+    Position translation;
+    translation.x = workspace.getRobotPos().y - workspace.getAntennaReadPos().y;
+    translation.y = workspace.getAntennaReadPos().x - workspace.getRobotPos().x;
+    microcontroller->translate(translation);
 
     executeMoves(moves);
 }
