@@ -53,7 +53,7 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     HoughLines(edges, lines, 1, CV_PI / 150, 150, 0, 0);
 
     if (lines.size() != 0) {
-        return findAngle(lines, greenBorder.size()) * -1; // ATTENTION CETTE VALEURE EST IMPORTANTE
+        return findAngle(lines, greenBorder.size()) ; // ATTENTION CETTE VALEURE EST IMPORTANTE
     } else {
         return 0;
     }
