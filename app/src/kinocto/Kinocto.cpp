@@ -169,7 +169,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
     Mat greenBorder = cameraCapture->takePicture();
     AngleFinder angleFinder;
     double angle = angleFinder.findGreenBorderAngle(greenBorder);
-    microcontroller->rotate(angle * 2.09); //MAGICK MAGICAL CONSTANT
+    microcontroller->rotate(angle * 1.5); //MAGICK MAGICAL CONSTANT
 
     cameraCapture->closeCapture();
     microcontroller->rotateCam(0, 2);
