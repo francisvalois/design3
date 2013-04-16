@@ -19,8 +19,8 @@ namespace {
         //Arrange
         testMatrix = Utility::readFromFile("table2/matrice1.xml");
         rgbMatrix = imread("table2/rgb1.jpg");
-        float valueZ = 0.28f;
-        float valueX = 0.97f;
+        float valueZ = 0.38f;
+        float valueX = 0.93f;
         float angleValue = 0;
 
         //Act
@@ -41,8 +41,8 @@ namespace {
         //Arrange
          testMatrix = Utility::readFromFile("table2/matrice3.xml");
          rgbMatrix = imread("table2/rgb3.jpg");
-        float valueZ = 0.55f;
-        float valueX = 0.555f;
+        float valueZ = 0.63f;
+        float valueX = 0.53f;
         float angleValue = 1.57f;
 
         //Act
@@ -63,8 +63,8 @@ namespace {
         //Arrange
         testMatrix = Utility::readFromFile("table1/matrice1.xml");
         rgbMatrix = imread("table1/rgb1.jpg");
-        float valueZ = 0.20f;
-        float valueX = 0.97f;
+        float valueZ = 0.30f;
+        float valueX = 0.94f;
         float angleValue = 0;
 
         //Act
@@ -73,7 +73,6 @@ namespace {
         float positionX = obstacle1[0];
         float positionZ = obstacle1[1];
         float robotAngle = kinect.getRobotAngle();
-
 
         //Assert
         ASSERT_TRUE(positionX >= valueX - 0.03 && positionX <= valueX + 0.03);
@@ -86,8 +85,8 @@ namespace {
         //Arrange
         testMatrix = Utility::readFromFile("table1/matrice4.xml");
         rgbMatrix = imread("table1/rgb4.jpg");
-        float valueZ = 0.53f;
-        float valueX = 0.57f;
+        float valueZ = 0.63f;
+        float valueX = 0.53f;
         float angleValue = 1.55f;
 
         //Act
@@ -96,7 +95,6 @@ namespace {
         float positionX = obstacle1[0];
         float positionZ = obstacle1[1];
         float robotAngle = kinect.getRobotAngle();
-
 
         //Assert
         ASSERT_TRUE(positionX >= valueX - 0.03 && positionX <= valueX + 0.03);

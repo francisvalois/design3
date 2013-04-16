@@ -11,6 +11,7 @@ const cv::Point KinectCalibrator::LINE_2_2 = Point(200, 287);
 const cv::Point KinectCalibrator::LINE_2_1 = Point(350, 273);
 
 KinectCalibrator::KinectCalibrator() {
+    _pointVector = std::vector<Point>();
     tableNumber = 0;
 }
 

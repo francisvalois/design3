@@ -190,7 +190,7 @@ void MainWindow::on_calibrateKinectManualButton_clicked() {
     ui->consoleText->append("Calibration Manuelle de la Kinect");
     KinectCalibrator kinectCalibrator;
 
-    kinectCalibrator.calibratev2();
+    kinectCalibrator.manualCalibration();
 }
 
 void MainWindow::on_saveParametersbtn_clicked() {
