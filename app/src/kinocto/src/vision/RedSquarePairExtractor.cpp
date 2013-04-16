@@ -22,10 +22,6 @@ SquarePair RedSquarePairExtractor::getRedSquarePair(const Mat& srcHSV, const Mat
     VisionUtility::applyErode(segmentedRedSquare, 4, MORPH_CROSS);
     VisionUtility::applyDilate(segmentedRedSquare, 8, MORPH_RECT);
 
-    imshow("red square", segmentedRedSquare);
-    waitKey(0);
-
-
     vector<vector<Point> > squareContour;
     vector<Vec4i> squareHierarchy;
     findContours(segmentedRedSquare, squareContour, squareHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
