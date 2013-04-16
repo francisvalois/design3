@@ -333,8 +333,7 @@ void Kinocto::extractAndSolveSudocube() {
         ROS_ERROR("DID NOT FIND ENOUGTH SUDOCUBES TO CHOOSE");
     } else {
         String solvedSudocube;
-        solveSudocube(sudocubes, solvedSudocube, numberToDraw);
-        baseStation->sendSolvedSudocube(solvedSudocube, numberToDraw);
+        baseStation->sendSolvedSudocube(solveSudocube(sudocubes));
     }
 
     deleteSudocubes(sudocubes);
@@ -366,8 +365,9 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
     return sudokubes;
 }
 
-void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudocube, int & redCaseValue) {
+Sudocube Kinocto::solveSudocube(vector<Sudocube *> & sudocubes) {
     ROS_INFO("SOLVING SUDOCUBE");
+
 
     int goodSudocubeNo = findAGoodSudocube(sudocubes);
     Sudocube * goodSudocube = sudocubes[goodSudocubeNo];
@@ -375,11 +375,12 @@ void Kinocto::solveSudocube(vector<Sudocube *> & sudocubes, string & solvedSudoc
     sudokubeSolver.solve(*goodSudocube);
     if (goodSudocube->isSolved()) {
         ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
-        redCaseValue = goodSudocube->getRedCaseValue();
-        solvedSudocube = goodSudocube->print();
+        return *goodSudocube;
     } else {
         ROS_ERROR("%s", "Could not solve the Sudocube");
     }
+    Sudocube sudocube;
+    return sudocube;
 }
 
 void Kinocto::deleteSudocubes(vector<Sudocube *> & sudocubes) {

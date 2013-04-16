@@ -49,3 +49,4 @@ Debug
 *.pyc
 .settings
 .pydevproject
+*.txt.user

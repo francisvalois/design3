@@ -3,6 +3,7 @@
 
 #include "ros/ros.h"
 #include "pathPlanning/Position.h"
+#include "sudocube/Sudocube.h"
 
 #include "basestation/FindRobotPositionAndAngle.h"
 #include "basestation/GetObstaclesPosition.h"
@@ -21,7 +22,7 @@ public:
     std::vector<Position> requestObstaclesPosition();
 
     //Messsages
-    void sendSolvedSudocube(std::string sudocube, int redCaseValue);
+    void sendSolvedSudocube(Sudocube sudocube);
     void sendLoopEndedMessage();
     void sendTrajectory(std::vector<Position> positions);
     void sendUpdateRobotPositionMessage(Position position);
@@ -35,6 +36,8 @@ private:
     ros::ServiceClient loopEndedClient;
     ros::ServiceClient traceRealTrajectoryClient;
     ros::ServiceClient updateRobotPositionClient;
+
+    int transformPositionToInt(int*);
 };
 
 #endif

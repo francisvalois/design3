@@ -31,7 +31,8 @@ private slots:
     void on_StartSequenceButton_clicked();
     void on_calibrateKinectButton_clicked();
     void on_calibrateKinectManualButton_clicked();
-    void showSolvedSudocubeSlot(QString, int);
+    void on_saveParametersbtn_clicked();
+    void showSolvedSudocubeSlot(QString, int, int);
     void showMessage(QString);
     void updateTableImage(QImage);
     void timerSlot();
@@ -41,6 +42,7 @@ private:
     Ui::MainWindow *ui;
     BaseStation baseStation;
     QTimer *updateROSTimer;
+    int loopNumber;
 
     Position obstacle1;
     Position obstacle2;
@@ -50,6 +52,9 @@ private:
 
     QTimer *applicationTimer;
     QTime *timeValue;
+    QTime *timeOfLoop;
+    void initSudocubeImage();
+    void showSolvedSudocubeInImage(QString);
 };
 
 #endif // MAINWINDOW_H
