@@ -15,9 +15,6 @@ SudocubeExtractor::~SudocubeExtractor() {
 }
 
 Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
-    Size newSize(1027, 768);
-    cv::resize(src, src, newSize);
-
     Sudocube * sudokube = new Sudocube();
     sudocubeNo++;
 
@@ -34,7 +31,12 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
         return sudokube;
     }
 
+    double factor;
     Mat frameCroppedGray = srcGray(frameRect);
+    factor = (double) 500 / (double) frameCroppedGray.cols;
+
+    Size newSize(round(frameCroppedGray.cols * factor), round(frameCroppedGray.rows * factor));
+    cv::resize(frameCroppedGray, frameCroppedGray, newSize);
 
     SquaresExtractor squaresExtractor;
     vector<SquarePair> squaresPair;
@@ -82,8 +84,8 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
                 (*itNum) = numberFound;
                 if (number.size().width > 0 && number.size().height > 0) {
                     int y = distance(orderedSquaresPair[i].begin(), itPair);
-                    //sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
-                    //VisionUtility::saveImage(number, filename);
+                    sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
+                    VisionUtility::saveImage(number, filename);
                 }
             }
         }
@@ -98,7 +100,7 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
 
 void SudocubeExtractor::cleanGraySrc(Mat& src, Mat& srcGray) {
     cvtColor(src, srcGray, CV_BGR2GRAY);
-    GaussianBlur(srcGray, srcGray, Size(7, 7), 1, 1);
+    GaussianBlur(srcGray, srcGray, Size(3, 3), 1, 1);
 
     Mat laplacianImg;
     Laplacian(srcGray, laplacianImg, CV_8UC1, 3);

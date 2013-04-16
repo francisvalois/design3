@@ -42,6 +42,7 @@ vector<Rect> GreenFrameExtractor::extractFrameRects(vector<vector<Point> > & fra
         approxPolyDP(Mat(frameContours[i]), frameContoursPoly[i], 3, true);
         Rect rect = boundingRect(Mat(frameContoursPoly[i]));
 
+        //cout << "frame size" << rect.area() << endl;
         if (rect.area() > FRAME_AREA_MIN) {
             frameBoundingRect.push_back(rect);
         }

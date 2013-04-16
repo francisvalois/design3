@@ -121,7 +121,7 @@ bool isSudocubeCorrectlyExtracted(int sudocubeNo, Sudocube correctSudocube, Sudo
     return correctlyExtracted;
 }
 
-TEST_F(SudocubeExtractorIT, testSudoku1_1) {
+/*TEST_F(SudocubeExtractorIT, testSudoku1_1) {
     ASSERT_TRUE(isSudocubeCorrectlyExtracted(1, getSudocube1(), *sudocubeExtractor));
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_2) {
@@ -174,16 +174,17 @@ TEST_F(SudocubeExtractorIT, testSudoku1_17) {
 }
 TEST_F(SudocubeExtractorIT, testSudoku1_18) {
     ASSERT_TRUE(isSudocubeCorrectlyExtracted(18, getSudocube1(), *sudocubeExtractor));
-}
+}*/
 
 TEST_F(SudocubeExtractorIT, testSortSudocube) {
     vector<Sudocube *> sudocubes;
     vector<Sudocube *> pool;
     vector<int> poolNumber;
-    for (int i = 1; i <= 10; i++) {
+    for (int i = 10; i <= 27; i++) {
         Mat img = loadSudocubeNo(i);
         Sudocube * sudocube = sudocubeExtractor->extractSudocube(img);
         sudocubes.push_back(sudocube);
+        cout << sudocube->print();
     }
 
     for (int i = 0; i < sudocubes.size(); i++) {
@@ -207,6 +208,9 @@ TEST_F(SudocubeExtractorIT, testSortSudocube) {
             biggest = i;
         }
     }
+
+
+    cout << "Ze best sudocube"<< endl << pool[biggest]->print();
 
     Sudocube correctSudocube = getSudocube1();
     ASSERT_TRUE(pool[biggest]->equals(correctSudocube));

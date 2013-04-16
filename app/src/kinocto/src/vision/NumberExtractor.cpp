@@ -44,10 +44,10 @@ vector<Rect> NumberExtractor::getNumberRect(vector<vector<Point> > contours) {
         approxPolyDP(Mat(contours[i]), poly[i], 10, true);
         Rect rect = boundingRect(Mat(poly[i]));
         //cout << rect.area() << endl;
+
         if (rect.area() > NUMBER_AREA_MIN && rect.area() < NUMBER_AREA_MAX) {
             rects.push_back(rect);
         }
     }
-
     return rects;
 }
