@@ -21,7 +21,7 @@ public:
 private:
     const static char OUTPUT_PATH[];
 
-    const static int FRAME_AREA_MIN = 115000;
+    const static int FRAME_AREA_MIN = 200000;
     const static int FRAME_ERODE_SIZE = 1;
     const static int FRAME_DILATE_SIZE = 6;
 
