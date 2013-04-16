@@ -48,6 +48,7 @@ bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & 
 void SquaresExtractor::removeInvalidSquaresPair(vector<SquarePair>& squaresPair) {
     vector<SquarePair> validSquaresPair;
     for (uint i = 0; i < squaresPair.size(); i++) {
+        //cout << squaresPair[i].rect.area() << endl;
         if (squaresPair[i].rect.area() > SQUARE_AREA_MIN && squaresPair[i].rect.area() < SQUARE_AREA_MAX) {
             SquarePair squarePair(squaresPair[i].rect, squaresPair[i].poly);
             validSquaresPair.push_back(squarePair);
