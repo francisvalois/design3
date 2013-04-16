@@ -122,7 +122,7 @@ void Kinocto::goToAntenna() {
     translation.y = workspace.getAntennaReadPos().x - workspace.getRobotPos().x;
     microcontroller->translate(translation);
 
-    executeMoves(moves);
+//    executeMoves(moves);
 }
 
 void Kinocto::executeMoves(vector<Move> & moves) {
