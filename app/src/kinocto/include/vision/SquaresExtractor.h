@@ -17,12 +17,13 @@ class SquaresExtractor {
 public:
     const static int SQUARE_THRESHOLD_MIN = 120;
     const static int SQUARE_THRESHOLD_MAX = 180;
-    const static int SQUARE_AREA_MIN = 4000;
-    const static int SQUARE_AREA_MAX = 12000;
+    const static int SQUARE_AREA_MIN = 3000;
+    const static int SQUARE_AREA_MAX = 20000;
 
     SquaresExtractor();
     virtual ~SquaresExtractor();
-    bool findSquaresPair(const cv::Mat& srcGray, std::vector<SquarePair>& squaresPair, cv::Mat& srcThresholded, int sudocubeNo);
+    bool findSquaresPair(const cv::Mat& srcGray, std::vector<SquarePair>& squaresPair, cv::Mat& srcThresholded, cv::Mat & sudocubeMask,
+            int sudocubeNo);
 
 private:
     const static char OUTPUT_PATH[];

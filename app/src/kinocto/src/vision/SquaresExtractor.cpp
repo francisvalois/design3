@@ -13,14 +13,16 @@ SquaresExtractor::SquaresExtractor() {
 SquaresExtractor::~SquaresExtractor() {
 }
 
-bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat& srcThresholded, int sudocubeNo) {
+bool SquaresExtractor::findSquaresPair(const Mat& srcGray, vector<SquarePair> & squaresPair, Mat & srcThresholded, Mat & sudocubeMask,
+        int sudocubeNo) {
     bool isExtracted = false;
 
     for (int threshValue = SQUARE_THRESHOLD_MIN; threshValue <= SQUARE_THRESHOLD_MAX && isExtracted == false; threshValue++) {
         threshold(srcGray, srcThresholded, threshValue, 500, THRESH_BINARY);
-        VisionUtility::applyErode(srcThresholded, 1, MORPH_ELLIPSE);
+        VisionUtility::applyErode(srcThresholded, 2, MORPH_ELLIPSE);
+        srcThresholded += sudocubeMask;
 
-        sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
+        //sprintf(filename, "%s/sudocubeThresh/%d.png", OUTPUT_PATH, sudocubeNo);
         //VisionUtility::saveImage(srcThresholded, filename);
 
         vector<vector<Point> > squaresContours;

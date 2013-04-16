@@ -31,17 +31,56 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
         return sudokube;
     }
 
-    double factor;
+    //Réduction de la taille de l'image
     Mat frameCroppedGray = srcGray(frameRect);
-    factor = (double) 500 / (double) frameCroppedGray.cols;
 
-    Size newSize(round(frameCroppedGray.cols * factor), round(frameCroppedGray.rows * factor));
-    cv::resize(frameCroppedGray, frameCroppedGray, newSize);
+    double ratio = (double) frameCroppedGray.cols / frameCroppedGray.rows;
+    double factorX = 500;
+    double factorY = (double) 500 / ratio;
+
+    Size newSize(round(factorX), round(factorY));
+    cv::resize(frameCroppedGray, frameCroppedGray, Size(round(factorX), round(factorY)));
+
+///////////////////////////
+    Mat croppedHSV = srcHSV(frameRect);
+    Size newSizeHSV(round(factorX), round(factorY));
+    cv::resize(croppedHSV, croppedHSV, newSize);
+
+    Mat segmentedBlueLine;
+
+    inRange(croppedHSV, Scalar(80, 0, 0), Scalar(150, 255, 255), segmentedBlueLine);
+    VisionUtility::applyErode(segmentedBlueLine, 1, MORPH_RECT);
+    VisionUtility::applyDilate(segmentedBlueLine, 5, MORPH_RECT);
+
+    vector<vector<Point> > sudocubeContours;
+    vector<Vec4i> sudocubeHierarchy;
+    Mat thresContour;
+    segmentedBlueLine.copyTo(thresContour);
+    findContours(thresContour, sudocubeContours, sudocubeHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+    vector<Rect> sudocubeBoundingRect(0);
+    vector<vector<Point> > sudocubeContoursPoly(sudocubeContours.size());
+
+    int polyy = 0;
+    for (uint i = 0; i < sudocubeContours.size(); i++) {
+        approxPolyDP(Mat(sudocubeContours[i]), sudocubeContoursPoly[i], 3, true);
+        Rect rect = boundingRect(Mat(sudocubeContoursPoly[i]));
+
+        if (rect.area() > 200000) {
+            polyy = i;
+            sudocubeBoundingRect.push_back(rect);
+        }
+    }
+
+    Mat sudocubeMask = Mat::zeros(croppedHSV.size(), CV_8UC1);
+    fillConvexPoly(sudocubeMask, sudocubeContoursPoly[polyy], white);
+    sudocubeMask = 255 - sudocubeMask;
+/////////////////////
 
     SquaresExtractor squaresExtractor;
     vector<SquarePair> squaresPair;
     Mat frameCroppedThresholded;
-    bool squaresAreExtracted = squaresExtractor.findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded, sudocubeNo);
+    bool squaresAreExtracted = squaresExtractor.findSquaresPair(frameCroppedGray, squaresPair, frameCroppedThresholded, sudocubeMask, sudocubeNo);
     if (squaresAreExtracted == false) {
         cout << "Could not extract all the square for sudocube" << endl; //TODO gestion d'exception
         return sudokube;
@@ -73,7 +112,7 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
             frameCroppedThresholded.copyTo(squareMasked, squareMask);
 
             Mat squareInversedMask = 255 - squareMask;
-            VisionUtility::applyDilate(squareInversedMask, 8, MORPH_RECT);
+            VisionUtility::applyDilate(squareInversedMask, 2, MORPH_RECT);
 
             NumberExtractor numberExtractor;
             Mat number;
@@ -84,16 +123,14 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
                 (*itNum) = numberFound;
                 if (number.size().width > 0 && number.size().height > 0) {
                     int y = distance(orderedSquaresPair[i].begin(), itPair);
-                    sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
-                    VisionUtility::saveImage(number, filename);
+                    //sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
+                    //VisionUtility::saveImage(number, filename);
                 }
             }
         }
     }
 
     insertAllNumber(*sudokube, orderedNumber);
-
-    //cout << sudokube->print() << endl;
 
     return sudokube;
 }

@@ -13,19 +13,17 @@ NumberExtractor::~NumberExtractor() {
 
 bool NumberExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask) {
     Mat thresholdedSquare;
-    adaptiveThreshold(inImage, thresholdedSquare, 255, 1, 1, 11, 2);
+    thresholdedSquare = 255 - inImage.clone();
     thresholdedSquare.setTo(black, squareMask);
-    VisionUtility::applyDilate(thresholdedSquare, NUMBER_DILATE_SIZE, MORPH_RECT);
+
+    //VisionUtility::applyDilate(thresholdedSquare, 1, MORPH_RECT);
+    //VisionUtility::applyErode(thresholdedSquare, 2, MORPH_ELLIPSE);
 
     Mat contourImage = thresholdedSquare.clone();
     vector<vector<Point> > contours;
     findContours(contourImage, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
     vector<Rect> rects = getNumberRect(contours);
-
-    //namedWindow("test", CV_WINDOW_FREERATIO);
-    //imshow("test", inImage);
-    //waitKey(0);
 
     Mat ROI = Mat::zeros(Size(NumberReader::NUMBER_WIDTH, NumberReader::NUMBER_HEIGHT), CV_8UC3);
     if (rects.empty() == false) {
