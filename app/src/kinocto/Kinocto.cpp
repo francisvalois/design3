@@ -86,11 +86,11 @@ void Kinocto::getRobotPosition(float & angle, Position & robotPos) {
 }
 
 void Kinocto::getCriticalRobotPosition(float & angle, Position & robotPos) {
-	baseStation->requestRobotPositionAndAngle(robotPos, angle);
-	if(robotPos.x == 0 && robotPos.y == 0) {
-		microcontroller->rotate(90.0f);
-		baseStation->requestRobotPositionAndAngle(robotPos, angle);
-	}
+    baseStation->requestRobotPositionAndAngle(robotPos, angle);
+    if (robotPos.x == 0 && robotPos.y == 0) {
+        microcontroller->rotate(90.0f);
+        baseStation->requestRobotPositionAndAngle(robotPos, angle);
+    }
 }
 
 void Kinocto::getObstaclesPosition() {
@@ -105,10 +105,13 @@ void Kinocto::getOutOfDrawingZone() {
     float angle = -1 * workspace.getRobotAngle();
     microcontroller->rotate(angle);
 
-    Position translation;
-    translation.x = workspace.getRobotPos().y - workspace.getKinectDeadAngle().y;
-    translation.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
-    microcontroller->translate(translation);
+    Position translationX;
+    translationX.x = workspace.getRobotPos().y - workspace.getKinectDeadAngle().y;
+    microcontroller->translate(translationX);
+
+    Position translationY;
+    translationY.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
+    microcontroller->translate(translationY);
 
     workspace.setRobotAngle(0.0f);
     workspace.setRobotPos(workspace.getKinectDeadAngle());
@@ -117,12 +120,19 @@ void Kinocto::getOutOfDrawingZone() {
 void Kinocto::goToAntenna() {
     ROS_INFO("GOING TO ANTENNA");
 
-    Position translation;
-    translation.x = workspace.getRobotPos().y - workspace.getAntennaReadPos().y;
-    translation.y = workspace.getAntennaReadPos().x - workspace.getRobotPos().x;
-    microcontroller->translate(translation);
+    float angle = -1 * workspace.getRobotAngle();
+    microcontroller->rotate(angle);
 
-//    executeMoves(moves);
+    Position translationX;
+    translationX.x = workspace.getRobotPos().y - workspace.getAntennaReadPos().y;
+    microcontroller->translate(translationX);
+
+    Position translationY;
+    translationY.y = workspace.getAntennaReadPos().x - workspace.getRobotPos().x;
+    microcontroller->translate(translationY);
+
+    workspace.setRobotAngle(angle);
+    workspace.setRobotPos(workspace.getAntennaReadPos());
 }
 
 void Kinocto::executeMoves(vector<Move> & moves) {
@@ -196,25 +206,25 @@ void Kinocto::goToSudocubeX() {
     executeMoves(moves);
 
     if (isCaseSudocube3WithTranslation) {
-        Position translation1;
-        translation1.x = finalPosition.y - workspace.getSudocubePos(3).y;
-        translationStack.push(translation1);
-        microcontroller->translate(translation1);
+        Position translationX;
+        translationX.x = finalPosition.y - workspace.getSudocubePos(3).y;
+        translationStack.push(translationX);
+        microcontroller->translate(translationX);
 
-        Position translation2;
-        translation2.y = workspace.getSudocubePos(3).x - finalPosition.x;
-        translationStack.push(translation2);
-        microcontroller->translate(translation2);
+        Position translationY;
+        translationY.y = workspace.getSudocubePos(3).x - finalPosition.x;
+        translationStack.push(translationY);
+        microcontroller->translate(translationY);
     } else if (isCaseSudocube6WithTranslation) {
-        Position translation1;
-        translation1.x = finalPosition.y - workspace.getSudocubePos(6).y;
-        translationStack.push(translation1);
-        microcontroller->translate(translation1);
+        Position translationX;
+        translationX.x = finalPosition.y - workspace.getSudocubePos(6).y;
+        translationStack.push(translationX);
+        microcontroller->translate(translationX);
 
-        Position translation2;
-        translation2.y = workspace.getSudocubePos(6).x - finalPosition.x;
-        translationStack.push(translation2);
-        microcontroller->translate(translation2);
+        Position translationY;
+        translationY.y = workspace.getSudocubePos(6).x - finalPosition.x;
+        translationStack.push(translationY);
+        microcontroller->translate(translationY);
     }
 }
 
@@ -366,7 +376,6 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
 
 Sudocube * Kinocto::solveSudocube(vector<Sudocube *> & sudocubes) {
     ROS_INFO("SOLVING SUDOCUBE");
-
 
     int goodSudocubeNo = findAGoodSudocube(sudocubes);
     Sudocube * goodSudocube = sudocubes[goodSudocubeNo];
