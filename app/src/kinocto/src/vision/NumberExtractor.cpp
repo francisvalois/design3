@@ -16,8 +16,9 @@ bool NumberExtractor::extractNumber(Mat &inImage, Mat &outImage, Mat &squareMask
     thresholdedSquare = 255 - inImage.clone();
     thresholdedSquare.setTo(black, squareMask);
 
+    //SEMBLE PAS UTILE
     //VisionUtility::applyDilate(thresholdedSquare, 1, MORPH_RECT);
-    //VisionUtility::applyErode(thresholdedSquare, 2, MORPH_ELLIPSE);
+    //VisionUtility::applyErode(thresholdedSquare, 1, MORPH_ELLIPSE);
 
     Mat contourImage = thresholdedSquare.clone();
     vector<vector<Point> > contours;

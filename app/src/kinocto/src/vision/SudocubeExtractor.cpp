@@ -123,8 +123,8 @@ Sudocube * SudocubeExtractor::extractSudocube(Mat & src) {
                 (*itNum) = numberFound;
                 if (number.size().width > 0 && number.size().height > 0) {
                     int y = distance(orderedSquaresPair[i].begin(), itPair);
-                    //sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
-                    //VisionUtility::saveImage(number, filename);
+                    sprintf(filename, "%s/number/%d_%d_%d.png", OUTPUT_PATH, sudocubeNo, i + 1, y);
+                    VisionUtility::saveImage(number, filename);
                 }
             }
         }
