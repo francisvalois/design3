@@ -53,6 +53,30 @@ Vec2f ObjectDetector::getAverageDistanceForPointLine(list<Vec2f> allDistances) {
     return Vec2f(averageXPosition, averageZPosition);
 }
 
+Rect ObjectDetector::getQuadEnglobingOthers(vector<Rect> quads) {
+    int minX = 0, minY = 0, maxX = 0, maxY = 0;
+
+    if(quads.size() > 0){
+        minX = quads[0].x;
+        minY = quads[0].y;
+        maxX = quads[0].x + quads[0].width;
+        maxY = quads[0].y + quads[0].height;
+
+        for(int i = 1; i < quads.size(); i++){
+            if(quads[i].x < minX)
+                minX = quads[i].x;
+            if(quads[i].y < minY)
+                minY = quads[i].y;
+            if(quads[i].x + quads[i].width > maxX)
+                maxX = quads[i].x + quads[i].width;
+            if(quads[i].y + quads[i].height > maxY)
+                maxY = quads[i].y + quads[i].height;
+        }
+    }
+
+    return Rect(Point(minX, minY), Point(maxX, maxY));
+}
+
 int ObjectDetector::getAverageFromPointList(list<Point> obstacle) {
     int averagePointObstacle = 0;
     int obstacleSize = obstacle.size();
@@ -70,7 +94,7 @@ int ObjectDetector::getAverageFromPointList(list<Point> obstacle) {
     }
 }
 
-int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads) {
+int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool applyCorrection) {
     int minSize = 25;
     int maxContourApprox = 7;
     Mat RGB = picture.clone();
@@ -81,7 +105,12 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads) {
     vector<vector<Point> > frameContours;
     vector<Vec4i> frameHierarchy;
 
-    cvtColor(picture, RGBGray, CV_RGB2GRAY);
+    if(picture.channels() == 1){
+        RGBGray = picture.clone();
+    }
+    else{
+        cvtColor(picture, RGBGray, CV_RGB2GRAY);
+    }
 
     Canny(RGBGray, RGBGray, 50, 200, 3);
     findContours(RGBGray, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
@@ -148,11 +177,13 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads) {
         }
     }
 
-    removeDoubleSquare(outQuads);
+    if(applyCorrection){
+        removeDoubleSquare(outQuads);
 
-    removeQuadsNotOnChessboard(outQuads);
+        removeQuadsNotOnChessboard(outQuads);
 
-    sortQuadsByPosition(outQuads);
+        sortQuadsByPosition(outQuads);
+    }
 
     for (int i = 0; i < outQuads.size(); i++) {
         rectangle(RGB, outQuads[i], Scalar(0, 0, 255));
@@ -188,6 +219,32 @@ int ObjectDetector::removeDoubleSquare(vector<Rect> &outQuads) {
 
     outQuads = tempList;
     return outQuads.size();
+}
+
+bool ObjectDetector::containsRedSquares(Mat picture, Rect bigSquare) {
+    Mat HSVPicture;
+    cvtColor(picture, HSVPicture, CV_BGR2HSV);
+
+    Mat croppedMat(HSVPicture, cv::Range(bigSquare.y, bigSquare.y + bigSquare.height),
+            cv::Range(bigSquare.x, bigSquare.x + bigSquare.width));
+    Mat HSVCroppedMat;
+    cvtColor(croppedMat, HSVCroppedMat, CV_BGR2HSV);
+
+    Mat segmentedRedSquare;
+    Mat segmentedRedSquare2;
+    inRange(HSVCroppedMat, Scalar(0, 220, 0), Scalar(25, 255, 200), segmentedRedSquare); // Pas le choix, en deux partie...
+    inRange(HSVCroppedMat, Scalar(130, 220, 0), Scalar(255, 255, 200), segmentedRedSquare2);
+    segmentedRedSquare += segmentedRedSquare2;
+
+    vector<Rect> redSquares;
+    bool applyCorrection = false;
+    generateQuads(segmentedRedSquare, redSquares, applyCorrection);
+
+    if(redSquares.size() >= 2){
+        return true;
+    }
+
+    return false;
 }
 
 int ObjectDetector::removeQuadsNotOnChessboard(vector<Rect> &outQuads) {
@@ -238,21 +295,12 @@ void ObjectDetector::sortQuadsByPosition(vector<Rect> &outQuads) {
 }
 
 ObjectDetector::quadColor ObjectDetector::findQuadColor(Mat &picture, const vector<Rect> &squares) {
-    Mat HSVPicture;
-    cvtColor(picture, HSVPicture, CV_BGR2HSV);
+    Rect bigSquare = getQuadEnglobingOthers(squares);
 
-    int coloredSquareCount = 0;
-    for (int i = 0; i < squares.size(); i++) {
-        Rect square = squares[i];
-        Vec3b pixel = HSVPicture.at<Vec3b>(square.y + (square.height / 2), square.x + (square.width / 2));
+    bool redSquare = containsRedSquares(picture, bigSquare);
 
-        if (pixel[2] > 50 && pixel[0] > 100 && pixel[0] < 160) {
-            coloredSquareCount++;
-        }
-    }
-
-    if (coloredSquareCount > squares.size() * 0.5) {
-        return BLUE;
+    if (redSquare) {
+        return RED;
     } else {
         return BLACK;
     }

@@ -6,7 +6,7 @@
 using namespace cv;
 using namespace std;
 
-const float RobotDetector::ROBOT_RADIUS = 0.095f;
+const float RobotDetector::ROBOT_RADIUS = 0.09f;
 const float RobotDetector::CAMERA_OFFSET = 0.06f;
 const int RobotDetector::X_ROBOT_LEFT_THRESHOLD = 180;
 const int RobotDetector::X_ROBOT_RIGHT_THRESHOLD = 610;
@@ -83,7 +83,7 @@ void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> val
 int RobotDetector::findOrientation(quadColor color, float angle) {
     angle = angle / M_PI * 180;
 
-    if (color == BLUE) {
+    if (color == RED) {
         if (angle > 45) {
             return NORTH;
         } else if (angle < -45) {
