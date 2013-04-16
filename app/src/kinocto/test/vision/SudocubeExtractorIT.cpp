@@ -180,7 +180,7 @@ TEST_F(SudocubeExtractorIT, testSortSudocube) {
     vector<Sudocube *> sudocubes;
     vector<Sudocube *> pool;
     vector<int> poolNumber;
-    for (int i = 10; i <= 27; i++) {
+    for (int i = 1; i <= 32; i++) {
         Mat img = loadSudocubeNo(i);
         Sudocube * sudocube = sudocubeExtractor->extractSudocube(img);
         sudocubes.push_back(sudocube);
