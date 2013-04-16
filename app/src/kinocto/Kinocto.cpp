@@ -167,7 +167,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
     cameraCapture->openCapture();
     double angle = 1;
 
-    while (angle > 0.5 && angle < -0.5) {
+    while (angle > 0.5 || angle < -0.5) {
         Mat greenBorder = cameraCapture->takePicture();
         AngleFinder angleFinder;
         double angle = angleFinder.findGreenBorderAngle(greenBorder) * 1.4;
