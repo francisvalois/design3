@@ -286,8 +286,8 @@ void Kinocto::adjustFrontPosition() {
     int DISTANCE_FROM_CAMERA = -3;
     for (int i = 1; i <= 2; i++) {
         float frontDistance = getSonarDistance();
-        float distance = frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE;
-        if (distance >= -1 * Workspace::SUDOCUBE_FRONT_DISTANCE + DISTANCE_FROM_CAMERA) {
+        float distance = frontDistance + DISTANCE_FROM_CAMERA - Workspace::SUDOCUBE_FRONT_DISTANCE;
+        if (distance >= -1 * Workspace::SUDOCUBE_FRONT_DISTANCE) {
             microcontroller->move(frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE);
         }
     }
