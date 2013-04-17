@@ -218,8 +218,10 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     }
 
     //Met a jour la position du robot dans l'interface
-    actualPosition.set(positionX, positionY);
-    kinoctoPositionUpdates.push_back(actualPosition);
+    if(request.x != 0 && request.y != 0) {
+        actualPosition.set(positionX, positionY);
+        kinoctoPositionUpdates.push_back(actualPosition);
+    }
 
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);
@@ -320,8 +322,11 @@ bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, Up
 
         emit message(infoQ);
 
-        actualPosition.set(request.x, request.y);
-        kinoctoPositionUpdates.push_back(actualPosition);
+        if(request.x != 0 && request.y != 0) {
+            actualPosition.set(request.x, request.y);
+            kinoctoPositionUpdates.push_back(actualPosition);
+        }
+
 
         QImage image = Mat2QImage(createMatrix());
         emit updateTableImage(image);
