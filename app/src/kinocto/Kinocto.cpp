@@ -158,6 +158,7 @@ void Kinocto::executeMoves(vector<Move> & moves) {
 
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
         workspace.setRobotPos(moves[i].destination);
+        ROS_INFO("going to x:%f y:%f", moves[i].destination.x, moves[i].destination.y);
 
         Position robotPos;
         getRobotPosition(robotPos);
@@ -424,23 +425,27 @@ void Kinocto::goToDrawingZone() {
 
 // Du sudocube à la zone de dessin
     ROS_INFO("GOING TO DRAWING ZONE");
-    float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), -180);
     executeMoves(moves);
 
     adjustAngleWithGreenBorder();
 
 // Correction de la position du robot dans la zone de dessin
-    ROS_INFO("CORRECTING ROBOT POSITION");
     Position robotPos;
     getCriticalRobotPosition(robotPos);
     workspace.setRobotPos(robotPos);
+    ROS_INFO("POSITION BEFORE CORRECTING ROBOT POS x:%f y:%f", robotPos.x, robotPos.y);
 
-    //TODO Amélioration ici en faisant des translations
-    vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
-    vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
-    executeMoves(moves);
+    Position translateX(workspace.getSquareCenter().y - robotPos.y, 0);
+    Position translateY(0 , robotPos.x - workspace.getSquareCenter().x);
+    microcontroller->translate(translateX);
+    microcontroller->translate(translateY);
+    workspace.setRobotPos(workspace.getSquareCenter());
+
+    //On remet le robot dans l'angle du dessin
+    float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
+    microcontroller->rotate(orientationAngle);
 
     adjustAngleWithGreenBorder();
 
