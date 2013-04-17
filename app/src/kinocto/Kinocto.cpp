@@ -426,7 +426,7 @@ void Kinocto::goToDrawingZone() {
 // Du sudocube à la zone de dessin
     ROS_INFO("GOING TO DRAWING ZONE");
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
-    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), -180);
+    vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), -90);
     executeMoves(moves);
 
     adjustAngleWithGreenBorder();
@@ -437,15 +437,16 @@ void Kinocto::goToDrawingZone() {
     workspace.setRobotPos(robotPos);
     ROS_INFO("POSITION BEFORE CORRECTING ROBOT POS x:%f y:%f", robotPos.x, robotPos.y);
 
-    Position translateX(workspace.getSquareCenter().y - robotPos.y, 0);
-    Position translateY(0 , robotPos.x - workspace.getSquareCenter().x);
+    Position translateX(workspace.getSquareCenter().x - robotPos.x, 0);
+    Position translateY(0, workspace.getSquareCenter().y - robotPos.y);
     microcontroller->translate(translateX);
     microcontroller->translate(translateY);
     workspace.setRobotPos(workspace.getSquareCenter());
 
     //On remet le robot dans l'angle du dessin
     float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
-    microcontroller->rotate(orientationAngle);
+    float angleDiff = orientationAngle + 90;
+    microcontroller->rotate(angleDiff);
 
     adjustAngleWithGreenBorder();
 

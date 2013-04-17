@@ -2,7 +2,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-
 using namespace cv;
 using namespace std;
 
@@ -45,11 +44,10 @@ float RobotDetector::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2) {
 }
 
 float RobotDetector::correctAngleForOrientation(float angle, quadColor color) {
-    if(angle < 0){
-        return (float)(-1 * CV_PI/2 - angle);
-    }
-    else{
-        return (float)(CV_PI/2 - angle);
+    if (angle < 0) {
+        return (float) (-1 * CV_PI / 2 - angle);
+    } else {
+        return (float) (CV_PI / 2 - angle);
     }
 }
 
@@ -105,11 +103,11 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
 
     int generatedCount = generateQuads(rgbMatrix, validRectPosition);
 
-//    for (int i = 0; i < validRectPosition.size(); i++) {
-//        rectangle(rgbMatrix, validRectPosition[i], Scalar(0, 0, 255));
-//    }
+    for (int i = 0; i < validRectPosition.size(); i++) {
+        rectangle(rgbMatrix, validRectPosition[i], Scalar(0, 0, 255));
+    }
 
-//    imshow("test", rgbMatrix);
+    imshow("test", rgbMatrix);
 
     if (generatedCount >= 3) {
         vector<Point2f> validRobotPosition;
@@ -132,7 +130,7 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
             _robotPosition = Vec2f();
             return;
         }
-        
+
         angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
 
         quadColor quadColor = findQuadColor(rgbMatrix, validRectPosition);
