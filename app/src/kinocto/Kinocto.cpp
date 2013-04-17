@@ -521,14 +521,6 @@ bool Kinocto::testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request 
     return true;
 }
 
-bool Kinocto::testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response) {
-    antennaParam.setNumber(request.sudocubeNo);
-
-    adjustSidePosition();
-
-    return true;
-}
-
 bool Kinocto::testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response) {
     adjustAngleInFrontOfWall();
 
@@ -567,7 +559,6 @@ int main(int argc, char **argv) {
     ros::ServiceServer service2 = nodeHandle.advertiseService("kinocto/TestGoToSudocubeX", &Kinocto::testGoToSudocubeX, &kinocto);
     ros::ServiceServer service3 = nodeHandle.advertiseService("kinocto/TestDrawNumber", &Kinocto::testDrawNumber, &kinocto);
     ros::ServiceServer service4 = nodeHandle.advertiseService("kinocto/TestAdjustFrontPosition", &Kinocto::testAdjustFrontPosition, &kinocto);
-    ros::ServiceServer service5 = nodeHandle.advertiseService("kinocto/TestAdjustSidePosition", &Kinocto::testAdjustSidePosition, &kinocto);
     ros::ServiceServer service6 = nodeHandle.advertiseService("kinocto/TestAdjustAngle", &Kinocto::testAdjustAngle, &kinocto);
     ros::ServiceServer service7 = nodeHandle.advertiseService("kinocto/TestAdjustSidePositionWithGreenFrame",
             &Kinocto::testAdjustSidePositionWithGreenFrame, &kinocto);
