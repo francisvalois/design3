@@ -55,7 +55,7 @@ void Kinocto::startLoop() {
         microcontroller->rotateCam(0, 0);
 
         if (loopNumber == 1) {
-            getOutOfDrawingZone();
+            getOutToFindObstacles();
             getObstaclesPosition();
         }
 
@@ -108,6 +108,28 @@ void Kinocto::getObstaclesPosition() {
     vector<Position> obsPos = baseStation->requestObstaclesPosition();
     workspace.setObstaclesPos(obsPos[0], obsPos[1]);
     pathPlanning.setObstacles(obsPos[0], obsPos[1]);
+}
+
+void Kinocto::getOutToFindObstacles() {
+    ROS_INFO("GETTING OUT TO FIND THE OBSTACLES");
+
+    float angle = -1 * workspace.getRobotAngle();
+    microcontroller->rotate(angle);
+    workspace.setRobotAngle(0);
+
+    Position translationX;
+    translationX.x = workspace.getRobotPos().y - workspace.getKinectDeadAngle().y;
+    microcontroller->translate(translationX);
+
+    Position translationY;
+    translationY.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
+    microcontroller->translate(translationY);
+
+    workspace.setRobotPos(workspace.getKinectDeadAngle());
+
+    //Affichage pour la basestation
+    Position robotPosUpdate;
+    getRobotPosition(robotPosUpdate);
 }
 
 void Kinocto::getOutOfDrawingZone() {

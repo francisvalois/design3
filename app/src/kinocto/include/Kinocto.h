@@ -75,6 +75,7 @@ private:
     std::stack<Position> translationStack;
 
     void startLoop();
+    void getOutToFindObstacles();
     void getObstaclesPosition();
     void getRobotPosition(Position & robotPos);
     void getCriticalRobotPosition(Position & robotPos);
