@@ -10,10 +10,10 @@ Kinocto::Kinocto(NodeHandle node) {
     this->nodeHandle = nodeHandle;
     state = WAITING;
     numberToDraw = 1;
-    firstLoop = true;
     baseStation = new BaseStationDecorator(nodeHandle);
     microcontroller = new MicrocontrollerDecorator(nodeHandle);
     cameraCapture = new CameraCapture();
+    loopNumber = 0;
 }
 
 Kinocto::~Kinocto() {
@@ -50,17 +50,16 @@ bool Kinocto::setStartLoop(kinocto::StartLoop::Request & request, kinocto::Start
 void Kinocto::startLoop() {
     if (state == LOOPING) {
         state = WAITING;
+        loopNumber++;
         microcontroller->turnLED(false);
         microcontroller->rotateCam(0, 0);
 
-        //Seulement lors du premier tour
-        if (firstLoop == true) {
-            firstLoop = false;
+        if (loopNumber == 1) {
             getOutOfDrawingZone();
             getObstaclesPosition();
         }
 
-        goToAntenna(); // Pas sûr ici que la position sera fiable sans la kinect
+        goToAntenna();
         decodeAntennaParam();
         showAntennaParam();
         adjustAngleWithGreenBorder();
