@@ -13,6 +13,7 @@ Kinocto::Kinocto(NodeHandle node) {
     baseStation = new BaseStationDecorator(nodeHandle);
     microcontroller = new MicrocontrollerDecorator(nodeHandle);
     cameraCapture = new CameraCapture();
+    loopNumber = 0;
 }
 
 Kinocto::~Kinocto() {
@@ -49,6 +50,7 @@ bool Kinocto::setStartLoop(kinocto::StartLoop::Request & request, kinocto::Start
 void Kinocto::startLoop() {
     if (state == LOOPING) {
         state = WAITING;
+        loopNumber++;
         microcontroller->turnLED(false);
         microcontroller->rotateCam(0, 0);
 
@@ -59,9 +61,11 @@ void Kinocto::startLoop() {
         workspace.setRobotPos(robotPos);
         workspace.setRobotAngle(angle);
 
-        getOutOfDrawingZone();
+        if(loopNumber == 1) {
+        	getOutOfDrawingZone();
+			getObstaclesPosition();
+        }
 
-        getObstaclesPosition();
         goToAntenna();
         decodeAntennaParam();
         showAntennaParam();

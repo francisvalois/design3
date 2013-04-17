@@ -54,6 +54,7 @@ private:
     int state;
     AntennaParam antennaParam;
     int numberToDraw;
+    int loopNumber;
 
     //Pour les déplacements
     Workspace workspace;
