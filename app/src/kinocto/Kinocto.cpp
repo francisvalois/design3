@@ -447,6 +447,7 @@ void Kinocto::goToDrawingZone() {
     float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
     float angleDiff = orientationAngle + 90;
     microcontroller->rotate(angleDiff);
+    workspace.setRobotAngle(orientationAngle);
 
     adjustAngleWithGreenBorder();
 
