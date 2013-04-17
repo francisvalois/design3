@@ -76,6 +76,12 @@ void Kinocto::startLoop() {
 
         goToDrawingZone();
         drawNumber();
+
+        //getRobotPosition(angle, robotPos);
+        getRobotPosition(angle, robotPos);
+        workspace.setRobotPos(robotPos);
+        workspace.setRobotAngle(angle);
+
         getOutOfDrawingZone();
         endLoop();
     }
