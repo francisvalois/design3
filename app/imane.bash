@@ -1,7 +1,6 @@
 #!/bin/bash
 
 pid=$(ps | grep Kinocto | cut -d ' ' -f1)
-echo ps
 for line in $pid
 do
    echo $line
