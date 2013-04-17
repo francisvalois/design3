@@ -297,24 +297,26 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
 }
 
 bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, UpdateRobotPosition::Response & response) {
-    ROS_INFO( "%s\n x:%f\n y:%f", "Updating Robot Position", request.x, request.y);
+    if(request.x != 0.0f && request.y != 0.0f) {
+        ROS_INFO( "%s\n x:%f\n y:%f", "Updating Robot Position", request.x, request.y);
 
-    stringstream info;
-    info << "Kinocto : Mise a jour de la position du robot :  \n";
-    info << " (" << request.x << "," << request.y << ")";
+        stringstream info;
+        info << "Kinocto : Mise a jour de la position du robot :  \n";
+        info << " (" << request.x << "," << request.y << ")";
 
+        QString infoQ((char*) info.str().c_str());
 
-    QString infoQ((char*) info.str().c_str());
+        emit message(infoQ);
 
-    emit message(infoQ);
+        actualPosition.set(request.x, request.y);
+        kinoctoPositionUpdates.push_back(actualPosition);
 
-    actualPosition.set(request.x, request.y);
-    kinoctoPositionUpdates.push_back(actualPosition);
+        QImage image = Mat2QImage(createMatrix());
+        emit updateTableImage(image);
+        return true;
+    }
 
-    QImage image = Mat2QImage(createMatrix());
-    emit updateTableImage(image);
-
-    return true;
+    return false;
 }
 
 Mat3b BaseStation::createMatrix() {
