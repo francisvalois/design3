@@ -35,15 +35,18 @@ Mat BlueCornerFinder::segmentCorner(Mat & img) {
     Mat segmentedCorner;
     inRange(cornerHSV, Scalar(90, 0, 50), Scalar(140, 255, 255), segmentedCorner);
 
-    int size = 4;
+    int size = 2;
     Point erodePoint(size, size);
-    Mat erodeElem = getStructuringElement(MORPH_RECT, Size(2 * size + 1, 2 * size + 1), erodePoint);
+    Mat erodeElem = getStructuringElement(MORPH_ELLIPSE, Size(2 * size + 1, 2 * size + 1), erodePoint);
     erode(segmentedCorner, segmentedCorner, erodeElem);
 
-    int size2 = 12;
+    int size2 = 2;
     Point dilatePoint(size2, size2);
     Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * size2 + 1, 2 * size2 + 1), dilatePoint);
     dilate(segmentedCorner, segmentedCorner, dilateElem);
+
+    imshow("blue", segmentedCorner);
+    waitKey(0);
 
     return segmentedCorner;
 }
