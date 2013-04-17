@@ -130,7 +130,9 @@ void Kinocto::getOutOfDrawingZone() {
     translationY.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
     microcontroller->translate(translationY);
 
-    workspace.setRobotPos(workspace.getKinectDeadAngle());
+    Position robotPos;
+    getRobotPosition(robotPos);
+    workspace.setRobotPos(robotPos);
 }
 
 void Kinocto::goToAntenna() {
@@ -149,6 +151,9 @@ void Kinocto::goToAntenna() {
 
     workspace.setRobotAngle(angle);
     workspace.setRobotPos(workspace.getAntennaReadPos());
+
+    Position robotPos; //FAIT JUSTE UPDATER LA POSITION DU ROBOT AU BASESTATION
+    getRobotPosition(robotPos);
 }
 
 void Kinocto::executeMoves(vector<Move> & moves) {
