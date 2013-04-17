@@ -283,7 +283,7 @@ void Kinocto::adjustSidePositionWithGreenFrame() {
 void Kinocto::adjustFrontPosition() {
     ROS_INFO("ADJUSTING FRONT POSITION WITH THE SONAR");
 
-    int DISTANCE_FROM_CAMERA = 2;
+    int DISTANCE_FROM_CAMERA = -3;
     for (int i = 1; i <= 2; i++) {
         float frontDistance = getSonarDistance();
         float distance = frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE;
@@ -408,8 +408,8 @@ int Kinocto::findAGoodSudocube(vector<Sudocube *> & sudocubes) {
 }
 
 void Kinocto::goToDrawingZone() {
-    ROS_INFO("GOING TO DRAWING ZONE");
 //Cas sudocube 3 et 6
+    ROS_INFO("TRANSLATING OUT");
     if (!translationStack.empty()) {
         int stackSize = translationStack.size();
         for (int i = 0; i < stackSize; i++) {
@@ -422,6 +422,7 @@ void Kinocto::goToDrawingZone() {
     }
 
 // Du sudocube à la zone de dessin
+    ROS_INFO("GOING TO DRAWING ZONE");
     float orientationAngle = workspace.getPoleAngle(antennaParam.getOrientation());
     vector<Position> positions = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
@@ -430,6 +431,7 @@ void Kinocto::goToDrawingZone() {
     adjustAngleWithGreenBorder();
 
 // Correction de la position du robot dans la zone de dessin
+    ROS_INFO("CORRECTING ROBOT POSITION");
     Position robotPos;
     getCriticalRobotPosition(robotPos);
     workspace.setRobotPos(robotPos);

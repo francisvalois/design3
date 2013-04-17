@@ -218,7 +218,7 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     }
 
     //Met a jour la position du robot dans l'interface
-    if(request.x != 0 && request.y != 0) {
+    if(response.x != 0 && response.y != 0) {
         actualPosition.set(positionX, positionY);
         kinoctoPositionUpdates.push_back(actualPosition);
     }

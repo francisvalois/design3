@@ -15,7 +15,7 @@ void KinectCapture::openCapture() {
     capture.set(CV_CAP_PROP_OPENNI_REGISTRATION, 1);
 
     Mat depthMap;
-    for (int i = 0; i < 1; i++) { // Pour avoir les bonnes valeurs dès la premier version
+    for (int i = 0; i < 10; i++) { // Pour avoir les bonnes valeurs dès la premier version
         capture.grab();
     }
 }
