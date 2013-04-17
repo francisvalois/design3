@@ -243,6 +243,8 @@ void MainWindow::on_saveParametersbtn_clicked() {
     consoleoutput << "Initial position set to :  ";
     consoleoutput << "(" << robotPosition.x << "," << robotPosition.y << ") with angle " << angle;
 
+    baseStation.sendRobotPosAndAngle(robotPosition.x, robotPosition.y, angle);
+
     ui->consoleText->append((char*) consoleoutput.str().c_str());
 }
 
