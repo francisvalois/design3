@@ -54,6 +54,7 @@ private:
     QTime *timeValue;
     QTime *timeOfLoop;
     void initSudocubeImage();
+    void showRedCase(int);
     void showSolvedSudocubeInImage(QString);
 };
 
