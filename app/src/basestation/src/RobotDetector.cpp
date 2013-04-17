@@ -9,7 +9,7 @@ const float RobotDetector::ROBOT_RADIUS = 0.09f;
 const float RobotDetector::CAMERA_OFFSET = 0.06f;
 const int RobotDetector::X_ROBOT_LEFT_THRESHOLD = 50;
 const int RobotDetector::X_ROBOT_RIGHT_THRESHOLD = 610;
-const int RobotDetector::Y_ROBOT_TOP_THRESHOLD = 190;
+const int RobotDetector::Y_ROBOT_TOP_THRESHOLD = 150;
 const int RobotDetector::Y_ROBOT_BOTTOM_THRESHOLD = 285;
 
 int RobotDetector::getOrientation() {
@@ -103,17 +103,33 @@ int RobotDetector::findOrientation(quadColor color, float angle) {
 void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1, Vec2f obstacle2) {
     vector<Rect> validRectPosition;
 
-    rgbMatrix = Mat(rgbMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
-            cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
+
+    //Range to scan only on the table
     depthMatrix = Mat(depthMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
             cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
+    rgbMatrix = Mat(rgbMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
+            cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
 
+    vector<Rect> framesRect = getFrameRect(rgbMatrix);
+
+    if(framesRect.size() <= 0){
+        cout << "Unable to find blue frame" << endl;
+        _robotAngle = 0;
+        _robotPosition = Vec2f();
+        return;
+    }
+
+    //Keep only blue frame part
+    depthMatrix = Mat(depthMatrix, framesRect.back());
+    rgbMatrix = Mat(rgbMatrix, framesRect.back());
+
+    //Find squares
     int generatedCount = generateQuads(rgbMatrix, validRectPosition);
 
     for (int i = 0; i < validRectPosition.size(); i++) {
         rectangle(rgbMatrix, validRectPosition[i], Scalar(0, 0, 255));
     }
-
+    imshow("depthTest", depthMatrix);
     imshow("test", rgbMatrix);
 
     if (generatedCount >= 3) {
@@ -126,6 +142,41 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         Vec2f trueRightPosition;
 
         //The first run find approximate the angle and the second one find the good angle, 
+        //the good orientation and the good position
+        get2MajorPointsDistance(depthMatrix, validRobotPosition, trueLeftPosition, trueRightPosition);
+        float angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
+
+        vector<Point2f> extremePoints = getExtremePointsOfRobot(depthMatrix, angleRad, validRobotPosition);
+
+        get2MajorPointsDistance(depthMatrix, extremePoints, trueLeftPosition, trueRightPosition);
+
+        if (trueLeftPosition[0] <= 0 || trueLeftPosition[1] <= 0 || trueRightPosition[0] <= 0 || trueRightPosition[1] <= 0) {
+            _robotAngle = 0;
+            _robotPosition = Vec2f();
+            return;
+        }
+
+        angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
+        quadColor quadColor = findQuadColor(rgbMatrix, validRectPosition);
+        _orientation = findOrientation(quadColor, angleRad);
+
+        Vec2f centerPosition = findRobotCenterPosition(trueRightPosition, trueLeftPosition, angleRad, _orientation);
+
+        _robotAngle = correctAngleForOrientation(angleRad, quadColor);
+
+        _robotPosition = centerPosition;
+    }
+    else{
+        Rect goodFrame = framesRect.back();
+        vector<Point2f> validRobotPosition;
+        validRobotPosition.push_back(Point2f(goodFrame.width * 0.25, goodFrame.height * 0.25));
+        validRobotPosition.push_back(Point2f(goodFrame.width * 0.75, goodFrame.height * 0.75));
+
+
+        Vec2f trueLeftPosition;
+        Vec2f trueRightPosition;
+
+        //The first run find approximate the angle and the second one find the good angle,
         //the good orientation and the good position
         get2MajorPointsDistance(depthMatrix, validRobotPosition, trueLeftPosition, trueRightPosition);
         float angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
@@ -165,8 +216,10 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
     Point leftRobotTrueCoords;
     Point rightRobotTrueCoords;
 
+    cout << depthMatrix.size() << endl;
+
     //Find left border
-    for (int i = leftPoint.x; i > X_ROBOT_LEFT_THRESHOLD && consecutiveEndPoint < 3; i--) {
+    for (int i = leftPoint.x; i > 1 && consecutiveEndPoint < 3; i--) {
         Vec3f leftPosition = depthMatrix.at<Vec3f>(leftPoint.y, i);
         Vec2f position = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
 
@@ -182,7 +235,7 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
 
     //Find right border
     consecutiveEndPoint = 0;
-    for (int i = rightPoint.x; i < X_ROBOT_RIGHT_THRESHOLD && consecutiveEndPoint < 3; i++) {
+    for (int i = rightPoint.x; i < (depthMatrix.cols-1) && consecutiveEndPoint < 3; i++) {
         Vec3f rightPosition = depthMatrix.at<Vec3f>(rightPoint.y, i);
         Vec2f position = KinectTransformator::getTrueCoordFromKinectCoord(rightPosition);
 

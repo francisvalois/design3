@@ -28,6 +28,9 @@ protected:
     void sortQuadsByPosition(std::vector<cv::Rect> & outQuads);
     int removeDoubleSquare(std::vector<cv::Rect> & outQuads);
     quadColor findQuadColor(cv::Mat &image, const std::vector<cv::Rect> &squares);
+
+    cv::Mat segmentBlueFrame(const cv::Mat & img);
+    cv::vector<cv::Rect> getFrameRect(const cv::Mat & img);
 };
 
 #endif

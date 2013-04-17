@@ -34,7 +34,7 @@ Mat captureDepthMatrix() {
             cout << "Cannot open a capture object." << endl;
             std::stringstream file;
             //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
-            file << "robotdetection4.xml";
+            file << "robotBleuFonceProche8.xml";
             string fileString = file.str();
             //cout << "Loading from file " << fileString << endl;
             
@@ -63,7 +63,7 @@ Mat captureRGBMatrix() {
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
         //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
-        file << "robotdetection4.jpg";
+        file << "robotBleuFonceProche8.jpg";
         string fileString = file.str();
         //cout << "Loading from file " << fileString << endl;
         
@@ -216,7 +216,9 @@ int main( /*int argc, char* argv[]*/ ) {
     //test10.findNeareastValueInLookupTable(2, 2);
     //vector<Point> test2 = calibrate();
     //Mat test9 = calibrate();
-    RobotDetector robotDetection;
+    ObjectDetector object;
+    //object.isPresent(test1);
+    //RobotDetector robotDetection;
     response responseObstacle = {0, 0, 0, 0};
     response responseRobot = {0, 0, 0, 0};
     
@@ -248,8 +250,8 @@ int main( /*int argc, char* argv[]*/ ) {
     //    rectangle(showRGB, test1[j],Scalar(0,0,255));
     //}
     
-    world = Utility::captureDepthMatrix(capture);
-    rgb = Utility::captureRGBMatrix(capture);
+    world = captureDepthMatrix();
+    rgb = captureRGBMatrix();
     
     
     

@@ -29,6 +29,15 @@ struct SortByXY {
     }
 };
 
+struct SortByArea {
+    bool operator()(Rect const & L, Rect const & R) {
+        if (L.area() < R.area()) {
+            return true;
+        } else
+            return false;
+    }
+};
+
 Vec2f ObjectDetector::getAverageDistanceForPointLine(list<Vec2f> allDistances) {
     float averageXPosition = 0;
     int countAverageX = 0;
@@ -339,3 +348,60 @@ ObjectDetector::quadColor ObjectDetector::findQuadColor(Mat &picture, const vect
         return BLACK;
     }
 }
+
+Mat ObjectDetector::segmentBlueFrame(const Mat & img) {
+    Mat frame = img.clone();
+    GaussianBlur(frame, frame, Size(11, 11), 1, 1);
+
+    Mat cornerHSV;
+    cvtColor(frame, cornerHSV, CV_BGR2HSV);
+
+    Mat segmentedCorner;
+    inRange(cornerHSV, Scalar(90, 110, 75), Scalar(150, 255, 255), segmentedCorner);
+
+    applyErode(segmentedCorner, 1, MORPH_ELLIPSE);
+    applyDilate(segmentedCorner, 2, MORPH_RECT);
+
+    imshow("blue", segmentedCorner);
+
+    return segmentedCorner;
+}
+
+vector<Rect> ObjectDetector::getFrameRect(const Mat & img) {
+
+    Mat frame = segmentBlueFrame(img);
+
+    vector<vector<Point> > frameContour;
+    vector<Vec4i> frameHierarchy;
+    Mat frameSegmented = frame.clone();
+    findContours(frameSegmented, frameContour, frameHierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+    vector<vector<Point> > frameContoursPoly(frameContour.size());
+    vector<Rect> frameBoundingRect(0);
+    vector<vector<Point> > framePolyInteresting(0);
+    for (int i = 0; i < frameContour.size(); i++) {
+        approxPolyDP(Mat(frameContour[i]), frameContoursPoly[i], 3, true);
+        Rect rect = boundingRect(Mat(frameContoursPoly[i]));
+
+        if (rect.area() > 450 && rect.area() < 25000) { //TODO a définir
+            cout << rect.area() << endl;
+            frameBoundingRect.push_back(rect);
+            framePolyInteresting.push_back(frameContoursPoly[i]);
+        }
+    }
+
+    sort(frameBoundingRect.begin(), frameBoundingRect.end(), SortByArea());
+
+
+    cout << frameBoundingRect.size() << endl;
+    // Masque possible grace a framePolyInteresting
+
+//    Mat drawing = Mat::zeros(frame.size(), CV_8UC3);
+//    for (int i = 0; i < frameBoundingRect.size(); i++) {
+//        rectangle(drawing, frameBoundingRect[i].tl(), frameBoundingRect[i].br(), Scalar(0, 255, 0), 1, 8, 0);
+//    }
+//    imshow("cornerDraw", drawing);
+
+    return frameBoundingRect;
+}
+
