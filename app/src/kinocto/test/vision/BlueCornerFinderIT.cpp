@@ -14,24 +14,14 @@ protected:
     BlueCornerFinder blueCornerFinder;
 };
 
-TEST_F(BlueCornerFinderIT, returnZeroWhenNotAGoodImage) {
-    Mat img = imread("img/testBlueCornerFinder/blue2.png");
-
+TEST_F(BlueCornerFinderIT, test1) {
+    Mat img = imread("img/testBlueCornerFinder/blue.png");
     blueCornerFinder.isPresent(img);
-    //ASSERT_NEAR(0.0, angle, PRECISION);
 }
 
-TEST_F(BlueCornerFinderIT, find1Degree) {
-    Mat img = imread("img/testBlueCornerFinder/2.png");
-
-    //double angle = blueCornerFinder.findWallAngle2(img);
-
-    //ASSERT_NEAR(1.0, angle, PRECISION);
-}
-
-TEST_F(BlueCornerFinderIT, canFindTheBlueCorner) {
-    //Mat img = imread("img/testBlueCornerFinder/1.png");
-    //ASSERT_TRUE(blueCornerFinder.isPresent(img));
+TEST_F(BlueCornerFinderIT, test2) {
+    Mat img = imread("img/testBlueCornerFinder/blue2.png");
+    blueCornerFinder.isPresent(img);
 }
 
 }

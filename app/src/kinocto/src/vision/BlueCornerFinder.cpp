@@ -16,8 +16,9 @@ int BlueCornerFinder::isCenteredInPicture(Mat & img) {
 
 bool BlueCornerFinder::isPresent(Mat & img) {
     Mat segmentedCorner = segmentCorner(img);
-
     vector<Rect> cornerBoundingRect = getCornerRect(segmentedCorner);
+
+    waitKey(0);
 
     if (cornerBoundingRect.empty() == true) {
         return false;
@@ -28,25 +29,23 @@ bool BlueCornerFinder::isPresent(Mat & img) {
 
 Mat BlueCornerFinder::segmentCorner(Mat & img) {
     Mat corner = img.clone();
+    GaussianBlur(corner, corner, Size(15, 15), 1, 1);
+
+    Mat laplacianImg;
+    Laplacian(corner, laplacianImg, CV_8UC1, 3);
+    corner = corner - laplacianImg;
+    imshow("bluereal", corner);
+
     Mat cornerHSV;
     cvtColor(corner, cornerHSV, CV_BGR2HSV);
-    GaussianBlur(cornerHSV, cornerHSV, Size(11, 11), 1, 1);
 
     Mat segmentedCorner;
     inRange(cornerHSV, Scalar(90, 0, 50), Scalar(140, 255, 255), segmentedCorner);
 
-    int size = 2;
-    Point erodePoint(size, size);
-    Mat erodeElem = getStructuringElement(MORPH_ELLIPSE, Size(2 * size + 1, 2 * size + 1), erodePoint);
-    erode(segmentedCorner, segmentedCorner, erodeElem);
-
-    int size2 = 2;
-    Point dilatePoint(size2, size2);
-    Mat dilateElem = getStructuringElement(MORPH_RECT, Size(2 * size2 + 1, 2 * size2 + 1), dilatePoint);
-    dilate(segmentedCorner, segmentedCorner, dilateElem);
+    VisionUtility::applyErode(segmentedCorner, 2, MORPH_ELLIPSE);
+    VisionUtility::applyDilate(segmentedCorner, 2, MORPH_RECT);
 
     imshow("blue", segmentedCorner);
-    waitKey(0);
 
     return segmentedCorner;
 }
@@ -59,15 +58,24 @@ vector<Rect> BlueCornerFinder::getCornerRect(const Mat & corner) {
 
     vector<vector<Point> > cornerContoursPoly(cornerContour.size());
     vector<Rect> cornerBoundingRect(0);
+    vector<vector<Point> > cornerPolyInteresting(0);
     for (uint i = 0; i < cornerContour.size(); i++) {
         approxPolyDP(Mat(cornerContour[i]), cornerContoursPoly[i], 3, true);
         Rect rect = boundingRect(Mat(cornerContoursPoly[i]));
-        cout << rect.area() << endl;
 
-        if (rect.area() > 75000) {
+        if (rect.area() > 40) { //TODO a définir
             cornerBoundingRect.push_back(rect);
+            cornerPolyInteresting.push_back(cornerContoursPoly[i]);
         }
     }
+
+    // Masque possible grace a cornerPolyInteresting
+
+    Mat drawing = Mat::zeros(corner.size(), CV_8UC3);
+    for (int i = 0; i < cornerBoundingRect.size(); i++) {
+        rectangle(drawing, cornerBoundingRect[i].tl(), cornerBoundingRect[i].br(), Scalar(0, 255, 0), 1, 8, 0);
+    }
+    imshow("cornerDraw", drawing);
 
     return cornerBoundingRect;
 }
