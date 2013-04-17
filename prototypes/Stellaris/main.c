@@ -403,10 +403,10 @@ int main(void)
 					 	case 5:
 					 		drawOffset0=2500;
 							drawOffset3=2500;
-					 		moveFront(-2650, 750);
+					 		moveFront(-2800, 903);
 					 		//final_speed = 2800;
 							//drawingCondition = true;
-							moveLateral(-10602, 3224);
+							moveLateral(-10000, 3224);
 							segment_to_draw++;	
 							break;
 						case 6:
@@ -477,8 +477,8 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 2:
-							moveFront(-7528, 1565);
-							moveLateral(-7528, 1565);
+							moveFront(-7829, 1565);
+							moveLateral(-7829, 1565);
 							segment_to_draw++;
 							break;
 						case 3:
@@ -537,14 +537,14 @@ int main(void)
 						case 3:
 							drawOffset0=2500;
 							drawOffset3=2500;
-							moveFront(-4827, 518);
-							moveLateral(10838, 1200);
+							moveFront(-4827, 800);
+							moveLateral(10838, 1853);
 							segment_to_draw++;
 							break;
 						case 4:
 							drawOffset0=2500;
 							drawOffset3=2500;
-							moveFront(-2600,750);
+							moveFront(-2750,787);
 							moveLateral(-10863, 3108);
 							segment_to_draw++;
 							break;
@@ -598,8 +598,8 @@ int main(void)
 				case 60:
 					switch(segment_to_draw){ //segment a dessiner
 						case 1: //1er segment
-							offset=0;
-							offset2=-640;
+							offset=640;
+							offset2=0;
 							descendrePrehenseur();
 							moveLateral(-5821, 800);
 							segment_to_draw++; //Prochain mouvement faire prochain segment
@@ -612,19 +612,19 @@ int main(void)
 							segment_to_draw++;
 							break;
 						case 3:
-							moveFront(-8630, 800);
+							moveFront(-8480, 800);
 							segment_to_draw++;
 							break;
 						case 4:
-							moveLateral(11287, 800);
+							moveLateral(10987, 800);
 							segment_to_draw++;
 							break;
 						case 5:
-							moveFront(5058, 800);
+							moveFront(4758, 800);
 							segment_to_draw++;
 							break;
 						case 6:
-							moveLateral(-11078, 800);
+							moveLateral(-10978, 800);
 							segment_to_draw++;
 							break;
 						case 7:
