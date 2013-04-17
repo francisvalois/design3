@@ -357,7 +357,7 @@ vector<Sudocube *> Kinocto::extractSudocubes() {
 
     cameraCapture->openCapture(CameraCapture::SUDOCUBE_CONFIG);
 
-    int MAX_POOL_SIZE = 10;
+    int MAX_POOL_SIZE = 5;
     int MAX_NUMBER_CAPTURE = 20;
     vector<Sudocube *> sudokubes;
     for (int i = 1; i <= MAX_NUMBER_CAPTURE && sudokubes.size() <= MAX_POOL_SIZE; i++) {
