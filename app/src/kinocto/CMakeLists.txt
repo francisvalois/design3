@@ -23,6 +23,7 @@ add_service_files(
   TestAdjustSidePositionWithGreenFrame.srv
   TestAdjustAngleGreenBorder.srv
   StartLoop.srv
+  SetRobotPositionAndAngle.srv
 )
 
 generate_messages(

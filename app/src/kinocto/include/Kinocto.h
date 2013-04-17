@@ -32,7 +32,7 @@
 
 //Topics du robot
 #include "kinocto/StartLoop.h"
-
+#include "kinocto/SetRobotPositionAndAngle.h"
 
 //Services de test
 #include "kinocto/TestGoToSudocubeX.h"
@@ -54,6 +54,7 @@ private:
     int state;
     AntennaParam antennaParam;
     int numberToDraw;
+    bool firstLoop;
 
     //Pour les déplacements
     Workspace workspace;
@@ -102,6 +103,7 @@ public:
     ~Kinocto();
     void loop();
     bool setStartLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response);
+    bool setRobotPositionAndAngle(kinocto::SetRobotPositionAndAngle::Request & request, kinocto::SetRobotPositionAndAngle::Response & response);
 
     //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
     bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,

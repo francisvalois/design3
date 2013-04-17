@@ -10,6 +10,7 @@ Kinocto::Kinocto(NodeHandle node) {
     this->nodeHandle = nodeHandle;
     state = WAITING;
     numberToDraw = 1;
+    firstLoop = true;
     baseStation = new BaseStationDecorator(nodeHandle);
     microcontroller = new MicrocontrollerDecorator(nodeHandle);
     cameraCapture = new CameraCapture();
@@ -52,20 +53,16 @@ void Kinocto::startLoop() {
         microcontroller->turnLED(false);
         microcontroller->rotateCam(0, 0);
 
-        float angle;
-        Position robotPos;
-        //getRobotPosition(angle, robotPos);
-        getCriticalRobotPosition(angle, robotPos);
-        workspace.setRobotPos(robotPos);
-        workspace.setRobotAngle(angle);
+        //Seulement lors du premier tour
+        if (firstLoop == true) {
+            firstLoop = false;
+            getOutOfDrawingZone();
+            getObstaclesPosition();
+        }
 
-        getOutOfDrawingZone();
-
-        getObstaclesPosition();
-        goToAntenna();
+        goToAntenna(); // Pas sûr ici que la position sera fiable sans la kinect
         decodeAntennaParam();
         showAntennaParam();
-
         adjustAngleWithGreenBorder();
 
         goToSudocubeX();
@@ -77,14 +74,24 @@ void Kinocto::startLoop() {
         goToDrawingZone();
         drawNumber();
 
-        //getRobotPosition(angle, robotPos);
+        float angle = 0;
+        Position robotPos;
         getRobotPosition(angle, robotPos);
         workspace.setRobotPos(robotPos);
-        workspace.setRobotAngle(angle);
 
         getOutOfDrawingZone();
         endLoop();
     }
+}
+
+bool Kinocto::setRobotPositionAndAngle(kinocto::SetRobotPositionAndAngle::Request & request, kinocto::SetRobotPositionAndAngle::Response & response) {
+    ROS_INFO("SETTING THE ROBOT POSITION  x:%f y:%f angle:%f", request.x, request.y, request.angle);
+
+    Position robotPos(request.x, request.y);
+    workspace.setRobotAngle(request.angle);
+    workspace.setRobotPos(robotPos);
+
+    return true;
 }
 
 void Kinocto::getRobotPosition(float & angle, Position & robotPos) {
@@ -172,7 +179,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
     microcontroller->rotateCam(camAngle, -2);
     cameraCapture->openCapture();
 
-    for (int i = 0; i< 3; i++) {
+    for (int i = 0; i < 3; i++) {
         Mat greenBorder = cameraCapture->takePicture();
         AngleFinder angleFinder;
         double angle = angleFinder.findGreenBorderAngle(greenBorder) * 1.4;
@@ -462,16 +469,16 @@ void Kinocto::goToDrawingZone() {
     executeMoves(moves);
 
 // Correction de la position du robot dans la zone de dessin
-    /*float angle;
-     Position robotPos;
-     //getRobotPosition(angle, robotPos);
-     getCriticalRobotPosition(angle, robotPos);
-     workspace.setRobotAngle(angle);
-     workspace.setRobotPos(robotPos);
+    float angle;
+    Position robotPos;
+    //getRobotPosition(angle, robotPos);
+    getCriticalRobotPosition(angle, robotPos);
+    workspace.setRobotAngle(angle);
+    workspace.setRobotPos(robotPos);
 
-     vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
-     vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
-     executeMoves(moves);*/
+    vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
+    vector<Move> moves2 = pathPlanning.convertToMoves(positions2, workspace.getRobotAngle(), orientationAngle);
+    executeMoves(moves);
 
     adjustAngleWithGreenBorder();
 
@@ -602,6 +609,7 @@ int main(int argc, char **argv) {
             &Kinocto::testAdjustSidePositionWithGreenFrame, &kinocto);
     ros::ServiceServer service8 = nodeHandle.advertiseService("kinocto/TestAdjustAngleGreenBorder", &Kinocto::testAdjustAngleGreenBorder, &kinocto);
     ros::ServiceServer service9 = nodeHandle.advertiseService("kinocto/startLoop", &Kinocto::setStartLoop, &kinocto);
+    ros::ServiceServer service11 = nodeHandle.advertiseService("kinocto/setRobotPositionAndAngle", &Kinocto::setRobotPositionAndAngle, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();
