@@ -117,13 +117,11 @@ void Kinocto::getOutToFindObstacles() {
     microcontroller->rotate(angle);
     workspace.setRobotAngle(0);
 
-    Position translationX;
-    translationX.x = workspace.getRobotPos().y - workspace.getKinectDeadAngle().y;
-    microcontroller->translate(translationX);
-
-    Position translationY;
-    translationY.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
+    Position translationY(0, workspace.getKinectDeadAngle().x - workspace.getRobotPos().x);
     microcontroller->translate(translationY);
+
+    Position translationX(workspace.getRobotPos().y - workspace.getKinectDeadAngle().y, 0);
+    microcontroller->translate(translationX);
 
     workspace.setRobotPos(workspace.getKinectDeadAngle());
 
