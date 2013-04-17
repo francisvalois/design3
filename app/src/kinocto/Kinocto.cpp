@@ -467,12 +467,12 @@ void Kinocto::goToDrawingZone() {
     vector<Move> moves = pathPlanning.convertToMoves(positions, workspace.getRobotAngle(), orientationAngle);
     executeMoves(moves);
 
+    //TODO devrais rectifier l'angle du robot
+
 // Correction de la position du robot dans la zone de dessin
     float angle;
     Position robotPos;
-    //getRobotPosition(angle, robotPos);
     getCriticalRobotPosition(angle, robotPos);
-    workspace.setRobotAngle(angle);
     workspace.setRobotPos(robotPos);
 
     vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
