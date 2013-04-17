@@ -18,7 +18,7 @@ Mat CameraCapture::takePicture() {
     }
 
     for (int i = 0; i < 5; i++) {
-        videoCapture.read(picture);
+        videoCapture >> picture;
     }
 
     return picture.clone();

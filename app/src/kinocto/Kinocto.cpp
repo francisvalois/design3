@@ -76,6 +76,12 @@ void Kinocto::startLoop() {
 
         goToDrawingZone();
         drawNumber();
+
+        //getRobotPosition(angle, robotPos);
+        getRobotPosition(angle, robotPos);
+        workspace.setRobotPos(robotPos);
+        workspace.setRobotAngle(angle);
+
         getOutOfDrawingZone();
         endLoop();
     }
@@ -170,7 +176,6 @@ void Kinocto::adjustAngleWithGreenBorder() {
         Mat greenBorder = cameraCapture->takePicture();
         AngleFinder angleFinder;
         double angle = angleFinder.findGreenBorderAngle(greenBorder) * 1.4;
-        usleep(0.1);
         microcontroller->rotate(angle); //MAGICK MAGICAL CONSTANT
     }
 
@@ -386,6 +391,7 @@ Sudocube * Kinocto::solveSudocube(vector<Sudocube *> & sudocubes) {
     sudokubeSolver.solve(*goodSudocube);
     if (goodSudocube->isSolved()) {
         ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
+        numberToDraw = goodSudocube->getRedCaseValue();
         return goodSudocube;
     } else {
         ROS_ERROR("%s", "Could not solve the Sudocube");
