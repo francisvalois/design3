@@ -188,13 +188,61 @@ void MainWindow::on_calibrateKinectManualButton_clicked() {
 }
 
 void MainWindow::on_saveParametersbtn_clicked() {
-    int positionX = ui->positionX->value();
-    int positionY = ui->positionY->value();
-    int angle = ui->angle->value();
+    float roue1x = ui->roue1x->value();
+    float roue1y = ui->roue1y->value();
+    float roue0x = ui->roue0x->value();
+    float roue0y = ui->roue0y->value();
+    float robotRadius = 10;
+
+    Position robotPosition;
+    float coteOppose;
+    float coteAdjacent;
+    float angleRad;
+    float angle;
+    float xOffset;
+    float yOffset;
+
+    if(roue0x <= roue1x && roue0y >= roue1y) { //CADRAN 3
+        coteOppose = roue0y - roue1y;
+        coteAdjacent = roue1x - roue0x;
+        angleRad = atan(coteOppose/coteAdjacent);
+        angle = angleRad * 180/CV_PI;
+        angle = angle - 180;
+        xOffset = -1 * sin(angleRad) * robotRadius;
+        yOffset = -1 * cos(angleRad) * robotRadius;
+    } else if(roue0x <= roue1x && roue0y <= roue1y) { // CADRAN 4
+        coteOppose = roue1y - roue0y;
+        coteAdjacent = roue1x - roue0x;
+        angleRad = atan(coteOppose/coteAdjacent);
+        angle = angleRad * 180/CV_PI;
+        angle = 180 - angle;
+        xOffset = sin(angleRad) * robotRadius;
+        yOffset = -1 * cos(angleRad) * robotRadius;
+    } else if(roue0x >= roue1x && roue0y <= roue1y) { //CADRAN 1
+        coteOppose = roue0x - roue1x;
+        coteAdjacent = roue1y - roue0y;
+        angleRad = atan(coteOppose/coteAdjacent);
+        angle = angleRad * 180/CV_PI;
+        angle = 90 - angle;
+        xOffset = cos(angleRad) * robotRadius;
+        yOffset = sin(angleRad) * robotRadius;
+    } else if(roue0x >= roue1x && roue0y >= roue1y) { //CADRAN 2
+        coteOppose = roue0y - roue1y;
+        coteAdjacent = roue0x - roue1x;
+        angleRad = atan(coteOppose/coteAdjacent);
+        angle = angleRad * 180/CV_PI;
+        angle = -angle;
+        xOffset = -1 * sin(angleRad) * robotRadius;
+        yOffset = cos(angleRad) * robotRadius;
+    }
+
+    robotPosition.x = (roue0x + roue1x)/2 + xOffset;
+    robotPosition.y = (roue0y + roue1y)/2 + yOffset;
 
     stringstream consoleoutput;
     consoleoutput << "Initial position set to :  ";
-    consoleoutput << "(" << positionX << "," << positionY << ")  angle : " << angle;
+    consoleoutput << "(" << robotPosition.x << "," << robotPosition.y << ") with angle " << angle;
+
     ui->consoleText->append((char*) consoleoutput.str().c_str());
 }
 

@@ -68,127 +68,127 @@ int BaseStationDecorator::transformPositionToInt(int* position) {
     if(position[0] == 1) {
         if(position[1] == 1) {
             if(position[2] == 1) {
-                transformedPosition = 1;
+                transformedPosition = 44;
             } else if(position[2] == 2) {
-                transformedPosition = 2;
+                transformedPosition = 43;
             } else if(position[2] == 3) {
-                transformedPosition = 3;
+                transformedPosition = 42;
             } else if(position[2] == 4) {
-                transformedPosition = 4;
+                transformedPosition = 41;
             }
         } else if(position[1] == 2) {
             if(position[2] == 1) {
-                transformedPosition = 5;
+                transformedPosition = 36;
             } else if(position[2] == 2) {
-                transformedPosition = 6;
+                transformedPosition = 35;
             } else if(position[2] == 3) {
-                transformedPosition = 7;
+                transformedPosition = 34;
             } else if(position[2] == 4) {
-                transformedPosition = 8;
+                transformedPosition = 33;
             }
         } else if(position[1] == 3) {
             if(position[2] == 1) {
-                transformedPosition = 9;
+                transformedPosition = 28;
             } else if(position[2] == 2) {
-                transformedPosition = 10;
+                transformedPosition = 27;
             } else if(position[2] == 3) {
-                transformedPosition = 11;
+                transformedPosition = 26;
             } else if(position[2] == 4) {
-                transformedPosition = 12;
+                transformedPosition = 25;
             }
         } else if(position[1] == 4) {
             if(position[2] == 1) {
-                transformedPosition = 13;
+                transformedPosition = 20;
             } else if(position[2] == 2) {
-                transformedPosition = 14;
+                transformedPosition = 19;
             } else if(position[2] == 3) {
-                transformedPosition = 15;
+                transformedPosition = 18;
             } else if(position[2] == 4) {
-                transformedPosition = 16;
+                transformedPosition = 17;
             }
         }
     } else if(position[0] == 2) {
         if(position[1] == 1) {
             if(position[2] == 1) {
-                transformedPosition = 17;
+                transformedPosition = 45;
             } else if(position[2] == 2) {
-                transformedPosition = 18;
+                transformedPosition = 37;
             } else if(position[2] == 3) {
-                transformedPosition = 19;
+                transformedPosition = 29;
             } else if(position[2] == 4) {
-                transformedPosition = 20;
+                transformedPosition = 21;
             }
         } else if(position[1] == 2) {
             if(position[2] == 1) {
-                transformedPosition = 21;
+                transformedPosition = 46;
             } else if(position[2] == 2) {
-                transformedPosition = 22;
+                transformedPosition = 38;
             } else if(position[2] == 3) {
-                transformedPosition = 23;
+                transformedPosition = 30;
             } else if(position[2] == 4) {
-                transformedPosition = 24;
+                transformedPosition = 22;
             }
         } else if(position[1] == 3) {
             if(position[2] == 1) {
-                transformedPosition = 25;
+                transformedPosition = 47;
             } else if(position[2] == 2) {
-                transformedPosition = 26;
-            } else if(position[2] == 3) {
-                transformedPosition = 27;
-            } else if(position[2] == 4) {
-                transformedPosition = 28;
-            }
-        } else if(position[1] == 4) {
-            if(position[2] == 1) {
-                transformedPosition = 29;
-            } else if(position[2] == 2) {
-                transformedPosition = 30;
+                transformedPosition = 39;
             } else if(position[2] == 3) {
                 transformedPosition = 31;
             } else if(position[2] == 4) {
+                transformedPosition = 23;
+            }
+        } else if(position[1] == 4) {
+            if(position[2] == 1) {
+                transformedPosition = 48;
+            } else if(position[2] == 2) {
+                transformedPosition = 40;
+            } else if(position[2] == 3) {
                 transformedPosition = 32;
+            } else if(position[2] == 4) {
+                transformedPosition = 24;
             }
         }
     } else if(position[0] == 3) {
         if(position[1] == 1) {
             if(position[2] == 1) {
-                transformedPosition = 33;
+                transformedPosition = 13;
             } else if(position[2] == 2) {
-                transformedPosition = 34;
+                transformedPosition = 9;
             } else if(position[2] == 3) {
-                transformedPosition = 35;
+                transformedPosition = 5;
             } else if(position[2] == 4) {
-                transformedPosition = 36;
+                transformedPosition = 1;
             }
         } else if(position[1] == 2) {
             if(position[2] == 1) {
-                transformedPosition = 37;
+                transformedPosition = 14;
             } else if(position[2] == 2) {
-                transformedPosition = 38;
+                transformedPosition = 10;
             } else if(position[2] == 3) {
-                transformedPosition = 39;
+                transformedPosition = 6;
             } else if(position[2] == 4) {
-                transformedPosition = 40;
+                transformedPosition = 2;
             }
         } else if(position[1] == 3) {
             if(position[2] == 1) {
-                transformedPosition = 41;
+                transformedPosition = 15;
             } else if(position[2] == 2) {
-                transformedPosition = 42;
+                transformedPosition = 11;
             } else if(position[2] == 3) {
-                transformedPosition = 43;
+                transformedPosition = 7;
             } else if(position[2] == 4) {
-                transformedPosition = 44;
+                transformedPosition = 3;
             }
         } else if(position[1] == 4) {
             if(position[2] == 1) {
-                transformedPosition = 45;
+                transformedPosition = 16;
             } else if(position[2] == 2) {
-                transformedPosition = 46;
+                transformedPosition = 12;
             } else if(position[2] == 3) {
-                transformedPosition = 47;
+                transformedPosition = 8;
             } else if(position[2] == 4) {
-                transformedPosition = 48;
+                transformedPosition = 4;
             }
         }
     }
