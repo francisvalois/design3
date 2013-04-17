@@ -7,7 +7,7 @@ using namespace std;
 
 const float RobotDetector::ROBOT_RADIUS = 0.09f;
 const float RobotDetector::CAMERA_OFFSET = 0.06f;
-const int RobotDetector::X_ROBOT_LEFT_THRESHOLD = 180;
+const int RobotDetector::X_ROBOT_LEFT_THRESHOLD = 50;
 const int RobotDetector::X_ROBOT_RIGHT_THRESHOLD = 610;
 
 int RobotDetector::getOrientation() {

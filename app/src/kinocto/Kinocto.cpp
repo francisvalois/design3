@@ -119,7 +119,7 @@ void Kinocto::getOutOfDrawingZone() {
     workspace.setRobotAngle(0);
 
     Position robotPos;
-    getCriticalRobotPosition(robotPos);
+    getRobotPosition(robotPos);
     workspace.setRobotPos(robotPos);
 
     Position translationX;
@@ -130,6 +130,9 @@ void Kinocto::getOutOfDrawingZone() {
     translationY.y = workspace.getKinectDeadAngle().x - workspace.getRobotPos().x;
     microcontroller->translate(translationY);
 
+    workspace.setRobotPos(workspace.getKinectDeadAngle());
+
+    //Écrasement de la position du robot si trouvés
     Position robotPosUpdate;
     getRobotPosition(robotPosUpdate);
     workspace.setRobotPos(robotPosUpdate);
