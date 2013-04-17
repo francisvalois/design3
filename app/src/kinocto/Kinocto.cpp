@@ -166,12 +166,10 @@ void Kinocto::goToAntenna() {
     float angle = -1 * workspace.getRobotAngle();
     microcontroller->rotate(angle);
 
-    Position translationX;
-    translationX.x = workspace.getRobotPos().y - workspace.getAntennaReadPos().y;
+    Position translationX(workspace.getRobotPos().y - workspace.getAntennaReadPos().y, 0);
     microcontroller->translate(translationX);
 
-    Position translationY;
-    translationY.y = workspace.getAntennaReadPos().x - workspace.getRobotPos().x;
+    Position translationY(0, workspace.getAntennaReadPos().x - workspace.getRobotPos().x);
     microcontroller->translate(translationY);
 
     workspace.setRobotAngle(angle);
@@ -190,7 +188,7 @@ void Kinocto::executeMoves(vector<Move> & moves) {
         workspace.setRobotPos(moves[i].destination);
         ROS_INFO("going to x:%f y:%f", moves[i].destination.x, moves[i].destination.y);
 
-        Position robotPos;
+        Position robotPos; //Update seulement la position sur la basestation
         getRobotPosition(robotPos);
     }
 }
@@ -207,16 +205,18 @@ void Kinocto::showAntennaParam() {
 
 void Kinocto::adjustAngleWithGreenBorder() {
     ROS_INFO("ADJUSTING ROBOT ANGLE WITH GREEN BORDER");
-    double camAngle = -31;
+    const double CAM_ANGLE = -31;
+    const int CAM_BIAS = -2;
+    const float MAGICAL_CONSTANT = 1.4;
 
-    microcontroller->rotateCam(camAngle, -2);
+    microcontroller->rotateCam(CAM_ANGLE, CAM_BIAS);
     cameraCapture->openCapture();
 
     for (int i = 0; i < 3; i++) {
         Mat greenBorder = cameraCapture->takePicture();
         AngleFinder angleFinder;
-        double angle = angleFinder.findGreenBorderAngle(greenBorder) * 1.4;
-        microcontroller->rotate(angle); //MAGICK MAGICAL CONSTANT
+        double angle = angleFinder.findGreenBorderAngle(greenBorder) * MAGICAL_CONSTANT;
+        microcontroller->rotate(angle);
     }
 
     cameraCapture->closeCapture();
