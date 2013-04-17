@@ -217,7 +217,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
         if (i == 0) {
             angle = angleFinder.findGreenBorderAngle(greenBorder) * MAGICAL_CONSTANT;
         } else {
-            angle = angleFinder.findGreenBorderAngle(greenBorder) ;
+            angle = angleFinder.findGreenBorderAngle(greenBorder);
         }
         microcontroller->rotate(angle);
     }
@@ -283,15 +283,17 @@ void Kinocto::adjustAngleInFrontOfWall() {
     ROS_INFO("ADJUSTING ANGLE IN FRONT OF THE WALL");
 
     double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
-
     microcontroller->rotateCam(camAngle, 0);
     cameraCapture->openCapture();
 
-    Mat wall = cameraCapture->takePicture();
+    double angle = 0;
+    for (int i = 0; i < 3; i++) {
+        Mat wall = cameraCapture->takePicture();
 
-    AngleFinder angleFinder;
-    double angle = angleFinder.findWallAngle2(wall);
-    microcontroller->rotate(angle);
+        AngleFinder angleFinder;
+        double angle = angleFinder.findWallAngle2(wall);
+        microcontroller->rotate(angle);
+    }
 
     cameraCapture->closeCapture();
     microcontroller->rotateCam(0, 0);
