@@ -108,6 +108,7 @@ catkin_add_gtest(kinoctoTest test/AllTests.cpp
     "src/vision/AngleFinder.cpp"
     "src/vision/FrameCenterFinder.cpp"
     "src/vision/VisionUtility.cpp"
+    "src/vision/BlueCornerFinder.cpp"
     "src/Workspace.cpp"
 )
 target_link_libraries(kinoctoTest ${OpenCV_LIBS} ${catkin_LIBRARIES})

@@ -85,7 +85,6 @@ private:
     void goToSudocubeX();
     void adjustAngleInFrontOfWall();
     void adjustAngleWithGreenBorder();
-    void adjustSidePosition();
     float getSonarDistance();
     void adjustFrontPosition();
     void adjustSidePositionWithGreenFrame();
@@ -112,7 +111,6 @@ public:
     bool testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, kinocto::TestGoToSudocubeX::Response & response);
     bool testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response);
     bool testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request & request, kinocto::TestAdjustFrontPosition::Response & response);
-    bool testAdjustSidePosition(kinocto::TestAdjustSidePosition::Request & request, kinocto::TestAdjustSidePosition::Response & response);
     bool testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response);
     bool testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request,
             kinocto::TestAdjustSidePositionWithGreenFrame::Response & response);
