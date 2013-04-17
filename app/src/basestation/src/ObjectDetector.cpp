@@ -331,9 +331,9 @@ void ObjectDetector::sortQuadsByPosition(vector<Rect> &outQuads) {
 ObjectDetector::quadColor ObjectDetector::findQuadColor(Mat &picture, const vector<Rect> &squares) {
     Rect bigSquare = getQuadEnglobingOthers(squares);
 
-    bool redSquare = containsRedSquares(picture, bigSquare);
-
-    if (redSquare) {
+    //bool redSquare = containsRedSquares(picture, bigSquare);
+    bool redSqaure = false;
+    if (redSqaure) {
         return RED;
     } else {
         return BLACK;
