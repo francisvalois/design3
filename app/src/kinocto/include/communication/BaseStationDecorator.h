@@ -12,13 +12,13 @@
 #include "basestation/TraceRealTrajectory.h"
 #include "basestation/UpdateRobotPosition.h"
 
-class BaseStationDecorator{
+class BaseStationDecorator {
 public:
     BaseStationDecorator(ros::NodeHandle & nodeHandle);
     virtual ~BaseStationDecorator();
 
     //Request
-    void requestRobotPositionAndAngle(Position & pos, float & angle);
+    void requestRobotPositionAndAngle(Position & pos);
     std::vector<Position> requestObstaclesPosition();
 
     //Messsages

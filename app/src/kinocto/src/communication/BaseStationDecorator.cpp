@@ -19,14 +19,13 @@ BaseStationDecorator::BaseStationDecorator(NodeHandle & node) {
 BaseStationDecorator::~BaseStationDecorator() {
 }
 
-void BaseStationDecorator::requestRobotPositionAndAngle(Position & pos, float & angle) {
+void BaseStationDecorator::requestRobotPositionAndAngle(Position & pos) {
     ROS_INFO("Requesting Robot Position from basestation");
 
     FindRobotPositionAndAngle srv;
     if (findRobotPositionAndAngleClient.call(srv) == true) {
-        ROS_INFO("The robot position is x:%f y:%f angle:%f", srv.response.x, srv.response.y, srv.response.angle);
+        ROS_INFO("The robot position is x:%f y:%f", srv.response.x, srv.response.y);
         pos.set(srv.response.x, srv.response.y);
-        angle = srv.response.angle;
     } else {
         ROS_ERROR("Failed to call service basestation/findRobotPositionAndAngle");
     }
@@ -144,9 +143,9 @@ int BaseStationDecorator::transformPositionToInt(int* position) {
             } else if(position[2] == 2) {
                 transformedPosition = 40;
             } else if(position[2] == 3) {
-                transformedPosition = 32;
+            	transformedPosition = 32;
             } else if(position[2] == 4) {
-                transformedPosition = 24;
+            	transformedPosition = 24;
             }
         }
     } else if(position[0] == 3) {
