@@ -29,21 +29,18 @@ bool BlueCornerFinder::isPresent(Mat & img) {
 
 Mat BlueCornerFinder::segmentCorner(Mat & img) {
     Mat corner = img.clone();
-    GaussianBlur(corner, corner, Size(15, 15), 1, 1);
+    GaussianBlur(corner, corner, Size(11, 11), 1, 1);
 
-    Mat laplacianImg;
-    Laplacian(corner, laplacianImg, CV_8UC1, 3);
-    corner = corner - laplacianImg;
     imshow("bluereal", corner);
 
     Mat cornerHSV;
     cvtColor(corner, cornerHSV, CV_BGR2HSV);
 
     Mat segmentedCorner;
-    inRange(cornerHSV, Scalar(90, 0, 50), Scalar(140, 255, 255), segmentedCorner);
+    inRange(cornerHSV, Scalar(90,110, 75), Scalar(150, 255, 255), segmentedCorner);
 
-    VisionUtility::applyErode(segmentedCorner, 2, MORPH_ELLIPSE);
-    VisionUtility::applyDilate(segmentedCorner, 2, MORPH_RECT);
+    VisionUtility::applyErode(segmentedCorner, 1, MORPH_ELLIPSE);
+    VisionUtility::applyDilate(segmentedCorner, 2, MORPH_ELLIPSE);
 
     imshow("blue", segmentedCorner);
 
@@ -62,8 +59,8 @@ vector<Rect> BlueCornerFinder::getCornerRect(const Mat & corner) {
     for (uint i = 0; i < cornerContour.size(); i++) {
         approxPolyDP(Mat(cornerContour[i]), cornerContoursPoly[i], 3, true);
         Rect rect = boundingRect(Mat(cornerContoursPoly[i]));
-
-        if (rect.area() > 40) { //TODO a définir
+        if (rect.area() > 500 && rect.area() < 25000) { //TODO a définir
+            cout << rect.area() << endl;
             cornerBoundingRect.push_back(rect);
             cornerPolyInteresting.push_back(cornerContoursPoly[i]);
         }

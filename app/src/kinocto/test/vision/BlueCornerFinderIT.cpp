@@ -15,12 +15,12 @@ protected:
 };
 
 TEST_F(BlueCornerFinderIT, test1) {
-    Mat img = imread("img/testBlueCornerFinder/blue.png");
+    Mat img = imread("img/testBlueCornerFinder/3.jpg");
     blueCornerFinder.isPresent(img);
 }
 
 TEST_F(BlueCornerFinderIT, test2) {
-    Mat img = imread("img/testBlueCornerFinder/blue2.png");
+    Mat img = imread("img/testBlueCornerFinder/6.jpg");
     blueCornerFinder.isPresent(img);
 }
 
