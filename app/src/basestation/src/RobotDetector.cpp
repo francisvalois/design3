@@ -138,8 +138,6 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         
         angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
 
-        imshow("test9", rgbMatrix);
-
         quadColor quadColor = findQuadColor(rgbMatrix, validRectPosition);
         _orientation = findOrientation(quadColor, angleRad);
 

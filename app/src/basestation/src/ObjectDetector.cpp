@@ -131,10 +131,7 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
         applyDilate(RGBGray, i, MORPH_RECT);
         applyErode(RGBGray, i, MORPH_RECT);
 
-        imshow("test2", RGBGray);
         findContours(RGBGray, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-
-
 
         // get all the contours one by one
         for (int j = 0; j < frameContours.size(); j++) {
@@ -204,9 +201,9 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
         for (int j = 0; j < outQuads.size(); j++) {
             rectangle(RGB, outQuads[j], Scalar(0, 0, 255));
         }
-        imshow("debug", RGB);
+        //imshow("debug", RGB);
 
-        cout << outQuads.size() << endl;
+        //cout << outQuads.size() << endl;
 
         if(applyCorrection){
             removeDoubleSquare(outQuads);
@@ -216,7 +213,7 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
             sortQuadsByPosition(outQuads);
         }
         else if(i >= 1){
-            cout << "test" << endl;
+            //cout << "test" << endl;
             return outQuads.size();
 
         }
@@ -272,8 +269,6 @@ bool ObjectDetector::containsRedSquares(Mat picture, Rect bigSquare) {
     inRange(HSVCroppedMat, Scalar(9, 100, 100), Scalar(16, 255, 230), segmentedRedSquare); // Pas le choix, en deux partie...
     //inRange(HSVCroppedMat, Scalar(130, 100, 50), Scalar(180, 255, 230), segmentedRedSquare2);
     //segmentedRedSquare += segmentedRedSquare2;
-
-    imshow("segmented", segmentedRedSquare);
 
     vector<Rect> redSquares;
     bool applyCorrection = false;
