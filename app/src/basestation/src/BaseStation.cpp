@@ -13,7 +13,7 @@ BaseStation::BaseStation(int argc, char** argv) :
     black = Scalar(0, 0, 0);
     red = Scalar(0, 0, 255);
     darkRed = Scalar(0, 0, 155);
-    green = Scalar(0,255,0);
+    green = Scalar(0, 255, 0);
 
     obstacle1.x = 0;
     obstacle1.y = 0;
@@ -66,10 +66,10 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
     findRobotPositionAndAngleService = node.advertiseService("basestation/findRobotPositionAndAngle", &BaseStation::findRobotPositionAndAngle, this);
     showSolvedSudocubeService = node.advertiseService("basestation/showSolvedSudocube", &BaseStation::showSolvedSudocube, this);
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
-    //updateRobotPositionService = node.advertiseService("basestation/updateRobotPosition", &BaseStation::updateRobotPosition, this);
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
 
     startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
+    setRobotPositionAndAngleClient = node.serviceClient<kinocto::SetRobotPositionAndAngle>("kinocto/setRobotPositionAndAngle");
 }
 
 void BaseStation::loop() {
@@ -95,14 +95,26 @@ void BaseStation::setStateToSendStartLoopMessage() {
 void BaseStation::sendStartLoopMessage() {
     kinocto::StartLoop srv;
     if (startLoopClient.call(srv) == true) {
-        //COnfirmation
         ROS_INFO("Showing Confirmation of Start Robot");
         state = LOOP;
         emit message("Kinocto : Start");
     } else {
         ROS_ERROR("Failed to call service kinocto/startLoop");
     }
+}
 
+void BaseStation::sendRobotPosAndAngle(double x, double y, double angle) {
+    kinocto::SetRobotPositionAndAngle srv;
+    srv.request.x = x;
+    srv.request.y = y;
+    srv.request.angle = angle;
+
+    if (setRobotPositionAndAngleClient.call(srv) == true) {
+        ROS_INFO("Setting Robot angle and position");
+        state = LOOP;
+    } else {
+        ROS_ERROR("Failed to call service kinocto/setRobotPositionAndAngle");
+    }
 }
 
 bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, GetObstaclesPosition::Response & response) {
@@ -289,7 +301,7 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
     if (kinoctoPositionUpdates.size() > 0) {
         kinoctoPositionUpdates.clear();
     }
-    actualPosition.set(0,0);
+    actualPosition.set(0, 0);
 
     emit endLoop("Kinocto : Loop Ended");
 
@@ -297,7 +309,7 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
 }
 
 bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, UpdateRobotPosition::Response & response) {
-    if(request.x != 0.0f && request.y != 0.0f) {
+    if (request.x != 0.0f && request.y != 0.0f) {
         ROS_INFO( "%s\n x:%f\n y:%f", "Updating Robot Position", request.x, request.y);
 
         stringstream info;
@@ -323,22 +335,22 @@ Mat3b BaseStation::createMatrix() {
     Mat3b tableWorkspace = Mat(Workspace::TABLE_X + 1, Workspace::TABLE_Y + 1, CV_8UC3, white);
 
     //GREEN SQUARE
-    for(int i = 22; i <=25; i++) {
-        for(int j = 22; j <=88; j++) {
+    for (int i = 22; i <= 25; i++) {
+        for (int j = 22; j <= 88; j++) {
             colorPixel(tableWorkspace, green, i, j);
             colorPixel(tableWorkspace, green, j, i);
         }
     }
-    for(int i = 85; i <=88; i++) {
-        for(int j = 22; j <=88; j++) {
+    for (int i = 85; i <= 88; i++) {
+        for (int j = 22; j <= 88; j++) {
             colorPixel(tableWorkspace, green, i, j);
             colorPixel(tableWorkspace, green, j, i);
         }
     }
 
     //REDLINE
-    for(int i = 150; i <=152; i++) {
-        for(int j = 0; j <=Workspace::TABLE_Y; j++) {
+    for (int i = 150; i <= 152; i++) {
+        for (int j = 0; j <= Workspace::TABLE_Y; j++) {
             colorPixel(tableWorkspace, red, i, j);
         }
     }

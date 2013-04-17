@@ -10,6 +10,7 @@
 //Messages
 #include "std_msgs/String.h"
 #include "kinocto/StartLoop.h"
+#include "kinocto/SetRobotPositionAndAngle.h"
 
 //Services
 #include "basestation/GetObstaclesPosition.h"
@@ -45,6 +46,7 @@ public:
     void loop();
     void setStateToSendStartLoopMessage();
     void sendStartLoopMessage();
+    void sendRobotPosAndAngle(double x, double y, double angle);
 
     bool getObstaclesPosition(basestation::GetObstaclesPosition::Request & request, basestation::GetObstaclesPosition::Response & response);
     bool findRobotPositionAndAngle(basestation::FindRobotPositionAndAngle::Request & request,
@@ -73,6 +75,7 @@ private:
 
     //ros::Publisher startLoopPublisher;
     ros::ServiceClient startLoopClient;
+    ros::ServiceClient setRobotPositionAndAngleClient;
 
     ros::ServiceServer getObstaclesPositionService;
     ros::ServiceServer findRobotPositionAndAngleService;
