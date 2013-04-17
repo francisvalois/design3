@@ -9,6 +9,8 @@ const float RobotDetector::ROBOT_RADIUS = 0.09f;
 const float RobotDetector::CAMERA_OFFSET = 0.06f;
 const int RobotDetector::X_ROBOT_LEFT_THRESHOLD = 50;
 const int RobotDetector::X_ROBOT_RIGHT_THRESHOLD = 610;
+const int RobotDetector::Y_ROBOT_TOP_THRESHOLD = 190;
+const int RobotDetector::Y_ROBOT_BOTTOM_THRESHOLD = 285;
 
 int RobotDetector::getOrientation() {
     return _orientation;
@@ -58,7 +60,7 @@ void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> val
     if ((int) leftPoint.y >= 0 && (int) leftPoint.x >= 0) {
         Vec3f leftPosition = depthMatrix.at<Vec3f>((int) leftPoint.y, (int) leftPoint.x);
         trueLeftPosition = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
-        if (trueLeftPosition[1] <= 0 && (int) leftPoint.y <= 450 && (int) leftPoint.x <= X_ROBOT_RIGHT_THRESHOLD - 5) {
+        if (trueLeftPosition[1] <= 0) {
             leftPosition = depthMatrix.at<Vec3f>((int) leftPoint.y + 5, (int) leftPoint.x + 5);
             trueLeftPosition = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
         }
@@ -67,7 +69,7 @@ void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> val
     if ((int) rightPoint.y >= 0 && (int) rightPoint.x >= 0) {
         Vec3f rightPosition = depthMatrix.at<Vec3f>((int) rightPoint.y, (int) rightPoint.x);
         trueRightPosition = KinectTransformator::getTrueCoordFromKinectCoord(rightPosition);
-        if (trueRightPosition[1] <= 0 && (int) rightPoint.y >= 5 && (int) rightPoint.x >= 5) {
+        if (trueRightPosition[1] <= 0) {
             rightPosition = depthMatrix.at<Vec3f>((int) rightPoint.y - 5, (int) rightPoint.x - 5);
             trueRightPosition = KinectTransformator::getTrueCoordFromKinectCoord(rightPosition);
         }
@@ -101,6 +103,11 @@ int RobotDetector::findOrientation(quadColor color, float angle) {
 void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obstacle1, Vec2f obstacle2) {
     vector<Rect> validRectPosition;
 
+    rgbMatrix = Mat(rgbMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
+            cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
+    depthMatrix = Mat(depthMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
+            cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
+
     int generatedCount = generateQuads(rgbMatrix, validRectPosition);
 
     for (int i = 0; i < validRectPosition.size(); i++) {
@@ -108,6 +115,7 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
     }
 
     imshow("test", rgbMatrix);
+
     cout << "GENERATED COUNT" << generatedCount << endl;
 
     if (generatedCount >= 3) {
@@ -123,7 +131,9 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         //the good orientation and the good position
         get2MajorPointsDistance(depthMatrix, validRobotPosition, trueLeftPosition, trueRightPosition);
         float angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
+
         vector<Point2f> extremePoints = getExtremePointsOfRobot(depthMatrix, angleRad, validRobotPosition);
+
         get2MajorPointsDistance(depthMatrix, extremePoints, trueLeftPosition, trueRightPosition);
 
         if (trueLeftPosition[0] <= 0 || trueLeftPosition[1] <= 0 || trueRightPosition[0] <= 0 || trueRightPosition[1] <= 0) {
@@ -133,7 +143,6 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         }
 
         angleRad = getAngleFrom2Distances(trueLeftPosition, trueRightPosition);
-
         quadColor quadColor = findQuadColor(rgbMatrix, validRectPosition);
         _orientation = findOrientation(quadColor, angleRad);
 
@@ -192,6 +201,8 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
     if (leftRobotTrueCoords.x <= 0 || leftRobotTrueCoords.y <= 0 || rightRobotTrueCoords.x <= 0 || rightRobotTrueCoords.y <= 0) {
         cout << "Unable to detect Robot" << endl;
     }
+
+
 
     pointsList.push_back(leftRobotTrueCoords);
     pointsList.push_back(rightRobotTrueCoords);

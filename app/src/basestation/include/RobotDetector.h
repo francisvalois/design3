@@ -32,6 +32,8 @@ private:
     const static int X_ROBOT_RIGHT_THRESHOLD;
     static float const ROBOT_RADIUS;
     static float const CAMERA_OFFSET;
+    const static int Y_ROBOT_TOP_THRESHOLD;
+    const static int Y_ROBOT_BOTTOM_THRESHOLD;
 
     cv::Vec2f _robotPosition;
     float _robotAngle;
