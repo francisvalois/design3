@@ -386,6 +386,7 @@ Sudocube * Kinocto::solveSudocube(vector<Sudocube *> & sudocubes) {
     sudokubeSolver.solve(*goodSudocube);
     if (goodSudocube->isSolved()) {
         ROS_INFO("Red square value: %d Solved sudocube: \n%s ", goodSudocube->getRedCaseValue(), goodSudocube->print().c_str());
+        numberToDraw = goodSudocube->getRedCaseValue();
         return goodSudocube;
     } else {
         ROS_ERROR("%s", "Could not solve the Sudocube");
