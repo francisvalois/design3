@@ -131,7 +131,6 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
         applyDilate(RGBGray, i, MORPH_RECT);
         applyErode(RGBGray, i, MORPH_RECT);
 
-        imshow("test8", RGBGray);
         findContours(RGBGray, frameContours, frameHierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
         // get all the contours one by one

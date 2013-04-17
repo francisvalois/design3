@@ -116,8 +116,6 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
 
     imshow("test", rgbMatrix);
 
-    cout << "GENERATED COUNT" << generatedCount << endl;
-
     if (generatedCount >= 3) {
         vector<Point2f> validRobotPosition;
         for (int i = 0; i < validRectPosition.size(); i++) {
