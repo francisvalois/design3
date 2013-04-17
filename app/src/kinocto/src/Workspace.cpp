@@ -1,6 +1,5 @@
 #include "Workspace.h"
 
-
 const float Workspace::MAX_X = 231.0f;
 const float Workspace::MAX_Y = 111.0f;
 const float Workspace::ROBOT_FRONT_SIZE = 12.5f;
@@ -92,7 +91,9 @@ Position Workspace::getRobotPos() {
 }
 
 void Workspace::setRobotPos(Position pos) {
-    robot = pos;
+    if (pos.x != 0.0f && pos.y != 0.0f) {
+        robot = pos;
+    }
 }
 
 float Workspace::getRobotAngle() {

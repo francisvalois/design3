@@ -2,7 +2,6 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-
 using namespace cv;
 using namespace std;
 
@@ -11,22 +10,22 @@ float KinectTransformator::_kinectAngleRad = (float) (KINECTANGLE / 180 * M_PI);
 Vec2f KinectTransformator::_kinectPosition = Vec2f(0.13f, -0.54f);
 Mat KinectTransformator::_distortionCorrectionMatrix = Mat();
 
-void KinectTransformator::setKinectAngle(float angleRad){
-    if(angleRad > 0 && angleRad < M_PI){
+void KinectTransformator::setKinectAngle(float angleRad) {
+    if (angleRad > 0 && angleRad < M_PI) {
         _kinectAngleRad = angleRad;
     }
 }
 
-Vec2f KinectTransformator::getKinectPosition(){
+Vec2f KinectTransformator::getKinectPosition() {
     return _kinectPosition;
 }
 
-float KinectTransformator::getKinectAngle(){
+float KinectTransformator::getKinectAngle() {
     return _kinectAngleRad;
 }
 
-void KinectTransformator::setKinectPosition(Vec2f kinectPosition){
-     _kinectPosition = kinectPosition;
+void KinectTransformator::setKinectPosition(Vec2f kinectPosition) {
+    _kinectPosition = kinectPosition;
 }
 
 Vec2f KinectTransformator::getRotatedXZCoordFromKinectCoord(Vec3f depthXYZ) {
@@ -53,16 +52,14 @@ Vec2f KinectTransformator::translateXZCoordtoOrigin(Vec2f rotatedXZ) {
     float positionZ = rotatedXZ[1] + _kinectPosition[1];
     float positionX = rotatedXZ[0] + _kinectPosition[0];
     Vec2f modifiedXZPosition(positionX, positionZ);
-    
+
     return modifiedXZPosition;
 }
 
 Vec2f KinectTransformator::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
-    if(depthXYZ[2] < 0.5)
-    {
+    if (depthXYZ[2] < 0.5) {
         return Vec2f();
     }
-
 
     Vec2f positionCorrected = distortionCorrection(Vec2f(depthXYZ[0], depthXYZ[2]));
     Vec2f rotPosition = getRotatedXZCoordFromKinectCoord(positionCorrected);
@@ -71,12 +68,12 @@ Vec2f KinectTransformator::getTrueCoordFromKinectCoord(Vec3f depthXYZ) {
     return realPosition;
 }
 
-float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY){
+float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX, float expectedValueY) {
     expectedValueY = 2.5;
     expectedValueX = 14;
 
-    float B22data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27,
-                        28, 29, 30, 31, 32, 33, 34, 35, 36};
+    float B22data[] =
+            { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36 };
     Mat lookupTable = Mat(6, 6, CV_32F, B22data).clone();
 
     vector<float> yRow = lookupTable.row(0);
@@ -85,17 +82,17 @@ float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX,
 
     //Find X and Y Position of each points near the expected values
     std::vector<float>::iterator lowBoundY, lowBoundX;
-    lowBoundY = std::lower_bound (yRow.begin(), yRow.end(), expectedValueY);
+    lowBoundY = std::lower_bound(yRow.begin(), yRow.end(), expectedValueY);
     int lowBoundYIndex = distance(yRow.begin(), lowBoundY) - 1;
 
-    lowBoundX = std::lower_bound (xRow.begin(), xRow.end(), expectedValueX);
+    lowBoundX = std::lower_bound(xRow.begin(), xRow.end(), expectedValueX);
     int lowBoundXIndex = distance(xRow.begin(), lowBoundX) - 1;
 
-    if(lowBoundYIndex > lookupTable.cols - 1 || lowBoundYIndex < 1){
+    if (lowBoundYIndex > lookupTable.cols - 1 || lowBoundYIndex < 1) {
         throw string("The the expected Y value is out of range of the lookupTable");
     }
 
-    if(lowBoundXIndex > lookupTable.rows - 1 || lowBoundXIndex < 1){
+    if (lowBoundXIndex > lookupTable.rows - 1 || lowBoundXIndex < 1) {
         throw string("The the expected X value is out of range of the lookupTable");
     }
 
@@ -108,7 +105,7 @@ float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX,
     float point20 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex - 1);
     float point21 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex);
     float point22 = lookupTable.at<float>(lowBoundXIndex + 1, lowBoundYIndex + 1);
-      
+
     //Create interpolate coords + values
     Vec3f interpolate3 = Vec3f(point01, point11, point21);
     Vec3f interpolate4 = Vec3f(point02, point12, point22);
@@ -129,41 +126,35 @@ float KinectTransformator::findBestCorrectionInLookupTable(float expectedValueX,
     return (interpolateValue1 + interpolateValue2 + interpolateValue3 + interpolateValue4) / 4;
 }
 
+float KinectTransformator::polynomial3Interpolate(float expectedValue, Vec3f interpolateValues, Vec3f interpolateCoords) {
+    float polynom1 = (expectedValue - interpolateCoords[1]) * (expectedValue - interpolateCoords[2])
+            / ((interpolateCoords[0] - interpolateCoords[1]) * (interpolateCoords[0] - interpolateCoords[2]));
+    float polynom2 = (expectedValue - interpolateCoords[0]) * (expectedValue - interpolateCoords[2])
+            / ((interpolateCoords[1] - interpolateCoords[0]) * (interpolateCoords[1] - interpolateCoords[2]));
+    float polynom3 = (expectedValue - interpolateCoords[0]) * (expectedValue - interpolateCoords[1])
+            / ((interpolateCoords[2] - interpolateCoords[0]) * (interpolateCoords[2] - interpolateCoords[1]));
 
-float KinectTransformator::polynomial3Interpolate(float expectedValue, Vec3f interpolateValues, Vec3f interpolateCoords)
-{
-    float polynom1 = (expectedValue - interpolateCoords[1])*(expectedValue - interpolateCoords[2])/
-        ((interpolateCoords[0] - interpolateCoords[1])*(interpolateCoords[0] - interpolateCoords[2]));
-    float polynom2 = (expectedValue - interpolateCoords[0])*(expectedValue - interpolateCoords[2])/
-        ((interpolateCoords[1] - interpolateCoords[0])*(interpolateCoords[1] - interpolateCoords[2]));
-    float polynom3 = (expectedValue - interpolateCoords[0])*(expectedValue - interpolateCoords[1])/
-        ((interpolateCoords[2] - interpolateCoords[0])*(interpolateCoords[2] - interpolateCoords[1]));
-    
-    return(interpolateValues[0] * polynom1 + interpolateValues[1] * polynom2 + interpolateValues[2] * polynom3);
+    return (interpolateValues[0] * polynom1 + interpolateValues[1] * polynom2 + interpolateValues[2] * polynom3);
 }
 
-void KinectTransformator::setDistortionCorrectionMatrix(Mat correctionMatrix)
-{
-    if(correctionMatrix.cols == 3 && correctionMatrix.rows == 3){
+void KinectTransformator::setDistortionCorrectionMatrix(Mat correctionMatrix) {
+    if (correctionMatrix.cols == 3 && correctionMatrix.rows == 3) {
         _distortionCorrectionMatrix = correctionMatrix;
     }
 }
 
-cv::Vec2f KinectTransformator::distortionCorrection( Vec2f distanceToCorrect )
-{
-    if(_distortionCorrectionMatrix.rows != 0 || _distortionCorrectionMatrix.cols != 0){
+cv::Vec2f KinectTransformator::distortionCorrection(Vec2f distanceToCorrect) {
+    if (_distortionCorrectionMatrix.rows != 0 || _distortionCorrectionMatrix.cols != 0) {
         return distanceToCorrect;
     }
 
-    float correctionMatrixCoords[] = {-0.051443474f, 0.01775852f, 0.04000356f,
-                                      -2.95724328f, 1.021181f, 2.299995f,
-                                      -1.28576f, 0.44399119f, 1};
+    float correctionMatrixCoords[] = { -0.051443474f, 0.01775852f, 0.04000356f, -2.95724328f, 1.021181f, 2.299995f, -1.28576f, 0.44399119f, 1 };
 
-    float correctionMatrixCoords2[] = {106.2192, -0.9392, 0.8918, -0.1653, 97.1015, 3.9333, -0.00685, -0.0037928, 1};
+    float correctionMatrixCoords2[] = { 106.2192, -0.9392, 0.8918, -0.1653, 97.1015, 3.9333, -0.00685, -0.0037928, 1 };
     Mat correctionMatrix = Mat(3, 3, CV_32F, correctionMatrixCoords2).clone();
 
-    float distanceCoeffs[] = {distanceToCorrect[0], distanceToCorrect[1], 1};
-    Mat distanceMat = Mat(3,1, CV_32F, distanceCoeffs).clone();
+    float distanceCoeffs[] = { distanceToCorrect[0], distanceToCorrect[1], 1 };
+    Mat distanceMat = Mat(3, 1, CV_32F, distanceCoeffs).clone();
 
     Mat correctedDistanceMat = correctionMatrix * distanceMat;
 
@@ -173,23 +164,25 @@ cv::Vec2f KinectTransformator::distortionCorrection( Vec2f distanceToCorrect )
     float p2 = *(it + 1);
     float p3 = *(it + 2);
 
-    Vec2f tempPosition = Vec2f(p1/p3/100, p2/p3/100);
+    Vec2f tempPosition = Vec2f(p1 / p3 / 100, p2 / p3 / 100);
     Vec2f tempPositionCorrectedXFromX = distortionZfromXPosition(tempPosition);
     Vec2f tempPositionCorrectedZFromZ = distortionZfromZPosition(tempPositionCorrectedXFromX);
 
     return tempPositionCorrectedZFromZ;
 }
 
-cv::Vec2f KinectTransformator::distortionZfromXPosition( cv::Vec2f positionToCorrect )
-{
-    float error = 0.00004 * pow(positionToCorrect[0]*100, 3) - 0.0042 * pow(positionToCorrect[0]*100, 2) +
-        0.205 * positionToCorrect[0]*100+0.3264;
+cv::Vec2f KinectTransformator::distortionZfromXPosition(cv::Vec2f positionToCorrect) {
+    float error = 0.00004 * pow(positionToCorrect[0] * 100, 3) - 0.0042 * pow(positionToCorrect[0] * 100, 2) + 0.205 * positionToCorrect[0] * 100
+            + 0.3264;
 
-    return Vec2f(positionToCorrect[0], positionToCorrect[1] + error/100);
+    if (positionToCorrect[0] < 0) {
+        error = 0;
+    }
+
+    return Vec2f(positionToCorrect[0], positionToCorrect[1] + error / 100);
 }
 
-cv::Vec2f KinectTransformator::distortionZfromZPosition( cv::Vec2f positionToCorrect )
-{
+cv::Vec2f KinectTransformator::distortionZfromZPosition(cv::Vec2f positionToCorrect) {
     float error = 0;
 
     return positionToCorrect;
