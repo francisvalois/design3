@@ -43,6 +43,7 @@
 #include "kinocto/TestAdjustAngle.h"
 #include "kinocto/TestAdjustSidePositionWithGreenFrame.h"
 #include "kinocto/TestAdjustAngleGreenBorder.h"
+#include "kinocto/TestRotateKinect.h"
 
 #define WAITING 1
 #define LOOPING 2
@@ -75,8 +76,8 @@ private:
 
     void startLoop();
     void getObstaclesPosition();
-    void getRobotPosition(float & angle, Position & robotPos);
-    void getCriticalRobotPosition(float & angle, Position & robotPos);
+    void getRobotPosition(Position & robotPos);
+    void getCriticalRobotPosition(Position & robotPos);
     void goToAntenna();
     void executeMoves(std::vector<Move> & moves);
     void decodeAntennaParam();
@@ -116,6 +117,7 @@ public:
     bool testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request,
             kinocto::TestAdjustSidePositionWithGreenFrame::Response & response);
     bool testAdjustAngleGreenBorder(kinocto::TestAdjustAngleGreenBorder::Request & request, kinocto::TestAdjustAngleGreenBorder::Response & response);
+    bool testRotateKinect(kinocto::TestRotateKinect::Request & request, kinocto::TestRotateKinect::Response & response);
 };
 
 #endif

@@ -73,9 +73,8 @@ void Kinocto::startLoop() {
         goToDrawingZone();
         drawNumber();
 
-        float angle = 0;
         Position robotPos;
-        getRobotPosition(angle, robotPos);
+        getRobotPosition(robotPos);
         workspace.setRobotPos(robotPos);
 
         getOutOfDrawingZone();
@@ -93,15 +92,15 @@ bool Kinocto::setRobotPositionAndAngle(kinocto::SetRobotPositionAndAngle::Reques
     return true;
 }
 
-void Kinocto::getRobotPosition(float & angle, Position & robotPos) {
-    baseStation->requestRobotPositionAndAngle(robotPos, angle);
+void Kinocto::getRobotPosition(Position & robotPos) {
+    baseStation->requestRobotPositionAndAngle(robotPos);
 }
 
-void Kinocto::getCriticalRobotPosition(float & angle, Position & robotPos) {
-    baseStation->requestRobotPositionAndAngle(robotPos, angle);
+void Kinocto::getCriticalRobotPosition(Position & robotPos) {
+    baseStation->requestRobotPositionAndAngle(robotPos);
     if (robotPos.x == 0 && robotPos.y == 0) {
         microcontroller->rotate(90.0f);
-        baseStation->requestRobotPositionAndAngle(robotPos, angle);
+        baseStation->requestRobotPositionAndAngle(robotPos);
     }
 }
 
@@ -155,9 +154,8 @@ void Kinocto::executeMoves(vector<Move> & moves) {
         workspace.setRobotAngle(workspace.getRobotAngle() + moves[i].angle);
         workspace.setRobotPos(moves[i].destination);
 
-        float angle;
         Position robotPos;
-        getRobotPosition(angle, robotPos);
+        getRobotPosition(robotPos);
     }
 }
 
@@ -470,9 +468,8 @@ void Kinocto::goToDrawingZone() {
     //TODO devrais rectifier l'angle du robot
 
 // Correction de la position du robot dans la zone de dessin
-    float angle;
     Position robotPos;
-    getCriticalRobotPosition(angle, robotPos);
+    getCriticalRobotPosition(robotPos);
     workspace.setRobotPos(robotPos);
 
     vector<Position> positions2 = pathPlanning.getPath(workspace.getRobotPos(), workspace.getSquareCenter());
@@ -591,6 +588,11 @@ bool Kinocto::testAdjustAngleGreenBorder(kinocto::TestAdjustAngleGreenBorder::Re
     return true;
 }
 
+bool Kinocto::testRotateKinect(kinocto::TestRotateKinect::Request & request, kinocto::TestRotateKinect::Response & response) {
+
+    return true;
+}
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "kinocto");
     ros::NodeHandle nodeHandle;
@@ -609,6 +611,7 @@ int main(int argc, char **argv) {
     ros::ServiceServer service8 = nodeHandle.advertiseService("kinocto/TestAdjustAngleGreenBorder", &Kinocto::testAdjustAngleGreenBorder, &kinocto);
     ros::ServiceServer service9 = nodeHandle.advertiseService("kinocto/startLoop", &Kinocto::setStartLoop, &kinocto);
     ros::ServiceServer service11 = nodeHandle.advertiseService("kinocto/setRobotPositionAndAngle", &Kinocto::setRobotPositionAndAngle, &kinocto);
+    ros::ServiceServer service12 = nodeHandle.advertiseService("kinocto/TestRotateKinect", &Kinocto::testRotateKinect, &kinocto);
 
     ROS_INFO("%s", "Kinocto Initiated");
     kinocto.loop();

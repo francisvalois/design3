@@ -22,6 +22,7 @@ add_service_files(
   TestAdjustAngle.srv
   TestAdjustSidePositionWithGreenFrame.srv
   TestAdjustAngleGreenBorder.srv
+  TestRotateKinect.srv
   StartLoop.srv
   SetRobotPositionAndAngle.srv
 )
