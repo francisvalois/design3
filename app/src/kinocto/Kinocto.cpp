@@ -314,7 +314,7 @@ void Kinocto::adjustSidePositionWithGreenFrame() {
 void Kinocto::adjustFrontPosition() {
     ROS_INFO("ADJUSTING FRONT POSITION WITH THE SONAR");
 
-    int DISTANCE_FROM_CAMERA = 3;
+    float DISTANCE_FROM_CAMERA = 3.50;
     for (int i = 1; i <= 2; i++) {
         float frontDistance = getSonarDistance() - DISTANCE_FROM_CAMERA;
         float distance = frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE;
@@ -331,7 +331,7 @@ float Kinocto::getSonarDistance() {
         distances.push_back(microcontroller->getSonarDistance(1));
         if (i >= 1) {
             if (fabs(distances[i - 1] - distances[i]) <= 1) { //Distance between 2 values
-                if (distances[i] < 45) {
+                if (distances[i] <= 50) {
                     return distances[i];
                 }
             }
