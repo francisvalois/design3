@@ -76,7 +76,7 @@ void BaseStation::loop() {
     if (ros::ok()) {
         switch (state) {
         case LOOP:
-            cout << "looping" << endl;
+            //cout << "looping" << endl;
             break;
         case SEND_START_LOOP_MESSAGE:
             sendStartLoopMessage();
