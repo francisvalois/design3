@@ -286,12 +286,17 @@ void Kinocto::adjustAngleInFrontOfWall() {
     microcontroller->rotateCam(camAngle, 0);
     cameraCapture->openCapture();
 
-    double angle = 0;
+    double angle1 = 0;
+    double angle2 = 0;
+    double angle3 = 0;
     //for (int i = 0; i < 2; i++) {
         Mat wall = cameraCapture->takePicture();
 
         AngleFinder angleFinder;
-        angle = angleFinder.findWallAngle2(wall) + 2;
+        angle1 = angleFinder.findWallAngle2(wall);
+        angle2 = angleFinder.findWallAngle2(wall);
+        angle3 = angleFinder.findWallAngle2(wall);
+        double angle = (angle1 + angle2 + angle3) / 3;
         microcontroller->rotate(angle);
     //}
 
