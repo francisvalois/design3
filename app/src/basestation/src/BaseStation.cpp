@@ -285,10 +285,13 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
         }
     }
 
-    while (!positionsForWhenThatDamnKinectDoesntReturnADamnPosition.empty()) {
+    for(int i = 0; i < positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size(); i++) {
         cout << "DEBUGGING : stack not empty, emptying" << endl;
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
     }
+
+    cout << "DEBUGGING : stack now empty, POOPED it all" << endl;
+
 
     for(int i = plannedPath.size() - 1; i >= 0; i--) {
         cout << "DEBUGGING : filling stack : Position : "<< plannedPath[i].x << "," << plannedPath[i].y << endl;
