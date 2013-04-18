@@ -35,10 +35,12 @@
 #define LOOP 0
 #define SEND_START_LOOP_MESSAGE 1
 
-
 class BaseStation: public QThread {
 Q_OBJECT
 public:
+
+    static bool isUpdatingShit;
+
     BaseStation(int argc, char** argv);
     virtual ~BaseStation();
     bool init();
@@ -55,7 +57,8 @@ public:
     bool traceRealTrajectory(basestation::TraceRealTrajectory::Request & request, basestation::TraceRealTrajectory::Response & response);
     bool loopEnded(basestation::LoopEnded::Request & request, basestation::LoopEnded::Response & response);
 
-    void updateRobotPosition(const std_msgs::StringConstPtr& str);
+    void updateRobotPosition(const basestation::UpdateRobotPos& str);
+    void  updateShizzle();
 
 Q_SIGNALS:
     void rosShutdown();

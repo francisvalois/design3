@@ -5,6 +5,8 @@ using namespace std;
 using namespace boost;
 using namespace cv;
 
+bool BaseStation::isUpdatingShit = false;
+
 BaseStation::BaseStation(int argc, char** argv) :
         init_argc(argc), init_argv(argv) {
 
@@ -84,6 +86,11 @@ void BaseStation::loop() {
             sendStartLoopMessage();
             state = LOOP;
             break;
+        }
+
+        if (BaseStation::isUpdatingShit == true) {
+            BaseStation::isUpdatingShit = false;
+            updateShizzle();
         }
 
         ros::spinOnce();
@@ -308,7 +315,7 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
     return true;
 }
 
-void BaseStation::updateRobotPosition(const std_msgs::StringConstPtr& str) {
+void BaseStation::updateShizzle() {
     int const AVERAGECOUNT = 1;
     int robotPositionAverageCount = 0;
     float positionX = 0.0f;
@@ -327,6 +334,7 @@ void BaseStation::updateRobotPosition(const std_msgs::StringConstPtr& str) {
         Vec2f robot = robotDetection.getRobotPosition();
         float angle = robotDetection.getRobotAngle();
         cout << angle << endl;
+        cout << robot << endl;
         if (robot[0] > 0.10 || robot[1] > 0.20) {
             positionX += robot[1] * 100;
             positionY += robot[0] * 100;
@@ -352,13 +360,17 @@ void BaseStation::updateRobotPosition(const std_msgs::StringConstPtr& str) {
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);
 
-    ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", positionX, positionY);
+    ROS_INFO( "%s x:%f y:%f", "UPDATING Robot Position. Sending Values ", positionX, positionY);
     stringstream info;
     info << "Kinocto : Update de la position du robot \n";
     info << " (" << positionX << "," << positionY << ")";
     QString infoQ((char*) info.str().c_str());
 
     emit message(infoQ);
+}
+
+void BaseStation::updateRobotPosition(const basestation::UpdateRobotPos& str) {
+    isUpdatingShit = true;
 }
 
 Mat3b BaseStation::createMatrix() {

@@ -280,7 +280,7 @@ Vec2f RobotDetector::getAveragePosition(Mat depthMatrix, vector<Point2f> extreme
 
     if(avgPoints.size() > 0){
 
-        if((countOfPointsX.size() > 1  &&
+        /*if((countOfPointsX.size() > 1  &&
                 (*countOfPointsX.begin()).second <= 0.1 *avgPoints.size())){
             float flushValueX = (*countOfPointsX.begin()).first;
 
@@ -306,7 +306,7 @@ Vec2f RobotDetector::getAveragePosition(Mat depthMatrix, vector<Point2f> extreme
                     avgPoints.push_back(tempVector[i]);
                 }
             }
-        }
+        }*/
 
         vector<Vec2f>::iterator it;
         for(it = avgPoints.begin(); it != avgPoints.end(); it++) {
