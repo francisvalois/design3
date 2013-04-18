@@ -161,7 +161,7 @@ void Kinocto::getOutOfDrawingZone() {
 void Kinocto::goToAntenna() {
     ROS_INFO("GOING TO ANTENNA");
 
-    float angle = -1 * workspace.getRobotAngle();
+    float angle = -1 * workspace.getRobotAngle(); //TODO Inutile? Déja dans la méthode getOutToFindObstacles()
     microcontroller->rotate(angle);
 
     Position translationX(workspace.getRobotPos().y - workspace.getAntennaReadPos().y, 0);
@@ -170,7 +170,7 @@ void Kinocto::goToAntenna() {
     Position translationY(0, workspace.getAntennaReadPos().x - workspace.getRobotPos().x);
     microcontroller->translate(translationY);
 
-    workspace.setRobotAngle(angle);
+    workspace.setRobotAngle(angle); // TODO WTF!?!? ICI normalement l'angle sera de zéro
     workspace.setRobotPos(workspace.getAntennaReadPos());
 
     baseStation->sendUpdateRobotPositionMessage();
@@ -221,7 +221,7 @@ void Kinocto::adjustAngleWithGreenBorder() {
     }
 
     cameraCapture->closeCapture();
-    microcontroller->rotateCam(0, 2);
+    microcontroller->rotateCam(0, 2); //TODO On met a deux ??? On as juste besoin de remettre a zéro
 }
 
 void Kinocto::goToSudocubeX() {
@@ -286,7 +286,7 @@ void Kinocto::adjustAngleInFrontOfWall() {
 
     double angle = 0;
 
-    //for (int i = 0; i < 2; i++) {
+    //for (int i = 0; i < 2; i++) { // TODO Supprimer ça
     Mat wall = cameraCapture->takePicture();
 
     AngleFinder angleFinder;
@@ -323,7 +323,7 @@ void Kinocto::adjustFrontPosition() {
         float frontDistance = getSonarDistance() - DISTANCE_FROM_CAMERA;
         float distance = frontDistance - Workspace::SUDOCUBE_FRONT_DISTANCE;
         ROS_INFO("FRONT DISTANCE %f", frontDistance);
-        if (distance >= -1 * Workspace::SUDOCUBE_FRONT_DISTANCE) {  //
+        if (distance >= -1 * Workspace::SUDOCUBE_FRONT_DISTANCE) {
             microcontroller->move(distance);
         }
     }
@@ -331,11 +331,11 @@ void Kinocto::adjustFrontPosition() {
 
 float Kinocto::getSonarDistance() {
     vector<float> distances;
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++) { // TODO Extraire constante
         distances.push_back(microcontroller->getSonarDistance(1));
         if (i >= 1) {
             if (fabs(distances[i - 1] - distances[i]) <= 1) { //Distance between 2 values
-                if (distances[i] <= 50) {
+                if (distances[i] <= 50) { //TODO Extraire constante
                     return distances[i];
                 }
             }

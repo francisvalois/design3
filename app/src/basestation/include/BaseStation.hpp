@@ -14,6 +14,8 @@
 #include "kinocto/SetRobotPositionAndAngle.h"
 #include "basestation/UpdateRobotPos.h"
 
+#include "KinectUtility.h"
+
 //Services
 #include "basestation/GetObstaclesPosition.h"
 #include "basestation/FindRobotPositionAndAngle.h"
