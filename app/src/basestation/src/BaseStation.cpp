@@ -88,7 +88,6 @@ void BaseStation::loop() {
             break;
         }
 
-        cout << BaseStation::isUpdatingShit << endl;
         if (BaseStation::isUpdatingShit == true) {
             BaseStation::isUpdatingShit = false;
             updateShizzle();
