@@ -10,9 +10,10 @@ include(${QT_USE_FILE})
 ## Declare ROS messages and services ##
 #######################################
 
- #add_message_files(
- #  FILES
- #)
+ add_message_files(
+   FILES
+   UpdateRobotPos.msg
+ )
 
 add_service_files(
   FILES

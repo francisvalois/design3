@@ -11,6 +11,7 @@
 #include "std_msgs/String.h"
 #include "kinocto/StartLoop.h"
 #include "kinocto/SetRobotPositionAndAngle.h"
+#include "basestation/UpdateRobotPos.h"
 
 //Services
 #include "basestation/GetObstaclesPosition.h"
@@ -54,7 +55,8 @@ public:
     bool showSolvedSudocube(basestation::ShowSolvedSudocube::Request & request, basestation::ShowSolvedSudocube::Response & response);
     bool traceRealTrajectory(basestation::TraceRealTrajectory::Request & request, basestation::TraceRealTrajectory::Response & response);
     bool loopEnded(basestation::LoopEnded::Request & request, basestation::LoopEnded::Response & response);
-    bool updateRobotPosition(basestation::UpdateRobotPosition::Request & request, basestation::UpdateRobotPosition::Response & response);
+
+    void updateRobotPosition(const std_msgs::StringConstPtr& str);
 
 Q_SIGNALS:
     void rosShutdown();
@@ -83,6 +85,8 @@ private:
     ros::ServiceServer traceRealTrajectoryService;
     ros::ServiceServer updateRobotPositionService;
     ros::ServiceServer loopEndedService;
+
+    ros::Subscriber updateRobotSubscriber;
 
     void initHandlers(ros::NodeHandle & node);
 

@@ -126,8 +126,7 @@ void Kinocto::getOutToFindObstacles() {
     workspace.setRobotPos(workspace.getKinectDeadAngle());
 
     //Affichage pour la basestation
-    Position robotPosUpdate;
-    getRobotPosition(robotPosUpdate);
+    baseStation->sendUpdateRobotPositionMessage();
 }
 
 void Kinocto::getOutOfDrawingZone() {
@@ -173,8 +172,7 @@ void Kinocto::goToAntenna() {
     workspace.setRobotAngle(angle);
     workspace.setRobotPos(workspace.getAntennaReadPos());
 
-    Position robotPos; //FAIT JUSTE UPDATER LA POSITION DU ROBOT AU BASESTATION
-    getRobotPosition(robotPos);
+    baseStation->sendUpdateRobotPositionMessage();
 }
 
 void Kinocto::executeMoves(vector<Move> & moves) {
@@ -186,8 +184,7 @@ void Kinocto::executeMoves(vector<Move> & moves) {
         workspace.setRobotPos(moves[i].destination);
         ROS_INFO("going to x:%f y:%f", moves[i].destination.x, moves[i].destination.y);
 
-        Position robotPos; //Update seulement la position sur la basestation
-        getRobotPosition(robotPos);
+        baseStation->sendUpdateRobotPositionMessage();
     }
 }
 
@@ -289,11 +286,11 @@ void Kinocto::adjustAngleInFrontOfWall() {
     double angle = 0;
 
     //for (int i = 0; i < 2; i++) {
-        Mat wall = cameraCapture->takePicture();
+    Mat wall = cameraCapture->takePicture();
 
-        AngleFinder angleFinder;
-        angle = angleFinder.findWallAngle2(wall);
-        microcontroller->rotate(angle);
+    AngleFinder angleFinder;
+    angle = angleFinder.findWallAngle2(wall);
+    microcontroller->rotate(angle);
     //}
 
     cameraCapture->closeCapture();
@@ -530,7 +527,7 @@ bool Kinocto::testGoToSudocubeX(TestGoToSudocubeX::Request & request, TestGoToSu
     Position robotPos(36.5, 38.5);
     workspace.setRobotPos(robotPos);
     workspace.setRobotAngle(0.0f);
-    baseStation->sendUpdateRobotPositionMessage(robotPos);
+    //baseStation->sendUpdateRobotPositionMessage(robotPos);
 
 //Initialisation rapide des obstacles pour les tests
     Position obs1(request.obs1x, request.obs1y);

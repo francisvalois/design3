@@ -14,6 +14,8 @@ BaseStationDecorator::BaseStationDecorator(NodeHandle & node) {
     loopEndedClient = nodeHandle.serviceClient<LoopEnded>("basestation/loopEnded");
     traceRealTrajectoryClient = nodeHandle.serviceClient<TraceRealTrajectory>("basestation/traceRealTrajectory");
     updateRobotPositionClient = nodeHandle.serviceClient<UpdateRobotPosition>("basestation/updateRobotPosition");
+
+    updateRobotPositionPub = nodeHandle.advertise<basestation::UpdateRobotPos>("basestation/updateRobotPosition", 1);
 }
 
 BaseStationDecorator::~BaseStationDecorator() {
@@ -64,129 +66,129 @@ void BaseStationDecorator::sendSolvedSudocube(Sudocube * sudocube) {
 int BaseStationDecorator::transformPositionToInt(int* position) {
     int transformedPosition = 0;
 
-    if(position[0] == 1) {
-        if(position[1] == 1) {
-            if(position[2] == 1) {
+    if (position[0] == 1) {
+        if (position[1] == 1) {
+            if (position[2] == 1) {
                 transformedPosition = 44;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 43;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 42;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 41;
             }
-        } else if(position[1] == 2) {
-            if(position[2] == 1) {
+        } else if (position[1] == 2) {
+            if (position[2] == 1) {
                 transformedPosition = 36;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 35;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 34;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 33;
             }
-        } else if(position[1] == 3) {
-            if(position[2] == 1) {
+        } else if (position[1] == 3) {
+            if (position[2] == 1) {
                 transformedPosition = 28;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 27;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 26;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 25;
             }
-        } else if(position[1] == 4) {
-            if(position[2] == 1) {
+        } else if (position[1] == 4) {
+            if (position[2] == 1) {
                 transformedPosition = 20;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 19;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 18;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 17;
             }
         }
-    } else if(position[0] == 2) {
-        if(position[1] == 1) {
-            if(position[2] == 1) {
+    } else if (position[0] == 2) {
+        if (position[1] == 1) {
+            if (position[2] == 1) {
                 transformedPosition = 45;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 37;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 29;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 21;
             }
-        } else if(position[1] == 2) {
-            if(position[2] == 1) {
+        } else if (position[1] == 2) {
+            if (position[2] == 1) {
                 transformedPosition = 46;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 38;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 30;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 22;
             }
-        } else if(position[1] == 3) {
-            if(position[2] == 1) {
+        } else if (position[1] == 3) {
+            if (position[2] == 1) {
                 transformedPosition = 47;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 39;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 31;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 23;
             }
-        } else if(position[1] == 4) {
-            if(position[2] == 1) {
+        } else if (position[1] == 4) {
+            if (position[2] == 1) {
                 transformedPosition = 48;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 40;
-            } else if(position[2] == 3) {
-            	transformedPosition = 32;
-            } else if(position[2] == 4) {
-            	transformedPosition = 24;
+            } else if (position[2] == 3) {
+                transformedPosition = 32;
+            } else if (position[2] == 4) {
+                transformedPosition = 24;
             }
         }
-    } else if(position[0] == 3) {
-        if(position[1] == 1) {
-            if(position[2] == 1) {
+    } else if (position[0] == 3) {
+        if (position[1] == 1) {
+            if (position[2] == 1) {
                 transformedPosition = 13;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 9;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 5;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 1;
             }
-        } else if(position[1] == 2) {
-            if(position[2] == 1) {
+        } else if (position[1] == 2) {
+            if (position[2] == 1) {
                 transformedPosition = 14;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 10;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 6;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 2;
             }
-        } else if(position[1] == 3) {
-            if(position[2] == 1) {
+        } else if (position[1] == 3) {
+            if (position[2] == 1) {
                 transformedPosition = 15;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 11;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 7;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 3;
             }
-        } else if(position[1] == 4) {
-            if(position[2] == 1) {
+        } else if (position[1] == 4) {
+            if (position[2] == 1) {
                 transformedPosition = 16;
-            } else if(position[2] == 2) {
+            } else if (position[2] == 2) {
                 transformedPosition = 12;
-            } else if(position[2] == 3) {
+            } else if (position[2] == 3) {
                 transformedPosition = 8;
-            } else if(position[2] == 4) {
+            } else if (position[2] == 4) {
                 transformedPosition = 4;
             }
         }
@@ -217,14 +219,9 @@ void BaseStationDecorator::sendTrajectory(vector<Position> positions) {
     }
 }
 
-void BaseStationDecorator::sendUpdateRobotPositionMessage(Position position) {
-    ROS_INFO("Sending Robot new Position to the basestation");
+void BaseStationDecorator::sendUpdateRobotPositionMessage() {
+    ROS_INFO("Asking BaseStation to update robot Position");
 
-    UpdateRobotPosition srv;
-    srv.request.x = position.x;
-    srv.request.y = position.y;
-
-    if (updateRobotPositionClient.call(srv) == false) {
-        ROS_ERROR("Failed to call service basestation/updateRobotPosition");
-    }
+    basestation::UpdateRobotPos updateRobPos;
+    updateRobotPositionPub.publish(updateRobPos);
 }

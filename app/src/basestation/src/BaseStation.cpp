@@ -70,6 +70,8 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
 
     startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
     setRobotPositionAndAngleClient = node.serviceClient<kinocto::SetRobotPositionAndAngle>("kinocto/setRobotPositionAndAngle");
+
+    updateRobotSubscriber = node.subscribe("basestation/updateRobotPosition", 1, &BaseStation::updateRobotPosition, this);
 }
 
 void BaseStation::loop() {
@@ -218,7 +220,7 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     }
 
     //Met a jour la position du robot dans l'interface
-    if(positionX != 0 && positionY != 0) {
+    if (positionX != 0 && positionY != 0) {
         actualPosition.set(positionX, positionY);
         kinoctoPositionUpdates.push_back(actualPosition);
     }
@@ -306,27 +308,42 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
     return true;
 }
 
-bool BaseStation::updateRobotPosition(UpdateRobotPosition::Request & request, UpdateRobotPosition::Response & response) {
-    if (request.x != 0.0f && request.y != 0.0f) {
-        ROS_INFO( "%s\n x:%f\n y:%f", "Updating Robot Position", request.x, request.y);
+void BaseStation::updateRobotPosition(const std_msgs::StringConstPtr& str) {
+    float positionX = 0.0f;
+    float positionY = 0.0f;
 
-        stringstream info;
-        info << "Kinocto : Mise a jour de la position du robot :  \n";
-        info << " (" << request.x << "," << request.y << ")";
-
-        QString infoQ((char*) info.str().c_str());
-
-        emit message(infoQ);
-
-        actualPosition.set(request.x, request.y);
-        kinoctoPositionUpdates.push_back(actualPosition);
-
-        QImage image = Mat2QImage(createMatrix());
-        emit updateTableImage(image);
-        return true;
+    kinectCapture->openCapture();
+    Mat depthMatrix = kinectCapture->captureDepthMatrix();
+    Mat rgbMatrix = kinectCapture->captureRGBMatrix();
+    if (!rgbMatrix.data || !depthMatrix.data) {
+        return;
     }
 
-    return false;
+    robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
+    Vec2f robot = robotDetection.getRobotPosition();
+    float angle = robotDetection.getRobotAngle();
+    if (robot[0] > 0.10 || robot[1] > 0.20) {
+        positionX = robot[1] * 100;
+        positionY = robot[0] * 100;
+    }
+    kinectCapture->closeCapture();
+
+    //Met a jour la position du robot dans l'interface
+    if (positionX != 0 && positionY != 0) {
+        actualPosition.set(positionX, positionY);
+        kinoctoPositionUpdates.push_back(actualPosition);
+    }
+
+    QImage image = Mat2QImage(createMatrix());
+    emit updateTableImage(image);
+
+    ROS_INFO( "%s x:%f y:%f", "Request Find Robot Position. Sending Values ", positionX, positionY);
+    stringstream info;
+    info << "Kinocto : Update de la position du robot \n";
+    info << " (" << positionX << "," << positionY << ")";
+    QString infoQ((char*) info.str().c_str());
+
+    emit message(infoQ);
 }
 
 Mat3b BaseStation::createMatrix() {
