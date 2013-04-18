@@ -24,12 +24,17 @@ class KinectCalibrator{
         std::vector<cv::Point> _pointVector;
         std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);
         float findAndSetKinectAngle(cv::Mat depthMatrix);
+        cv::Vec2f errorCorrect();
+
+        int tableNumber;
 
     public:
         bool calibrate(cv::Mat rgbMatrix, cv::Mat depthMatrix);
+        KinectCalibrator();
         std::vector<cv::Point> getSquarePositions();
         bool calibratev2();
         bool find4PointsForReference(cv::Mat rgbMatrix, cv::Mat depthMatrix);
+        void setTable(int);
 };
 
 #endif

@@ -15,6 +15,10 @@ const cv::Point KinectCalibrator::LINE_1_2 = Point(613, 300);
 const cv::Point KinectCalibrator::LINE_2_2 = Point(200, 287);
 const cv::Point KinectCalibrator::LINE_2_1 = Point(350, 273);
 
+KinectCalibrator::KinectCalibrator(){
+    tableNumber = 0;
+}
+
 std::vector<Point> KinectCalibrator::getSquarePositions(){
     return KinectCalibrator::_pointVector;
 }
@@ -24,6 +28,10 @@ std::vector<Point> KinectCalibrator::findCalibrationSquare(Mat rgbMatrix){
     bool test4 = findChessboardCorners(rgbMatrix, chessboardSize, _pointVector);
 
     return _pointVector;
+}
+
+void KinectCalibrator::setTable(int tNumber) {
+    tableNumber = tNumber;
 }
 
 float KinectCalibrator::findAndSetKinectAngle(Mat depthMatrix){
@@ -46,11 +54,36 @@ float KinectCalibrator::findAndSetKinectAngle(Mat depthMatrix){
 
     //Hack for precision ! The angle is good but the position is off and constant so I correct it manually
     Vec2f kinectPosition(xKinectPosition + 0.03, zKinectPosition + 0.01);
+    kinectPosition += errorCorrect();
     
     KinectTransformator::setKinectPosition(kinectPosition);
 
     return angleRad;
 }
+
+Vec2f KinectCalibrator::errorCorrect(){
+    Vec2f error;
+
+    switch(tableNumber){
+        case 1:
+            error = Vec2f(0,0);
+            break;
+        case 2:
+            error = Vec2f(0,0.03);
+            break;
+        case 3:
+            error = Vec2f(0,0);
+            break;
+        case 4:
+            error = Vec2f(0,0);
+            break;
+    }
+
+    cout << error<< endl;
+
+    return error;
+}
+
 
 bool KinectCalibrator::calibrate(Mat rgbMatrix, Mat depthMatrix){
     KinectCalibrator::_pointVector = KinectCalibrator::findCalibrationSquare(rgbMatrix);

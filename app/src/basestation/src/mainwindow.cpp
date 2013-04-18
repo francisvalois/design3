@@ -179,6 +179,8 @@ void MainWindow::on_calibrateKinectButton_clicked() {
     KinectCapture kinectCapture;
     KinectCalibrator kinectCalibrator;
 
+    kinectCalibrator.setTable(ui->tableSpinBox->value());
+
     kinectCapture.openCapture();
     kinectCalibrator.calibrate(kinectCapture.captureRGBMatrix(), kinectCapture.captureDepthMatrix());
     kinectCapture.closeCapture();
