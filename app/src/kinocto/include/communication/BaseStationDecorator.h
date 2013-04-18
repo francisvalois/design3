@@ -5,6 +5,8 @@
 #include "pathPlanning/Position.h"
 #include "sudocube/Sudocube.h"
 
+#include "basestation/UpdateRobotPos.h"
+
 #include "basestation/FindRobotPositionAndAngle.h"
 #include "basestation/GetObstaclesPosition.h"
 #include "basestation/ShowSolvedSudocube.h"
@@ -25,7 +27,7 @@ public:
     void sendSolvedSudocube(Sudocube * sudocube);
     void sendLoopEndedMessage();
     void sendTrajectory(std::vector<Position> positions);
-    void sendUpdateRobotPositionMessage(Position position);
+    void sendUpdateRobotPositionMessage();
 
 private:
     ros::NodeHandle nodeHandle;
@@ -36,6 +38,8 @@ private:
     ros::ServiceClient loopEndedClient;
     ros::ServiceClient traceRealTrajectoryClient;
     ros::ServiceClient updateRobotPositionClient;
+
+    ros::Publisher updateRobotPositionPub;
 
     int transformPositionToInt(int*);
 };
