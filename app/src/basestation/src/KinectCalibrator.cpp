@@ -69,7 +69,7 @@ Vec2f KinectCalibrator::errorCorrect(){
             error = Vec2f(0,0);
             break;
         case 2:
-            error = Vec2f(-0.03,0.03);
+            error = Vec2f(-0.015,0.0);
             break;
         case 3:
             error = Vec2f(0,0);
