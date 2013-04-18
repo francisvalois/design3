@@ -309,24 +309,39 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
 }
 
 void BaseStation::updateRobotPosition(const std_msgs::StringConstPtr& str) {
+    int const AVERAGECOUNT = 1;
+    int robotPositionAverageCount = 0;
     float positionX = 0.0f;
     float positionY = 0.0f;
-
+    float robotAngle = 0.0f;
+    cout << "UPDATE ROBOT POS" << endl;
     kinectCapture->openCapture();
-    Mat depthMatrix = kinectCapture->captureDepthMatrix();
-    Mat rgbMatrix = kinectCapture->captureRGBMatrix();
-    if (!rgbMatrix.data || !depthMatrix.data) {
-        return;
-    }
+    for (int i = 0; i < AVERAGECOUNT; i++) {
+        Mat depthMatrix = kinectCapture->captureDepthMatrix();
+        Mat rgbMatrix = kinectCapture->captureRGBMatrix();
+        if (!rgbMatrix.data || !depthMatrix.data) {
+            return;
+        }
 
-    robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
-    Vec2f robot = robotDetection.getRobotPosition();
-    float angle = robotDetection.getRobotAngle();
-    if (robot[0] > 0.10 || robot[1] > 0.20) {
-        positionX = robot[1] * 100;
-        positionY = robot[0] * 100;
+        robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
+        Vec2f robot = robotDetection.getRobotPosition();
+        float angle = robotDetection.getRobotAngle();
+        cout << angle << endl;
+        if (robot[0] > 0.10 || robot[1] > 0.20) {
+            positionX += robot[1] * 100;
+            positionY += robot[0] * 100;
+            robotAngle += angle;
+            robotPositionAverageCount++;
+        }
     }
     kinectCapture->closeCapture();
+
+    if (robotPositionAverageCount > 0) {
+        positionX /= robotPositionAverageCount;
+        positionY /= robotPositionAverageCount;
+        robotAngle /= robotPositionAverageCount;
+        robotAngle = robotAngle * 180 / M_PI;
+    }
 
     //Met a jour la position du robot dans l'interface
     if (positionX != 0 && positionY != 0) {
