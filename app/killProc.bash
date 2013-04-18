@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pid=$(ps | grep Kinocto | cut -d ' ' -f1)
+pid=$(ps | grep Kinocto | cut -d ' ' -f2)
 for line in $pid
 do
    echo $line
