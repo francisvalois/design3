@@ -289,7 +289,7 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
     }
 
-    for(int i = plannedPath.size(); i > 0; i--) {
+    for(int i = plannedPath.size() - 1; i >= 0; i--) {
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.push(plannedPath[i]);
     }
 
