@@ -278,12 +278,19 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
 
     if (request.x.size() > 0) {
         plannedPath.clear();
-
         for (int i = 0; i < request.x.size(); i++) {
             buff << "(" << request.x[i] << "," << request.y[i] << ")" << endl;
             Position position(request.x[i], request.y[i]);
             plannedPath.push_back(position);
         }
+    }
+
+    while (!positionsForWhenThatDamnKinectDoesntReturnADamnPosition.empty()) {
+        positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
+    }
+
+    for(int i = plannedPath.size(); i > 0; i--) {
+        positionsForWhenThatDamnKinectDoesntReturnADamnPosition.push(plannedPath[i]);
     }
 
     ROS_INFO("%s %s", "Points of the trajectory :\n", buff.str().c_str());
@@ -355,7 +362,11 @@ void BaseStation::updateShizzle() {
     if (positionX != 0 && positionY != 0) {
         actualPosition.set(positionX, positionY);
         kinoctoPositionUpdates.push_back(actualPosition);
+    } else {
+        actualPosition.set(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().x, positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().y);
+        kinoctoPositionUpdates.push_back(actualPosition);
     }
+    positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
 
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);

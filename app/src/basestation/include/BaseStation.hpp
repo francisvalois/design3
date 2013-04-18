@@ -5,6 +5,7 @@
 #include <QThread>
 #include "opencv2/core/core.hpp"
 #include <vector>
+#include <stack>
 #include <math.h>
 
 //Messages
@@ -100,6 +101,7 @@ private:
     Position actualPosition;
     std::vector<Position> plannedPath;
     std::vector<Position> kinoctoPositionUpdates;
+    std::stack<Position> positionsForWhenThatDamnKinectDoesntReturnADamnPosition;
 
     cv::Scalar white;
     cv::Scalar blue;
