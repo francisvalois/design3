@@ -283,7 +283,7 @@ void Kinocto::adjustAngleInFrontOfWall() {
     ROS_INFO("ADJUSTING ANGLE IN FRONT OF THE WALL");
 
     double camAngle = -1 * asin(Workspace::CAM_HEIGHT / Workspace::SUDOCUBE_FRONT_DISTANCE) * 180.0 / CV_PI;
-    microcontroller->rotateCam(camAngle, 0);
+    microcontroller->rotateCam(camAngle, 2);
     cameraCapture->openCapture();
 
     double angle = 0;
