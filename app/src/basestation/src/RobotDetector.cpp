@@ -1,6 +1,7 @@
 #include "RobotDetector.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <algorithm>
 
 using namespace cv;
 using namespace std;
@@ -34,6 +35,26 @@ RobotDetector::RobotDetector(Vec2f robotPosition) {
     _orientation = 0;
     _robotPosition = robotPosition;
 }
+
+struct SortByZ {
+    bool operator()(Vec2f const & L, Vec2f const & R) {
+        if (L[1] < R[1]) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+};
+
+struct SortByValue {
+    bool operator()(pair<float, int> const & L, pair<float, int> const & R) {
+        if (L.second < L.second) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+};
 
 float RobotDetector::getAngleFrom2Distances(Vec2f distance1, Vec2f distance2) {
     if (distance1[1] > 0 && distance2[1] > 0 && distance1[0] > 0 && distance2[0] > 0) {
@@ -110,6 +131,8 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
     rgbMatrix = Mat(rgbMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
             cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
 
+    imshow("test9", rgbMatrix);
+
     vector<Rect> framesRect = getFrameRect(rgbMatrix);
 
     if(framesRect.size() <= 0){
@@ -118,6 +141,10 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         _robotPosition = Vec2f();
         return;
     }
+
+    framesRect = removeOutBoundsFrameRect(depthMatrix, framesRect);
+
+    cout << framesRect.size() << endl;
 
     //Keep only blue frame part
     depthMatrix = Mat(depthMatrix, framesRect.back());
@@ -160,7 +187,9 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         quadColor quadColor = findQuadColor(rgbMatrix, validRectPosition);
         _orientation = findOrientation(quadColor, angleRad);
 
-        Vec2f centerPosition = findRobotCenterPosition(trueRightPosition, trueLeftPosition, angleRad, _orientation);
+        Vec2f averagePosition = getAveragePosition(depthMatrix, extremePoints);
+
+        Vec2f centerPosition = findRobotCenterPosition(averagePosition, angleRad, _orientation);
 
         _robotAngle = correctAngleForOrientation(angleRad, quadColor);
 
@@ -195,12 +224,98 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         quadColor quadColor = findQuadColor(rgbMatrix, validRectPosition);
         _orientation = findOrientation(quadColor, angleRad);
 
-        Vec2f centerPosition = findRobotCenterPosition(trueRightPosition, trueLeftPosition, angleRad, _orientation);
+        Vec2f averagePosition = getAveragePosition(depthMatrix, extremePoints);
+
+        Vec2f centerPosition = findRobotCenterPosition(averagePosition, angleRad, _orientation);
 
         _robotAngle = correctAngleForOrientation(angleRad, quadColor);
 
         _robotPosition = centerPosition;
     }
+}
+
+Vec2f RobotDetector::getAveragePosition(Mat depthMatrix, vector<Point2f> extremePoints){
+    Point leftPoint = extremePoints.front();
+    Point rightPoint = extremePoints.back();
+
+    vector<Vec2f> avgPoints;
+    Vec2f avgPoint(0,0);
+    map<float, int> countOfPointsZ;
+    map<float, int> countOfPointsX;
+
+    for(int i =leftPoint.x; i <= rightPoint.x; i++ ){
+        Vec3f leftPosition = depthMatrix.at<Vec3f>(leftPoint.y, i);
+        Vec2f trueLeftPosition = KinectTransformator::getTrueCoordFromKinectCoord(leftPosition);
+
+        if(trueLeftPosition[0] > 0 && trueLeftPosition[1] > 0){
+            float avgX = floorf(trueLeftPosition[0] * 100 + 0.5) / 100;
+            float avgZ = floorf(trueLeftPosition[1] * 100 + 0.5) / 100;
+
+            if(countOfPointsX.count(avgX)){
+                     countOfPointsX.at(avgX) += 1;
+            }
+            else{
+                pair<float, int> pair(avgX, 1);
+                countOfPointsX.insert(pair);
+            }
+
+            if(countOfPointsZ.count(avgZ)){
+                countOfPointsZ.at(avgZ) += 1;
+            }
+            else{
+                pair<float, int> pair(avgZ, 1);
+                countOfPointsZ.insert(pair);
+            }
+
+            avgPoints.push_back(trueLeftPosition);
+        }
+    }
+
+    vector<Vec2f> tempVector;
+
+    if(avgPoints.size() > 0){
+
+        if((countOfPointsX.size() > 1  &&
+                (*countOfPointsX.begin()).second <= 0.1 *avgPoints.size())){
+            float flushValueX = (*countOfPointsX.begin()).first;
+
+            for(int i = 0; i < avgPoints.size(); i++){
+                float roundedValue = floorf(avgPoints[i][0] * 100 + 0.5) / 100;
+
+                if(roundedValue != flushValueX){
+                    tempVector.push_back(avgPoints[i]);
+                }
+            }
+        }
+
+        avgPoints.clear();
+
+              cout << countOfPointsZ.size() << endl;
+        if((countOfPointsZ.size() > 1  &&
+                (*countOfPointsZ.begin()).second <= 0.1 * tempVector.size())){
+            float flushValueZ = (*countOfPointsZ.begin()).first;
+
+            for(int i = 0; i < tempVector.size(); i++){
+                float roundedValue = floorf(tempVector[i][1] * 100 + 0.5) / 100;
+
+                if(roundedValue != flushValueZ){
+                    avgPoints.push_back(tempVector[i]);
+                }
+            }
+        }
+
+        vector<Vec2f>::iterator it;
+        for(it = avgPoints.begin(); it != avgPoints.end(); it++) {
+            avgPoint[0] += (*it)[0];
+            avgPoint[1] += (*it)[1];
+        }
+
+
+        avgPoint[0] /= avgPoints.size();
+        avgPoint[1] /= avgPoints.size();
+    }
+
+    return avgPoint;
 }
 
 vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float angleRad, vector<Point2f> validRobotPosition) {
@@ -260,7 +375,7 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
     return pointsList;
 }
 
-Vec2f RobotDetector::findRobotCenterPosition(Vec2f trueRightPosition, Vec2f trueLeftPosition, float angleRad, int orientation) {
+Vec2f RobotDetector::findRobotCenterPosition(Vec2f avgPosition, float angleRad, int orientation) {
     float angle = (float) (angleRad / M_PI * 180);
 
     //Take account of the non-square robot because of the camera
@@ -281,9 +396,9 @@ Vec2f RobotDetector::findRobotCenterPosition(Vec2f trueRightPosition, Vec2f true
     float xDistance = ROBOT_RADIUS * sin(angleRad);
     float yDistance = ROBOT_RADIUS * cos(angleRad);
 
-    Vec2f averagePosition((trueRightPosition[0] + trueLeftPosition[0]) / 2, (trueRightPosition[1] + trueLeftPosition[1]) / 2);
+   // Vec2f averagePosition((trueRightPosition[0] + trueLeftPosition[0]) / 2, (trueRightPosition[1] + trueLeftPosition[1]) / 2);
 
-    Vec2f distanceWithRadius(xDistance + averagePosition[0], yDistance + averagePosition[1]);
+    Vec2f distanceWithRadius(xDistance + avgPosition[0], yDistance + avgPosition[1]);
 
     return distanceWithRadius;
 }

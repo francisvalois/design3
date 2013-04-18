@@ -42,9 +42,11 @@ private:
     float getAngleFrom2Distances(cv::Vec2f distance1, cv::Vec2f distance2);
     void get2MajorPointsDistance(cv::Mat depthMatrix, std::vector<cv::Point2f> validRobotPosition, cv::Vec2f &trueLeftPosition,
             cv::Vec2f &trueRightPosition);
-    cv::Vec2f findRobotCenterPosition(cv::Vec2f trueRightPosition, cv::Vec2f trueLeftPosition, float angleRad, int orientation);
+    cv::Vec2f findRobotCenterPosition(cv::Vec2f avgPosition, float angleRad, int orientation);
     std::vector<cv::Point2f> getExtremePointsOfRobot(cv::Mat depthMatrix, float angleRad, std::vector<cv::Point2f> validRobotPosition);
     int findOrientation(quadColor color, float angle);
+    cv::Vec2f getAveragePosition(cv::Mat depthMatrix, std::vector<cv::Point2f> extremePoints);
+
 };
 
 #endif //__kinect_H_

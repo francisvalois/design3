@@ -367,6 +367,25 @@ Mat ObjectDetector::segmentBlueFrame(const Mat & img) {
     return segmentedCorner;
 }
 
+vector<Rect> ObjectDetector::removeOutBoundsFrameRect(const Mat& depthMap, vector<Rect> frameRect){
+    vector<Rect> frameOnTable;
+
+    vector<Rect>::iterator it;
+    for(it = frameRect.begin(); it != frameRect.end(); it++){
+        Rect frame = (*it);
+        Point center(frame.x + frame.width/2, frame.y + frame.height/2);
+
+        Vec3f distancePoint = depthMap.at<Vec3f>(center.y, center.x);
+        Vec2f trueDistancePoint = KinectTransformator::getTrueCoordFromKinectCoord(distancePoint);
+
+        if(trueDistancePoint[0] > 0 && trueDistancePoint[0] <= 1 && trueDistancePoint[1] > 0 && trueDistancePoint[1] <= 2.20){
+            frameOnTable.push_back(frame);
+        }
+    }
+
+    return frameOnTable;
+}
+
 vector<Rect> ObjectDetector::getFrameRect(const Mat & img) {
 
     Mat frame = segmentBlueFrame(img);
