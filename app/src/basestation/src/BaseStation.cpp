@@ -293,7 +293,7 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     cout << "DEBUGGING : stack now empty, POOPED it all" << endl;
 
 
-    for(int i = plannedPath.size() - 1; i >= 0; i--) {
+    for(int i = 0; i < plannedPath.size(); i++) {
         cout << "DEBUGGING : filling stack : Position : "<< plannedPath[i].x << "," << plannedPath[i].y << endl;
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.push(plannedPath[i]);
     }
@@ -363,6 +363,11 @@ void BaseStation::updateShizzle() {
         robotAngle = robotAngle * 180 / M_PI;
     }
 
+    cout << "DEBUGGING : POP!" << endl;
+    if(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
+        positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
+    }
+
     //Met a jour la position du robot dans l'interface
     if (positionX != 0 && positionY != 0) {
         cout << "DEBUGGING : Position different from 0,0... Using kinect position" << endl;
@@ -374,10 +379,6 @@ void BaseStation::updateShizzle() {
             cout << "DEBUGGING : Position 0,0 received, sending " << actualPosition.x << "," << actualPosition.y << endl;
             kinoctoPositionUpdates.push_back(actualPosition);
         }
-    }
-    cout << "DEBUGGING : POP!" << endl;
-    if(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
-        positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
     }
 
     QImage image = Mat2QImage(createMatrix());
