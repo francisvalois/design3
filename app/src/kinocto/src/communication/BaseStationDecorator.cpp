@@ -14,7 +14,7 @@ BaseStationDecorator::BaseStationDecorator(NodeHandle & node) {
     loopEndedClient = nodeHandle.serviceClient<LoopEnded>("basestation/loopEnded");
     traceRealTrajectoryClient = nodeHandle.serviceClient<TraceRealTrajectory>("basestation/traceRealTrajectory");
 
-    updateRobotPositionPub = nodeHandle.advertise<basestation::UpdateRobotPos>("basestation/updateRobotPosition", 1);
+    updateRobotPositionPub = nodeHandle.advertise<basestation::UpdateRobotPos>("basestation/updateRobotPosition", 50);
 }
 
 BaseStationDecorator::~BaseStationDecorator() {

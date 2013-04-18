@@ -73,7 +73,7 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
     startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
     setRobotPositionAndAngleClient = node.serviceClient<kinocto::SetRobotPositionAndAngle>("kinocto/setRobotPositionAndAngle");
 
-    updateRobotSubscriber = node.subscribe("basestation/updateRobotPosition", 1, &BaseStation::updateRobotPosition, this);
+    updateRobotSubscriber = node.subscribe("basestation/updateRobotPosition", 50, &BaseStation::updateRobotPosition, this);
 }
 
 void BaseStation::loop() {
@@ -88,6 +88,7 @@ void BaseStation::loop() {
             break;
         }
 
+        cout << BaseStation::isUpdatingShit << endl;
         if (BaseStation::isUpdatingShit == true) {
             BaseStation::isUpdatingShit = false;
             updateShizzle();
