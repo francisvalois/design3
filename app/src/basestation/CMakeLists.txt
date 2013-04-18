@@ -21,7 +21,6 @@ add_service_files(
   FindRobotPositionAndAngle.srv
   LoopEnded.srv
   TraceRealTrajectory.srv
-  UpdateRobotPosition.srv
   ShowSolvedSudocube.srv
 )
 

@@ -18,7 +18,6 @@
 #include "basestation/FindRobotPositionAndAngle.h"
 #include "basestation/ShowSolvedSudocube.h"
 #include "basestation/TraceRealTrajectory.h"
-#include "basestation/UpdateRobotPosition.h"
 #include "basestation/LoopEnded.h"
 
 #include "KinectCalibrator.h"

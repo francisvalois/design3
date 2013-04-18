@@ -12,7 +12,6 @@
 #include "basestation/ShowSolvedSudocube.h"
 #include "basestation/LoopEnded.h"
 #include "basestation/TraceRealTrajectory.h"
-#include "basestation/UpdateRobotPosition.h"
 
 class BaseStationDecorator {
 public:

@@ -13,7 +13,6 @@ BaseStationDecorator::BaseStationDecorator(NodeHandle & node) {
     showSolvedSudocubeClient = nodeHandle.serviceClient<ShowSolvedSudocube>("basestation/showSolvedSudocube");
     loopEndedClient = nodeHandle.serviceClient<LoopEnded>("basestation/loopEnded");
     traceRealTrajectoryClient = nodeHandle.serviceClient<TraceRealTrajectory>("basestation/traceRealTrajectory");
-    updateRobotPositionClient = nodeHandle.serviceClient<UpdateRobotPosition>("basestation/updateRobotPosition");
 
     updateRobotPositionPub = nodeHandle.advertise<basestation::UpdateRobotPos>("basestation/updateRobotPosition", 1);
 }
