@@ -362,7 +362,7 @@ Mat ObjectDetector::segmentBlueFrame(const Mat & img) {
     applyErode(segmentedCorner, 1, MORPH_ELLIPSE);
     applyDilate(segmentedCorner, 2, MORPH_RECT);
 
-    imshow("blue", segmentedCorner);
+ //   imshow("blue", segmentedCorner);
 
     return segmentedCorner;
 }
@@ -403,7 +403,6 @@ vector<Rect> ObjectDetector::getFrameRect(const Mat & img) {
         Rect rect = boundingRect(Mat(frameContoursPoly[i]));
 
         if (rect.area() > 450 && rect.area() < 25000) { //TODO a définir
-            cout << rect.area() << endl;
             frameBoundingRect.push_back(rect);
             framePolyInteresting.push_back(frameContoursPoly[i]);
         }
@@ -411,8 +410,6 @@ vector<Rect> ObjectDetector::getFrameRect(const Mat & img) {
 
     sort(frameBoundingRect.begin(), frameBoundingRect.end(), SortByArea());
 
-
-    cout << frameBoundingRect.size() << endl;
     // Masque possible grace a framePolyInteresting
 
 //    Mat drawing = Mat::zeros(frame.size(), CV_8UC3);

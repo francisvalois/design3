@@ -131,7 +131,7 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
     rgbMatrix = Mat(rgbMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
             cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
 
-    imshow("test9", rgbMatrix);
+    //imshow("test9", rgbMatrix);
 
     vector<Rect> framesRect = getFrameRect(rgbMatrix);
 
@@ -142,6 +142,7 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
     }
 
     framesRect = removeOutBoundsFrameRect(depthMatrix, framesRect);
+
     if(framesRect.size() <= 0){
         cout << "Unable to find blue frame" << endl;
         _robotAngle = 0;
@@ -149,7 +150,6 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
         return;
     }
 
-    cout << framesRect.size() << endl;
 
     //Keep only blue frame part
     depthMatrix = Mat(depthMatrix, framesRect.back());
@@ -161,8 +161,8 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
     for (int i = 0; i < validRectPosition.size(); i++) {
         rectangle(rgbMatrix, validRectPosition[i], Scalar(0, 0, 255));
     }
-    imshow("depthTest", depthMatrix);
-    imshow("test", rgbMatrix);
+    //imshow("depthTest", depthMatrix);
+    //imshow("test", rgbMatrix);
 
     if (generatedCount >= 3) {
         vector<Point2f> validRobotPosition;
@@ -295,7 +295,6 @@ Vec2f RobotDetector::getAveragePosition(Mat depthMatrix, vector<Point2f> extreme
 
         avgPoints.clear();
 
-              cout << countOfPointsZ.size() << endl;
         if((countOfPointsZ.size() > 1  &&
                 (*countOfPointsZ.begin()).second <= 0.1 * tempVector.size())){
             float flushValueZ = (*countOfPointsZ.begin()).first;
@@ -336,8 +335,6 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
     Point leftRobotTrueCoords;
     Point rightRobotTrueCoords;
 
-    cout << depthMatrix.size() << endl;
-
     //Find left border
     for (int i = leftPoint.x; i > 1 && consecutiveEndPoint < 3; i--) {
         Vec3f leftPosition = depthMatrix.at<Vec3f>(leftPoint.y, i);
@@ -372,8 +369,6 @@ vector<Point2f> RobotDetector::getExtremePointsOfRobot(Mat depthMatrix, float an
     if (leftRobotTrueCoords.x <= 0 || leftRobotTrueCoords.y <= 0 || rightRobotTrueCoords.x <= 0 || rightRobotTrueCoords.y <= 0) {
         cout << "Unable to detect Robot" << endl;
     }
-
-
 
     pointsList.push_back(leftRobotTrueCoords);
     pointsList.push_back(rightRobotTrueCoords);
