@@ -174,8 +174,8 @@ cv::Vec2f KinectTransformator::distortionCorrection(Vec2f distanceToCorrect) {
 cv::Vec2f KinectTransformator::distortionZfromXPosition(cv::Vec2f positionToCorrect) {
     float error;
 
-    if(positionToCorrect[0] > 80){
-        error = 0.00004 * pow(80, 3) - 0.0042 * pow(80, 2) + 0.205 * 80 + 0.3264;
+    if(positionToCorrect[0] > .80){
+        error = 0.00004 * pow(80.0f, 3) - 0.0042 * pow(80.0f, 2) + 0.205 * 80 + 0.3264;
     }
     else{
         error = 0.00004 * pow(positionToCorrect[0] * 100, 3) - 0.0042 * pow(positionToCorrect[0] * 100, 2) + 0.205 * positionToCorrect[0] * 100

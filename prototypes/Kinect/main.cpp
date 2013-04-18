@@ -96,18 +96,20 @@ response findObstacle(){
         obstaclesDetection.findCenteredObstacle(depthMatrix);
         Vec2f obs1 = obstaclesDetection.getObstacle1();
         Vec2f obs2 = obstaclesDetection.getObstacle2();
+
+        cout << obs1 << " " << obs2 << endl;
         
-        if(obs1[0] < 0.10 || obs1[1] < 0.20 || obs2[0] < 0.10 || obs2[1] < 0.2){
+        if(obs1[0] < 0.02 || obs1[1] < 0.20 || obs2[0] < 0.02 || obs2[1] < 0.2){
             continue;
         }
         
-        if(obs1[0] > 0.10 && obs1[1] > 0.20){
+        if(obs1[0] > 0.02 && obs1[1] > 0.20){
             response.x1 += obs1[1] * 100;
             response.y1 += obs1[0] * 100;
             obstacle1AverageCount++;
         }
         
-        if(obs2[0] > 0.10 && obs2[1] > 0.20){
+        if(obs2[0] > 0.02 && obs2[1] > 0.20){
             response.x2 += obs2[1] * 100;
             response.y2 += obs2[0] * 100;
             obstacle2AverageCount++;
@@ -222,8 +224,8 @@ int main( /*int argc, char* argv[]*/ ) {
     response responseObstacle = {0, 0, 0, 0};
     response responseRobot = {0, 0, 0, 0};
     
-    //responseObstacle = findObstacle();
-    responseRobot = findRobot();
+    responseObstacle = findObstacle();
+    //responseRobot = findRobot();
     
     namedWindow("depth", 1);
     namedWindow("chess8", 1);

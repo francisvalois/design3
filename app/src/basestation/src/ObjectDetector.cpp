@@ -48,6 +48,7 @@ Vec2f ObjectDetector::getAverageDistanceForPointLine(list<Vec2f> allDistances) {
         for (int i = 0; i < allDistances.size() - 1; i++) {
             Vec2f distance = allDistances.front();
             allDistances.pop_front();
+
             if (abs(distance[0] / allDistances.front()[0]) >= 0.95 && distance[0] <= allDistances.front()[0]) {
                 averageXPosition += distance[0];
                 countAverageX++;

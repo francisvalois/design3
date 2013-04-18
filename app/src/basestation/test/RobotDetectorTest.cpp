@@ -8,47 +8,51 @@
 using namespace cv;
 using namespace std;
 
-namespace { 
+namespace {
+
+
+    Mat testMatrix;
+    Mat rgbMatrix;
+
+    void onMouse(int event, int x, int y, int flags, void *) {
+        if (event == CV_EVENT_LBUTTONUP) {
+            Vec3f s = testMatrix.at<Vec3f>(y, x);
+            Vec2f realPosition = KinectTransformator::getTrueCoordFromKinectCoord(s);
+            cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
+            cout << "Position X :" << realPosition[0] << " Position Y :" << s[1] << " Position Z:" << realPosition[1] << endl;
+            cout << "From Kinect : Position X :" << s[0] << " Position Y :" << s[1] << " Position Z:" << s[2] << endl;
+        }
+        if (event == CV_EVENT_RBUTTONUP) {
+            Vec3f s = rgbMatrix.at<Vec3b>(x, y);
+            cout << (int)s[0] << " " << (int)s[1] << " " << (int)s[2] << endl;
+
+            cout << "Pixel X :" << x << "Pixel Y :" << y << endl;
+        }
+    }
+
+
+
+
+
     class RobotDetectorTest : public ::testing::Test {
     protected:
         virtual void SetUp() {
-            KinectTransformator::setKinectAngle(0.3926f);
-            Vec2f kinectPosition(0.10f, -0.44f);
-            KinectTransformator::setKinectPosition(kinectPosition);
+            namedWindow("depth", 1);
+            namedWindow("chess8", 1);
+            setMouseCallback("depth", onMouse, 0);
+            setMouseCallback("chess8", onMouse, 0);
         }
 
         RobotDetector kinect;
     };
 
-    TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix1){
+    TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix1Table2){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("img/testKinect/robotdetection3.xml");
-        Mat rgbMatrix = imread("img/testKinect/robotdetection3.jpg");
+        testMatrix = Utility::readFromFile("table2/matrice1.xml");
+        rgbMatrix = imread("table2/rgb1.jpg");
         float valueZ = 1.32f;
-        float valueX = 0.6f; 
+        float valueX = 0.6f;
         float angleValue = -0.43f;
-        
-        //Act
-        kinect.findRobotWithAngle(testMatrix, rgbMatrix);
-        Vec2f obstacle1 = kinect.getRobotPosition();
-        float positionX = obstacle1[0];
-        float positionZ = obstacle1[1];
-        float robotAngle = kinect.getRobotAngle();
-        
-        //Assert
-        ASSERT_TRUE(positionX >= valueX - 0.03 && positionX <= valueX + 0.03);
-        ASSERT_TRUE(positionZ >= valueZ - 0.03 && positionZ <= valueZ + 0.03);
-    
-        ASSERT_TRUE(robotAngle >= angleValue - 0.05 && robotAngle <= angleValue + 0.05);
-    }
-
-    TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix2){
-        //Arrange
-        Mat testMatrix = Utility::readFromFile("img/testKinect/robotdetection4.xml");
-        Mat rgbMatrix = imread("img/testKinect/robotdetection4.jpg");
-        float valueZ = 1.91f;
-        float valueX = 0.78f; 
-        float angleValue = 0.39f;
 
         //Act
         kinect.findRobotWithAngle(testMatrix, rgbMatrix);
@@ -56,6 +60,7 @@ namespace {
         float positionX = obstacle1[0];
         float positionZ = obstacle1[1];
         float robotAngle = kinect.getRobotAngle();
+
 
         //Assert
         ASSERT_TRUE(positionX >= valueX - 0.03 && positionX <= valueX + 0.03);
@@ -64,13 +69,13 @@ namespace {
         ASSERT_TRUE(robotAngle >= angleValue - 0.05 && robotAngle <= angleValue + 0.05);
     }
 
-    TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix3){
+    TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix2Table2){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("img/testKinect/robotdetection5.xml");
-        Mat rgbMatrix = imread("img/testKinect/robotdetection5.jpg");
-        float valueZ = 1.82f;
-        float valueX = 0.38f; 
-        float angleValue = -0.26;
+         testMatrix = Utility::readFromFile("table2/matrice3.xml");
+         rgbMatrix = imread("table2/rgb3.jpg");
+        float valueZ = 0.55f;
+        float valueX = 0.555f;
+        float angleValue = 0.38f;
 
         //Act
         kinect.findRobotWithAngle(testMatrix, rgbMatrix);
@@ -78,6 +83,9 @@ namespace {
         float positionX = obstacle1[0];
         float positionZ = obstacle1[1];
         float robotAngle = kinect.getRobotAngle();
+
+    imshow("chess8", rgbMatrix);
+    imshow("depth", testMatrix);
 
         //Assert
         ASSERT_TRUE(positionX >= valueX - 0.03 && positionX <= valueX + 0.03);
@@ -86,13 +94,13 @@ namespace {
         ASSERT_TRUE(robotAngle >= angleValue - 0.05 && robotAngle <= angleValue + 0.05);
     }
 
-    TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix4){
+    TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix1Table1){
         //Arrange
-        Mat testMatrix = Utility::readFromFile("img/testKinect/robotdetection6.xml");
-        Mat rgbMatrix = imread("img/testKinect/robotdetection6.jpg");
-        float valueZ = 1.83f;
-        float valueX = 0.37f; 
-        float angleValue = -0.07;
+        testMatrix = Utility::readFromFile("table1/matrice1.xml");
+        rgbMatrix = imread("table1/rgb1.jpg");
+        float valueZ = 1.32f;
+        float valueX = 0.6f;
+        float angleValue = -0.43f;
 
         //Act
         kinect.findRobotWithAngle(testMatrix, rgbMatrix);
@@ -100,6 +108,30 @@ namespace {
         float positionX = obstacle1[0];
         float positionZ = obstacle1[1];
         float robotAngle = kinect.getRobotAngle();
+
+
+        //Assert
+        ASSERT_TRUE(positionX >= valueX - 0.03 && positionX <= valueX + 0.03);
+        ASSERT_TRUE(positionZ >= valueZ - 0.03 && positionZ <= valueZ + 0.03);
+
+        ASSERT_TRUE(robotAngle >= angleValue - 0.05 && robotAngle <= angleValue + 0.05);
+    }
+
+    TEST_F(RobotDetectorTest, GetDistanceForRobotMatrix2Table1){
+        //Arrange
+        testMatrix = Utility::readFromFile("table1/matrice4.xml");
+        rgbMatrix = imread("table1/rgb4.jpg");
+        float valueZ = 1.32f;
+        float valueX = 0.6f;
+        float angleValue = -0.43f;
+
+        //Act
+        kinect.findRobotWithAngle(testMatrix, rgbMatrix);
+        Vec2f obstacle1 = kinect.getRobotPosition();
+        float positionX = obstacle1[0];
+        float positionZ = obstacle1[1];
+        float robotAngle = kinect.getRobotAngle();
+
 
         //Assert
         ASSERT_TRUE(positionX >= valueX - 0.03 && positionX <= valueX + 0.03);

@@ -10,7 +10,7 @@ const int ObstaclesDetector::X_OBSTACLE_RIGHT_THRESHOLD = 610;
 const int ObstaclesDetector::Y_OBSTACLE_TOP_THRESHOLD = 80;
 const int ObstaclesDetector::Y_OBSTACLE_BOTTOM_THRESHOLD = 272;
 const float ObstaclesDetector::OBSTACLE_DISTANCE_MIN_THRESHOLD = 0.8f;
-const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.220f;
+const float ObstaclesDetector::OBSTACLE_DISTANCE_MAX_THRESHOLD = 2.300f;
 const float ObstaclesDetector::OBSTACLE_HEIGHT_THRESHOLD_PERCENT = 0.7f;
 
 Vec2f ObstaclesDetector::getObstacle1() {
@@ -89,12 +89,14 @@ Vec2f ObstaclesDetector::getAveragePositionForObstacle(Mat depthMatrix, list<Poi
     cout << "Obstacle found at pixel line x: " << averagePointObstacle1 << endl; 
     list<Vec2f> allDistances = getSomeYDistanceAssociatedWithXForObstacle(averagePointObstacle1, depthMatrix);
 
+
     Vec2f positionObstacle = getAverageDistanceForPointLine(allDistances);
 
     Vec3f positionObstacle3(positionObstacle[0], 0, positionObstacle[1]);
-    //Vec3f positionObstacleWithRadius = addObstacleRadiusToDistance(positionObstacle3);
+    Vec3f positionObstacleWithRadius = addObstacleRadiusToDistance(positionObstacle3);
 
-    Vec2f truePositionObstacle = KinectTransformator::getTrueCoordFromKinectCoord(positionObstacle3);
+    Vec2f truePositionObstacle = KinectTransformator::getTrueCoordFromKinectCoord(positionObstacleWithRadius);
+
     return truePositionObstacle;
 }
 
@@ -111,11 +113,13 @@ void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, 
             Vec3f position = depthMatrix.at<Vec3f>(j, i);
             tempPosition = KinectTransformator::getTrueCoordFromKinectCoord(position);
             //If obstacle is in the obstacle zone and if it's higher than the black walls 
-            if (tempPosition[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && tempPosition[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD && tempPosition[0] > TABLE_WIDTH*0.05 && tempPosition[0] < TABLE_WIDTH*0.95){
+            if (tempPosition[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && tempPosition[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD && tempPosition[0] > 0 && tempPosition[0] < TABLE_WIDTH*0.95){
                     obstaclePoint = true;
                     count++;
             }
         }
+
+
         if (obstaclePoint && count > (60*OBSTACLE_HEIGHT_THRESHOLD_PERCENT)) {
             if (validObstaclePosition.size() > 0) {
                 if ((i - validObstaclePosition.back().x) > 10) // Separate first obstacle from second
