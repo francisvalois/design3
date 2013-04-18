@@ -370,12 +370,16 @@ void BaseStation::updateShizzle() {
         actualPosition.set(positionX, positionY);
         kinoctoPositionUpdates.push_back(actualPosition);
     } else {
-        actualPosition.set(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().x, positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().y);
-        cout << "DEBUGGING : Position 0,0 received, sending " << actualPosition.x << "," << actualPosition.y << endl;
-        kinoctoPositionUpdates.push_back(actualPosition);
+        if(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
+            actualPosition.set(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().x, positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().y);
+            cout << "DEBUGGING : Position 0,0 received, sending " << actualPosition.x << "," << actualPosition.y << endl;
+            kinoctoPositionUpdates.push_back(actualPosition);
+        }
     }
     cout << "DEBUGGING : POP!" << endl;
-    positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
+    if(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
+        positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
+    }
 
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);
