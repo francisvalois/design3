@@ -34,6 +34,10 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     }
 
     initSudocubeImage();
+    ui->roue0x->setValue(92.0f);
+    ui->roue0y->setValue(19.5f);
+    ui->roue1x->setValue(83.0f);
+    ui->roue1y->setValue(35.8f);
 
     QObject::connect(&baseStation, SIGNAL(rosShutdown()), this, SLOT(close()));
     QObject::connect(&baseStation, SIGNAL(showSolvedSudocubeSignal(QString,int,int)), this, SLOT(showSolvedSudocubeSlot(QString,int,int)));
