@@ -101,6 +101,7 @@ void Kinocto::getCriticalRobotPosition(Position & robotPos) {
     if (robotPos.x == 0 && robotPos.y == 0) {
         microcontroller->rotate(90.0f);
         baseStation->requestRobotPositionAndAngle(robotPos);
+        microcontroller->rotate(-90.0f);
     }
 }
 
@@ -138,7 +139,7 @@ void Kinocto::getOutOfDrawingZone() {
     workspace.setRobotAngle(0);
 
     Position robotPos;
-    getRobotPosition(robotPos);
+    getCriticalRobotPosition(robotPos);
     workspace.setRobotPos(robotPos);
 
     Position translationX;
