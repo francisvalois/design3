@@ -33,7 +33,6 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     crop = greenBorder(rect);
     GaussianBlur(crop, blur, sf, sigmaX);
 
-
     Mat segmentedFrame;
     inRange(blur, Scalar(30, 30, 0), Scalar(80, 255, 255), segmentedFrame);
 
@@ -53,7 +52,7 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     HoughLines(edges, lines, 1, CV_PI / 150, 150, 0, 0);
 
     if (lines.size() != 0) {
-        return findAngle(lines, greenBorder.size()) ; // ATTENTION CETTE VALEURE EST IMPORTANTE
+        return findAngle(lines, greenBorder.size()); // ATTENTION CETTE VALEURE EST IMPORTANTE
     } else {
         return 0;
     }
@@ -63,8 +62,11 @@ double AngleFinder::findWallAngle2(Mat & wall) {
     Mat blur;
     GaussianBlur(wall, blur, Size(7, 7), 1.4f);
 
+    Mat hsv;
+    cvtColor(blur, hsv, CV_RGB2HSV);
+
     Mat segmentedFrame;
-    inRange(blur, Scalar(0, 0, 0), Scalar(255, 255, 60), segmentedFrame);
+    inRange(hsv, Scalar(0, 0, 0), Scalar(255, 255, 50), segmentedFrame);
 
     VisionUtility::applyErode(segmentedFrame, 1, MORPH_RECT);
     VisionUtility::applyDilate(segmentedFrame, 12, MORPH_RECT);
@@ -75,12 +77,28 @@ double AngleFinder::findWallAngle2(Mat & wall) {
     Canny(segmentedFrame, edges, 50, 200, 3);
     HoughLines(edges, lines, 0.5, CV_PI / 180, 70, 0, 0);
 
+    findAngle(lines, wall.size());
+    for (int i = 0; i < lines.size(); i++) {
+        float rho = lines[i][0], theta = lines[i][1];
+        Point pt1, pt2;
+        double a = cos(theta), b = sin(theta);
+        double x0 = a * rho, y0 = b * rho;
+        pt1.x = cvRound(x0 + 2000 * (-b));
+        pt1.y = cvRound(y0 + 2000 * (a));
+        pt2.x = cvRound(x0 - 2000 * (-b));
+        pt2.y = cvRound(y0 - 2000 * (a));
+        line(wall, pt1, pt2, Scalar(0, 0, 255), 1);
+    }
+
+    namedWindow("test", CV_WINDOW_FREERATIO);
+    imshow("test", wall);
+    waitKey(0);
+
     if (lines.size() != 0) {
         return findAngle(lines, wall.size());
     } else {
         return 0;
     }
-
 }
 
 double AngleFinder::findAngle(vector<Vec2f> & lines, Size size) {
