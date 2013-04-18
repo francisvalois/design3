@@ -28,6 +28,7 @@ double AngleFinder::findGreenBorderAngle(Mat & greenBorder) {
     Mat intrinsic = Mat(3, 3, CV_64F, m);
     Mat distMat = Mat(1, 5, CV_64F, d);
     undistort(greenBorder, undistorted, intrinsic, distMat);
+    cvtColor(undistorted, greenBorder, CV_RGB2HSV);
     Rect rect(50, 50, 1500, 1100);
     crop = greenBorder(rect);
     GaussianBlur(crop, blur, sf, sigmaX);
@@ -69,7 +70,6 @@ double AngleFinder::findWallAngle2(Mat & wall) {
     undistort(wall, undistorted, intrinsic, distMat);
     Rect rect(50, 50, 1500, 1100);
     crop = undistorted(rect);
-    cvtColor(crop, wall, CV_RGB2HSV);
 
     Mat blur;
     GaussianBlur(wall, blur, Size(7, 7), 1.4f);
