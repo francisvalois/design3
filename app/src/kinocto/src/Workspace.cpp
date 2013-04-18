@@ -4,7 +4,7 @@ const float Workspace::MAX_X = 231.0f;
 const float Workspace::MAX_Y = 111.0f;
 const float Workspace::ROBOT_FRONT_SIZE = 12.5f;
 const float Workspace::ROBOT_SIDE_SIZE = 10.0f;
-const float Workspace::SUDOCUBE_FRONT_DISTANCE = 30.0f;
+const float Workspace::SUDOCUBE_FRONT_DISTANCE = 25.0f;
 
 Workspace::Workspace() {
     //Valeur à redéfinir dynamiquement;
