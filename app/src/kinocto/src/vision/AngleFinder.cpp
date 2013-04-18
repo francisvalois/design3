@@ -90,9 +90,9 @@ double AngleFinder::findWallAngle2(Mat & wall) {
         line(wall, pt1, pt2, Scalar(0, 0, 255), 1);
     }
 
-    namedWindow("test", CV_WINDOW_FREERATIO);
-    imshow("test", wall);
-    waitKey(0);
+    //namedWindow("test", CV_WINDOW_FREERATIO);
+    //imshow("test", wall);
+    //waitKey(0);
 
     if (lines.size() != 0) {
         return findAngle(lines, wall.size());
