@@ -138,11 +138,16 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix, Vec2f obs
     if(framesRect.size() <= 0){
         cout << "Unable to find blue frame" << endl;
         _robotAngle = 0;
-        _robotPosition = Vec2f();
         return;
     }
 
     framesRect = removeOutBoundsFrameRect(depthMatrix, framesRect);
+    if(framesRect.size() <= 0){
+        cout << "Unable to find blue frame" << endl;
+        _robotAngle = 0;
+        _robotPosition = Vec2f();
+        return;
+    }
 
     cout << framesRect.size() << endl;
 
