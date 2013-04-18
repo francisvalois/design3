@@ -450,21 +450,21 @@ Mat3b BaseStation::createMatrix() {
 
     transpose(tableWorkspace, tableWorkspace);
 
-    //Drawing kinoctoPositionUpdates
-    if (kinoctoPositionUpdates.size() > 0) {
-        for (unsigned int i = 0; i < kinoctoPositionUpdates.size() - 1; i++) {
-            Point currentPoint(kinoctoPositionUpdates[i].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i].y);
-            Point nextPoint(kinoctoPositionUpdates[i + 1].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i + 1].y);
-            drawLine(tableWorkspace, currentPoint, nextPoint, darkRed);
-        }
-    }
-
     //Drawing plannedPath
     if (plannedPath.size() > 0) {
         for (unsigned int i = 0; i < plannedPath.size() - 1; i++) {
             Point currentPoint(plannedPath[i].x, Workspace::TABLE_Y - plannedPath[i].y);
             Point nextPoint(plannedPath[i + 1].x, Workspace::TABLE_Y - plannedPath[i + 1].y);
             drawLine(tableWorkspace, currentPoint, nextPoint, blue);
+        }
+    }
+
+    //Drawing kinoctoPositionUpdates
+    if (kinoctoPositionUpdates.size() > 0) {
+        for (unsigned int i = 0; i < kinoctoPositionUpdates.size() - 1; i++) {
+            Point currentPoint(kinoctoPositionUpdates[i].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i].y);
+            Point nextPoint(kinoctoPositionUpdates[i + 1].x, Workspace::TABLE_Y - kinoctoPositionUpdates[i + 1].y);
+            drawLine(tableWorkspace, currentPoint, nextPoint, darkRed);
         }
     }
 
