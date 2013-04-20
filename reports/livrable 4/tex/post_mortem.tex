@@ -27,3 +27,11 @@ Toutefois, outre le problème majeur de distorsion, la Kinect permet d'obtenir f
 
 En écartant la précision imparfaite de notre implantation qui ne demande qu'à être améliorée, le placement des cadres bleus oblige le robot à se placer d'une certaine façon pour que celui-ci soit détecté. Une amélioration possible aurait été de placer des carrés sur les faces non détectées pour permettre la détection à 360 degrés, mais il aurait été nécessaire de créer un algorithme de choix de carrés pour en choisir 1 seul, car dans la plupart des cas, deux carrés auraient été visibles.
 
+\section{Déplacements}
+
+Dans l'ensemble, le robot a un asservissement linéaire en vitesse qui dépasse largement les autres équipes en termes de temps de réponse et de stabilité directionnelle. La stratégie de déplacement aurait pu être optimisée avec l'utilisation des déplacements en diagonal. Comme l'asservissement était en vitesse, nous aurions eu à intégrer des plages de décélérations calibrées selon les plages d'asservissements. Afin d'assurer l'unicité de l'ensemble, d'autres calibres d'asservissements auraient dû être ajoutés. 
+
+\section{Dessins}
+
+Afin de compenser les disparités de constitutions des roues de notre robot, qui avaient énormément d'impact sur nos performances, un asservissement en position utilisant la vision aurait pu être implanté afin de compenser les erreurs. Pour se faire, nous aurions pu centrer le préhenseur et effectuer des rotations lors des croisements afin de toujours détecter le cadre vert. L'implantation de l'asservissement de déplacement pour les diagonales aurait pu être employé à cet effet, jumelé à la détection du cadre vert, qui aurait du être adaptée pour un robot qui se déplace. Évidemment, le temps requis de conception est particulièrement énorme et un tel ajustement aurait requis plusieurs semaines. 
+
