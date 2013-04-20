@@ -1,3 +1,4 @@
+#include <opencv2/highgui/highgui.hpp>
 #include "RobotDetector.h"
 
 using namespace cv;
@@ -77,6 +78,8 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix) {
             cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
     rgbMatrix = Mat(rgbMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
             cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
+
+    imshow("test", rgbMatrix);
 
     vector<Rect> framesRect = getFrameRect(rgbMatrix);
 

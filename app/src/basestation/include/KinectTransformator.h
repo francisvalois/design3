@@ -13,14 +13,16 @@
 class KinectTransformator {
 
 private:
-    static float _kinectAngleRad;
     static const float KINECTANGLE;
-    static cv::Vec2f _kinectPosition;
     static cv::Mat _distortionCorrectionMatrix;
 
     static cv::Vec2f distortionCorrection(cv::Vec2f distanceToCorrect);
 
     static cv::Vec2f distortionZfromXPosition(cv::Vec2f positionToCorrect);
+
+protected:
+    static float _kinectAngleRad;
+    static cv::Vec2f _kinectPosition;
 
 public:
     static cv::Vec2f translateXZCoordtoOrigin(cv::Vec2f rotatedXZ);

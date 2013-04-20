@@ -22,8 +22,6 @@ public:
 
     float getRobotAngle();
 
-    float correctAngleForOrientation(float angle);
-
 private:
     const static int X_ROBOT_LEFT_THRESHOLD;
     const static int X_ROBOT_RIGHT_THRESHOLD;
@@ -42,6 +40,8 @@ private:
     cv::Vec2f findRobotCenterPosition(cv::Vec2f avgPosition, float angleRad);
 
     std::vector<cv::Point2f> getExtremePointsOfRobot(cv::Mat depthMatrix, float angleRad, std::vector<cv::Point2f> validRobotPosition);
+
+    float correctAngleForOrientation(float angle);
 
     cv::Vec2f getAveragePosition(cv::Mat depthMatrix, std::vector<cv::Point2f> extremePoints);
 };

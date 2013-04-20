@@ -120,7 +120,6 @@ void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, 
             }
         }
 
-
         if (obstaclePoint && count > (60 * OBSTACLE_HEIGHT_THRESHOLD_PERCENT)) {
             if (validObstaclePosition.size() > 0) {
                 if ((i - validObstaclePosition.back().x) > 10) // Separate first obstacle from second

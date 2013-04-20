@@ -31,6 +31,8 @@ private:
 
     cv::Vec2f getAveragePositionForObstacle(cv::Mat depthMatrix, std::list<cv::Point> obstacle);
 
+    cv::Vec3f addObstacleRadiusToDistance(cv::Vec3f distanceExtObstacle);
+
 public:
     ObstaclesDetector();
 
@@ -42,7 +44,7 @@ public:
 
     std::vector<cv::Vec2f> findCenteredObstacle(cv::Mat depthMatrix);
 
-    static cv::Vec3f addObstacleRadiusToDistance(cv::Vec3f distanceExtObstacle);
+
 };
 
 #endif
