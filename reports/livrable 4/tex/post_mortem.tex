@@ -27,9 +27,12 @@ Toutefois, outre le problème majeur de distorsion, la Kinect permet d'obtenir f
 
 En écartant la précision imparfaite de notre implantation qui ne demande qu'à être améliorée, le placement des cadres bleus oblige le robot à se placer d'une certaine façon pour que celui-ci soit détecté. Une amélioration possible aurait été de placer des carrés sur les faces non détectées pour permettre la détection à 360 degrés, mais il aurait été nécessaire de créer un algorithme de choix de carrés pour en choisir 1 seul, car dans la plupart des cas, deux carrés auraient été visibles.
 
+\section{Microcontrôleur}
+Dans le but de permettre à plusieurs membres de l'équipe de s'impliquer dans la partie microcontrôleur, il aurait fallu rendre le code plus lisible, plus simple et ajouter des commentaires. Bref, de clarifier celui-ci. Un exemple de clarification aurait été de diviser le code en plusieurs fichiers ".h" plutôt que d'utiliser seulement des fichiers sources ".c" et de supprimer les déclarations multiples "extern" de plusieurs variables globales. Excepté ce point, il est difficile de trouver des améliorations dans cette partie.
+
 \section{Déplacements}
 
-Dans l'ensemble, le robot a un asservissement linéaire en vitesse qui dépasse largement les autres équipes en termes de temps de réponse et de stabilité directionnelle. La stratégie de déplacement aurait pu être optimisée avec l'utilisation des déplacements en diagonal. Comme l'asservissement était en vitesse, nous aurions eu à intégrer des plages de décélérations calibrées selon les plages d'asservissements. Afin d'assurer l'unicité de l'ensemble, d'autres calibres d'asservissements auraient dû être ajoutés. 
+Dans l'ensemble, le robot a un asservissement linéaire en vitesse qui dépasse largement les autres équipes en termes de temps de réponse et de stabilité directionnelle. La stratégie de déplacement aurait pu être optimisée avec l'utilisation des déplacements en diagonal. Comme l'asservissement était en vitesse, nous aurions eu à intégrer des plages de décélérations calibrées selon les plages d'asservissements. Afin d'assurer l'unicité de l'ensemble, d'autres calibres d'asservissements auraient dû être ajoutés. Finalement, il aurait également fallu intégrer un asservissement en position pour les rotations. La méthode implantée pour les rotations n'est pas un asservissement, seulement une correction de l'angle du robot si la consigne de position est dépassée. Pour avoir une meilleure précision et une meilleure vitesse de rotation, il aurait fallu implanter cette méthode.
 
 \section{Dessins}
 
