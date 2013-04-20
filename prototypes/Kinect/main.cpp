@@ -1,14 +1,9 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
 #include "ObstaclesDetector.h"
 #include "RobotDetector.h"
 #include "KinectUtility.h"
 #include "KinectCalibrator.h"
-#include "ObjectDetector.h"
-#include "KinectTransformator.h"
-#define _USE_MATH_DEFINES
-#include "Math.h"
 
 using namespace cv;
 using namespace std;
@@ -47,8 +42,7 @@ Mat captureDepthMatrix() {
             }
 
     }
-    
-    Vec3f rightPointDistance = depthMap.at<Vec3f>(265, 368);    
+
     return depthMap.clone();
 }
 
@@ -134,10 +128,8 @@ vector<Point> calibrate(){
     Mat rgbMatrix = captureRGBMatrix();
     Mat depthMatrix = captureDepthMatrix();
     calibrator.calibrate(rgbMatrix, depthMatrix);
-    vector<Point> squarePosition = calibrator.getSquarePositions();
 
-    
-    return squarePosition;
+    return vector<Point>();
 }
 
 response findRobot(){
@@ -157,13 +149,11 @@ response findRobot(){
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition(); //TEST TEMPORAIRE
         float angle = robotDetection.getRobotAngle();
-        int test = robotDetection.getOrientation();
         
         if(robot[0] > 0.10 || robot[1] > 0.20){
             response.x1 += robot[1] * 100;
             response.y1 += robot[0] * 100;
             response.y2 += angle;
-            response.x2 = test;
             robotPositionAverageCount++;
         }
     }
@@ -211,7 +201,7 @@ int main( /*int argc, char* argv[]*/ ) {
 
     KinectCalibrator calib;
     //calib.calibrate(test1, test2);
-    //calib.calibratev2();
+    //calib.manualCalibration();
     //calib.find4PointsForReference(test1, test2);
 
     //KinectTransformator test10;

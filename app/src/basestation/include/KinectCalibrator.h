@@ -9,32 +9,32 @@
 #include "ObstaclesDetector.h"
 #include "KinectTransformator.h"
 
-class KinectCalibrator{
-    private:
-        const static cv::Vec2f BASE_POSITION_FROM_ORIGIN;
-        const static cv::Vec2f OBSTACLE_POSITION_2;
-        const static cv::Vec2f OBSTACLE_POSITION_1;
-        const static cv::Point CIRCLE_POSITION_2;
-        const static cv::Point CIRCLE_POSITION_1;
-        const static cv::Point LINE_1_1;
-        const static cv::Point LINE_1_2;
-        const static cv::Point LINE_2_1;
-        const static cv::Point LINE_2_2;
-    
-        std::vector<cv::Point> _pointVector;
-        std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);
-        float findAndSetKinectAngle(cv::Mat depthMatrix);
-        cv::Vec2f errorCorrect();
+class KinectCalibrator {
+private:
+    const static cv::Vec2f BASE_POSITION_FROM_ORIGIN;
+    const static cv::Point LINE_1_1;
+    const static cv::Point LINE_1_2;
+    const static cv::Point LINE_2_1;
+    const static cv::Point LINE_2_2;
 
-        int tableNumber;
+    std::vector<cv::Point> _pointVector;
 
-    public:
-        bool calibrate(cv::Mat rgbMatrix, cv::Mat depthMatrix);
-        KinectCalibrator();
-        std::vector<cv::Point> getSquarePositions();
-        bool calibratev2();
-        bool find4PointsForReference(cv::Mat rgbMatrix, cv::Mat depthMatrix);
-        void setTable(int);
+    std::vector<cv::Point> findCalibrationSquare(cv::Mat rgbMatrix);
+
+    float findAndSetKinectAngle(cv::Mat depthMatrix);
+
+    cv::Vec2f errorCorrect();
+
+    int tableNumber;
+
+public:
+    bool calibrate(cv::Mat rgbMatrix, cv::Mat depthMatrix);
+
+    KinectCalibrator();
+
+    bool manualCalibration();
+
+    void setTable(int);
 };
 
 #endif

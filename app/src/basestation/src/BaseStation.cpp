@@ -7,8 +7,8 @@ using namespace cv;
 
 bool BaseStation::isUpdatingShit = false;
 
-BaseStation::BaseStation(int argc, char** argv) :
-        init_argc(argc), init_argv(argv) {
+BaseStation::BaseStation(int argc, char **argv) :
+init_argc(argc), init_argv(argv) {
 
     white = Scalar(255, 255, 255);
     blue = Scalar(255, 0, 0);
@@ -70,8 +70,8 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
 
-    startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
-    setRobotPositionAndAngleClient = node.serviceClient<kinocto::SetRobotPositionAndAngle>("kinocto/setRobotPositionAndAngle");
+    startLoopClient = node.serviceClient < kinocto::StartLoop > ("kinocto/startLoop");
+    setRobotPositionAndAngleClient = node.serviceClient < kinocto::SetRobotPositionAndAngle > ("kinocto/setRobotPositionAndAngle");
 
     updateRobotSubscriber = node.subscribe("basestation/updateRobotPosition", 50, &BaseStation::updateRobotPosition, this);
 }
@@ -79,13 +79,13 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
 void BaseStation::loop() {
     if (ros::ok()) {
         switch (state) {
-        case LOOP:
-            //cout << "looping" << endl;
-            break;
-        case SEND_START_LOOP_MESSAGE:
-            sendStartLoopMessage();
-            state = LOOP;
-            break;
+            case LOOP:
+                //cout << "looping" << endl;
+                break;
+            case SEND_START_LOOP_MESSAGE:
+                sendStartLoopMessage();
+                state = LOOP;
+                break;
         }
 
         if (BaseStation::isUpdatingShit == true) {
@@ -173,14 +173,14 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
         response.y2 /= obstacle2AverageCount;
     }
 
-    ROS_INFO( "%s x:%f y:%f  x:%f y:%f", "Request Find Obstacles Position. Sending values ", response.x1, response.y1, response.x2, response.y2);
+    ROS_INFO("%s x:%f y:%f  x:%f y:%f", "Request Find Obstacles Position. Sending values ", response.x1, response.y1, response.x2, response.y2);
 
     stringstream info;
     info << "Kinocto : Demande de la position des obstacles \n";
     info << "Envoi des positions : ";
     info << " (" << response.x1 << "," << response.y1 << ") et ";
     info << " (" << response.x2 << "," << response.y2 << ")";
-    QString infoQ((char*) info.str().c_str());
+    QString infoQ((char *) info.str().c_str());
 
     emit message(infoQ);
 
@@ -241,7 +241,7 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     response.y = positionY;
     response.angle = robotAngle;
 
-    ROS_INFO( "%s x:%f y:%f angle:%f", "Request Find Robot Position. Sending Values ", positionX, positionY, robotAngle);
+    ROS_INFO("%s x:%f y:%f angle:%f", "Request Find Robot Position. Sending Values ", positionX, positionY, robotAngle);
 
     stringstream info;
     info << "Kinocto : Demande de la position du robot \n";
@@ -249,7 +249,7 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
     info << " (" << positionX << "," << positionY << ")";
     info << "Envoi de l'angle : ";
     info << robotAngle;
-    QString infoQ((char*) info.str().c_str());
+    QString infoQ((char *) info.str().c_str());
 
     emit message(infoQ);
 
@@ -261,7 +261,7 @@ bool BaseStation::showSolvedSudocube(ShowSolvedSudocube::Request & request, Show
 
     stringstream buff;
     buff << request.solvedSudocube;
-    ROS_INFO( "%s\n red square value:%d\n solved sudocube:\n%s", "Show Solved Sudocube", request.redCaseValue, buff.str().c_str());
+    ROS_INFO("%s\n red square value:%d\n solved sudocube:\n%s", "Show Solved Sudocube", request.redCaseValue, buff.str().c_str());
 
     emit showSolvedSudocubeSignal(QString(buff.str().c_str()), request.redCaseValue, request.redCasePosition);
 
@@ -287,7 +287,7 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
         }
     }
 
-    for(int i = 0; i < positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size(); i++) {
+    for (int i = 0; i < positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size(); i++) {
         cout << "DEBUGGING : stack not empty, emptying" << endl;
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
     }
@@ -295,15 +295,15 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     cout << "DEBUGGING : stack now empty, POOPED it all" << endl;
 
 
-    for(int i = 0; i < plannedPath.size(); i++) {
-        cout << "DEBUGGING : filling stack : Position : "<< plannedPath[i].x << "," << plannedPath[i].y << endl;
+    for (int i = 0; i < plannedPath.size(); i++) {
+        cout << "DEBUGGING : filling stack : Position : " << plannedPath[i].x << "," << plannedPath[i].y << endl;
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.push(plannedPath[i]);
     }
 
     ROS_INFO("%s %s", "Points of the trajectory :\n", buff.str().c_str());
 
     QString infoQ("Kinocto : Points de la trajectoire : \n");
-    infoQ.append((char*) buff.str().c_str());
+    infoQ.append((char *) buff.str().c_str());
 
     emit message(infoQ);
 
@@ -366,7 +366,7 @@ void BaseStation::updateShizzle() {
     }
 
     cout << "DEBUGGING : POP!" << endl;
-    if(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
+    if (positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
     }
 
@@ -376,7 +376,7 @@ void BaseStation::updateShizzle() {
         actualPosition.set(positionX, positionY);
         kinoctoPositionUpdates.push_back(actualPosition);
     } else {
-        if(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
+        if (positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
             actualPosition.set(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().x, positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().y);
             cout << "DEBUGGING : Position 0,0 received, sending " << actualPosition.x << "," << actualPosition.y << endl;
             kinoctoPositionUpdates.push_back(actualPosition);
@@ -386,11 +386,11 @@ void BaseStation::updateShizzle() {
     QImage image = Mat2QImage(createMatrix());
     emit updateTableImage(image);
 
-    ROS_INFO( "%s x:%f y:%f", "UPDATING Robot Position. Sending Values ", positionX, positionY);
+    ROS_INFO("%s x:%f y:%f", "UPDATING Robot Position. Sending Values ", positionX, positionY);
     stringstream info;
     info << "Kinocto : Update de la position du robot \n";
     info << " (" << positionX << "," << positionY << ")";
-    QString infoQ((char*) info.str().c_str());
+    QString infoQ((char *) info.str().c_str());
 
     emit message(infoQ);
 }
@@ -477,7 +477,7 @@ QImage BaseStation::Mat2QImage(const Mat3b &src) {
     QImage dest(src.cols, src.rows, QImage::Format_ARGB32);
     for (int y = 0; y < src.rows; ++y) {
         const cv::Vec3b *srcrow = src[y];
-        QRgb *destrow = (QRgb*) dest.scanLine(y);
+        QRgb *destrow = (QRgb *) dest.scanLine(y);
         for (int x = 0; x < src.cols; ++x) {
             destrow[x] = qRgba(srcrow[x][2], srcrow[x][1], srcrow[x][0], 255);
         }

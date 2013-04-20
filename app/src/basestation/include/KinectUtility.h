@@ -10,8 +10,11 @@
 class Utility {
 public:
     static void saveToFile(cv::Mat matrix, std::string fileName);
+
     static cv::Mat readFromFile(std::string fileName);
+
     static cv::Mat captureDepthMatrix(cv::VideoCapture capture);
+
     static cv::Mat captureRGBMatrix(cv::VideoCapture capture);
 };
 
