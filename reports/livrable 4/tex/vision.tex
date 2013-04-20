@@ -1,0 +1,20 @@
+%!TEX root = ../rapport.tex
+%!TEX encoding = UTF-8 Unicode
+
+% Chapitres "Vision"
+
+% modifié par Francis Valois, Université Laval
+% 31/01/2011 - version 1.0 - Création du document
+
+\chapter{Vision 2$^{e}$ itération}
+\label{s:vision2}
+
+\section{Orientation avec la caméra embarquée}
+
+Après quelques essais avec la matrice de transformation, nous n'avons pas réussi à obtenir une localisation fiable avec la caméra embarquée. 
+
+L'orientation avec la caméra embarquée a donc servi de méthode d'appoint à la localisation avec la kinect pour corriger l'angle du robot à trois moments critiques, soit devant le mur lors de la lecture du sudokube, dans le carré vert avant le départ vers les sudokubes et dans le carré vert avant de débuter le dessin. 
+
+L'angle est évalué en traçant des lignes de Hough sur des images segmentées sur le noir pour les murs et sur le vert pour le carré vert. La ligne pertinente est sélectionnée en trouvant la ligne croisant l'axe des y à la valeur la plus élevée et ayant la pente la plus faible. 
+
+L'angle trouvé n'est pas l'angle réel du robot avec la ligne, mais un angle de 0° signifie que l'orientation du robot est correcte. L'erreur devient plus importante avec les grands angles, mais l'erreur d'orientation ne dépasse normalement pas 15°. En applicant la correction 2 fois, l'orientation du robot est corrigée dans la plupart des cas.
