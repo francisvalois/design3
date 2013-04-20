@@ -6,3 +6,13 @@
 % modifié par Francis Valois, Université Laval
 % 31/01/2011 - version 1.0 - Création du document
 \chapter{Post-mortem}
+
+\section{Orientation avec la caméra embarquée}
+
+L'utilisation de la matrice de transformation pour la localisation exige une matrice extrinsèque la plus parfaite possible. Avec plus de temps, il aurait peut-être été possible d'obtenir une bonne matrice et de la tester adéquatement. Il existe aussi une fonction dans opencv, reprojectImageTo3D pour la localisation des objets dans un espace 3D avec deux images prises avec deux caméras ou deux angles différents qui auraient pu être utilisées avec plus de temps et une calibration adéquate. 
+
+Une autre méthode qui aurait pu être envisagée est une look-up table constituée en prenant une image d'une grille avec correspondance entre des points dont les coordonnées par rapport au robot sont connues. La transformation de la position du pixel dans l'image vers leurs coordonnées par rapport au robot aurait été faite en localisant les valeurs auquelles elles correpondent dans la table et en effectuant une interpolation linéaire. Cette méthode aurait eu l'avantage d'être plus facilement et plus intuitivement testable que celles utilisant des matrices.
+
+La localisation avec la caméra embarquée aurait potentiellement été plus précise que celle avec la Kinect, et particulièrement d'obtenir la position du robot lorsqu'il n'est pas possible de le faire avec la Kinect, ce qui survient surtout dans les positions les plus éloignées. 
+
+La fiabilité de la méthode de localisation des points à l'intersection des Hough lines aurait également dû être améliorée pour pouvoir l'utiliser dans un algorithme de localisation. En ajustant la saturation des images prises et la segmentation, il était possible d'avoir la position des coins inférieurs des blocs de couleur dans la plupart des cas, mais il arrivait souvent que le positionnement s'écarte beaucoup de la position réelle à cause de l'erreur sur les droites retenues.
