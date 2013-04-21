@@ -38,11 +38,11 @@
 #define LOOP 0
 #define SEND_START_LOOP_MESSAGE 1
 
-class BaseStation : public QThread {
-    Q_OBJECT
-    public :
+class BaseStation: public QThread {
+Q_OBJECT
+public:
 
-    static bool isUpdatingShit;
+    static bool isUpdatingPosition;
 
     BaseStation(int argc, char **argv);
 
@@ -55,75 +55,27 @@ class BaseStation : public QThread {
     void loop();
 
     void setStateToSendStartLoopMessage();
-
     void sendStartLoopMessage();
-
     void sendRobotPosAndAngle(double x, double y, double angle);
-
     bool getObstaclesPosition(basestation::GetObstaclesPosition::Request & request, basestation::GetObstaclesPosition::Response & response);
-
     bool findRobotPositionAndAngle(basestation::FindRobotPositionAndAngle::Request & request,
             basestation::FindRobotPositionAndAngle::Response & response);
-
     bool showSolvedSudocube(basestation::ShowSolvedSudocube::Request & request, basestation::ShowSolvedSudocube::Response & response);
-
     bool traceRealTrajectory(basestation::TraceRealTrajectory::Request & request, basestation::TraceRealTrajectory::Response & response);
-
     bool loopEnded(basestation::LoopEnded::Request & request, basestation::LoopEnded::Response & response);
-
     void updateRobotPosition(const basestation::UpdateRobotPos& str);
+    void updatePositionInScreen();
 
-    void updateShizzle();
-
-    Q_SIGNALS:
+Q_SIGNALS:
     void
 
     rosShutdown();
-
     void showSolvedSudocubeSignal(QString, int, int);
-
     void message(QString);
-
     void updateTableImage(QImage);
-
     void endLoop(QString);
 
 private:
-    int init_argc;
-    char **init_argv;
-
-    int state;
-
-    KinectCapture *kinectCapture;
-    ObstaclesDetector obstaclesDetection;
-    RobotDetector robotDetection;
-
-    //ros::Publisher startLoopPublisher;
-    ros::ServiceClient startLoopClient;
-    ros::ServiceClient setRobotPositionAndAngleClient;
-
-    ros::ServiceServer getObstaclesPositionService;
-    ros::ServiceServer findRobotPositionAndAngleService;
-    ros::ServiceServer showSolvedSudocubeService;
-    ros::ServiceServer traceRealTrajectoryService;
-    ros::ServiceServer updateRobotPositionService;
-    ros::ServiceServer loopEndedService;
-
-    ros::Subscriber updateRobotSubscriber;
-
-    void initHandlers(ros::NodeHandle & node);
-
-    cv::Mat3b createMatrix();
-
-    QImage Mat2QImage(const cv::Mat3b&);
-
-    Position obstacle1;
-    Position obstacle2;
-    Position actualPosition;
-    std::vector<Position> plannedPath;
-    std::vector<Position> kinoctoPositionUpdates;
-    std::stack<Position> positionsForWhenThatDamnKinectDoesntReturnADamnPosition;
-
     cv::Scalar white;
     cv::Scalar blue;
     cv::Scalar black;
@@ -131,8 +83,34 @@ private:
     cv::Scalar darkRed;
     cv::Scalar green;
 
-    void colorPixel(cv::Mat&, cv::Scalar, int, int);
+    Position obstacle1;
+    Position obstacle2;
+    Position actualPosition;
+    std::vector<Position> plannedPath;
+    std::vector<Position> kinoctoPositionUpdates;
 
+    int init_argc;
+    char **init_argv;
+    int state;
+
+    KinectCapture *kinectCapture;
+    ObstaclesDetector obstaclesDetection;
+    RobotDetector robotDetection;
+
+    ros::ServiceClient startLoopClient;
+    ros::ServiceClient setRobotPositionAndAngleClient;
+    ros::ServiceServer getObstaclesPositionService;
+    ros::ServiceServer findRobotPositionAndAngleService;
+    ros::ServiceServer showSolvedSudocubeService;
+    ros::ServiceServer traceRealTrajectoryService;
+    ros::ServiceServer updateRobotPositionService;
+    ros::ServiceServer loopEndedService;
+    ros::Subscriber updateRobotSubscriber;
+
+    void initHandlers(ros::NodeHandle & node);
+    cv::Mat3b createMatrix();
+    QImage Mat2QImage(const cv::Mat3b&);
+    void colorPixel(cv::Mat&, cv::Scalar, int, int);
     void drawLine(cv::Mat, cv::Point, cv::Point, cv::Scalar);
 };
 

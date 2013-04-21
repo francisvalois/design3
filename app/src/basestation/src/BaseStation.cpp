@@ -5,7 +5,7 @@ using namespace std;
 using namespace boost;
 using namespace cv;
 
-bool BaseStation::isUpdatingShit = false;
+bool BaseStation::isUpdatingPosition = false;
 
 BaseStation::BaseStation(int argc, char **argv) :
         init_argc(argc), init_argv(argv) {
@@ -88,9 +88,9 @@ void BaseStation::loop() {
             break;
         }
 
-        if (BaseStation::isUpdatingShit == true) {
-            BaseStation::isUpdatingShit = false;
-            updateShizzle();
+        if (BaseStation::isUpdatingPosition == true) {
+            BaseStation::isUpdatingPosition = false;
+            updatePositionInScreen();
         }
 
         ros::spinOnce();
@@ -267,14 +267,8 @@ bool BaseStation::showSolvedSudocube(ShowSolvedSudocube::Request & request, Show
 
 bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, TraceRealTrajectory::Response & response) {
     ROS_INFO("Tracing Tracjectory");
-    if (request.y.size() != request.x.size()) {
-        ROS_ERROR("THE TRACJECTORY IS NOT WELL FORMATTED");
-
-        return false;
-    }
 
     stringstream buff;
-
     if (request.x.size() > 0) {
         plannedPath.clear();
         for (int i = 0; i < request.x.size(); i++) {
@@ -282,14 +276,6 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
             Position position(request.x[i], request.y[i]);
             plannedPath.push_back(position);
         }
-    }
-
-    for (int i = 0; i < positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size(); i++) {
-        positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
-    }
-
-    for (int i = 0; i < plannedPath.size(); i++) {
-        positionsForWhenThatDamnKinectDoesntReturnADamnPosition.push(plannedPath[i]);
     }
 
     ROS_INFO("%s %s", "Points of the trajectory :\n", buff.str().c_str());
@@ -321,7 +307,7 @@ bool BaseStation::loopEnded(LoopEnded::Request & request, LoopEnded::Response & 
     return true;
 }
 
-void BaseStation::updateShizzle() {
+void BaseStation::updatePositionInScreen() {
     int const AVERAGECOUNT = 1;
     int robotPositionAverageCount = 0;
     float positionX = 0.0f;
@@ -354,20 +340,10 @@ void BaseStation::updateShizzle() {
         robotAngle = robotAngle * 180 / M_PI;
     }
 
-    if (positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
-        positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
-    }
-
     //Met a jour la position du robot dans l'interface
     if (positionX != 0 && positionY != 0) {
         actualPosition.set(positionX, positionY);
         kinoctoPositionUpdates.push_back(actualPosition);
-    } else {
-        if (positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
-            actualPosition.set(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().x,
-                    positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().y);
-            kinoctoPositionUpdates.push_back(actualPosition);
-        }
     }
 
     QImage image = Mat2QImage(createMatrix());
@@ -383,7 +359,7 @@ void BaseStation::updateShizzle() {
 }
 
 void BaseStation::updateRobotPosition(const basestation::UpdateRobotPos& str) {
-    isUpdatingShit = true;
+    isUpdatingPosition = true;
 }
 
 Mat3b BaseStation::createMatrix() {
