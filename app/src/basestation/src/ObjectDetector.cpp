@@ -104,8 +104,7 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
 
     if (picture.channels() == 1) {
         RGBG = picture.clone();
-    }
-    else {
+    } else {
         cvtColor(picture, RGBG, CV_RGB2GRAY);
     }
 
@@ -187,8 +186,7 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
             removeQuadsNotOnChessboard(outQuads);
 
             sortQuadsByPosition(outQuads);
-        }
-        else if (i >= 1) {
+        } else if (i >= 1) {
             return outQuads.size();
 
         }

@@ -42,7 +42,7 @@ Mat NumberReader::loadNumberSample(int classNo, int trainNo) {
 void NumberReader::addSampleToClassifier(Mat & numberSample, int i, int j, int classNo) {
     if (!numberSample.data) {
         cout << "File " << filename << " not found\n";
-        return; //TODO Gestion plus intelligente à faire ici...
+        return;
     }
 
     for (int n = 0; n < NUMBER_IMAGE_SIZE; n++) {

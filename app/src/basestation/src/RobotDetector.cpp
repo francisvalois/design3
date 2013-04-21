@@ -72,7 +72,6 @@ void RobotDetector::get2MajorPointsDistance(Mat depthMatrix, vector<Point2f> val
 void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix) {
     vector<Rect> validRectPosition;
 
-
     //Range to scan only on the table
     depthMatrix = Mat(depthMatrix, cv::Range(Y_ROBOT_TOP_THRESHOLD, Y_ROBOT_BOTTOM_THRESHOLD),
             cv::Range(X_ROBOT_LEFT_THRESHOLD, X_ROBOT_RIGHT_THRESHOLD));
@@ -114,8 +113,7 @@ void RobotDetector::findRobotWithAngle(Mat depthMatrix, Mat rgbMatrix) {
         for (int i = 0; i < validRectPosition.size(); i++) {
             validRobotPosition.push_back(Point2f(validRectPosition[i].x, validRectPosition[i].y));
         }
-    }
-    else {
+    } else {
         Rect goodFrame = framesRect.back();
 
         validRobotPosition.push_back(Point2f(goodFrame.width * 0.25f, goodFrame.height * 0.25f));

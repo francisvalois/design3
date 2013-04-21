@@ -13,6 +13,4 @@ public:
 	Position destination;
 };
 
-
-
 #endif /* MOVE_H_ */

@@ -29,153 +29,153 @@ PathPlanning::~PathPlanning() {
 }
 
 Position PathPlanning::findDerivatePosition(int sudocubeNumber) {
-	Workspace workspace;
-	if(sudocubeNumber == 3) {
-		Position derivatedPosition = workspace.getSudocubePos(4);
-		Position clearSpaceBehindDerivatedPosition;
-		clearSpaceBehindDerivatedPosition.x = derivatedPosition.x - 5;
-		clearSpaceBehindDerivatedPosition.y = derivatedPosition.y;
-		Position derivatedPositionBehindSudocube = workspace.getSudocubePos(3);
+    Workspace workspace;
+    if (sudocubeNumber == 3) {
+        Position derivatedPosition = workspace.getSudocubePos(4);
+        Position clearSpaceBehindDerivatedPosition;
+        clearSpaceBehindDerivatedPosition.x = derivatedPosition.x - 5;
+        clearSpaceBehindDerivatedPosition.y = derivatedPosition.y;
+        Position derivatedPositionBehindSudocube = workspace.getSudocubePos(3);
 
-		if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
-				!linePassesThroughObstacle(clearSpaceBehindDerivatedPosition, derivatedPosition)) {
-			return derivatedPosition;
-		}
-		for(int i = 0; i < 6; i++) {
-			derivatedPosition.x = derivatedPosition.x - 10;
-			derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
-			clearSpaceBehindDerivatedPosition.x = clearSpaceBehindDerivatedPosition.x - 10;
-			if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
-					!linePassesThroughObstacle(derivatedPositionBehindSudocube, workspace.getSudocubePos(3)) &&
-					!linePassesThroughObstacle(clearSpaceBehindDerivatedPosition, derivatedPosition)) {
-				return derivatedPosition;
-			}
-		}
-	}
-	if(sudocubeNumber == 6) {
-		Position derivatedPosition = workspace.getSudocubePos(5);
-		Position derivatedPositionBehindSudocube = workspace.getSudocubePos(6);
-		if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)) {
-			return derivatedPosition;
-		}
-		for(int i = 0; i < 6; i++) {
-			derivatedPosition.x = derivatedPosition.x - 10;
-			derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
-			if(!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition) &&
-					!linePassesThroughObstacle(derivatedPositionBehindSudocube, workspace.getSudocubePos(6))) {
-				return derivatedPosition;
-			}
-		}
-	}
-	return workspace.getSudocubePos(sudocubeNumber);
+        if (!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)
+                && !linePassesThroughObstacle(clearSpaceBehindDerivatedPosition, derivatedPosition)) {
+            return derivatedPosition;
+        }
+        for (int i = 0; i < 6; i++) {
+            derivatedPosition.x = derivatedPosition.x - 10;
+            derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
+            clearSpaceBehindDerivatedPosition.x = clearSpaceBehindDerivatedPosition.x - 10;
+            if (!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)
+                    && !linePassesThroughObstacle(derivatedPositionBehindSudocube, workspace.getSudocubePos(3))
+                    && !linePassesThroughObstacle(clearSpaceBehindDerivatedPosition, derivatedPosition)) {
+                return derivatedPosition;
+            }
+        }
+    }
+    if (sudocubeNumber == 6) {
+        Position derivatedPosition = workspace.getSudocubePos(5);
+        Position derivatedPositionBehindSudocube = workspace.getSudocubePos(6);
+        if (!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)) {
+            return derivatedPosition;
+        }
+        for (int i = 0; i < 6; i++) {
+            derivatedPosition.x = derivatedPosition.x - 10;
+            derivatedPositionBehindSudocube.x = derivatedPositionBehindSudocube.x - 10;
+            if (!linePassesThroughObstacle(derivatedPositionBehindSudocube, derivatedPosition)
+                    && !linePassesThroughObstacle(derivatedPositionBehindSudocube, workspace.getSudocubePos(6))) {
+                return derivatedPosition;
+            }
+        }
+    }
+    return workspace.getSudocubePos(sudocubeNumber);
 }
 
 bool PathPlanning::canUseSonarWithSideSudocube(int sudocubeNumber) {
-	Workspace workspace;
-	if(sudocubeNumber == 2 || sudocubeNumber == 7) {
-		return true;
-	}
-	if(sudocubeNumber == 1) {
-		Position robotPosition = workspace.getSudocubePos(1);
-		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(2))) {
-			Position position2;
-			position2.x = robotPosition.x + 33;
-			position2.y = robotPosition.y - 20;
-			if(!linePassesThroughObstacle(robotPosition, position2)) {
-				return true;
-			}
-		}
-	}
-	if(sudocubeNumber == 8) {
-		Position robotPosition = workspace.getSudocubePos(8);
-		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(7))) {
-			Position position2;
-			position2.x = robotPosition.x + 33;
-			position2.y = robotPosition.y + 20;
-			if(!linePassesThroughObstacle(robotPosition, position2)) {
-				return true;
-			}
-		}
-	}
-	return false;
+    Workspace workspace;
+    if (sudocubeNumber == 2 || sudocubeNumber == 7) {
+        return true;
+    }
+    if (sudocubeNumber == 1) {
+        Position robotPosition = workspace.getSudocubePos(1);
+        if (!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(2))) {
+            Position position2;
+            position2.x = robotPosition.x + 33;
+            position2.y = robotPosition.y - 20;
+            if (!linePassesThroughObstacle(robotPosition, position2)) {
+                return true;
+            }
+        }
+    }
+    if (sudocubeNumber == 8) {
+        Position robotPosition = workspace.getSudocubePos(8);
+        if (!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(7))) {
+            Position position2;
+            position2.x = robotPosition.x + 33;
+            position2.y = robotPosition.y + 20;
+            if (!linePassesThroughObstacle(robotPosition, position2)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 bool PathPlanning::canUseSonarAtLeftWithBackSudocube(int sudocubeNumber) {
-	Workspace workspace;
+    Workspace workspace;
 //	if(sudocubeNumber == 3) {
 //		return false;
 //	}
-	if(sudocubeNumber == 4) {
-		Position robotPosition = workspace.getSudocubePos(4);
-		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
-			Position position2(169, 101); //with 30° of sonar
-			if(!linePassesThroughObstacle(robotPosition, position2)) {
-				return true;
-			}
-		}
-	}
-	if(sudocubeNumber == 5) {
-		if (canUseSonarAtRightWithBackSudocube(5)) {
-			return false;
-		}
-		Position robotPosition = workspace.getSudocubePos(5);
-		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
-			Position position2(154, 101); //with 30° of sonar
-			if(!linePassesThroughObstacle(robotPosition, position2)) {
-				return true;
-			}
-		}
-	}
-	if(sudocubeNumber == 6) {
-		Position robotPosition = workspace.getSudocubePos(6);
-		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
-			Position position2(139, 101); //with 30° of sonar
-			if(!linePassesThroughObstacle(robotPosition, position2)) {
-				return true;
-			}
-		}
-	}
+    if (sudocubeNumber == 4) {
+        Position robotPosition = workspace.getSudocubePos(4);
+        if (!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
+            Position position2(169, 101); //with 30° of sonar
+            if (!linePassesThroughObstacle(robotPosition, position2)) {
+                return true;
+            }
+        }
+    }
+    if (sudocubeNumber == 5) {
+        if (canUseSonarAtRightWithBackSudocube(5)) {
+            return false;
+        }
+        Position robotPosition = workspace.getSudocubePos(5);
+        if (!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
+            Position position2(154, 101); //with 30° of sonar
+            if (!linePassesThroughObstacle(robotPosition, position2)) {
+                return true;
+            }
+        }
+    }
+    if (sudocubeNumber == 6) {
+        Position robotPosition = workspace.getSudocubePos(6);
+        if (!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(3))) {
+            Position position2(139, 101); //with 30° of sonar
+            if (!linePassesThroughObstacle(robotPosition, position2)) {
+                return true;
+            }
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool PathPlanning::canUseSonarAtRightWithBackSudocube(int sudocubeNumber) {
-	Workspace workspace;
-	if(sudocubeNumber == 3) {
-		Position robotPosition = workspace.getSudocubePos(3);
-		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
-			Position position2(139, 13); //with 30° of sonar
-			if(!linePassesThroughObstacle(robotPosition, position2)) {
-				return true;
-			}
-		}
-	}
-	if(sudocubeNumber == 4) {
-		if (canUseSonarAtLeftWithBackSudocube(4)) {
-			return false;
-		}
-		Position robotPosition = workspace.getSudocubePos(4);
-		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
-			Position position2(154, 13); //with 30° of sonar
-			if(!linePassesThroughObstacle(robotPosition, position2)) {
-				return true;
-			}
-		}
-	}
-	if(sudocubeNumber == 5) {
-		Position robotPosition = workspace.getSudocubePos(5);
-		if(!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
-			Position position2(169, 13); //with 30° of sonar
-			if(!linePassesThroughObstacle(robotPosition, position2)) {
-				return true;
-			}
-		}
-	}
+    Workspace workspace;
+    if (sudocubeNumber == 3) {
+        Position robotPosition = workspace.getSudocubePos(3);
+        if (!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
+            Position position2(139, 13); //with 30° of sonar
+            if (!linePassesThroughObstacle(robotPosition, position2)) {
+                return true;
+            }
+        }
+    }
+    if (sudocubeNumber == 4) {
+        if (canUseSonarAtLeftWithBackSudocube(4)) {
+            return false;
+        }
+        Position robotPosition = workspace.getSudocubePos(4);
+        if (!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
+            Position position2(154, 13); //with 30° of sonar
+            if (!linePassesThroughObstacle(robotPosition, position2)) {
+                return true;
+            }
+        }
+    }
+    if (sudocubeNumber == 5) {
+        Position robotPosition = workspace.getSudocubePos(5);
+        if (!linePassesThroughObstacle(robotPosition, workspace.getSudocubePos(6))) {
+            Position position2(169, 13); //with 30° of sonar
+            if (!linePassesThroughObstacle(robotPosition, position2)) {
+                return true;
+            }
+        }
+    }
 //	if(sudocubeNumber == 6) {
 //		return false;
 //	}
 
-	return false;
+    return false;
 }
 
 void PathPlanning::deleteAllNodes() {
@@ -209,22 +209,18 @@ void PathPlanning::setObstacles(Position o1, Position o2) {
 
 bool PathPlanning::obstaclesPositionsOK(Position obstacle1, Position obstacle2) {
     if (obstacle1.x < Workspace::DRAWING_ZONE || obstacle2.x < Workspace::DRAWING_ZONE) {
-//        cout << "Error : An obstacle is in the drawing zone" << endl;
         ROS_ERROR("Error : An obstacle is in the drawing zone");
         return false;
     }
     if (obstacle1.x > Workspace::TABLE_X - Workspace::OBSTACLE_RADIUS || obstacle2.x > Workspace::TABLE_X - Workspace::OBSTACLE_RADIUS) {
-//        cout << "Error : An obstacle is in the west wall (x too high)" << endl;
         ROS_ERROR("Error : An obstacle is in the west wall (x too high)");
         return false;
     }
     if (obstacle1.y < Workspace::OBSTACLE_RADIUS || obstacle2.y < Workspace::OBSTACLE_RADIUS) {
-//        cout << "Error : An obstacle is in the north wall (y too low)" << endl;
         ROS_ERROR("Error : An obstacle is in the north wall (y too low)");
         return false;
     }
     if (obstacle1.y > Workspace::TABLE_Y - Workspace::OBSTACLE_RADIUS || obstacle2.y > Workspace::TABLE_Y - Workspace::OBSTACLE_RADIUS) {
-//        cout << "Error : An obstacle is in the south wall (y too high)" << endl;
         ROS_ERROR("Error : An obstacle is in the south wall (y too high)");
         return false;
     }
@@ -259,7 +255,6 @@ void PathPlanning::cleanGoalNodes() {
 vector<Position> PathPlanning::findPathInGraph() {
     applyDijkstra();
 
-//	cout << "PATH  --  total cost : " << destinationNode->getCost() << endl;
     vector<Position> nodePositions;
     Node* current = destinationNode;
     Node* predecessor = current->getPredecessor();
@@ -271,12 +266,9 @@ vector<Position> PathPlanning::findPathInGraph() {
     while (predecessor != 0) {
         current = predecessor;
         predecessor = current->getPredecessor();
-//		cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
         Position currentPosition(current->getPosition().x, current->getPosition().y);
         nodePositions.push_back(currentPosition);
-//        cout << "clearance" << current->getClearance() << endl;
     }
-//	cout << "(" << current->getPosition().x << "," << current->getPosition().y << ")" << endl;
     if (nodePositions.size() <= 1) {
         nodePositions.clear();
     }
@@ -412,9 +404,7 @@ void PathPlanning::createNodes() {
             } while (table[obstacleCornerValueX][nextObstacleY] == 1);
             float nodeY = (float) (obstacleCornerValues[i].y + ((nextObstacleY - obstacleCornerValues[i].y) / 2));
             Node* newNode = new Node(obstacleCornerValues[i].x, nodeY);
-//            cout << "creating node at " << obstacleCornerValues[i].x << "," << nodeY << endl;
             newNode->setClearance((nextObstacleY - obstacleCornerValues[i].y));
-//            cout << "  with clearance " << newNode->getClearance() << endl;
             addNode(newNode);
         } else if (table[obstacleCornerValueX][obstacleCornerValueYminus] == 1) {
             int nextObstacleY = obstacleCornerValues[i].y - 1;
@@ -475,10 +465,10 @@ void PathPlanning::connectNodes() {
         for (unsigned int j = 0; j < listOfNodes.size(); j++) {
             if (i < j) {
                 if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition())) {
-                	if(calculateDistance(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition()) < 160) {
-                		listOfNodes[i]->addNeighbor(listOfNodes[j]);
-                		listOfNodes[j]->addNeighbor(listOfNodes[i]);
-                	}
+                    if (calculateDistance(listOfNodes[i]->getPosition(), listOfNodes[j]->getPosition()) < 160) {
+                        listOfNodes[i]->addNeighbor(listOfNodes[j]);
+                        listOfNodes[j]->addNeighbor(listOfNodes[i]);
+                    }
                 }
             }
         }
@@ -486,22 +476,22 @@ void PathPlanning::connectNodes() {
             ROS_ERROR("ERROR : The destination is within an obstacle");
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), startNode->getPosition())) {
-        	if(calculateDistance(listOfNodes[i]->getPosition(), startNode->getPosition()) < 160) {
-				listOfNodes[i]->addNeighbor(startNode);
-				startNode->addNeighbor(listOfNodes[i]);
-        	}
+            if (calculateDistance(listOfNodes[i]->getPosition(), startNode->getPosition()) < 160) {
+                listOfNodes[i]->addNeighbor(startNode);
+                startNode->addNeighbor(listOfNodes[i]);
+            }
         }
         if (!linePassesThroughObstacle(listOfNodes[i]->getPosition(), destinationNode->getPosition())) {
-        	if(calculateDistance(listOfNodes[i]->getPosition(), destinationNode->getPosition()) < 160) {
-				listOfNodes[i]->addNeighbor(destinationNode);
-				destinationNode->addNeighbor(listOfNodes[i]);
-        	}
+            if (calculateDistance(listOfNodes[i]->getPosition(), destinationNode->getPosition()) < 160) {
+                listOfNodes[i]->addNeighbor(destinationNode);
+                destinationNode->addNeighbor(listOfNodes[i]);
+            }
         }
         if (!linePassesThroughObstacle(startNode->getPosition(), destinationNode->getPosition())) {
-        	if(calculateDistance(startNode->getPosition(), destinationNode->getPosition()) < 160) {
-				startNode->addNeighbor(destinationNode);
-				destinationNode->addNeighbor(startNode);
-        	}
+            if (calculateDistance(startNode->getPosition(), destinationNode->getPosition()) < 160) {
+                startNode->addNeighbor(destinationNode);
+                destinationNode->addNeighbor(startNode);
+            }
         }
     }
 }
@@ -565,16 +555,16 @@ void PathPlanning::printTable() {
     }
     transpose(workspace, workspace);
 
-    if(destinationNode != 0) {
-		Node* current = destinationNode;
-		Node* predecessor = current->getPredecessor();
-		while (predecessor != 0) {
-			Point currentPoint(current->getPosition().x, Workspace::TABLE_Y - current->getPosition().y);
-			Point predecessorPoint(predecessor->getPosition().x, Workspace::TABLE_Y - predecessor->getPosition().y);
-			drawLine(workspace, currentPoint, predecessorPoint);
-			current = predecessor;
-			predecessor = current->getPredecessor();
-		}
+    if (destinationNode != 0) {
+        Node* current = destinationNode;
+        Node* predecessor = current->getPredecessor();
+        while (predecessor != 0) {
+            Point currentPoint(current->getPosition().x, Workspace::TABLE_Y - current->getPosition().y);
+            Point predecessorPoint(predecessor->getPosition().x, Workspace::TABLE_Y - predecessor->getPosition().y);
+            drawLine(workspace, currentPoint, predecessorPoint);
+            current = predecessor;
+            predecessor = current->getPredecessor();
+        }
     }
 
     showWindowWith("workspace", workspace);

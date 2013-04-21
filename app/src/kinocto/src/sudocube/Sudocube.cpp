@@ -10,8 +10,8 @@ Sudocube::Sudocube() {
     for (int i = 0; i < CUBE_FACES; i++) {
         for (int j = 0; j < CUBE_FACE_HEIGHT; j++) {
             for (int k = 0; k < CUBE_FACE_LENGTH; k++) {
-                
-            container[i][j][k] = new Case(i + 1, j + 1, k + 1);
+
+                container[i][j][k] = new Case(i + 1, j + 1, k + 1);
             }
         }
     }
@@ -30,7 +30,7 @@ Sudocube::~Sudocube() {
                     aCase = container[i][j][k];
                     delete aCase;
                     aCase = NULL;
-                } 
+                }
             }
         }
     }
@@ -273,13 +273,13 @@ vector<Case*> Sudocube::getSameRegionOfCase(int i, int j, int k) {
     vector<Case*> sameRegionCases;
     if (j <= 2) {
         for (int y = 0; y <= 1; y++) {
-            for (int z = 0; z <= 3; z ++) {
+            for (int z = 0; z <= 3; z++) {
                 sameRegionCases.push_back(container[i - 1][y][z]);
             }
         }
     } else {
         for (int y = 2; y <= 3; y++) {
-            for (int z = 0; z <= 3; z ++) {
+            for (int z = 0; z <= 3; z++) {
                 sameRegionCases.push_back(container[i - 1][y][z]);
             }
         }

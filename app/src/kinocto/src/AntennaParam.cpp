@@ -69,11 +69,10 @@ void AntennaParam::setIsBig(bool isBig) {
     big = isBig;
 }
 
-
-bool AntennaParam::isAValidSudocubeNumber (int sudocubeNumber) {
+bool AntennaParam::isAValidSudocubeNumber(int sudocubeNumber) {
     return sudocubeNumber >= 1 && sudocubeNumber <= 8;
 }
 
-bool AntennaParam::isAValidOrientationNumber (int orientation) {
+bool AntennaParam::isAValidOrientationNumber(int orientation) {
     return orientation >= 1 && orientation <= 4;
 }

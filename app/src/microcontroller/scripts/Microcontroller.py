@@ -231,7 +231,6 @@ def Microcontroller():
     
     rospy.loginfo("Creating Serial Communication")
     ser = serial.Serial()
-    # ser.port = ('/dev/ttyUSB0') 
     ser.port = ('/dev/serial/by-id/usb-TXI_Luminary_Micro_ICDI_Board_0B010140-if01-port0')
     ser.baudrate = 115200
     ser.parity = serial.PARITY_EVEN
@@ -242,7 +241,6 @@ def Microcontroller():
 
     rospy.loginfo("Creating Serial Communication with Camera")
     serCam = serial.Serial()
-    #serCam.port = ('/dev/ttyACM0') 
     serCam.port = ('/dev/serial/by-id/usb-Pololu_Corporation_Pololu_Micro_Maestro_6-Servo_Controller_00044759-if00')
     serCam.baudrate = 19200
     serCam.parity = serial.PARITY_NONE

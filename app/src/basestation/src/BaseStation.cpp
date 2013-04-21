@@ -8,7 +8,7 @@ using namespace cv;
 bool BaseStation::isUpdatingShit = false;
 
 BaseStation::BaseStation(int argc, char **argv) :
-init_argc(argc), init_argv(argv) {
+        init_argc(argc), init_argv(argv) {
 
     white = Scalar(255, 255, 255);
     blue = Scalar(255, 0, 0);
@@ -70,8 +70,8 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
     traceRealTrajectoryService = node.advertiseService("basestation/traceRealTrajectory", &BaseStation::traceRealTrajectory, this);
     loopEndedService = node.advertiseService("basestation/loopEnded", &BaseStation::loopEnded, this);
 
-    startLoopClient = node.serviceClient < kinocto::StartLoop > ("kinocto/startLoop");
-    setRobotPositionAndAngleClient = node.serviceClient < kinocto::SetRobotPositionAndAngle > ("kinocto/setRobotPositionAndAngle");
+    startLoopClient = node.serviceClient<kinocto::StartLoop>("kinocto/startLoop");
+    setRobotPositionAndAngleClient = node.serviceClient<kinocto::SetRobotPositionAndAngle>("kinocto/setRobotPositionAndAngle");
 
     updateRobotSubscriber = node.subscribe("basestation/updateRobotPosition", 50, &BaseStation::updateRobotPosition, this);
 }
@@ -79,13 +79,13 @@ void BaseStation::initHandlers(ros::NodeHandle & node) {
 void BaseStation::loop() {
     if (ros::ok()) {
         switch (state) {
-            case LOOP:
-                //cout << "looping" << endl;
-                break;
-            case SEND_START_LOOP_MESSAGE:
-                sendStartLoopMessage();
-                state = LOOP;
-                break;
+        case LOOP:
+            cout << "looping" << endl;
+            break;
+        case SEND_START_LOOP_MESSAGE:
+            sendStartLoopMessage();
+            state = LOOP;
+            break;
         }
 
         if (BaseStation::isUpdatingShit == true) {
@@ -143,8 +143,6 @@ bool BaseStation::getObstaclesPosition(GetObstaclesPosition::Request & request, 
         Vec2f obs1 = obstaclesDetection.getObstacle1();
         Vec2f obs2 = obstaclesDetection.getObstacle2();
 
-        cout << obs1 << endl;
-        cout << obs2 << endl;
         if ((obs1[0] < 0.02 || obs1[1] < 0.20) || obs2[0] < 0.02 || obs2[1] < 0.20) {
             continue;
         }
@@ -211,7 +209,6 @@ bool BaseStation::findRobotPositionAndAngle(FindRobotPositionAndAngle::Request &
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition();
         float angle = robotDetection.getRobotAngle();
-        cout << angle << endl;
         if (robot[0] > 0.10 || robot[1] > 0.20) {
             positionX += robot[1] * 100;
             positionY += robot[0] * 100;
@@ -288,15 +285,10 @@ bool BaseStation::traceRealTrajectory(TraceRealTrajectory::Request & request, Tr
     }
 
     for (int i = 0; i < positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size(); i++) {
-        cout << "DEBUGGING : stack not empty, emptying" << endl;
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
     }
 
-    cout << "DEBUGGING : stack now empty, POOPED it all" << endl;
-
-
     for (int i = 0; i < plannedPath.size(); i++) {
-        cout << "DEBUGGING : filling stack : Position : " << plannedPath[i].x << "," << plannedPath[i].y << endl;
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.push(plannedPath[i]);
     }
 
@@ -335,7 +327,6 @@ void BaseStation::updateShizzle() {
     float positionX = 0.0f;
     float positionY = 0.0f;
     float robotAngle = 0.0f;
-    cout << "UPDATE ROBOT POS" << endl;
     kinectCapture->openCapture();
     for (int i = 0; i < AVERAGECOUNT; i++) {
         Mat depthMatrix = kinectCapture->captureDepthMatrix();
@@ -347,8 +338,6 @@ void BaseStation::updateShizzle() {
         robotDetection.findRobotWithAngle(depthMatrix, rgbMatrix);
         Vec2f robot = robotDetection.getRobotPosition();
         float angle = robotDetection.getRobotAngle();
-        cout << angle << endl;
-        cout << robot << endl;
         if (robot[0] > 0.10 || robot[1] > 0.20) {
             positionX += robot[1] * 100;
             positionY += robot[0] * 100;
@@ -365,20 +354,18 @@ void BaseStation::updateShizzle() {
         robotAngle = robotAngle * 180 / M_PI;
     }
 
-    cout << "DEBUGGING : POP!" << endl;
     if (positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
         positionsForWhenThatDamnKinectDoesntReturnADamnPosition.pop();
     }
 
     //Met a jour la position du robot dans l'interface
     if (positionX != 0 && positionY != 0) {
-        cout << "DEBUGGING : Position different from 0,0... Using kinect position" << endl;
         actualPosition.set(positionX, positionY);
         kinoctoPositionUpdates.push_back(actualPosition);
     } else {
         if (positionsForWhenThatDamnKinectDoesntReturnADamnPosition.size() > 0) {
-            actualPosition.set(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().x, positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().y);
-            cout << "DEBUGGING : Position 0,0 received, sending " << actualPosition.x << "," << actualPosition.y << endl;
+            actualPosition.set(positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().x,
+                    positionsForWhenThatDamnKinectDoesntReturnADamnPosition.top().y);
             kinoctoPositionUpdates.push_back(actualPosition);
         }
     }

@@ -54,8 +54,6 @@ void SquaresExtractor::removeInvalidSquaresPair(vector<SquarePair>& squaresPair)
         if (squaresPair[i].rect.area() > SQUARE_AREA_MIN && squaresPair[i].rect.area() < SQUARE_AREA_MAX) {
             SquarePair squarePair(squaresPair[i].rect, squaresPair[i].poly);
             validSquaresPair.push_back(squarePair);
-            //cout << squaresPair[i].rect.area() << endl;
-            //cout << squaresPair[i].rect.x << " " << squaresPair[i].rect.y << endl;
         }
     }
 

@@ -7,7 +7,7 @@ using namespace Qt;
 using namespace cv;
 
 MainWindow::MainWindow(int argc, char **argv, QWidget *parent) :
-QMainWindow(parent), ui(new Ui::MainWindow), baseStation(argc, argv) {
+        QMainWindow(parent), ui(new Ui::MainWindow), baseStation(argc, argv) {
     ui->setupUi(this);
 
     updateROSTimer = new QTimer(this);
@@ -278,153 +278,153 @@ void MainWindow::showRedCase(int redCasePosition) {
     QPalette *palette = new QPalette();
     palette->setColor(QPalette::WindowText, Qt::red);
     switch (redCasePosition) {
-        case 1:
-            ui->sudocubeCase1->setPalette(*palette);
-            break;
-        case 2:
-            ui->sudocubeCase2->setPalette(*palette);
-            break;
-        case 3:
-            ui->sudocubeCase3->setPalette(*palette);
-            break;
-        case 4:
-            ui->sudocubeCase4->setPalette(*palette);
-            break;
-        case 5:
-            ui->sudocubeCase5->setPalette(*palette);
-            break;
-        case 6:
-            ui->sudocubeCase6->setPalette(*palette);
-            break;
-        case 7:
-            ui->sudocubeCase7->setPalette(*palette);
-            break;
-        case 8:
-            ui->sudocubeCase8->setPalette(*palette);
-            break;
-        case 9:
-            ui->sudocubeCase9->setPalette(*palette);
-            break;
-        case 10:
-            ui->sudocubeCase10->setPalette(*palette);
-            break;
-        case 11:
-            ui->sudocubeCase11->setPalette(*palette);
-            break;
-        case 12:
-            ui->sudocubeCase12->setPalette(*palette);
-            break;
-        case 13:
-            ui->sudocubeCase13->setPalette(*palette);
-            break;
-        case 14:
-            ui->sudocubeCase14->setPalette(*palette);
-            break;
-        case 15:
-            ui->sudocubeCase15->setPalette(*palette);
-            break;
-        case 16:
-            ui->sudocubeCase16->setPalette(*palette);
-            break;
-        case 17:
-            ui->sudocubeCase17->setPalette(*palette);
-            break;
-        case 18:
-            ui->sudocubeCase18->setPalette(*palette);
-            break;
-        case 19:
-            ui->sudocubeCase19->setPalette(*palette);
-            break;
-        case 20:
-            ui->sudocubeCase20->setPalette(*palette);
-            break;
-        case 21:
-            ui->sudocubeCase21->setPalette(*palette);
-            break;
-        case 22:
-            ui->sudocubeCase22->setPalette(*palette);
-            break;
-        case 23:
-            ui->sudocubeCase23->setPalette(*palette);
-            break;
-        case 24:
-            ui->sudocubeCase24->setPalette(*palette);
-            break;
-        case 25:
-            ui->sudocubeCase25->setPalette(*palette);
-            break;
-        case 26:
-            ui->sudocubeCase26->setPalette(*palette);
-            break;
-        case 27:
-            ui->sudocubeCase27->setPalette(*palette);
-            break;
-        case 28:
-            ui->sudocubeCase28->setPalette(*palette);
-            break;
-        case 29:
-            ui->sudocubeCase29->setPalette(*palette);
-            break;
-        case 30:
-            ui->sudocubeCase30->setPalette(*palette);
-            break;
-        case 31:
-            ui->sudocubeCase31->setPalette(*palette);
-            break;
-        case 32:
-            ui->sudocubeCase32->setPalette(*palette);
-            break;
-        case 33:
-            ui->sudocubeCase33->setPalette(*palette);
-            break;
-        case 34:
-            ui->sudocubeCase34->setPalette(*palette);
-            break;
-        case 35:
-            ui->sudocubeCase35->setPalette(*palette);
-            break;
-        case 36:
-            ui->sudocubeCase36->setPalette(*palette);
-            break;
-        case 37:
-            ui->sudocubeCase37->setPalette(*palette);
-            break;
-        case 38:
-            ui->sudocubeCase38->setPalette(*palette);
-            break;
-        case 39:
-            ui->sudocubeCase39->setPalette(*palette);
-            break;
-        case 40:
-            ui->sudocubeCase40->setPalette(*palette);
-            break;
-        case 41:
-            ui->sudocubeCase41->setPalette(*palette);
-            break;
-        case 42:
-            ui->sudocubeCase42->setPalette(*palette);
-            break;
-        case 43:
-            ui->sudocubeCase43->setPalette(*palette);
-            break;
-        case 44:
-            ui->sudocubeCase44->setPalette(*palette);
-            break;
-        case 45:
-            ui->sudocubeCase45->setPalette(*palette);
-            break;
-        case 46:
-            ui->sudocubeCase46->setPalette(*palette);
-            break;
-        case 47:
-            ui->sudocubeCase47->setPalette(*palette);
-            break;
-        case 48:
-            ui->sudocubeCase48->setPalette(*palette);
-            break;
-        default:
-            cout << "Erreur sur la position de la case rouge";
-            break;
+    case 1:
+        ui->sudocubeCase1->setPalette(*palette);
+        break;
+    case 2:
+        ui->sudocubeCase2->setPalette(*palette);
+        break;
+    case 3:
+        ui->sudocubeCase3->setPalette(*palette);
+        break;
+    case 4:
+        ui->sudocubeCase4->setPalette(*palette);
+        break;
+    case 5:
+        ui->sudocubeCase5->setPalette(*palette);
+        break;
+    case 6:
+        ui->sudocubeCase6->setPalette(*palette);
+        break;
+    case 7:
+        ui->sudocubeCase7->setPalette(*palette);
+        break;
+    case 8:
+        ui->sudocubeCase8->setPalette(*palette);
+        break;
+    case 9:
+        ui->sudocubeCase9->setPalette(*palette);
+        break;
+    case 10:
+        ui->sudocubeCase10->setPalette(*palette);
+        break;
+    case 11:
+        ui->sudocubeCase11->setPalette(*palette);
+        break;
+    case 12:
+        ui->sudocubeCase12->setPalette(*palette);
+        break;
+    case 13:
+        ui->sudocubeCase13->setPalette(*palette);
+        break;
+    case 14:
+        ui->sudocubeCase14->setPalette(*palette);
+        break;
+    case 15:
+        ui->sudocubeCase15->setPalette(*palette);
+        break;
+    case 16:
+        ui->sudocubeCase16->setPalette(*palette);
+        break;
+    case 17:
+        ui->sudocubeCase17->setPalette(*palette);
+        break;
+    case 18:
+        ui->sudocubeCase18->setPalette(*palette);
+        break;
+    case 19:
+        ui->sudocubeCase19->setPalette(*palette);
+        break;
+    case 20:
+        ui->sudocubeCase20->setPalette(*palette);
+        break;
+    case 21:
+        ui->sudocubeCase21->setPalette(*palette);
+        break;
+    case 22:
+        ui->sudocubeCase22->setPalette(*palette);
+        break;
+    case 23:
+        ui->sudocubeCase23->setPalette(*palette);
+        break;
+    case 24:
+        ui->sudocubeCase24->setPalette(*palette);
+        break;
+    case 25:
+        ui->sudocubeCase25->setPalette(*palette);
+        break;
+    case 26:
+        ui->sudocubeCase26->setPalette(*palette);
+        break;
+    case 27:
+        ui->sudocubeCase27->setPalette(*palette);
+        break;
+    case 28:
+        ui->sudocubeCase28->setPalette(*palette);
+        break;
+    case 29:
+        ui->sudocubeCase29->setPalette(*palette);
+        break;
+    case 30:
+        ui->sudocubeCase30->setPalette(*palette);
+        break;
+    case 31:
+        ui->sudocubeCase31->setPalette(*palette);
+        break;
+    case 32:
+        ui->sudocubeCase32->setPalette(*palette);
+        break;
+    case 33:
+        ui->sudocubeCase33->setPalette(*palette);
+        break;
+    case 34:
+        ui->sudocubeCase34->setPalette(*palette);
+        break;
+    case 35:
+        ui->sudocubeCase35->setPalette(*palette);
+        break;
+    case 36:
+        ui->sudocubeCase36->setPalette(*palette);
+        break;
+    case 37:
+        ui->sudocubeCase37->setPalette(*palette);
+        break;
+    case 38:
+        ui->sudocubeCase38->setPalette(*palette);
+        break;
+    case 39:
+        ui->sudocubeCase39->setPalette(*palette);
+        break;
+    case 40:
+        ui->sudocubeCase40->setPalette(*palette);
+        break;
+    case 41:
+        ui->sudocubeCase41->setPalette(*palette);
+        break;
+    case 42:
+        ui->sudocubeCase42->setPalette(*palette);
+        break;
+    case 43:
+        ui->sudocubeCase43->setPalette(*palette);
+        break;
+    case 44:
+        ui->sudocubeCase44->setPalette(*palette);
+        break;
+    case 45:
+        ui->sudocubeCase45->setPalette(*palette);
+        break;
+    case 46:
+        ui->sudocubeCase46->setPalette(*palette);
+        break;
+    case 47:
+        ui->sudocubeCase47->setPalette(*palette);
+        break;
+    case 48:
+        ui->sudocubeCase48->setPalette(*palette);
+        break;
+    default:
+        cout << "Erreur sur la position de la case rouge";
+        break;
     }
 }
 

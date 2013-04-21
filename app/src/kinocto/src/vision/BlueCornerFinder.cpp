@@ -31,8 +31,6 @@ Mat BlueCornerFinder::segmentCorner(Mat & img) {
     Mat corner = img.clone();
     GaussianBlur(corner, corner, Size(11, 11), 1, 1);
 
-    //imshow("bluereal", corner);
-
     Mat cornerHSV;
     cvtColor(corner, cornerHSV, CV_BGR2HSV);
 
@@ -41,8 +39,6 @@ Mat BlueCornerFinder::segmentCorner(Mat & img) {
 
     VisionUtility::applyErode(segmentedCorner, 1, MORPH_ELLIPSE);
     VisionUtility::applyDilate(segmentedCorner, 2, MORPH_ELLIPSE);
-
-    //imshow("blue", segmentedCorner);
 
     return segmentedCorner;
 }
@@ -67,12 +63,10 @@ vector<Rect> BlueCornerFinder::getCornerRect(const Mat & corner) {
     }
 
     // Masque possible grace a cornerPolyInteresting
-
     Mat drawing = Mat::zeros(corner.size(), CV_8UC3);
     for (int i = 0; i < cornerBoundingRect.size(); i++) {
         rectangle(drawing, cornerBoundingRect[i].tl(), cornerBoundingRect[i].br(), Scalar(0, 255, 0), 1, 8, 0);
     }
-    //imshow("cornerDraw", drawing);
 
     return cornerBoundingRect;
 }

@@ -29,22 +29,18 @@ Mat Utility::captureDepthMatrix(VideoCapture capture) {
     if (capture.isOpened()) {
         capture.grab();
         capture.retrieve(depthMap, CV_CAP_OPENNI_POINT_CLOUD_MAP);
-    }
-    else {
+    } else {
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
-        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.xml";
         file << "rouge.xml";
         string fileString = file.str();
-        //cout << "Loading from file " << fileString << endl;
 
         try {
             depthMap = Utility::readFromFile(fileString);
             if (depthMap.rows != 480 || depthMap.cols != 640) {
                 throw String("The picture is not of a good size");
             }
-        }
-        catch(string e) {
+        } catch (string e) {
             cout << e;
             throw String("Unable to load the file");
 
@@ -62,22 +58,18 @@ Mat Utility::captureRGBMatrix(VideoCapture capture) {
     if (capture.isOpened()) {
         capture.grab();
         capture.retrieve(showRGB, CV_CAP_OPENNI_BGR_IMAGE);
-    }
-    else {
+    } else {
         cout << "Cannot open a capture object." << endl;
         std::stringstream file;
-        //file << "C:/Users/Francis/Documents/Visual Studio 2012/Projects/opencv/Debug/donnees/robotdetection4.jpg";
         file << "rouge.jpg";
         string fileString = file.str();
-        //cout << "Loading from file " << fileString << endl;
 
         try {
             showRGB = imread(fileString);
             if (showRGB.rows != 480 || showRGB.cols != 640) {
                 throw String("The picture is not of a good size");
             }
-        }
-        catch(string e) {
+        } catch (string e) {
             cout << e;
             throw String("Unable to load the file");
         }

@@ -58,25 +58,24 @@ Vec2f KinectCalibrator::errorCorrect() {
     Vec2f error;
 
     switch (tableNumber) {
-        case 1:
-            error = Vec2f(0, 0.02f);
-            break;
-        case 2:
-            error = Vec2f(-0.015f, 0);
-            break;
-        case 3:
-            error = Vec2f(0.1f, 0);
-            break;
-        case 4:
-            error = Vec2f(-0.1f, 0.02f);
-            break;
-        default:
-            break;
+    case 1:
+        error = Vec2f(0, 0.02f);
+        break;
+    case 2:
+        error = Vec2f(-0.015f, 0);
+        break;
+    case 3:
+        error = Vec2f(0.1f, 0);
+        break;
+    case 4:
+        error = Vec2f(-0.1f, 0.02f);
+        break;
+    default:
+        break;
     }
 
     return error;
 }
-
 
 bool KinectCalibrator::calibrate(Mat rgbMatrix, Mat depthMatrix) {
     KinectCalibrator::_pointVector = KinectCalibrator::findCalibrationSquare(rgbMatrix);
@@ -97,7 +96,7 @@ bool KinectCalibrator::manualCalibration() {
     KinectCapture capture;
     capture.openCapture();
 
-    for (; ;) {
+    for (;;) {
         Mat rgbPicture = capture.captureRGBMatrix();
 
         line(rgbPicture, LINE_1_1, LINE_1_2, Scalar(0, 255, 0), 1);

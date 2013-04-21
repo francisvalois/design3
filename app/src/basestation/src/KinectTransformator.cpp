@@ -59,11 +59,10 @@ cv::Vec2f KinectTransformator::distortionCorrection(Vec2f distanceToCorrect) {
         return distanceToCorrect;
     }
 
-    float correctionMatrixCoords2[] = {106.2192f, -0.9392f, 0.8918f, -0.1653f, 97.1015f, 3.9333f, -0.00685f,
-            -0.0037928f, 1};
+    float correctionMatrixCoords2[] = { 106.2192f, -0.9392f, 0.8918f, -0.1653f, 97.1015f, 3.9333f, -0.00685f, -0.0037928f, 1 };
     Mat correctionMatrix = Mat(3, 3, CV_32F, correctionMatrixCoords2).clone();
 
-    float distanceCoeffs[] = {distanceToCorrect[0], distanceToCorrect[1], 1};
+    float distanceCoeffs[] = { distanceToCorrect[0], distanceToCorrect[1], 1 };
     Mat distanceMat = Mat(3, 1, CV_32F, distanceCoeffs).clone();
 
     Mat correctedDistanceMat = correctionMatrix * distanceMat;
@@ -85,8 +84,7 @@ cv::Vec2f KinectTransformator::distortionZfromXPosition(cv::Vec2f positionToCorr
 
     if (positionToCorrect[0] > .80) {
         error = 0.00004f * pow(80.0f, 3) - 0.0042f * pow(80.0f, 2) + 0.205f * 80 + 0.3264f;
-    }
-    else {
+    } else {
         error = 0.00004f * pow(positionToCorrect[0] * 100, 3) - 0.0042f * pow(positionToCorrect[0] * 100, 2) + 0.205f * positionToCorrect[0] * 100
                 + 0.3264f;
     }
