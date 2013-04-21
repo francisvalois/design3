@@ -17,8 +17,9 @@ void VisionUtility::applyDilate(Mat & toDilate, const int size, const int morphS
 
 void VisionUtility::saveImage(Mat &pict, char* filename) {
     vector<int> compression_params;
-    compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
-    compression_params.push_back(9);
+    compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
+    compression_params.push_back(100);
+    //compression_params.push_back(CV_IMWRITE_PNG_COMPRESSION);
 
     imwrite(filename, pict, compression_params);
 }
