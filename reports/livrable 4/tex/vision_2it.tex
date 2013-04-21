@@ -84,7 +84,7 @@ L'angle trouvé n'est pas l'angle réel du robot avec la ligne, mais un angle de
 
 \section{Extraire les contours d'un sudocube}
 
-Au tout début, l'image est nettoyé de son bruit grâce a un flou gaussien.
+Au tout début, l'image est nettoyée de son bruit grâce à un flou gaussien.
 
 La première étape d'extraction consiste à segmenter par couleur verte en convertissant l'image en HSV et en appliquant la méthode inRange() afin d'isoler le cadre vert du sudocube. Le contours du cadre est nettoyé avec l'application d'opérateur morphologique tel que la dilatation et l'érodation. Puis, les algorithmes d'opencv findContours() et approxPolyDP() sont appliqués pour trouver deux polygones rectangulaires. Ces polygones sont les bordures intérieures et extérieures du cadre. Enfin, on vérifie que l'aire des rectangles est plus grand que 200 000 pixels afin d'être sûr que ceux-ci sont assez grands pour être ceux du cadre du sudocube. Tous les polygones qui sont en bas de cette valeur sont soit des cadres vert des sudocubes adjacent qui n'occupent pas une grande partie de l'image ou des artéfacts dû à la segmentation qui ne nous intéressent pas.
 
