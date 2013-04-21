@@ -34,17 +34,6 @@
 #include "kinocto/StartLoop.h"
 #include "kinocto/SetRobotPositionAndAngle.h"
 
-//Services de test
-#include "kinocto/TestGoToSudocubeX.h"
-#include "kinocto/TestExtractSudocubeAndSolve.h"
-#include "kinocto/TestDrawNumber.h"
-#include "kinocto/TestAdjustFrontPosition.h"
-#include "kinocto/TestAdjustSidePosition.h"
-#include "kinocto/TestAdjustAngle.h"
-#include "kinocto/TestAdjustSidePositionWithGreenFrame.h"
-#include "kinocto/TestAdjustAngleGreenBorder.h"
-#include "kinocto/TestRotateKinect.h"
-
 #define WAITING 1
 #define LOOPING 2
 
@@ -105,18 +94,6 @@ public:
     void loop();
     bool setStartLoop(kinocto::StartLoop::Request & request, kinocto::StartLoop::Response & response);
     bool setRobotPositionAndAngle(kinocto::SetRobotPositionAndAngle::Request & request, kinocto::SetRobotPositionAndAngle::Response & response);
-
-    //Méthodes de tests qui peuvent être utilisé pour tester chacunes des fonctionnalités
-    bool testExtractSudocubeAndSolve(kinocto::TestExtractSudocubeAndSolve::Request & request,
-            kinocto::TestExtractSudocubeAndSolve::Response & response);
-    bool testGoToSudocubeX(kinocto::TestGoToSudocubeX::Request & request, kinocto::TestGoToSudocubeX::Response & response);
-    bool testDrawNumber(kinocto::TestDrawNumber::Request & request, kinocto::TestDrawNumber::Response & response);
-    bool testAdjustFrontPosition(kinocto::TestAdjustFrontPosition::Request & request, kinocto::TestAdjustFrontPosition::Response & response);
-    bool testAdjustAngle(kinocto::TestAdjustAngle::Request & request, kinocto::TestAdjustAngle::Response & response);
-    bool testAdjustSidePositionWithGreenFrame(kinocto::TestAdjustSidePositionWithGreenFrame::Request & request,
-            kinocto::TestAdjustSidePositionWithGreenFrame::Response & response);
-    bool testAdjustAngleGreenBorder(kinocto::TestAdjustAngleGreenBorder::Request & request, kinocto::TestAdjustAngleGreenBorder::Response & response);
-    bool testRotateKinect(kinocto::TestRotateKinect::Request & request, kinocto::TestRotateKinect::Response & response);
 };
 
 #endif

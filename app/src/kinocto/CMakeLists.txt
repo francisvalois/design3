@@ -14,15 +14,6 @@ find_package(OpenCV REQUIRED)
 
 add_service_files(
   FILES
-  TestExtractSudocubeAndSolve.srv
-  TestGoToSudocubeX.srv
-  TestDrawNumber.srv
-  TestAdjustFrontPosition.srv
-  TestAdjustSidePosition.srv
-  TestAdjustAngle.srv
-  TestAdjustSidePositionWithGreenFrame.srv
-  TestAdjustAngleGreenBorder.srv
-  TestRotateKinect.srv
   StartLoop.srv
   SetRobotPositionAndAngle.srv
 )
@@ -62,42 +53,11 @@ target_link_libraries(Kinocto ${catkin_LIBRARIES} ${OpenCV_LIBS})
 link_directories(include 
     ${catkin_LIB_DIRS}
 )
-#############
-## Install ##
-#############
 
-## Mark executable scripts (Python etc.) for installation
-## not required for python when using catkin_python_setup()
-# install(PROGRAMS
-#   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark executables and/or libraries for installation
-# install(TARGETS beginner_tutorials beginner_tutorials_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
-
-## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
-
-## Mark other files for installation (e.g. launch and bag files, etc.)
-# install(FILES
-#   # myfile1
-#   # myfile2
-#   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-# )
 
 #############
 ## Testing ##
 #############
-
 catkin_add_gtest(kinoctoTest test/AllTests.cpp 
     "src/sudocube/Case.cpp"
     "src/sudocube/Sudocube.cpp"

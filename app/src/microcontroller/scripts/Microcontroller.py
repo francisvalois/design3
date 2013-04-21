@@ -203,7 +203,7 @@ def sendCommandToController(commande):
             ser.write(bytes(commande))
 
             while('E' not in response):
-                response += ser.readline()  # Boucle while ici?? 
+                response += ser.readline()
             print(repr("read data:" + response))
     
             ser.close()
