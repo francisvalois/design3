@@ -18,7 +18,7 @@ void applyDilate(Mat & toDilate, const int size, const int morphShape) {
 }
 
 struct SortByXY {
-    bool operator()(Rect const & L, Rect const & R) {
+    bool operator ()(Rect const & L, Rect const & R) {
         if (L.x < R.x) {
             return true;
         } else if (L.x == R.x && L.y < R.y) {
@@ -30,7 +30,7 @@ struct SortByXY {
 };
 
 struct SortByArea {
-    bool operator()(Rect const & L, Rect const & R) {
+    bool operator ()(Rect const & L, Rect const & R) {
         if (L.area() < R.area()) {
             return true;
         } else
@@ -75,30 +75,6 @@ Vec2f ObjectDetector::getAverageDistanceForPointLine(list<Vec2f> allDistances) {
     return Vec2f(averageXPosition, averageZPosition);
 }
 
-Rect ObjectDetector::getQuadEnglobingOthers(vector<Rect> quads) {
-    int minX = 0, minY = 0, maxX = 0, maxY = 0;
-
-    if(quads.size() > 0){
-        minX = quads[0].x;
-        minY = quads[0].y;
-        maxX = quads[0].x + quads[0].width;
-        maxY = quads[0].y + quads[0].height;
-
-        for(int i = 1; i < quads.size(); i++){
-            if(quads[i].x < minX)
-                minX = quads[i].x;
-            if(quads[i].y < minY)
-                minY = quads[i].y;
-            if(quads[i].x + quads[i].width > maxX)
-                maxX = quads[i].x + quads[i].width;
-            if(quads[i].y + quads[i].height > maxY)
-                maxY = quads[i].y + quads[i].height;
-        }
-    }
-
-    return Rect(Point(minX, minY), Point(maxX, maxY));
-}
-
 int ObjectDetector::getAverageFromPointList(list<Point> obstacle) {
     int averagePointObstacle = 0;
     int obstacleSize = obstacle.size();
@@ -119,7 +95,6 @@ int ObjectDetector::getAverageFromPointList(list<Point> obstacle) {
 int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool applyCorrection) {
     int minSize = 15;
     int maxContourApprox = 7;
-    Mat RGB = picture.clone();
     Mat RGBG, RGBGray;
 
     vector<Point> srcContour;
@@ -127,16 +102,16 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
     vector<vector<Point> > frameContours;
     vector<Vec4i> frameHierarchy;
 
-    if(picture.channels() == 1){
+    if (picture.channels() == 1) {
         RGBG = picture.clone();
     }
-    else{
+    else {
         cvtColor(picture, RGBG, CV_RGB2GRAY);
     }
 
     Canny(RGBG, RGBG, 50, 200, 3);
 
-    for(int i = 0; i <= 3; i++){
+    for (int i = 0; i <= 3; i++) {
         RGBGray = RGBG.clone();
         applyDilate(RGBGray, i, MORPH_RECT);
         applyErode(RGBGray, i, MORPH_RECT);
@@ -206,29 +181,19 @@ int ObjectDetector::generateQuads(Mat &picture, vector<Rect>&outQuads, bool appl
             }
         }
 
-        Mat test2 = RGB.clone();
-
-        for (int j = 0; j < outQuads.size(); j++) {
-            rectangle(RGB, outQuads[j], Scalar(0, 0, 255));
-        }
-        //imshow("debug", RGB);
-
-        //cout << outQuads.size() << endl;
-
-        if(applyCorrection){
+        if (applyCorrection) {
             removeDoubleSquare(outQuads);
 
             removeQuadsNotOnChessboard(outQuads);
 
             sortQuadsByPosition(outQuads);
         }
-        else if(i >= 1){
-            //cout << "test" << endl;
+        else if (i >= 1) {
             return outQuads.size();
 
         }
 
-        if(outQuads.size() >= 3){
+        if (outQuads.size() >= 3) {
             return outQuads.size();
         }
 
@@ -263,32 +228,6 @@ int ObjectDetector::removeDoubleSquare(vector<Rect> &outQuads) {
 
     outQuads = tempList;
     return outQuads.size();
-}
-
-bool ObjectDetector::containsRedSquares(Mat picture, Rect bigSquare) {
-    Mat HSVPicture;
-    cvtColor(picture, HSVPicture, CV_BGR2HSV);
-
-    Mat croppedMat(HSVPicture, cv::Range(bigSquare.y, bigSquare.y + bigSquare.height),
-            cv::Range(bigSquare.x, bigSquare.x + bigSquare.width));
-    Mat HSVCroppedMat;
-    cvtColor(croppedMat, HSVCroppedMat, CV_BGR2HSV);
-
-    Mat segmentedRedSquare;
-    Mat segmentedRedSquare2;
-    inRange(HSVCroppedMat, Scalar(9, 100, 100), Scalar(16, 255, 230), segmentedRedSquare); // Pas le choix, en deux partie...
-    //inRange(HSVCroppedMat, Scalar(130, 100, 50), Scalar(180, 255, 230), segmentedRedSquare2);
-    //segmentedRedSquare += segmentedRedSquare2;
-
-    vector<Rect> redSquares;
-    bool applyCorrection = false;
-    generateQuads(segmentedRedSquare, redSquares, applyCorrection);
-
-    if(redSquares.size() >= 2){
-        return true;
-    }
-
-    return false;
 }
 
 int ObjectDetector::removeQuadsNotOnChessboard(vector<Rect> &outQuads) {
@@ -338,18 +277,6 @@ void ObjectDetector::sortQuadsByPosition(vector<Rect> &outQuads) {
     sort(outQuads.begin(), outQuads.end(), SortByXY());
 }
 
-ObjectDetector::quadColor ObjectDetector::findQuadColor(Mat &picture, const vector<Rect> &squares) {
-    Rect bigSquare = getQuadEnglobingOthers(squares);
-
-    //bool redSquare = containsRedSquares(picture, bigSquare);
-    bool redSqaure = false;
-    if (redSqaure) {
-        return RED;
-    } else {
-        return BLACK;
-    }
-}
-
 Mat ObjectDetector::segmentBlueFrame(const Mat & img) {
     Mat frame = img.clone();
     GaussianBlur(frame, frame, Size(11, 11), 1, 1);
@@ -363,23 +290,21 @@ Mat ObjectDetector::segmentBlueFrame(const Mat & img) {
     applyErode(segmentedCorner, 1, MORPH_ELLIPSE);
     applyDilate(segmentedCorner, 2, MORPH_RECT);
 
- //   imshow("blue", segmentedCorner);
-
     return segmentedCorner;
 }
 
-vector<Rect> ObjectDetector::removeOutBoundsFrameRect(const Mat& depthMap, vector<Rect> frameRect){
+vector<Rect> ObjectDetector::removeOutBoundsFrameRect(const Mat& depthMap, vector<Rect> frameRect) {
     vector<Rect> frameOnTable;
 
     vector<Rect>::iterator it;
-    for(it = frameRect.begin(); it != frameRect.end(); it++){
+    for (it = frameRect.begin(); it != frameRect.end(); it++) {
         Rect frame = (*it);
-        Point center(frame.x + frame.width/2, frame.y + frame.height/2);
+        Point center(frame.x + frame.width / 2, frame.y + frame.height / 2);
 
         Vec3f distancePoint = depthMap.at<Vec3f>(center.y, center.x);
         Vec2f trueDistancePoint = KinectTransformator::getTrueCoordFromKinectCoord(distancePoint);
 
-        if(trueDistancePoint[0] > 0 && trueDistancePoint[0] <= 1 && trueDistancePoint[1] > 0 && trueDistancePoint[1] <= 2.20){
+        if (trueDistancePoint[0] > 0 && trueDistancePoint[0] <= 1 && trueDistancePoint[1] > 0 && trueDistancePoint[1] <= 2.20) {
             frameOnTable.push_back(frame);
         }
     }
@@ -410,14 +335,6 @@ vector<Rect> ObjectDetector::getFrameRect(const Mat & img) {
     }
 
     sort(frameBoundingRect.begin(), frameBoundingRect.end(), SortByArea());
-
-    // Masque possible grace a framePolyInteresting
-
-//    Mat drawing = Mat::zeros(frame.size(), CV_8UC3);
-//    for (int i = 0; i < frameBoundingRect.size(); i++) {
-//        rectangle(drawing, frameBoundingRect[i].tl(), frameBoundingRect[i].br(), Scalar(0, 255, 0), 1, 8, 0);
-//    }
-//    imshow("cornerDraw", drawing);
 
     return frameBoundingRect;
 }

@@ -21,10 +21,10 @@ Vec2f ObstaclesDetector::getObstacle2() {
     return _obstacle2;
 }
 
-ObstaclesDetector::ObstaclesDetector(){
+ObstaclesDetector::ObstaclesDetector() {
 }
 
-ObstaclesDetector::ObstaclesDetector(Vec2f obstacle1, Vec2f obstacle2){
+ObstaclesDetector::ObstaclesDetector(Vec2f obstacle1, Vec2f obstacle2) {
     _obstacle1 = obstacle1;
     _obstacle2 = obstacle2;
 }
@@ -51,8 +51,8 @@ list<Vec2f> ObstaclesDetector::getSomeYDistanceAssociatedWithXForObstacle(int ob
         Vec3f kinectCoord = depthMatrix.at<Vec3f>(i, obstaclePositionX);
         Vec2f depthXYZ = KinectTransformator::getTrueCoordFromKinectCoord(kinectCoord);
         if (depthXYZ[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && depthXYZ[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD) {
-            
-                allDistances.push_back(Vec2f(kinectCoord[0], kinectCoord[2]));
+
+            allDistances.push_back(Vec2f(kinectCoord[0], kinectCoord[2]));
         }
     }
 
@@ -86,9 +86,8 @@ vector<Vec2f> ObstaclesDetector::findCenteredObstacle(Mat depthMatrix) {
 Vec2f ObstaclesDetector::getAveragePositionForObstacle(Mat depthMatrix, list<Point> obstacle) {
 
     int averagePointObstacle1 = getAverageFromPointList(obstacle);
-    cout << "Obstacle found at pixel line x: " << averagePointObstacle1 << endl; 
+    cout << "Obstacle found at pixel line x: " << averagePointObstacle1 << endl;
     list<Vec2f> allDistances = getSomeYDistanceAssociatedWithXForObstacle(averagePointObstacle1, depthMatrix);
-
 
     Vec2f positionObstacle = getAverageDistanceForPointLine(allDistances);
 
@@ -100,7 +99,8 @@ Vec2f ObstaclesDetector::getAveragePositionForObstacle(Mat depthMatrix, list<Poi
     return truePositionObstacle;
 }
 
-void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point> &obstacle1, list<Point> &obstacle2) {
+void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, list<Point> &obstacle1,
+        list<Point> &obstacle2) {
     Vec2f tempPosition;
     int count = 0;
     int middleYPoint = (int) ((Y_OBSTACLE_BOTTOM_THRESHOLD - Y_OBSTACLE_TOP_THRESHOLD) * 0.5f);
@@ -113,14 +113,14 @@ void ObstaclesDetector::findAllPossiblePositionForEachObstacle(Mat depthMatrix, 
             Vec3f position = depthMatrix.at<Vec3f>(j, i);
             tempPosition = KinectTransformator::getTrueCoordFromKinectCoord(position);
             //If obstacle is in the obstacle zone and if it's higher than the black walls 
-            if (tempPosition[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && tempPosition[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD && tempPosition[0] > 0 && tempPosition[0] < TABLE_WIDTH*0.95){
-                    obstaclePoint = true;
-                    count++;
+            if (tempPosition[1] > OBSTACLE_DISTANCE_MIN_THRESHOLD && tempPosition[1] < OBSTACLE_DISTANCE_MAX_THRESHOLD &&
+                    tempPosition[0] > 0 && tempPosition[0] < TABLE_WIDTH * 0.95) {
+                obstaclePoint = true;
+                count++;
             }
         }
 
-
-        if (obstaclePoint && count > (60*OBSTACLE_HEIGHT_THRESHOLD_PERCENT)) {
+        if (obstaclePoint && count > (60 * OBSTACLE_HEIGHT_THRESHOLD_PERCENT)) {
             if (validObstaclePosition.size() > 0) {
                 if ((i - validObstaclePosition.back().x) > 10) // Separate first obstacle from second
                 {

@@ -6,8 +6,8 @@ using namespace boost;
 using namespace Qt;
 using namespace cv;
 
-MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
-        QMainWindow(parent), ui(new Ui::MainWindow), baseStation(argc, argv) {
+MainWindow::MainWindow(int argc, char **argv, QWidget *parent) :
+QMainWindow(parent), ui(new Ui::MainWindow), baseStation(argc, argv) {
     ui->setupUi(this);
 
     updateROSTimer = new QTimer(this);
@@ -24,12 +24,12 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     QObject::connect(applicationTimer, SIGNAL(timeout()), this, SLOT(timerSlot()));
 
     QImage imageObject;
-    if(imageObject.load("sudocubeVide.jpg")) {
+    if (imageObject.load("sudocubeVide.jpg")) {
         imageObject.scaledToHeight(ui->sudocube->height());
         imageObject.scaledToWidth(ui->sudocube->width());
         ui->sudocube->setPixmap(QPixmap::fromImage(imageObject));
         ui->sudocube->show();
-    }else {
+    } else {
         ui->consoleText->append("could not load sudocube image");
     }
 
@@ -40,7 +40,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent) :
     ui->roue1y->setValue(35.8f);
 
     QObject::connect(&baseStation, SIGNAL(rosShutdown()), this, SLOT(close()));
-    QObject::connect(&baseStation, SIGNAL(showSolvedSudocubeSignal(QString,int,int)), this, SLOT(showSolvedSudocubeSlot(QString,int,int)));
+    QObject::connect(&baseStation, SIGNAL(showSolvedSudocubeSignal(QString, int, int)), this, SLOT(showSolvedSudocubeSlot(QString, int, int)));
     QObject::connect(&baseStation, SIGNAL(message(QString)), this, SLOT(showMessage(QString)));
     QObject::connect(&baseStation, SIGNAL(updateTableImage(QImage)), this, SLOT(updateTableImage(QImage)));
     QObject::connect(&baseStation, SIGNAL(endLoop(QString)), this, SLOT(endLoop(QString)));
@@ -51,8 +51,8 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::initSudocubeImage() {
-    QPalette* palette = new QPalette();
-    palette->setColor(QPalette::WindowText,Qt::black);
+    QPalette *palette = new QPalette();
+    palette->setColor(QPalette::WindowText, Qt::black);
     ui->sudocubeCase1->setText("");
     ui->sudocubeCase2->setText("");
     ui->sudocubeCase3->setText("");
@@ -151,7 +151,7 @@ void MainWindow::initSudocubeImage() {
     ui->sudocubeCase48->setPalette(*palette);
 }
 
-void MainWindow::updateROSSlot () {
+void MainWindow::updateROSSlot() {
     baseStation.loop();
 }
 
@@ -164,7 +164,7 @@ void MainWindow::on_StartSequenceButton_clicked() {
     loopNumber++;
     stringstream loopNumberSS;
     loopNumberSS << loopNumber;
-    ui->loopNumber->setText((char*) loopNumberSS.str().c_str());
+    ui->loopNumber->setText((char *) loopNumberSS.str().c_str());
 
     QString loopText;
     loopText.append("\n");
@@ -190,7 +190,7 @@ void MainWindow::on_calibrateKinectManualButton_clicked() {
     ui->consoleText->append("Calibration Manuelle de la Kinect");
     KinectCalibrator kinectCalibrator;
 
-    kinectCalibrator.calibratev2();
+    kinectCalibrator.manualCalibration();
 }
 
 void MainWindow::on_saveParametersbtn_clicked() {
@@ -208,42 +208,42 @@ void MainWindow::on_saveParametersbtn_clicked() {
     float xOffset;
     float yOffset;
 
-    if(roue0x <= roue1x && roue0y >= roue1y) { //CADRAN 3
+    if (roue0x <= roue1x && roue0y >= roue1y) { //CADRAN 3
         coteOppose = roue0y - roue1y;
         coteAdjacent = roue1x - roue0x;
-        angleRad = atan(coteOppose/coteAdjacent);
-        angle = angleRad * 180/CV_PI;
+        angleRad = atan(coteOppose / coteAdjacent);
+        angle = angleRad * 180 / CV_PI;
         angle = angle - 180;
         xOffset = -1 * sin(angleRad) * robotRadius;
         yOffset = -1 * cos(angleRad) * robotRadius;
-    } else if(roue0x <= roue1x && roue0y <= roue1y) { // CADRAN 4
+    } else if (roue0x <= roue1x && roue0y <= roue1y) { // CADRAN 4
         coteOppose = roue1y - roue0y;
         coteAdjacent = roue1x - roue0x;
-        angleRad = atan(coteOppose/coteAdjacent);
-        angle = angleRad * 180/CV_PI;
+        angleRad = atan(coteOppose / coteAdjacent);
+        angle = angleRad * 180 / CV_PI;
         angle = 180 - angle;
         xOffset = sin(angleRad) * robotRadius;
         yOffset = -1 * cos(angleRad) * robotRadius;
-    } else if(roue0x >= roue1x && roue0y <= roue1y) { //CADRAN 1
+    } else if (roue0x >= roue1x && roue0y <= roue1y) { //CADRAN 1
         coteOppose = roue0x - roue1x;
         coteAdjacent = roue1y - roue0y;
-        angleRad = atan(coteOppose/coteAdjacent);
-        angle = angleRad * 180/CV_PI;
+        angleRad = atan(coteOppose / coteAdjacent);
+        angle = angleRad * 180 / CV_PI;
         angle = 90 - angle;
         xOffset = cos(angleRad) * robotRadius;
         yOffset = sin(angleRad) * robotRadius;
-    } else if(roue0x >= roue1x && roue0y >= roue1y) { //CADRAN 2
+    } else if (roue0x >= roue1x && roue0y >= roue1y) { //CADRAN 2
         coteOppose = roue0y - roue1y;
         coteAdjacent = roue0x - roue1x;
-        angleRad = atan(coteOppose/coteAdjacent);
-        angle = angleRad * 180/CV_PI;
+        angleRad = atan(coteOppose / coteAdjacent);
+        angle = angleRad * 180 / CV_PI;
         angle = -angle;
         xOffset = -1 * sin(angleRad) * robotRadius;
         yOffset = cos(angleRad) * robotRadius;
     }
 
-    robotPosition.x = (roue0x + roue1x)/2 + xOffset;
-    robotPosition.y = (roue0y + roue1y)/2 + yOffset;
+    robotPosition.x = (roue0x + roue1x) / 2 + xOffset;
+    robotPosition.y = (roue0y + roue1y) / 2 + yOffset;
 
     stringstream consoleoutput;
     consoleoutput << "Initial position set to :  ";
@@ -251,14 +251,14 @@ void MainWindow::on_saveParametersbtn_clicked() {
 
     baseStation.sendRobotPosAndAngle(robotPosition.x, robotPosition.y, angle);
 
-    ui->consoleText->append((char*) consoleoutput.str().c_str());
+    ui->consoleText->append((char *) consoleoutput.str().c_str());
 }
 
 void MainWindow::showSolvedSudocubeSlot(QString solvedSudocube, int redCaseValue, int redCasePosition) {
     stringstream strs;
     strs << redCaseValue;
     string temp_str = strs.str();
-    char* redCaseChar = (char*) temp_str.c_str();
+    char *redCaseChar = (char *) temp_str.c_str();
 
     ui->consoleText->append("Kinocto : Solution du sudocube");
 
@@ -275,162 +275,210 @@ void MainWindow::showSolvedSudocubeSlot(QString solvedSudocube, int redCaseValue
 }
 
 void MainWindow::showRedCase(int redCasePosition) {
-    QPalette* palette = new QPalette();
-    palette->setColor(QPalette::WindowText,Qt::red);
-    switch (redCasePosition)
-    {
-    case 1: ui->sudocubeCase1->setPalette(*palette);
-        break;
-    case 2: ui->sudocubeCase2->setPalette(*palette);
-        break;
-    case 3: ui->sudocubeCase3->setPalette(*palette);
-        break;
-    case 4: ui->sudocubeCase4->setPalette(*palette);
-        break;
-    case 5: ui->sudocubeCase5->setPalette(*palette);
-        break;
-    case 6: ui->sudocubeCase6->setPalette(*palette);
-        break;
-    case 7: ui->sudocubeCase7->setPalette(*palette);
-        break;
-    case 8: ui->sudocubeCase8->setPalette(*palette);
-        break;
-    case 9: ui->sudocubeCase9->setPalette(*palette);
-        break;
-    case 10: ui->sudocubeCase10->setPalette(*palette);
-        break;
-    case 11: ui->sudocubeCase11->setPalette(*palette);
-        break;
-    case 12: ui->sudocubeCase12->setPalette(*palette);
-        break;
-    case 13: ui->sudocubeCase13->setPalette(*palette);
-        break;
-    case 14: ui->sudocubeCase14->setPalette(*palette);
-        break;
-    case 15: ui->sudocubeCase15->setPalette(*palette);
-        break;
-    case 16: ui->sudocubeCase16->setPalette(*palette);
-        break;
-    case 17: ui->sudocubeCase17->setPalette(*palette);
-        break;
-    case 18: ui->sudocubeCase18->setPalette(*palette);
-        break;
-    case 19: ui->sudocubeCase19->setPalette(*palette);
-        break;
-    case 20: ui->sudocubeCase20->setPalette(*palette);
-        break;
-    case 21: ui->sudocubeCase21->setPalette(*palette);
-        break;
-    case 22: ui->sudocubeCase22->setPalette(*palette);
-        break;
-    case 23: ui->sudocubeCase23->setPalette(*palette);
-        break;
-    case 24: ui->sudocubeCase24->setPalette(*palette);
-        break;
-    case 25: ui->sudocubeCase25->setPalette(*palette);
-        break;
-    case 26: ui->sudocubeCase26->setPalette(*palette);
-        break;
-    case 27: ui->sudocubeCase27->setPalette(*palette);
-        break;
-    case 28: ui->sudocubeCase28->setPalette(*palette);
-        break;
-    case 29: ui->sudocubeCase29->setPalette(*palette);
-        break;
-    case 30: ui->sudocubeCase30->setPalette(*palette);
-        break;
-    case 31: ui->sudocubeCase31->setPalette(*palette);
-        break;
-    case 32: ui->sudocubeCase32->setPalette(*palette);
-        break;
-    case 33: ui->sudocubeCase33->setPalette(*palette);
-        break;
-    case 34: ui->sudocubeCase34->setPalette(*palette);
-        break;
-    case 35: ui->sudocubeCase35->setPalette(*palette);
-        break;
-    case 36: ui->sudocubeCase36->setPalette(*palette);
-        break;
-    case 37: ui->sudocubeCase37->setPalette(*palette);
-        break;
-    case 38: ui->sudocubeCase38->setPalette(*palette);
-        break;
-    case 39: ui->sudocubeCase39->setPalette(*palette);
-        break;
-    case 40: ui->sudocubeCase40->setPalette(*palette);
-        break;
-    case 41: ui->sudocubeCase41->setPalette(*palette);
-        break;
-    case 42: ui->sudocubeCase42->setPalette(*palette);
-        break;
-    case 43: ui->sudocubeCase43->setPalette(*palette);
-        break;
-    case 44: ui->sudocubeCase44->setPalette(*palette);
-        break;
-    case 45: ui->sudocubeCase45->setPalette(*palette);
-        break;
-    case 46: ui->sudocubeCase46->setPalette(*palette);
-        break;
-    case 47: ui->sudocubeCase47->setPalette(*palette);
-        break;
-    case 48: ui->sudocubeCase48->setPalette(*palette);
-        break;
-    default: cout << "Erreur sur la position de la case rouge";
-        break;
+    QPalette *palette = new QPalette();
+    palette->setColor(QPalette::WindowText, Qt::red);
+    switch (redCasePosition) {
+        case 1:
+            ui->sudocubeCase1->setPalette(*palette);
+            break;
+        case 2:
+            ui->sudocubeCase2->setPalette(*palette);
+            break;
+        case 3:
+            ui->sudocubeCase3->setPalette(*palette);
+            break;
+        case 4:
+            ui->sudocubeCase4->setPalette(*palette);
+            break;
+        case 5:
+            ui->sudocubeCase5->setPalette(*palette);
+            break;
+        case 6:
+            ui->sudocubeCase6->setPalette(*palette);
+            break;
+        case 7:
+            ui->sudocubeCase7->setPalette(*palette);
+            break;
+        case 8:
+            ui->sudocubeCase8->setPalette(*palette);
+            break;
+        case 9:
+            ui->sudocubeCase9->setPalette(*palette);
+            break;
+        case 10:
+            ui->sudocubeCase10->setPalette(*palette);
+            break;
+        case 11:
+            ui->sudocubeCase11->setPalette(*palette);
+            break;
+        case 12:
+            ui->sudocubeCase12->setPalette(*palette);
+            break;
+        case 13:
+            ui->sudocubeCase13->setPalette(*palette);
+            break;
+        case 14:
+            ui->sudocubeCase14->setPalette(*palette);
+            break;
+        case 15:
+            ui->sudocubeCase15->setPalette(*palette);
+            break;
+        case 16:
+            ui->sudocubeCase16->setPalette(*palette);
+            break;
+        case 17:
+            ui->sudocubeCase17->setPalette(*palette);
+            break;
+        case 18:
+            ui->sudocubeCase18->setPalette(*palette);
+            break;
+        case 19:
+            ui->sudocubeCase19->setPalette(*palette);
+            break;
+        case 20:
+            ui->sudocubeCase20->setPalette(*palette);
+            break;
+        case 21:
+            ui->sudocubeCase21->setPalette(*palette);
+            break;
+        case 22:
+            ui->sudocubeCase22->setPalette(*palette);
+            break;
+        case 23:
+            ui->sudocubeCase23->setPalette(*palette);
+            break;
+        case 24:
+            ui->sudocubeCase24->setPalette(*palette);
+            break;
+        case 25:
+            ui->sudocubeCase25->setPalette(*palette);
+            break;
+        case 26:
+            ui->sudocubeCase26->setPalette(*palette);
+            break;
+        case 27:
+            ui->sudocubeCase27->setPalette(*palette);
+            break;
+        case 28:
+            ui->sudocubeCase28->setPalette(*palette);
+            break;
+        case 29:
+            ui->sudocubeCase29->setPalette(*palette);
+            break;
+        case 30:
+            ui->sudocubeCase30->setPalette(*palette);
+            break;
+        case 31:
+            ui->sudocubeCase31->setPalette(*palette);
+            break;
+        case 32:
+            ui->sudocubeCase32->setPalette(*palette);
+            break;
+        case 33:
+            ui->sudocubeCase33->setPalette(*palette);
+            break;
+        case 34:
+            ui->sudocubeCase34->setPalette(*palette);
+            break;
+        case 35:
+            ui->sudocubeCase35->setPalette(*palette);
+            break;
+        case 36:
+            ui->sudocubeCase36->setPalette(*palette);
+            break;
+        case 37:
+            ui->sudocubeCase37->setPalette(*palette);
+            break;
+        case 38:
+            ui->sudocubeCase38->setPalette(*palette);
+            break;
+        case 39:
+            ui->sudocubeCase39->setPalette(*palette);
+            break;
+        case 40:
+            ui->sudocubeCase40->setPalette(*palette);
+            break;
+        case 41:
+            ui->sudocubeCase41->setPalette(*palette);
+            break;
+        case 42:
+            ui->sudocubeCase42->setPalette(*palette);
+            break;
+        case 43:
+            ui->sudocubeCase43->setPalette(*palette);
+            break;
+        case 44:
+            ui->sudocubeCase44->setPalette(*palette);
+            break;
+        case 45:
+            ui->sudocubeCase45->setPalette(*palette);
+            break;
+        case 46:
+            ui->sudocubeCase46->setPalette(*palette);
+            break;
+        case 47:
+            ui->sudocubeCase47->setPalette(*palette);
+            break;
+        case 48:
+            ui->sudocubeCase48->setPalette(*palette);
+            break;
+        default:
+            cout << "Erreur sur la position de la case rouge";
+            break;
     }
 }
 
 void MainWindow::showSolvedSudocubeInImage(QString solvedSudocube) {
-    solvedSudocube.replace(" ","");
-    solvedSudocube.replace("\n","");
-    ui->sudocubeCase1->setText(solvedSudocube.mid(0,1));
-    ui->sudocubeCase2->setText(solvedSudocube.mid(1,1));
-    ui->sudocubeCase3->setText(solvedSudocube.mid(2,1));
-    ui->sudocubeCase4->setText(solvedSudocube.mid(3,1));
-    ui->sudocubeCase5->setText(solvedSudocube.mid(4,1));
-    ui->sudocubeCase6->setText(solvedSudocube.mid(5,1));
-    ui->sudocubeCase7->setText(solvedSudocube.mid(6,1));
-    ui->sudocubeCase8->setText(solvedSudocube.mid(7,1));
-    ui->sudocubeCase9->setText(solvedSudocube.mid(8,1));
-    ui->sudocubeCase10->setText(solvedSudocube.mid(9,1));
-    ui->sudocubeCase11->setText(solvedSudocube.mid(10,1));
-    ui->sudocubeCase12->setText(solvedSudocube.mid(11,1));
-    ui->sudocubeCase13->setText(solvedSudocube.mid(12,1));
-    ui->sudocubeCase14->setText(solvedSudocube.mid(13,1));
-    ui->sudocubeCase15->setText(solvedSudocube.mid(14,1));
-    ui->sudocubeCase16->setText(solvedSudocube.mid(15,1));
-    ui->sudocubeCase17->setText(solvedSudocube.mid(16,1));
-    ui->sudocubeCase18->setText(solvedSudocube.mid(17,1));
-    ui->sudocubeCase19->setText(solvedSudocube.mid(18,1));
-    ui->sudocubeCase20->setText(solvedSudocube.mid(19,1));
-    ui->sudocubeCase21->setText(solvedSudocube.mid(20,1));
-    ui->sudocubeCase22->setText(solvedSudocube.mid(21,1));
-    ui->sudocubeCase23->setText(solvedSudocube.mid(22,1));
-    ui->sudocubeCase24->setText(solvedSudocube.mid(23,1));
-    ui->sudocubeCase25->setText(solvedSudocube.mid(24,1));
-    ui->sudocubeCase26->setText(solvedSudocube.mid(25,1));
-    ui->sudocubeCase27->setText(solvedSudocube.mid(26,1));
-    ui->sudocubeCase28->setText(solvedSudocube.mid(27,1));
-    ui->sudocubeCase29->setText(solvedSudocube.mid(28,1));
-    ui->sudocubeCase30->setText(solvedSudocube.mid(29,1));
-    ui->sudocubeCase31->setText(solvedSudocube.mid(30,1));
-    ui->sudocubeCase32->setText(solvedSudocube.mid(31,1));
-    ui->sudocubeCase33->setText(solvedSudocube.mid(32,1));
-    ui->sudocubeCase34->setText(solvedSudocube.mid(33,1));
-    ui->sudocubeCase35->setText(solvedSudocube.mid(34,1));
-    ui->sudocubeCase36->setText(solvedSudocube.mid(35,1));
-    ui->sudocubeCase37->setText(solvedSudocube.mid(36,1));
-    ui->sudocubeCase38->setText(solvedSudocube.mid(37,1));
-    ui->sudocubeCase39->setText(solvedSudocube.mid(38,1));
-    ui->sudocubeCase40->setText(solvedSudocube.mid(39,1));
-    ui->sudocubeCase41->setText(solvedSudocube.mid(40,1));
-    ui->sudocubeCase42->setText(solvedSudocube.mid(41,1));
-    ui->sudocubeCase43->setText(solvedSudocube.mid(42,1));
-    ui->sudocubeCase44->setText(solvedSudocube.mid(43,1));
-    ui->sudocubeCase45->setText(solvedSudocube.mid(44,1));
-    ui->sudocubeCase46->setText(solvedSudocube.mid(45,1));
-    ui->sudocubeCase47->setText(solvedSudocube.mid(46,1));
-    ui->sudocubeCase48->setText(solvedSudocube.mid(47,1));
+    solvedSudocube.replace(" ", "");
+    solvedSudocube.replace("\n", "");
+    ui->sudocubeCase1->setText(solvedSudocube.mid(0, 1));
+    ui->sudocubeCase2->setText(solvedSudocube.mid(1, 1));
+    ui->sudocubeCase3->setText(solvedSudocube.mid(2, 1));
+    ui->sudocubeCase4->setText(solvedSudocube.mid(3, 1));
+    ui->sudocubeCase5->setText(solvedSudocube.mid(4, 1));
+    ui->sudocubeCase6->setText(solvedSudocube.mid(5, 1));
+    ui->sudocubeCase7->setText(solvedSudocube.mid(6, 1));
+    ui->sudocubeCase8->setText(solvedSudocube.mid(7, 1));
+    ui->sudocubeCase9->setText(solvedSudocube.mid(8, 1));
+    ui->sudocubeCase10->setText(solvedSudocube.mid(9, 1));
+    ui->sudocubeCase11->setText(solvedSudocube.mid(10, 1));
+    ui->sudocubeCase12->setText(solvedSudocube.mid(11, 1));
+    ui->sudocubeCase13->setText(solvedSudocube.mid(12, 1));
+    ui->sudocubeCase14->setText(solvedSudocube.mid(13, 1));
+    ui->sudocubeCase15->setText(solvedSudocube.mid(14, 1));
+    ui->sudocubeCase16->setText(solvedSudocube.mid(15, 1));
+    ui->sudocubeCase17->setText(solvedSudocube.mid(16, 1));
+    ui->sudocubeCase18->setText(solvedSudocube.mid(17, 1));
+    ui->sudocubeCase19->setText(solvedSudocube.mid(18, 1));
+    ui->sudocubeCase20->setText(solvedSudocube.mid(19, 1));
+    ui->sudocubeCase21->setText(solvedSudocube.mid(20, 1));
+    ui->sudocubeCase22->setText(solvedSudocube.mid(21, 1));
+    ui->sudocubeCase23->setText(solvedSudocube.mid(22, 1));
+    ui->sudocubeCase24->setText(solvedSudocube.mid(23, 1));
+    ui->sudocubeCase25->setText(solvedSudocube.mid(24, 1));
+    ui->sudocubeCase26->setText(solvedSudocube.mid(25, 1));
+    ui->sudocubeCase27->setText(solvedSudocube.mid(26, 1));
+    ui->sudocubeCase28->setText(solvedSudocube.mid(27, 1));
+    ui->sudocubeCase29->setText(solvedSudocube.mid(28, 1));
+    ui->sudocubeCase30->setText(solvedSudocube.mid(29, 1));
+    ui->sudocubeCase31->setText(solvedSudocube.mid(30, 1));
+    ui->sudocubeCase32->setText(solvedSudocube.mid(31, 1));
+    ui->sudocubeCase33->setText(solvedSudocube.mid(32, 1));
+    ui->sudocubeCase34->setText(solvedSudocube.mid(33, 1));
+    ui->sudocubeCase35->setText(solvedSudocube.mid(34, 1));
+    ui->sudocubeCase36->setText(solvedSudocube.mid(35, 1));
+    ui->sudocubeCase37->setText(solvedSudocube.mid(36, 1));
+    ui->sudocubeCase38->setText(solvedSudocube.mid(37, 1));
+    ui->sudocubeCase39->setText(solvedSudocube.mid(38, 1));
+    ui->sudocubeCase40->setText(solvedSudocube.mid(39, 1));
+    ui->sudocubeCase41->setText(solvedSudocube.mid(40, 1));
+    ui->sudocubeCase42->setText(solvedSudocube.mid(41, 1));
+    ui->sudocubeCase43->setText(solvedSudocube.mid(42, 1));
+    ui->sudocubeCase44->setText(solvedSudocube.mid(43, 1));
+    ui->sudocubeCase45->setText(solvedSudocube.mid(44, 1));
+    ui->sudocubeCase46->setText(solvedSudocube.mid(45, 1));
+    ui->sudocubeCase47->setText(solvedSudocube.mid(46, 1));
+    ui->sudocubeCase48->setText(solvedSudocube.mid(47, 1));
 }
 
 void MainWindow::showMessage(QString message) {
@@ -447,7 +495,7 @@ void MainWindow::updateTableImage(QImage image) {
 void MainWindow::endLoop(QString message) {
     applicationTimer->stop();
 
-    QTime* timeElapsed = new QTime();
+    QTime *timeElapsed = new QTime();
     timeElapsed->setHMS(0, timeElapsed->addMSecs(timeOfLoop->elapsed()).minute(), timeElapsed->addMSecs(timeOfLoop->elapsed()).second());
 
     QString loopText;
@@ -458,7 +506,7 @@ void MainWindow::endLoop(QString message) {
 }
 
 void MainWindow::timerSlot() {
-    if(timeValue->minute() == 0 && timeValue->second() == 0) {
+    if (timeValue->minute() == 0 && timeValue->second() == 0) {
         ui->TimeBeforeEnd->setPalette(Qt::red);
         endLoop("Kinocto : Loop Ended, Time Expired");
     } else {
