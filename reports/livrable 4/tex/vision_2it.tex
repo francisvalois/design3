@@ -82,13 +82,41 @@ L'angle est évalué en traçant des lignes de Hough sur des images segmentées 
 
 L'angle trouvé n'est pas l'angle réel du robot avec la ligne, mais un angle de 0° signifie que l'orientation du robot est correcte. L'erreur devient plus importante avec les grands angles, mais l'erreur d'orientation ne dépasse normalement pas 15°. En appliquant la correction 2 fois, l'orientation du robot est corrigée dans la plupart des cas.
 
-\subsection{Extraire les contours d'un sudocube}
+\section{Extraire les contours d'un sudocube}
 
-La première étape d'extraction consiste à segmenter par couleur verte afin d'isoler le cadre du sudocube. Puis, un algorithme de détection des contours est appliqué pour trouver deux polygones rectangulaires. Ces polygones sont les bordures intérieures et extérieures du cadre. L'aire des rectangles est calculée pour vérifier que les polygones sont assez grands pour être ceux du cadre.
+Au tout début, l'image est nettoyé de son bruit grâce a un flou gaussien.
 
-Ensuite, à partir du polygone intérieur du cadre on isole une sous-région de l'image principale. L'image obtenue est convertie en noir et blanc afin d'appliquer à nouveau un algorithme de contours afin de trouver les cases du sudocube. On sélectionne les polygones résultants selon leur aire. Si jamais le nombre de cases sélectionné n'est pas de 47, on recommence avec un seuil de tolérance différent pour l'algorithme de contour. Le polygone de la case rouge est obtenu en segmentant par couleur rouge et en appliquant à nouveau un algorithme de contour. 
+La première étape d'extraction consiste à segmenter par couleur verte en convertissant l'image en HSV et en appliquant la méthode inRange() afin d'isoler le cadre vert du sudocube. Le contours du cadre est nettoyé avec l'application d'opérateur morphologique tel que la dilatation et l'érodation. Puis, les algorithmes d'opencv findContours() et approxPolyDP() sont appliqués pour trouver deux polygones rectangulaires. Ces polygones sont les bordures intérieures et extérieures du cadre. Enfin, on vérifie que l'aire des rectangles est plus grand que 200 000 pixels afin d'être sûr que ceux-ci sont assez grands pour être ceux du cadre du sudocube. Tous les polygones qui sont en bas de cette valeur sont soit des cadres vert des sudocubes adjacent qui n'occupent pas une grande partie de l'image ou des artéfacts dû à la segmentation qui ne nous intéressent pas.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.20]{fig/cadreVertSegmente.jpeg}
+\caption{Exemple de segmentation sur le vert du cadre}
+\label{fig:segmentation_vert}
+\end{figure}
+
+Ensuite, à partir du polygone intérieur du cadre on isole une sous-région de l'image principale que l'on recadre afin qu'elle ai 500 pixels de côté. L'image obtenue est convertie en noir et blanc avec la méthode threshold() pour appliquer le même algorithme de contour mentionné dans le premier paragraphe afin de trouver les polygones des cases du sudocube. Une dilatation et une érodation sont appliqué afin d'améliorer les contours des cases. Ensuite, on sélectionne tous les polygones qui ont une aire entre 150 et 700 pixels. Si jamais le nombre de polygones sélectionné n'est pas de 47, on réapplique la méthode threshold() avec un seuil de tolérance différent pour l'algorithme de contour et ce jusqu'à ce qu'on obtienne le bon seuil pour avoir 47 cases. 
+
+Le polygone de la case rouge est obtenu en segmentant par couleur rouge et en appliquant à nouveau l'algorithme de contour mentionné ci-haut. 
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.60]{fig/sudocubeThresh.jpeg}
+\caption{Exemple de sudocube nettoyé et prêt à être extrait}
+\label{fig:sudocube_thresh}
+\end{figure}
 
 Finalement, les images des cases sont triées en fonction de leur position en X et en Y dans l'image du sudocube et un algorithme de reconnaissance des caractères appliqué sur toutes les cases afin d'identifier les numéros. L'algorithme de reconnaissance utilise la technique KNearest. Les chiffres trouvés sont ajoutés dans la structure de données du sudocube et la position de la case rouge est spécifiée.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=1]{fig/8Extrait.png}
+\caption{Exemple de chiffre extrait}
+\label{fig:chiffre_extrait}
+\end{figure}
+
+\subsection{Performance de l'algo}
+L'algorithme prend en moyenne 250 ms afin de s'exécuter et réussi à extraire des sudocubes quand la caméra prend des photos entre 20 à 45 cm devant le mur avec un angle maximale de +-20 degrés de chaques côté. Sur 80 essais manuel un seul essais comportais un chiffre mal lu.
 
 \section{Localisation avec la Kinect}
 
