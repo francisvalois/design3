@@ -176,8 +176,15 @@ Mat loadSudocubeNo(int no) {
 
 bool isSudocubeCorrectlyExtracted(int sudocubeNo, Sudocube correctSudocube, SudocubeExtractor & sudocubeExtractor) {
     Mat img = loadSudocubeNo(sudocubeNo);
+
+    double t = (double)getTickCount();
+
     Sudocube * sudokubeExtracted = sudocubeExtractor.extractSudocube(img);
     bool correctlyExtracted = correctSudocube.equals(*sudokubeExtracted);
+
+    t = ((double)getTickCount() - t)/getTickFrequency();
+    cout << "Times passed in seconds: " << t << endl;
+
 
     delete sudokubeExtracted;
 

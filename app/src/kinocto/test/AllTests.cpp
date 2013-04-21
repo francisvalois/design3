@@ -6,7 +6,6 @@
 #include "pathPlanning/PathPlanningTest.cpp"
 #include "vision/NumberReaderIT.cpp"
 #include "vision/AngleFinderIT.cpp"
-#include "vision/GreenBorderAngleFinderIT.cpp"
 #include "vision/FrameCenterFinderIT.cpp"
 #include "vision/BlueCornerFinderIT.cpp"
 
