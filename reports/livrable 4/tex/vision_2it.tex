@@ -68,10 +68,6 @@ Les coins du bas des blocs de couleurs peuvent être retrouvés en trouvant les 
 Les coins internes du carré vert peuvent être retrouvés en segmentant sur le vert et en retrouvant les intersections entre les lignes avec la méthode décrite plus haut.
 \end{enumerate}
 
-\subsection{Orientation et angle par rapport au mur}
-
-L'angle par rapport au mur peut être utile pour réorienter le robot pour la lecture des sudokus. Il est facilement obtenu en utilisant la ligne de bas de mur détectée précédemment. L'orientation peut être déduite en utilisant cet angle et l'orientation fournie à l'initialisation.
-
 \section{Orientation avec la caméra embarquée}
 
 Après quelques essais avec la matrice de transformation, nous n'avons pas réussi à obtenir une localisation fiable avec la caméra embarquée. 
@@ -86,7 +82,7 @@ L'angle trouvé n'est pas l'angle réel du robot avec la ligne, mais un angle de
 
 Au tout début, l'image est nettoyée de son bruit grâce à un flou gaussien.
 
-La première étape d'extraction consiste à segmenter par couleur verte en convertissant l'image en HSV et en appliquant la méthode inRange() afin d'isoler le cadre vert du sudocube. Le contours du cadre est nettoyé avec l'application d'opérateur morphologique tel que la dilatation et l'érodation. Puis, les algorithmes d'opencv findContours() et approxPolyDP() sont appliqués pour trouver deux polygones rectangulaires. Ces polygones sont les bordures intérieures et extérieures du cadre. Enfin, on vérifie que l'aire des rectangles est plus grand que 200 000 pixels afin d'être sûr que ceux-ci sont assez grands pour être ceux du cadre du sudocube. Tous les polygones qui sont en bas de cette valeur sont soit des cadres vert des sudocubes adjacent qui n'occupent pas une grande partie de l'image ou des artéfacts dû à la segmentation qui ne nous intéressent pas.
+La première étape d'extraction consiste à segmenter par couleur verte en convertissant l'image en HSV et en appliquant la méthode inRange() afin d'isoler le cadre vert du sudocube (voir image \ref{fig:segmentation_vert}). Le contour du cadre est nettoyé avec l'application d'opérateur morphologique tel que la dilatation et l'érodation. Puis, les algorithmes d'opencv findContours() et approxPolyDP() sont appliqués pour trouver deux polygones rectangulaires. Ces polygones sont les bordures intérieures et extérieures du cadre. Enfin, on vérifie que l'aire des rectangles est plus grande que 200 000 pixels afin d'être sûr que ceux-ci sont assez grands pour être ceux du cadre du sudocube. Tous les polygones qui sont en bas de cette valeur sont soit des cadres verts des sudocubes adjacents qui n'occupent pas une grande partie de l'image ou des artéfacts dus à la segmentation qui ne nous intéressent pas.
 
 \begin{figure}[h!]
 \centering
@@ -95,7 +91,7 @@ La première étape d'extraction consiste à segmenter par couleur verte en conv
 \label{fig:segmentation_vert}
 \end{figure}
 
-Ensuite, à partir du polygone intérieur du cadre on isole une sous-région de l'image principale que l'on recadre afin qu'elle ai 500 pixels de côté. L'image obtenue est convertie en noir et blanc avec la méthode threshold() pour appliquer le même algorithme de contour mentionné dans le premier paragraphe afin de trouver les polygones des cases du sudocube. Une dilatation et une érodation sont appliqué afin d'améliorer les contours des cases. Ensuite, on sélectionne tous les polygones qui ont une aire entre 150 et 700 pixels. Si jamais le nombre de polygones sélectionné n'est pas de 47, on réapplique la méthode threshold() avec un seuil de tolérance différent pour l'algorithme de contour et ce jusqu'à ce qu'on obtienne le bon seuil pour avoir 47 cases. 
+Ensuite, à partir du polygone intérieur du cadre on isole une sous-région de l'image principale que l'on recadre afin qu'elle ait 500 pixels de côté. L'image obtenue est convertie en noir et blanc avec la méthode threshold() pour appliquer le même algorithme de contour mentionné dans le premier paragraphe afin de trouver les polygones des cases du sudocube (voir image \ref{fig:sudocube_thresh}). Une dilatation et une érodation sont appliquées afin d'améliorer les contours des cases. Ensuite, on sélectionne tous les polygones qui ont une aire entre 150 et 700 pixels. Si jamais le nombre de polygones sélectionné n'est pas de 47, on réapplique la méthode threshold() avec un seuil de tolérance différent pour l'algorithme de contour, et ce jusqu'à ce qu'on obtienne le bon seuil pour avoir 47 cases. 
 
 Le polygone de la case rouge est obtenu en segmentant par couleur rouge et en appliquant à nouveau l'algorithme de contour mentionné ci-haut. 
 
@@ -106,7 +102,7 @@ Le polygone de la case rouge est obtenu en segmentant par couleur rouge et en ap
 \label{fig:sudocube_thresh}
 \end{figure}
 
-Finalement, les images des cases sont triées en fonction de leur position en X et en Y dans l'image du sudocube et un algorithme de reconnaissance des caractères appliqué sur toutes les cases afin d'identifier les numéros. L'algorithme de reconnaissance utilise la technique KNearest. Les chiffres trouvés sont ajoutés dans la structure de données du sudocube et la position de la case rouge est spécifiée.
+Finalement, les images des cases sont triées en fonction de leur position en X et en Y dans l'image du sudocube et un algorithme de reconnaissance des caractères appliqué sur toutes les cases afin d'identifier les numéros. L'algorithme de reconnaissance utilise la technique KNearest et compare avec des chiffres semblables à celui présenté à la figure \ref{fig:chiffre_extrait}. Les chiffres trouvés sont ajoutés dans la structure de données du sudocube et la position de la case rouge est spécifiée.
 
 \begin{figure}[h!]
 \centering
@@ -116,7 +112,7 @@ Finalement, les images des cases sont triées en fonction de leur position en X 
 \end{figure}
 
 \subsection{Performance de l'algo}
-L'algorithme prend en moyenne 250 ms afin de s'exécuter et réussi à extraire des sudocubes quand la caméra prend des photos entre 20 à 45 cm devant le mur avec un angle maximale de +-20 degrés de chaques côté. Sur 80 essais manuel un seul essais comportais un chiffre mal lu.
+L'algorithme prend en moyenne 250 ms afin de s'exécuter et réussit à extraire des sudocubes quand la caméra prend des photos entre 20 à 45 cm devant le mur avec un angle maximal de +-20 degrés de chaque côté. Sur 80 essais manuels, un seul essai comportait un chiffre mal lu.
 
 \section{Localisation avec la Kinect}
 
